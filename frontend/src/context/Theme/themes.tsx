@@ -21,7 +21,28 @@ export interface Theme {
       };
     };
   }
+
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  scrollHandle: string;
+  scrollHandleHover: string;
+  body: string;
+  grey: string;
+  placeholder: string;
+  success: string;
+  error: string;
+  warn: string;
+  info: string;
+}
   
+export interface ThemeColorsText {
+  default: string;
+  100: string;
+  200: string;
+  300: string;
+}
+
 const themes: { [key: string]: Theme } = {
     dark: {
       id: "1",
