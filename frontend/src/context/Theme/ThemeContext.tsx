@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useMemo, useEffect, ReactNode } from 'react';
-import themes from './themes';
+import themes, {ThemeColors, ThemeColorsText} from './themes';
 
 interface ThemeContextType {
-  theme: string;
-  toggleTheme: (newtheme  : string) => void;
+  theme: keyof typeof themes;
+  toggleTheme: (newTheme: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -12,46 +12,36 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-
-
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<string>('dark');
 
-  
-  
-  const setColorVarCSS = (newtheme : any) => {
-    document.documentElement.style.setProperty('--primary-color', themes[newtheme].colors.primary);
-    document.documentElement.style.setProperty('--secondary-color', themes[newtheme].colors.secondary);
-    document.documentElement.style.setProperty('--scrollHandle-color', themes[newtheme].colors.scrollHandle);
-    document.documentElement.style.setProperty('--scrollHandleHover-color', themes[newtheme].colors.scrollHandleHover);
-    document.documentElement.style.setProperty('--body-color', themes[newtheme].colors.body);
-    document.documentElement.style.setProperty('--grey-color', themes[newtheme].colors.grey);
-    document.documentElement.style.setProperty('--placeholder-color', themes[newtheme].colors.placeholder);
-    document.documentElement.style.setProperty('--text-color', themes[newtheme].colors.text.default);
-    document.documentElement.style.setProperty('--text100-color', themes[newtheme].colors.text[100]);
-    document.documentElement.style.setProperty('--text200-color', themes[newtheme].colors.text[200]);
-    document.documentElement.style.setProperty('--text300-color', themes[newtheme].colors.text[300]);
-    document.documentElement.style.setProperty('--success-color', themes[newtheme].colors.success);
-    document.documentElement.style.setProperty('--error-color', themes[newtheme].colors.error);
-    document.documentElement.style.setProperty('--warn-color', themes[newtheme].colors.warn);
-    document.documentElement.style.setProperty('--info-color', themes[newtheme].colors.info);
-  }
-  const toggleTheme = (newtheme  : string) => {
-    console.log("newTheme", newtheme)
-    setColorVarCSS(newtheme);
-    setTheme(newtheme);
-    localStorage.setItem("theme", newtheme);
-  };
-
-  const verifyThemeExist = (newTheme : string) => {
-    let themeExist = false;
-    for (const key in themes) {
-      if(themes[key].name === newTheme) {
-        themeExist = true;
+  const setColorVarCSS = (newTheme: keyof typeof themes) => {
+    const colors: ThemeColors = themes[newTheme].colors;
+    const colorText: ThemeColorsText = themes[newTheme].colors.text;
+    for (const [name, value] of Object.entries(colors)) {
+      if (name !== "text") {
+        document.documentElement.style.setProperty(`--${name}-color`, value);
       }
     }
-    return themeExist;
-  }
+    for (const [name, value] of Object.entries(colorText)) {
+      if (name !== "default") {
+        document.documentElement.style.setProperty(`--text-color`, value);
+      } else {
+        document.documentElement.style.setProperty(`--text${name}-color`, value);
+      }
+    }
+  };
+
+  const toggleTheme = (newTheme: string) => {
+    console.log("newTheme", newTheme)
+    setColorVarCSS(newTheme);
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  const verifyThemeExist = (newTheme: string): boolean => {
+    return newTheme in themes;
+  };
 
   useEffect(() => {
     const checkThemeLocalStorage = localStorage.getItem("theme");
