@@ -11,8 +11,9 @@
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.15.16",
+    "@mui/styles": "^5.15.16",
     "lodash": "^4.17.21",
-    "next": "14.2.3",
+    "next": "^14.2.3",
     "react": "^18",
     "react-dom": "^18",
     "react-horizontal-scrolling-menu": "^7.0.0",
