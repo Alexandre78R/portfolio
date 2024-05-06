@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
     <nav className="bg-body-500 p-3">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <a href="#" className="text-text font-bold text-xl">{translations.navbarTitle}</a>
+          <a href="#" className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
         </div>
         <div className="hidden md:block">
           <ul className="flex space-x-5">
@@ -49,12 +49,12 @@ const Navbar: React.FC = () => {
                 <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
                   <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
                   <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
-                  <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+                  <div className={`absolute left-0 w-6 h-6 rounded-full  bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
                 </div>
               </label>
             </div>
             </li>
-            <li><ColorLensIcon onClick={handleOpen} className="text-primary"/></li>
+            <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
           </ul>
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
           <ul className="flex flex-col space-y-4">
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
-            <li><ColorLensIcon onClick={handleOpen} className="text-primary"/></li>
+            <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
             <li>
             <div className="relative inline-block" onClick={toggleChecked}>
               <label htmlFor="toggleButton" className="cursor-pointer">
@@ -98,10 +98,9 @@ const Navbar: React.FC = () => {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        className="border-none"
       >
         <Box className="bg-body absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-400 p-4 border-none">
-        <div>
+        <div className="p-1">
           <Button onClick={() => handleChangeColorTheme("dark") } text={translations?.theme1}/>
           <Button onClick={() => handleChangeColorTheme("light")}  text={translations?.theme2}/>
           <Button onClick={() => handleChangeColorTheme("ubuntu")} text={translations?.theme3}/>
