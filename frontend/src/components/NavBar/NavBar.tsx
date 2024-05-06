@@ -7,7 +7,7 @@ import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
 
   const { lang, setLang, translations } = useLang();
   const { toggleTheme } = useTheme();
@@ -23,19 +23,17 @@ const Navbar = () => {
   const handleChangeColorTheme = (newTheme :string) :void => {
     toggleTheme(newTheme);
     handleClose();
+    setMenuOpen(false)
   }
-
 
   useEffect(() => {
     setIsChecked(translations.file === "en");
   }, [translations])
   
-  
   const toggleChecked = () :void => {
     setIsChecked(!isChecked);
     setLang(lang === "fr" ? "en" : "fr");
   };
-
 
   return (
     <nav className="bg-body-500 p-3">
@@ -78,6 +76,9 @@ const Navbar = () => {
       {menuOpen && (
         <div className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
+            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
+            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
+            <li><ColorLensIcon onClick={handleOpen} className="text-primary"/></li>
             <li>
             <div className="relative inline-block" onClick={toggleChecked}>
               <label htmlFor="toggleButton" className="cursor-pointer">
@@ -89,8 +90,6 @@ const Navbar = () => {
               </label>
             </div>
             </li>
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
           </ul>
         </div>
       )}
@@ -99,8 +98,9 @@ const Navbar = () => {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        className="border-none"
       >
-        <Box className="bg-body absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-400  p-4">
+        <Box className="bg-body absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-400 p-4 border-none">
         <div>
           <Button onClick={() => handleChangeColorTheme("dark") } text={translations?.theme1}/>
           <Button onClick={() => handleChangeColorTheme("light")}  text={translations?.theme2}/>
