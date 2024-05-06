@@ -7,7 +7,7 @@ import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
 
   const { lang, setLang, translations } = useLang();
   const { toggleTheme } = useTheme();
@@ -25,17 +25,14 @@ const Navbar = () => {
     handleClose();
   }
 
-
   useEffect(() => {
     setIsChecked(translations.file === "en");
   }, [translations])
-  
   
   const toggleChecked = () :void => {
     setIsChecked(!isChecked);
     setLang(lang === "fr" ? "en" : "fr");
   };
-
 
   return (
     <nav className="bg-body-500 p-3">
