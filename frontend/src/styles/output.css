@@ -558,19 +558,19 @@ video {
   background-color: var(--body-color);
 }
 
-.text-primary {
-  color: var(--primary-color);
+.bg-primary {
+  background-color: var(--primary-color);
 }
 
 :root {
   --primary-color: #B45852;
-  --secondary-color: #BFAB25;
+  --secondary-color: #F2C85B;
   --scrollHandle-color: #19252E;
   --scrollHandleHover-color: #162028;
   --body-color: #01031B;
   --grey-color: #7F7F7F;
   --placeholder-color: #A0AEC0;
-  --text-color: #F8F8FD;
+  --text-color: #ffffff;
   --text100-color: #030303;
   --text200-color: #B2BDCC;
   --text300-color: #64748b;
@@ -580,3 +580,6 @@ video {
   --info-color: #3B89FF;
 }
 
+body {
+  background-color: var(--body-color);
+}

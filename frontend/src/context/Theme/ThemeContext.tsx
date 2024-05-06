@@ -15,7 +15,7 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<string>('dark');
 
-  const setColorVarCSS = (newTheme: keyof typeof themes) => {
+  const setColorVarCSS = (newTheme: keyof typeof themes): void  => {
     const colors: ThemeColors = themes[newTheme].colors;
     const colorText: ThemeColorsText = themes[newTheme].colors.text;
     for (const [name, value] of Object.entries(colors)) {
@@ -25,15 +25,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
     for (const [name, value] of Object.entries(colorText)) {
       if (name !== "default") {
-        document.documentElement.style.setProperty(`--text-color`, value);
-      } else {
         document.documentElement.style.setProperty(`--text${name}-color`, value);
-      }
+      } else {
+        document.documentElement.style.setProperty(`--text-color`, value);
     }
-  };
+  }
+};
 
-  const toggleTheme = (newTheme: string) => {
-    console.log("newTheme", newTheme)
+  const toggleTheme = (newTheme: string): void => {
     setColorVarCSS(newTheme);
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
