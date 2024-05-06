@@ -98,7 +98,7 @@ const themes: { [key: string]: Theme } = {
         scrollHandle: "#F47845",
         scrollHandleHover: "#E65F31",
         primary: "#80D932",
-        secondary: "#80D932",
+        secondary: "#dd4813",
         success: "#1C8036",
         error: "#AA2020",
         warn: "#EBCC2A",

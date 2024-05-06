@@ -4,7 +4,7 @@ import en from "@/lang/en.json"
 
 type LangContextType = {
   lang: string;
-  toggleLang: (newLang: string) => void;
+  setLang: (lang: string) => void;
   translations: { [key: string]: string };
 };
 
@@ -14,7 +14,7 @@ interface LangProviderProps {
 
 const LangContext = createContext<LangContextType>({
   lang: 'fr',
-  toggleLang: () => {},
+  setLang: () => {},
   translations: {},
 });
 
@@ -23,29 +23,33 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
     const [lang, setLang] = useState('fr');
     const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
     const [listLang, setListLang] = useState<string[]>(["fr", "en"])
-    
-    const toggleLang = (newLang: string): void => {
-        setLang(newLang);
-        setTranslations(newLang === "fr" ? fr : en);
-        localStorage.setItem("lang", lang === "fr" ? "fr" : "en");
+    const [checkLang, setCheckLang] = useState<boolean>(false) 
+
+    const toggleTheme = (newLang : string): void => {
+        setLang(newLang == "fr" ? "fr" : "en");
+        setTranslations(newLang == "fr" ? fr : en);
+        localStorage.setItem("lang", newLang == "fr" ? "fr" : "en");
     };
 
     useEffect(() => {
         const checkLangLocalStorage = localStorage.getItem("lang");
-        if (checkLangLocalStorage) {
-            if(listLang.includes(checkLangLocalStorage)) {
-                toggleLang(checkLangLocalStorage)
+        console.log('coucou')
+        if (checkLangLocalStorage && !checkLang) {
+            if (listLang.includes(checkLangLocalStorage)) {
+                toggleTheme(checkLangLocalStorage)
             } else {
-                localStorage.setItem("lang", lang);
+                toggleTheme(lang)
             }
+            setCheckLang(true)
         } else {
-            localStorage.setItem("lang", lang);
+            toggleTheme(lang)
         }
-    }, []);
+    }, [lang])
+    
 
     const value = useMemo(() => ({
       lang,
-      toggleLang,
+      setLang,
       translations,
     }), [lang, translations]);
 
