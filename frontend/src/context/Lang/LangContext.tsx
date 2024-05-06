@@ -4,7 +4,7 @@ import en from "@/lang/en.json"
 
 type LangContextType = {
   lang: string;
-  setLang: (lang: string) => void;
+  toggleLang: (newLang: string) => void;
   translations: { [key: string]: string };
 };
 
@@ -14,7 +14,7 @@ interface LangProviderProps {
 
 const LangContext = createContext<LangContextType>({
   lang: 'fr',
-  setLang: () => {},
+  toggleLang: () => {},
   translations: {},
 });
 
@@ -24,27 +24,28 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
     const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
     const [listLang, setListLang] = useState<string[]>(["fr", "en"])
     
-    const toggleTheme = (): void => {
-        setTranslations(lang == "fr" ? fr : en);
-        localStorage.setItem("lang", lang == "fr" ? "fr" : "en");
+    const toggleLang = (newLang: string): void => {
+        setLang(newLang);
+        setTranslations(newLang === "fr" ? fr : en);
+        localStorage.setItem("lang", lang === "fr" ? "fr" : "en");
     };
 
     useEffect(() => {
         const checkLangLocalStorage = localStorage.getItem("lang");
         if (checkLangLocalStorage) {
             if(listLang.includes(checkLangLocalStorage)) {
-                toggleTheme()
+                toggleLang(checkLangLocalStorage)
             } else {
                 localStorage.setItem("lang", lang);
             }
         } else {
             localStorage.setItem("lang", lang);
         }
-    }, [lang]);
+    }, []);
 
     const value = useMemo(() => ({
       lang,
-      setLang,
+      toggleLang,
       translations,
     }), [lang, translations]);
 

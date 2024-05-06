@@ -562,24 +562,8 @@ video {
   background-color: var(--primary-color);
 }
 
-.bg-text300 {
-  background-color: var(--text300-color);
-}
-
 .text-text {
   color: var(--text-color);
-}
-
-.text-text100 {
-  color: var(--text100-color);
-}
-
-.text-text200 {
-  color: var(--text200-color);
-}
-
-.text-text300 {
-  color: var(--text300-color);
 }
 
 :root {
