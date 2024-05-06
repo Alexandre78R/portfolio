@@ -3,7 +3,7 @@ import { ThemeProvider, useTheme } from "@/context/Theme/ThemeContext";
 import { useLang } from "@/context/Lang/LangContext";
 
 
-export default function Home() {
+const Home = () => {
   const { toggleTheme } = useTheme();
   const { toggleLang, translations } = useLang();
 
@@ -20,3 +20,6 @@ export default function Home() {
     </main>
   );
 }
+
+export default Home;
+
