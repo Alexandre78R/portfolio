@@ -554,20 +554,12 @@ video {
   --tw-contain-style:  ;
 }
 
-.bg-primary {
-  background-color: var(--primary-color);
-}
-
 .bg-body {
   background-color: var(--body-color);
 }
 
 .text-primary {
   color: var(--primary-color);
-}
-
-.text-text {
-  color: var(--text-color);
 }
 
 :root {
