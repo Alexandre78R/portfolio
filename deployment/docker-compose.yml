@@ -1,9 +1,8 @@
 services:
   frontend:
-    build: ./frontend
+    image: alexandre78r/main-frontend-portfolio:latest
     ports:
       - 3000:3000
-    profiles: ["dev", "production", "test"]
     volumes:
       - ./frontend/src:/app/src
     environment:
@@ -15,7 +14,6 @@ services:
     image: nginx:1.21.3
     depends_on:
       - frontend
-      - backend
     restart: always
     ports:
       - ${GATEWAY_PORT:-8000}:80
