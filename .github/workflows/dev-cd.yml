@@ -47,12 +47,12 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dev-frontend-portfolio:latest
 
-  # deployment:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #     # send deploiement hook
-  #   steps:
-  #     - name: Invoke deployment hook
-  #       uses: distributhor/workflow-webhook@v3
-  #       with:
-  #         webhook_url: ${{ secrets.WEBHOOK_URL_DEV }}
+  deployment:
+    needs: build
+    runs-on: ubuntu-latest
+      # send deploiement hook
+    steps:
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL_DEV }}
