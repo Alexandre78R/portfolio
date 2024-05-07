@@ -1,27 +1,25 @@
 services:
   frontend:
-    build: ./frontend
+    image: alexandre78r/main-frontend-portfolio:latest
     ports:
       - 3000:3000
-    profiles: ["dev", "production", "test"]
-    volumes:
-      - ./frontend/src:/app/src
     environment:
       - WDS_SOCKET_HOST=127.0.0.1
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
-  nginx:
-    image: nginx:1.21.3
-    depends_on:
-      - frontend
-      - backend
-    restart: always
-    ports:
-      - ${GATEWAY_PORT:-8000}:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./logs:/var/log/nginx-dev
+         env_file:
+      - ./.env
+  # nginx:
+  #   image: nginx:1.21.3
+  #   depends_on:
+  #     - frontend
+  #   restart: always
+  #   ports:
+  #     - ${GATEWAY_PORT:-8000}:80
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - ./logs:/var/log/nginx-dev
 
 volumes:
   wildcodehub-data:
