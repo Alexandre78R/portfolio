@@ -8,19 +8,20 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
-         env_file:
-      - ./.env
-  # nginx:
-  #   image: nginx:1.21.3
-  #   depends_on:
-  #     - frontend
-  #   restart: always
-  #   ports:
-  #     - ${GATEWAY_PORT:-8000}:80
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #     - ./logs:/var/log/nginx-dev
+    env_file:
+    - ./.env
+  nginx:
+    image: nginx:1.21.3
+    depends_on:
+      - frontend
+    restart: always
+    ports:
+      - ${GATEWAY_PORT:-8000}:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx-dev
 
 volumes:
   wildcodehub-data:
   wildcodehub-data-test:
+
