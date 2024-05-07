@@ -1,0 +1,13 @@
+{
+    "file" : "en",
+    "welcome" : "Welcome to my portfolio !",
+    "theme1" : "Dark",
+    "theme2" : "Light",
+    "theme3" : "Ubuntu",
+    "lang1" : "FR",
+    "lang2" : "EN",
+    "navbarTitle": "< Alexandre Renard />",
+    "navbarButton1" : "About me",
+    "navbarButton2" : "Project",
+    "headerTitle" : "FullStack Developer"
+}

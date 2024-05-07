@@ -1,14 +1,13 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import { useLang } from "@/context/Lang/LangContext";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
+const Home: React.FC = () => {
+  const { translations } = useLang();
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      Bienvenue sur mon portfolio ! 
+    <main className="bg-body">
+      <p className={`text-text`}>{translations?.welcome}</p>
     </main>
   );
 }
+
+export default Home;
+

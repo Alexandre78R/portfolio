@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-color: #B45852;
+    --secondary-color: #F2C85B;
+    --scrollHandle-color: #19252E;
+    --scrollHandleHover-color: #162028;
+    --body-color: #01031B;
+    --grey-color: #7F7F7F;
+    --placeholder-color: #A0AEC0;
+    --text-color: #ffffff;
+    --text100-color: #030303;
+    --text200-color: #B2BDCC;
+    --text300-color: #64748b;
+    --success-color: #1C8036;
+    --error-color: #AA2020;
+    --warn-color: #EBCC2A;
+    --info-color: #3B89FF;
+}
+
+body {
+    background-color: var(--body-color);
+}
