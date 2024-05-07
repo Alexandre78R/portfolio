@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-body-500 p-3">
+    <nav className="bg-body-500 p-3 fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
           <a href="#" className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
               </label>
             </div>
             </li>
-            <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
+            <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
           </ul>
