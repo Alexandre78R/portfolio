@@ -9,13 +9,13 @@ const Header: React.FC = () => {
   const { theme } = useTheme();
   return (
     <header>
-        <div className="h-screen relative w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
+        <div className="h-screen relative w-full bg-body flex flex-col items-center justify-center overflow-hidden rounded-md">
         <div className="w-full absolute inset-0 h-screen">
         <SparklesCore
             id="tsparticlesfullpage"
             background="transparent"
-            minSize={0.6}
-            maxSize={1.0}
+            minSize={0.8}
+            maxSize={1.5}
             particleDensity={100}
             className="w-full h-full bg-body"
             particleColor={themes[theme].colors.primary}
