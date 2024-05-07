@@ -4,7 +4,7 @@ const isProduction = process.env.isProduction === 'production';
 
 const nextConfig = {
   reactStrictMode: true,
-  target: isProduction ? 'server' : 'serverless',
+  // target: isProduction ? 'server' : 'serverless',
 };
 
 export default nextConfig;
