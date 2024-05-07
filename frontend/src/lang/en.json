@@ -8,5 +8,6 @@
     "lang2" : "EN",
     "navbarTitle": "< Alexandre Renard />",
     "navbarButton1" : "About me",
-    "navbarButton2" : "Project"
+    "navbarButton2" : "Project",
+    "headerTitle" : "FullStack Developer"
 }
