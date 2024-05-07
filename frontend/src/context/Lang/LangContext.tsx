@@ -18,7 +18,6 @@ const LangContext = createContext<LangContextType>({
   translations: {},
 });
 
-
 export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
     const [lang, setLang] = useState('fr');
     const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
@@ -45,7 +44,6 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
             toggleTheme(lang)
         }
     }, [lang])
-    
 
     const value = useMemo(() => ({
       lang,
