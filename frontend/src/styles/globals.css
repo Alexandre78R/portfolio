@@ -23,3 +23,9 @@
 body {
     background-color: var(--body-color);
 }
+
+
+.custom-scrollbar::-webkit-scrollbar {
+    display: none;
+    color: red;
+  }
