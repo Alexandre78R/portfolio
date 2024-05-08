@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ThemeProvider, useTheme } from "@/context/Theme/ThemeContext";
+import { useTheme } from "@/context/Theme/ThemeContext";
 import { useLang } from '@/context/Lang/LangContext';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import Box from '@mui/material/Box';
