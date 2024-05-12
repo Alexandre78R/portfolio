@@ -43,11 +43,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    const checkThemeLocalStorage = localStorage.getItem("theme");
+    const checkThemeLocalStorage: string | null = localStorage.getItem("theme");
     if (checkThemeLocalStorage) {
-      const verifyTheme = verifyThemeExist(checkThemeLocalStorage)
+      const verifyTheme = verifyThemeExist(checkThemeLocalStorage);
       if (verifyTheme) {
-        toggleTheme(checkThemeLocalStorage) 
+        toggleTheme(checkThemeLocalStorage) ;
       } else {
         localStorage.setItem("theme", theme);
       }

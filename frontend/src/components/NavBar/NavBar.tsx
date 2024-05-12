@@ -23,14 +23,14 @@ const Navbar: React.FC = () => {
   const handleChangeColorTheme = (newTheme :string) :void => {
     toggleTheme(newTheme);
     handleClose();
-    setMenuOpen(false)
+    setMenuOpen(false);
   }
 
   useEffect(() => {
     setIsChecked(translations.file === "en");
-  }, [translations])
+  }, [translations]);
   
-  const toggleChecked = () :void => {
+  const toggleChecked = () : void => {
     setIsChecked(!isChecked);
     setLang(lang === "fr" ? "en" : "fr");
   };
@@ -109,6 +109,6 @@ const Navbar: React.FC = () => {
       </Modal>
     </nav>
   );
-}
+};
 
 export default Navbar;

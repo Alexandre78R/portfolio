@@ -12,6 +12,6 @@ const Title: React.FC<Props> = ({ title }) => {
     </Typography>
 
   );
-}
+};
 
 export default Title;

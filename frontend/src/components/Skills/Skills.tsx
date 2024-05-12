@@ -2,10 +2,10 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { skill } from './typeSkills';
+import { skills, skill } from './typeSkills';
 
 
-const Skills: React.FC<skill> = ({ category, skills }) => {
+const Skills: React.FC<skills> = ({ category, skills }) => {
   return (
     <Card 
       className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden ml-3 lg:ml-10"

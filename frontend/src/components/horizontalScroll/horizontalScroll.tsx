@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, MouseEvent} from 'react';
 import Skills from '../Skills/Skills';
-import { skill } from '../Skills/typeSkills';
+import { skills } from '../Skills/typeSkills';
 
 type Props = {
   data: any;
@@ -19,7 +19,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
-    const target = event.target as HTMLElement; 
+    const target: HTMLElement = event.target as HTMLElement; 
     if (target.tagName === 'IMG') {
       setIsClickOnImage(true);
     }
@@ -27,8 +27,8 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
 
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) : number  => {
     if (!isDragging || isClickOnImage) return containerRef.current.scrollLeft;
-    const x = event.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.0;
+    const x: number = event.pageX - containerRef.current.offsetLeft;
+    const walk: number = (x - startX) * 1.0;
     return containerRef.current.scrollLeft = scrollLeft - walk;
   };
 
@@ -81,7 +81,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
         style={{ userSelect: 'none' }}
       >
         { category === "skills" &&
-          data?.map((skill: skill) => (
+          data?.map((skill: skills) => (
               <Skills key={skill.category} category={skill.category} skills={skill.skills} />
           ))
         }
