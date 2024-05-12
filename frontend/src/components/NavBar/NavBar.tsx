@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
     setIsChecked(translations.file === "en");
   }, [translations])
   
-  const toggleChecked = () :void => {
+  const toggleChecked = () : void => {
     setIsChecked(!isChecked);
     setLang(lang === "fr" ? "en" : "fr");
   };
