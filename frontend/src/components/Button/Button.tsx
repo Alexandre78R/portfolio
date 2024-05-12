@@ -2,12 +2,13 @@ import { Button } from '@mui/material';
 
 type Props = {
   onClick: () => void,
-  text: string
+  text: string,
+  style?: any,
 };
 
-const ButtonCustom: React.FC<Props> = ({ onClick, text}) => {
+const ButtonCustom: React.FC<Props> = ({ onClick, text, style}) => {
   return (
-    <Button onClick={onClick} className="text-m text-text px-5 py-1 rounded-full bg-primary hover:bg-secondary border-none mt-2 ml-1" variant="contained">{text}</Button>
+    <Button onClick={onClick} className="text-m text-text px-5 py-1 rounded-full bg-primary hover:bg-secondary border-none mt-2 ml-1" variant="contained" style={style}>{text}</Button>
   );
 };
 
