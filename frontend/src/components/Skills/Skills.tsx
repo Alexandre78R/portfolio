@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { skill } from './typeSkills';
@@ -6,9 +7,9 @@ import { skill } from './typeSkills';
 
 const Skills: React.FC<skill> = ({ category, skills }) => {
   return (
-    <div 
-      className="flex-shrink-0 min-w-80 mr-2 rounded-lg bg-body text-white overflow-hidden"
-      style={{ cursor: 'pointer' }}
+    <Card 
+      className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden border-2 border-primary"
+      style={{ cursor: 'pointer', backgroundColor : "var(--body-color)"}}
     >
       <CardContent >
         <Typography variant="h6" component="h6" className="text-lg text-text font-bold mb-2">
@@ -31,7 +32,7 @@ const Skills: React.FC<skill> = ({ category, skills }) => {
           ))}
         </div>
       </CardContent>
-    </div>
+    </Card>
   );
 };
 
