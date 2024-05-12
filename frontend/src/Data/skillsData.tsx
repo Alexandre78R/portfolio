@@ -1,6 +1,7 @@
 export const skillsData = [
     {
-      category: 'Programming Languages',
+      categoryEN: 'Programming Languages',
+      categoryFR: 'Langages de programmation',
       skills: [
         { name: 'JavaScript', image: "https://img.shields.io/badge/-JavaScript-efd81d?style=flat-square&logo=JavaScript&logoColor=white" },
         { name: 'TypeScript', image: "https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white" },
@@ -8,7 +9,8 @@ export const skillsData = [
       color: 'bg-blue-500',
     },
     {
-      category: 'Frontend Development',
+      categoryEN: 'Frontend Development',
+      categoryFR: 'Développement Frontend',
       skills: [
         { name: 'React', image: "https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" },
         { name: 'Next.js', image: "https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white" },
@@ -24,7 +26,8 @@ export const skillsData = [
       color: 'bg-yellow-500',
     },
     {
-      category: 'Backend Development',
+      categoryEN: 'Backend Development',
+      categoryFR: 'Développement Backend',
       skills: [
         { name: 'Nodejs', image: "https://img.shields.io/badge/-Nodejs-44883e?style=flat-square&logo=Node.js&logoColor=white" },
         { name: 'Apollo GraphQL', image: "https://img.shields.io/badge/-Apollo%20GraphQL-311C87?style=flat-square&logo=apollo-graphql&logoColor=white" },
@@ -35,7 +38,8 @@ export const skillsData = [
       color: 'bg-green-500',
     },
     {
-      category: 'Mobile App Development',
+      categoryEN: 'Mobile App Development',
+      categoryFR: "Développement d'applications mobiles",
       skills: [
         { name: 'React Native', image: "https://img.shields.io/badge/-React%20Native-45b8d8?style=flat-square&logo=react&logoColor=white" },
         { name: 'Expo', image: "https://img.shields.io/badge/Expo-000000?style=flat-square&logo=expo&logoColor=white" },
@@ -43,7 +47,8 @@ export const skillsData = [
       color: 'bg-pink-500',
     },
     {
-      category: 'Database - Storage & Query',
+      categoryEN: 'Database - Storage & Query',
+      categoryFR: 'Base de données - Stockage et requête',
       skills: [
         { name: 'PostgreSQL', image: "https://img.shields.io/badge/-PostgreSQL-1D73DC?style=flat-square&logo=PostgreSQL&logoColor=white" },
         { name: 'MySQL', image: "https://img.shields.io/badge/-MySQL-F29111?style=flat-square&logo=MySQL&logoColor=white" },
@@ -54,7 +59,8 @@ export const skillsData = [
       color: 'bg-purple-500',
     },
     {
-      category: 'DevOps',
+      categoryEN: 'DevOps',
+      categoryFR: 'DevOps',
       skills: [
         { name: 'Docker', image: "https://img.shields.io/badge/-Docker-0db7ed?style=flat-square&logo=docker&logoColor=white" },
         { name: 'Github Action', image: "https://img.shields.io/badge/-Github%20Action-000000?style=flat-square&logo=github$&logoColor=white" },
@@ -65,7 +71,8 @@ export const skillsData = [
       color: 'bg-red-500',
     },
     {
-      category: 'Testing & Web Scraping',
+      categoryEN: 'Testing & Web Scraping',
+      categoryFR: 'Tests & scraping Web',
       skills: [
         { name: 'Jest', image: "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white" },
         { name: 'Cypress', image: "https://img.shields.io/badge/-Cypress-1FC824?style=flat-square&logo=cypress&logoColor=white" },
@@ -74,7 +81,8 @@ export const skillsData = [
       color: 'bg-indigo-500',
     },
     {
-      category: 'Tools',
+      categoryEN: 'Tools',
+      categoryFR: 'Outils',
       skills: [
         { name: 'Figma', image: "https://img.shields.io/badge/-Figma-a259ff?style=flat-square&logo=Figma&logoColor=white" },
         { name: 'Postman', image: "https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white" },

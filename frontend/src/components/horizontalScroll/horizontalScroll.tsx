@@ -9,6 +9,7 @@ type Props = {
 
 const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
 
+  console.log(data)
   const containerRef = useRef<any>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
@@ -81,7 +82,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
         style={{ userSelect: 'none' }}
       >
         { category === "skills" &&
-          data.map((skill: skill) => (
+          data?.map((skill: skill) => (
               <Skills key={skill.category} category={skill.category} skills={skill.skills} />
           ))
         }
