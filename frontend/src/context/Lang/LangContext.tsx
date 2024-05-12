@@ -32,7 +32,6 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
 
     useEffect(() => {
         const checkLangLocalStorage = localStorage.getItem("lang");
-        console.log('coucou')
         if (checkLangLocalStorage && !checkLang) {
             if (listLang.includes(checkLangLocalStorage)) {
                 toggleTheme(checkLangLocalStorage)
