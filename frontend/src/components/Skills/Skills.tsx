@@ -8,7 +8,7 @@ import { skill } from './typeSkills';
 const Skills: React.FC<skill> = ({ category, skills }) => {
   return (
     <Card 
-      className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden border-2 border-primary"
+      className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden ml-3 lg:ml-10"
       style={{ cursor: 'pointer', backgroundColor : "var(--body-color)"}}
     >
       <CardContent >

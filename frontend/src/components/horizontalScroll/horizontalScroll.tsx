@@ -53,23 +53,23 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
   }, [isDragging]);
 
   useEffect(() => {
-    containerRef.current.addEventListener('mousedown', handleMouseDown);
-    containerRef.current.addEventListener('mouseup', handleMouseUp);
+    containerRef?.current?.addEventListener('mousedown', handleMouseDown);
+    containerRef?.current?.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      containerRef.current.removeEventListener('mousedown', handleMouseDown);
-      containerRef.current.removeEventListener('mouseup', handleMouseUp);
+      containerRef?.current?.removeEventListener('mousedown', handleMouseDown);
+      containerRef?.current?.removeEventListener('mouseup', handleMouseUp);
     };
   }, [startX, scrollLeft]);
 
   useEffect(() => {
     if (isDragging && !isClickOnImage) {
-      containerRef.current.addEventListener('mousemove', handleMouseMove);
+      containerRef?.current?.addEventListener('mousemove', handleMouseMove);
     } else {
-      containerRef.current.removeEventListener('mousemove', handleMouseMove);
+      containerRef?.current?.removeEventListener('mousemove', handleMouseMove);
     }
     return () => {
-      containerRef.current.removeEventListener('mousemove', handleMouseMove);
+      containerRef?.current?.removeEventListener('mousemove', handleMouseMove);
     };
   }, [isDragging, isClickOnImage]);
 
