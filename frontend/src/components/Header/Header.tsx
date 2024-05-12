@@ -2,7 +2,6 @@ import { useLang } from "@/context/Lang/LangContext";
 import { SparklesCore } from "../ui/SparklesCore";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
-import Image from 'next/image';
 
 const Header: React.FC = () => {
   const { translations } = useLang();

@@ -37,11 +37,11 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-body-500 p-3 fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
           <a href="#" className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
         </div>
-        <div className="hidden md:block">
+        <menu className="hidden md:block">
           <ul className="flex space-x-5">
             <li>
             <div className="relative inline-block" onClick={toggleChecked}>
@@ -58,8 +58,8 @@ const Navbar: React.FC = () => {
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
           </ul>
-        </div>
-        <div className="md:hidden">
+        </menu>
+        <menu className="md:hidden">
           <button className="text-text focus:outline-none relative z-50" onClick={toggleMenu}>
             {menuOpen ? (
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,10 +71,10 @@ const Navbar: React.FC = () => {
               </svg>
             )}
           </button>
-        </div>
-      </div>
+        </menu>
+      </section>
       {menuOpen && (
-        <div className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
+        <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
             <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
             </div>
             </li>
           </ul>
-        </div>
+        </menu>
       )}
       <Modal
         open={open}
