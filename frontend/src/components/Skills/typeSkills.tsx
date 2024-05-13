@@ -1,4 +1,5 @@
 export type skills = {
+    id? : number,
     category : string,
     skills : any, 
 };

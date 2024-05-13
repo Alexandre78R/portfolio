@@ -11,7 +11,7 @@ const Skills: React.FC<skills> = ({ category, skills }) => {
       className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden ml-3 lg:ml-10"
       style={{ cursor: 'pointer', backgroundColor : "var(--body-color)"}}
     >
-      <CardContent >
+      <div >
         <Typography variant="h6" component="h6" className="text-lg text-text font-bold mb-2">
           {category} 
         </Typography>
@@ -31,7 +31,7 @@ const Skills: React.FC<skills> = ({ category, skills }) => {
             )
           ))}
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };

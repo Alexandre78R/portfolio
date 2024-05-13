@@ -19,16 +19,12 @@ const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleView
         <ButtonCustom 
           onClick={() => handleViewSelect('terminal')}
           text={translations.buttonNameChoiceTerminale}
-          style={{
-              backgroundColor: selectedView !== "terminal" ? "black" : "",
-          }}
+          disable={selectedView !== "terminal" ? true : false}
         />
         <ButtonCustom
           onClick={() => handleViewSelect('text')}
           text={translations.buttonNameChoiceText}
-          style={{
-              backgroundColor: selectedView !== "text" ? "black" : "",
-          }}
+          disable={selectedView !== "text" ? true : false}
       />
     </div>
   );

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
+import Projects from "@/components/Projects/Projects";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import { skillsData } from "@/Data/skillsData";
+import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 
@@ -9,6 +11,7 @@ const Home: React.FC = () => {
 
   const { translations } = useLang();
   const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
+  const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
   const [selectedView, setSelectedView] = useState<string>("text");
   const [checkSelectedView, setCheckSelectedView] = useState<boolean>(false);
 
@@ -16,8 +19,13 @@ const Home: React.FC = () => {
     setDataSkills(skillsData.map(skill => ({ ...skill, category: lang === "fr" ? skill.categoryFR : skill.categoryEN })))
   };
 
+  const projectDataLang = (lang: string) : any => {
+    setDataProjects(projectsData.map(project => ({ ...project, description: lang === "fr" ? project.descriptionFR : project.descriptionEN })))
+  };
+
   useEffect(() => {
     skillDataLang(translations.file)
+    projectDataLang(translations.file)
   }, [translations])
 
   const handleViewSelect = (view : string) => {
@@ -42,8 +50,8 @@ const Home: React.FC = () => {
   
   
   return (
-    <main className="bg-body mt-16">
-      <section className="ml-5">
+    <main className="bg-body mt-10">
+      <section className="ml-2">
         <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
@@ -54,15 +62,19 @@ const Home: React.FC = () => {
       {
         selectedView === "terminal" ? 
         <>
-          <section className="ml-5">
+          <section className="ml-2 mt-10">
             <Title title="Terminal" />
           </section>
         </>
         :
         <>
-          <section className="ml-5">
+          <section className="ml-2 mt-10">
             <Title title={translations.nameCategorySkills} />
             <HorizontalScroll data={dataSkills} category="skills" />
+          </section>
+          <section className="ml-2 mt-10">
+            <Title title={translations.nameCategoryProjects} />
+            <HorizontalScroll data={dataProjects} category="projects" />
           </section>
         </>
       }

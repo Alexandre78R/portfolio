@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-body-500 p-3 fixed top-0 left-0 w-full z-50">
+    <nav className="bg-body p-3 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
           <a href="#" className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>

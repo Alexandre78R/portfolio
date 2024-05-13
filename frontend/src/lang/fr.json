@@ -14,5 +14,6 @@
     "buttonNameChoiceTerminale" : "Vue Terminal",
     "buttonNameChoiceText" : "Vue Texte",
     "nameCategorySkills" : "Compétences",
-    "skillCegory1" : "fr"
+    "skillCegory1" : "fr",
+    "nameCategoryProjects" : "Projets"
 }

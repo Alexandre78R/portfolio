@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, MouseEvent} from 'react';
 import Skills from '../Skills/Skills';
 import { skills } from '../Skills/typeSkills';
+import Projects from '../Projects/Projects';
+import { Project } from '../Projects/typeProjects';
 
 type Props = {
   data: any;
@@ -74,7 +76,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
   }, [isDragging, isClickOnImage]);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative' }} key={category}>
       <div
         ref={containerRef}
         className="flex flex-row overflow-x-auto overflow-y-hidden p-2 custom-scrollbar"
@@ -82,7 +84,13 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
       >
         { category === "skills" &&
           data?.map((skill: skills) => (
-              <Skills key={skill.category} category={skill.category} skills={skill.skills} />
+              <Skills key={skill.id} category={skill.category} skills={skill.skills} />
+          ))
+        }
+
+        { category === "projects" &&
+          data?.map((project: Project) => (
+              <Projects key={project.id} project={project} />
           ))
         }
       </div>
