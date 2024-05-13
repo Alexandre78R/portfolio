@@ -19,28 +19,28 @@ const LangContext = createContext<LangContextType>({
 });
 
 export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
-    const [lang, setLang] = useState('fr');
+    const [lang, setLang] = useState<string>('fr');
     const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
-    const [listLang, setListLang] = useState<string[]>(["fr", "en"])
-    const [checkLang, setCheckLang] = useState<boolean>(false) 
+    const [listLang, setListLang] = useState<string[]>(["fr", "en"]);
+    const [checkLang, setCheckLang] = useState<boolean>(false);
 
-    const toggleTheme = (newLang : string): void => {
+    const toggleTheme = (newLang : string) : void => {
         setLang(newLang == "fr" ? "fr" : "en");
         setTranslations(newLang == "fr" ? fr : en);
         localStorage.setItem("lang", newLang == "fr" ? "fr" : "en");
     };
 
     useEffect(() => {
-        const checkLangLocalStorage = localStorage.getItem("lang");
+        const checkLangLocalStorage: string | null = localStorage.getItem("lang");
         if (checkLangLocalStorage && !checkLang) {
             if (listLang.includes(checkLangLocalStorage)) {
-                toggleTheme(checkLangLocalStorage)
+                toggleTheme(checkLangLocalStorage);
             } else {
-                toggleTheme(lang)
+                toggleTheme(lang);
             }
-            setCheckLang(true)
+            setCheckLang(true);
         } else {
-            toggleTheme(lang)
+            toggleTheme(lang);
         }
     }, [lang])
 

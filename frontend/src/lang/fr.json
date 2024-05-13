@@ -9,5 +9,11 @@
     "navbarTitle": "< Alexandre Renard />",
     "navbarButton1" :"A propos",
     "navbarButton2" :"Projet",
-    "headerTitle" : "Développeur FullStack"
+    "headerTitle" : "Développeur FullStack",
+    "nameCategoryChoiceView" : "Choix de vue",
+    "buttonNameChoiceTerminale" : "Vue Terminal",
+    "buttonNameChoiceText" : "Vue Texte",
+    "nameCategorySkills" : "Compétences",
+    "skillCegory1" : "fr",
+    "nameCategoryProjects" : "Projets"
 }

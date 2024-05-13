@@ -23,3 +23,43 @@
 body {
     background-color: var(--body-color);
 }
+
+
+.custom-scrollbar::-webkit-scrollbar {
+    display: none;
+    color: red;
+}
+
+@keyframes expandOpen {
+    from {
+      opacity: 0;
+      max-height: 0;
+    }
+    to {
+      opacity: 1;
+      max-height: 500px;
+    }
+  }
+  
+  @keyframes expandClose {
+    from {
+      opacity: 1;
+      max-height: 500px;
+    }
+    to {
+      opacity: 0;
+      max-height: 0;
+    }
+  }
+  
+  .expanded-animation-open {
+    animation: expandOpen 1.0s ease-in-out forwards;
+  }
+  
+  .expanded-animation-close {
+    animation: expandClose 1.0s ease-in-out forwards;
+  }
+  
+  .MuiCardContent-root {
+    padding: 0px;
+}
