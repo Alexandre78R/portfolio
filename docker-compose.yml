@@ -3,7 +3,6 @@ services:
     build: ./frontend
     ports:
       - 3000:3000
-    profiles: ["dev", "production", "test"]
     volumes:
       - ./frontend/src:/app/src
     environment:
@@ -11,6 +10,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
+    env_file:
+      - ./frontend/.env
   # nginx:
   #   image: nginx:1.21.3
   #   depends_on:
