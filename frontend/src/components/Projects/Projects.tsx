@@ -39,7 +39,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
           <div>
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
-                <iframe width="310" height="170" src={`https://www.youtube-nocookie.com/embed/${project?.contentDisplay}`}></iframe>
+                <iframe width="320" height="170" src={`https://www.youtube-nocookie.com/embed/${project?.contentDisplay}`} allowFullScreen></iframe>
                 <Typography variant="h5" component="h2" className="max-w-320px pt-0.5">
                   {project?.title}
                 </Typography>
