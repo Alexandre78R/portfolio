@@ -10,7 +10,7 @@ const Header: React.FC = () => {
     <header>
         <div className="h-screen relative w-full bg-body flex flex-col items-center justify-center overflow-hidden rounded-md">
         <div className="w-full absolute inset-0 h-screen">
-        {/* <SparklesCore
+        <SparklesCore
             id="tsparticlesfullpage"
             background="transparent"
             minSize={0.8}
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
             particleDensity={100}
             className="w-full h-full bg-body"
             particleColor={themes[theme].colors.primary}
-        /> */}
+        />
         </div>
           <div className="relative z-20 flex flex-col items-center justify-center">
               <div className="w-40 h-40 relative overflow-hidden">

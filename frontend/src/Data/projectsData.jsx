@@ -106,7 +106,7 @@ export const projectsData = [
       "Makesense, fondée en 2010, encourage la durabilité et l'engagement à travers des projets écologiques et sociaux. Une plateforme intranet est nécessaire pour créer, évaluer et voter sur les projets. Les administrateurs peuvent gérer les utilisateurs, les publications et les rôles, les décisions étant prises par un système de vote basé sur le rôle de l'utilisateur.",
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/makesense-client",
-    contentDisplay: "-t7cRO6EUXc",
+    contentDisplay: "makesense.mp4",
     skills: [
       {
         name: "JavaScript",
@@ -169,7 +169,7 @@ export const projectsData = [
       "Wonder Match est une application pour les voyageurs intrépides, vous aide à choisir votre destination en quelques étapes simples : sélectionnez les continents désirés, faites défiler les suggestions, puis décidez : Match ou Pass. Explorez les activités, sites touristiques et spots pour selfies, pour des vacances parfaitement planifiées.",
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/WonderMatch",
-    contentDisplay: "08M89dwH9Bs",
+    contentDisplay: "wonderMatch.mp4",
     skills: [
       {
         name: "JavaScript",
@@ -212,7 +212,7 @@ export const projectsData = [
       "GuessWhat est une application de quiz qui permet aux utilisateurs de personnaliser leur joueur, de choisir leurs thèmes préférés, et de régler le nombre de questions ainsi que le temps par question. GuessWhat offre un divertissement personnalisé et flexible pour les passionnés de quiz.",
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/Guess",
-    contentDisplay: "91KSSnN06LI",
+    contentDisplay: "guessWhatApp.mp4",
     skills: [
       {
         name: "JavaScript",
@@ -328,7 +328,7 @@ export const projectsData = [
       "La création d'un petit site internet sur le thème d'un CV fictif, mettant en lumière le parcours de la célèbre Hermione Granger à Poudlard.  Le site présente de manière imaginative le parcours scolaire, les compétences et les réalisations de Hermione Granger dans l'univers magique de Poudlard.",
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/CV-Hermione",
-    contentDisplay: "gVehEwmhY_o",
+    contentDisplay: "hermione.mp4",
     skills: [
       {
         name: "JavaScript",
@@ -356,7 +356,7 @@ export const projectsData = [
       "Fast News  est une application mobile  qui permet d'accéder à un large éventail d'informations et de les consulter hors ligne. nous avons mis au point une technologie pour capturer les articles complets sous forme d'images compressées.",
     typeDisplay: "video",
     github: "https://github.com/thomassauveton/fastnews",
-    contentDisplay: "EHUvTDavByU",
+    contentDisplay: "fastNewsApplication.mp4",
     skills: [
       {
         name: "JavaScript",
