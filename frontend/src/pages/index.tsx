@@ -75,10 +75,10 @@ const Home: React.FC = () => {
             <Title title={translations.nameCategorySkills} />
             <HorizontalScroll data={dataSkills} category="skills" />
           </section>
-          <section className="ml-2 mt-10">
-            <Title title={translations.nameCategoryProjects} />
+          {/* <section className="ml-2 mt-10"> */}
+            {/* <Title title={translations.nameCategoryProjects} /> */}
             {/* <HorizontalScroll data={dataProjects} category="projects" /> */}
-          </section>
+          {/* </section> */}
         </>
       }
     </main>
