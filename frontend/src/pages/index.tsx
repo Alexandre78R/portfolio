@@ -77,7 +77,7 @@ const Home: React.FC = () => {
           </section>
           <section className="ml-2 mt-10">
             <Title title={translations.nameCategoryProjects} />
-            <HorizontalScroll data={dataProjects} category="projects" />
+            {/* <HorizontalScroll data={dataProjects} category="projects" /> */}
           </section>
         </>
       }
