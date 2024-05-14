@@ -6,6 +6,7 @@ import { skillsData } from "@/Data/skillsData";
 import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
+import Header from "@/components/Header/Header";
 
 const Home: React.FC = () => {
 
@@ -50,6 +51,8 @@ const Home: React.FC = () => {
   
   
   return (
+    <>
+    <Header />
     <main className="bg-body mt-10">
       <section className="ml-2">
         <Title title={translations.nameCategoryChoiceView} />
@@ -79,6 +82,7 @@ const Home: React.FC = () => {
         </>
       }
     </main>
+    </>
   );
 }
 
