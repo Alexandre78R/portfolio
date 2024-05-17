@@ -8,7 +8,7 @@ type Props = {
 
 const ButtonCustom: React.FC<Props> = ({ onClick, text, disable }) => {
   return (
-    <Button onClick={onClick} className={`text-m text-text px-5 py-1 rounded-full ${disable? "bg-black" : "bg-primary"} hover:bg-secondary border-none mt-2 ml-1`} variant="contained">{text}</Button>
+    <Button onClick={onClick} className={`text-m text-textButton px-5 py-1 rounded-full ${disable? "bg-black" : "bg-primary"} hover:bg-secondary border-none mt-2 ml-1`} variant="contained">{text}</Button>
   );
 };
 

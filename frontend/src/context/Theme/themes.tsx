@@ -13,11 +13,13 @@ export interface Theme {
       info: string;
       grey: string;
       placeholder: string;
+      footer: string;
       text: {
         default: string, 
         100: string;
         200: string;
         300: string;
+        button: string;
       };
     };
   }
@@ -41,6 +43,7 @@ export interface ThemeColorsText {
   100: string;
   200: string;
   300: string;
+  button: string;
 }
 
 const themes: { [key: string]: Theme } = {
@@ -59,11 +62,13 @@ const themes: { [key: string]: Theme } = {
         info: "#3B89FF",
         grey: "#7F7F7F",
         placeholder: "#A0AEC0",
+        footer: "#050F1A",
         text: {
           default:"#F8F8FD", 
           100: "#cbd5e1",
           200: "#B2BDCC",
           300: "#64748b",
+          button: "white",
         },
       },
     },
@@ -82,11 +87,13 @@ const themes: { [key: string]: Theme } = {
         info: "#3B89FF",
         grey: "#7F7F7F",
         placeholder: "#A0AEC0",
+        footer: "#34393E",
         text: {
           default:"#7BA5A4", 
           100: "#334155",
           200: "#475569",
           300: "#64748b",
+          button: "white",
         },
       },
     },
@@ -105,11 +112,13 @@ const themes: { [key: string]: Theme } = {
         info: "#3B89FF",
         grey: "#7F7F7F",
         placeholder: "#A0AEC0",
+        footer: "#180512",
         text: {
           default:"#F8F8FD", 
           100: "#FFFFFF",
           200: "#E1E9CC",
           300: "#CDCDCD",
+          button: "white",
         },
       },
     },
