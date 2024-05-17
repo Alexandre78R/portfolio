@@ -7,7 +7,7 @@ import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
-import { Typography } from "@mui/material";
+import AboutMe from "@/components/AboutMe";
 
 const Home: React.FC = () => {
 
@@ -74,20 +74,7 @@ const Home: React.FC = () => {
         <>
           <section className="ml-3 mt-[5%]">
             <Title title={translations.nameCategoryAboutMe} />
-            <div className="flex flex-col items-center">
-              <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-                <Typography variant="h5" component="h3" className="text-text">{translations.titleAboutMe}</Typography>
-                <p className="text-text mt-4">
-                  {translations.descriptionAboutMe1}
-                </p>
-                <p className="text-text mt-4">
-                  {translations.descriptionAboutMe2}
-                </p>
-                <p className="text-text mt-4">
-                  {translations.descriptionAboutMe3}
-                </p>
-              </div>
-            </div>
+            <AboutMe />
           </section>
           <section className="ml-3 mt-[5%]">
             <Title title={translations.nameCategorySkills} />
