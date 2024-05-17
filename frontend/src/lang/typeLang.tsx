@@ -1,0 +1,26 @@
+type Lang = {
+    file : string,
+    welcome : string,
+    theme1 : string,
+    theme2 : string,
+    theme3 : string,
+    lang1 : string,
+    lang2 : string,
+    navbarTitle : string,
+    navbarButton1 : string,
+    navbarButton2 : string,
+    headerTitle : string,
+    nameCategoryChoiceView : string,
+    buttonNameChoiceTerminale : string,
+    buttonNameChoiceText : string,
+    nameCategoryAboutMe : string,
+    titleAboutMe : string,
+    descriptionAboutMe1 : string,
+    descriptionAboutMe2 : string,
+    descriptionAboutMe3 : string,
+    nameCategorySkills : string,
+    skillCegory1 : string,
+    nameCategoryProjects : string,
+}
+
+export default Lang;

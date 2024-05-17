@@ -85,8 +85,8 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
               </div>
             )}
           </div>
-          <CardActions disableSpacing className="flex justify-between items-center">
-            <IconButton aria-label="add to favorites">
+          <CardActions disableSpacing className="flex justify-between items-center p-0">
+            <IconButton aria-label="add to favorites" >
               <a href={project?.github} target='_blank'>
                 <GitHubIcon className='text-primary hover:text-secondary' /> 
               </a>

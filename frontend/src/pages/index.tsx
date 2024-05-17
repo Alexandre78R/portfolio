@@ -7,6 +7,7 @@ import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
+import { Typography } from "@mui/material";
 
 const Home: React.FC = () => {
 
@@ -53,8 +54,8 @@ const Home: React.FC = () => {
   return (
     <>
     <Header />
-    <main className="bg-body mt-10">
-      <section className="ml-2">
+    <main className="bg-body mt-[5%]">
+      <section className="ml-3">
         <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
@@ -65,17 +66,36 @@ const Home: React.FC = () => {
       {
         selectedView === "terminal" ? 
         <>
-          <section className="ml-2 mt-10">
+          <section className="ml-3 mt-[5%]">
             <Title title="Terminal" />
           </section>
         </>
         :
         <>
-          <section className="ml-2 mt-10">
-            <Title title={translations.nameCategorySkills} />
-            <HorizontalScroll data={dataSkills} category="skills" />
+          <section className="ml-3 mt-[5%]">
+            <Title title={translations.nameCategoryAboutMe} />
+            <div className="flex flex-col items-center">
+              <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
+                <Typography variant="h5" component="h3" className="text-text">{translations.titleAboutMe}</Typography>
+                <p className="text-text mt-4">
+                  {translations.descriptionAboutMe1}
+                </p>
+                <p className="text-text mt-4">
+                  {translations.descriptionAboutMe2}
+                </p>
+                <p className="text-text mt-4">
+                  {translations.descriptionAboutMe3}
+                </p>
+              </div>
+            </div>
           </section>
-          <section className="ml-2 mt-10">
+          <section className="ml-3 mt-[5%]">
+            <Title title={translations.nameCategorySkills} />
+            <div className="mt-[1%]">
+              <HorizontalScroll data={dataSkills} category="skills" />
+            </div>
+          </section>
+          <section className="ml-3 mt-[5%]">
             <Title title={translations.nameCategoryProjects} />
             <HorizontalScroll data={dataProjects} category="projects" />
           </section>
