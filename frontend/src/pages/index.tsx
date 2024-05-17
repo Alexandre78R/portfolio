@@ -34,6 +34,10 @@ const Home: React.FC = () => {
     projectDataLang(translations.file)
   }, [translations])
 
+  const handleViewSelect = (view : string) => {
+    setSelectedView(view);
+  };
+
   useEffect(() => {
     const checkChoiceViewLocalStorage: string | null = localStorage.getItem("voiceView");
     if (typeof checkChoiceViewLocalStorage === "string" && !checkSelectedView) {
