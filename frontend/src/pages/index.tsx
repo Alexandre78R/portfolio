@@ -34,6 +34,10 @@ const Home: React.FC = () => {
     projectDataLang(translations.file)
   }, [translations])
 
+  const handleViewSelect = (view : string) => {
+    setSelectedView(view);
+  };
+
   useEffect(() => {
     const checkChoiceViewLocalStorage: string | null = localStorage.getItem("voiceView");
     if (typeof checkChoiceViewLocalStorage === "string" && !checkSelectedView) {
@@ -54,7 +58,7 @@ const Home: React.FC = () => {
     <>
     <Header />
     <main className="bg-body mt-[5%]">
-      {/* <section className="ml-3">
+      <section className="ml-3">
         <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
@@ -69,7 +73,7 @@ const Home: React.FC = () => {
             <Title title="Terminal" />
           </section>
         </>
-        : */}
+        :
         <>
           <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
             <Title title={translations.nameCategoryAboutMe} />
@@ -86,7 +90,7 @@ const Home: React.FC = () => {
             <HorizontalScroll data={dataProjects} category="projects" />
           </section>
         </>
-      {/* } */}
+      }
       </main>
       <Footer />
     </>
