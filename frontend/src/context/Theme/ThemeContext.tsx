@@ -6,11 +6,12 @@ interface ThemeContextType {
   toggleTheme: (newTheme: string) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
 interface ThemeProviderProps {
   children: ReactNode;
 }
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<string>('dark');
@@ -24,7 +25,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       }
     }
     for (const [name, value] of Object.entries(colorText)) {
-      if (name !== "default") {
+      if(name === "button") {
+        document.documentElement.style.setProperty(`--textButton-color`, value);
+      } else if (name !== "default") {
         document.documentElement.style.setProperty(`--text${name}-color`, value);
       } else {
         document.documentElement.style.setProperty(`--text-color`, value);

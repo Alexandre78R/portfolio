@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
-import fr from "@/lang/fr.json"
-import en from "@/lang/en.json"
+import fr from "@/lang/fr"
+import en from "@/lang/en"
 
 type LangContextType = {
   lang: string;

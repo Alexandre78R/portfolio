@@ -14,10 +14,12 @@
     --text100-color: #030303;
     --text200-color: #B2BDCC;
     --text300-color: #64748b;
+    --textButton-color: white;
     --success-color: #1C8036;
     --error-color: #AA2020;
     --warn-color: #EBCC2A;
     --info-color: #3B89FF;
+    --footer-color: #050F1A;
 }
 
 body {
@@ -62,4 +64,20 @@ body {
   
   .MuiCardContent-root {
     padding: 0px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--body-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollHandle-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollHandleHover-color);
 }
