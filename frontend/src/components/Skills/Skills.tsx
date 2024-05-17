@@ -4,7 +4,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { skills, skill } from './typeSkills';
 
-
 const Skills: React.FC<skills> = ({ category, skills }) => {
   return (
     <Card 

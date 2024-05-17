@@ -2,12 +2,16 @@ import { useLang } from "@/context/Lang/LangContext";
 import { SparklesCore } from "../ui/SparklesCore";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
+import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 
 const Header: React.FC = () => {
+
   const { translations } = useLang();
   const { theme } = useTheme();
+  const { headerRef } = useSectionRefs();
+
   return (
-    <header>
+    <header ref={headerRef} id="header">
         <div className="h-screen relative w-full bg-body flex flex-col items-center justify-center overflow-hidden rounded-md">
         <div className="w-full absolute inset-0 h-screen">
         <SparklesCore

@@ -10,7 +10,8 @@ const fr: Lang = {
     lang2 : "EN",
     navbarTitle : "< Alexandre Renard />",
     navbarButton1 : "A propos",
-    navbarButton2 :"Projet",
+    navbarButton2 :"Compétences",
+    navbarButton3 :"Projets",
     headerTitle : "Développeur FullStack",
     nameCategoryChoiceView : "Choix de vue",
     buttonNameChoiceTerminale : "Vue Terminal",
@@ -25,6 +26,11 @@ const fr: Lang = {
     nameCategoryProjects : "Projets",
     buttonSeeMore : "Voir plus",
     buttonSeeLess : "Voir moins",
+    footerTitle : "< AR />",
+    footerAdmin : "Panel Admin",
+    footerNetworks : "Réseaux",
+    footerContact : "Contactez Moi",
+    footerCopyright : "© 2024 Alexandre Renard | Tous droits réservés",
 }
 
 export default fr;

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from "@/context/Theme/ThemeContext";
 import { useLang } from '@/context/Lang/LangContext';
+import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import Box from '@mui/material/Box';
 import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 
-
 const Navbar: React.FC = () => {
 
   const { lang, setLang, translations } = useLang();
+  const { aboutMeRef, projectRef, headerRef, skillRef } = useSectionRefs();
   const { toggleTheme } = useTheme();
+
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
   const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -35,11 +37,20 @@ const Navbar: React.FC = () => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
+  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) => {
+    event.preventDefault();
+    if (sectionRef?.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMenuOpen(false);
+  };
+
+  
   return (
     <nav className="bg-body p-3 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <a href="#" className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
+          <a href="" onClick={(e) => handleScrollToSection(e, headerRef)} className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
@@ -55,8 +66,9 @@ const Navbar: React.FC = () => {
             </div>
             </li>
             <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButton3}</a></li>
           </ul>
         </menu>
         <menu className="md:hidden">
@@ -76,8 +88,9 @@ const Navbar: React.FC = () => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
-            <li><a href="#" className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButton3}</a></li>
             <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
             <li>
             <div className="relative inline-block" onClick={toggleChecked}>

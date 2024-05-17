@@ -9,6 +9,7 @@ type Lang = {
     navbarTitle : string,
     navbarButton1 : string,
     navbarButton2 : string,
+    navbarButton3 : string,
     headerTitle : string,
     nameCategoryChoiceView : string,
     buttonNameChoiceTerminale : string,
@@ -23,6 +24,11 @@ type Lang = {
     nameCategoryProjects : string,
     buttonSeeMore : string,
     buttonSeeLess : string,
+    footerTitle : string,
+    footerAdmin : string,
+    footerNetworks : string,
+    footerContact : string,
+    footerCopyright : string,
 }
 
 export default Lang;
