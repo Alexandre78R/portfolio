@@ -54,7 +54,7 @@ const Home: React.FC = () => {
     <>
     <Header />
     <main className="bg-body mt-[5%]">
-      {/* <section className="ml-3">
+      <section className="ml-3">
         <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
@@ -69,7 +69,7 @@ const Home: React.FC = () => {
             <Title title="Terminal" />
           </section>
         </>
-        : */}
+        :
         <>
           <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
             <Title title={translations.nameCategoryAboutMe} />
@@ -86,7 +86,7 @@ const Home: React.FC = () => {
             <HorizontalScroll data={dataProjects} category="projects" />
           </section>
         </>
-      {/* } */}
+      }
       </main>
       <Footer />
     </>
