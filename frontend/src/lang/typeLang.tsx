@@ -21,6 +21,8 @@ type Lang = {
     nameCategorySkills : string,
     skillCegory1 : string,
     nameCategoryProjects : string,
+    buttonSeeMore : string,
+    buttonSeeLess : string,
 }
 
 export default Lang;

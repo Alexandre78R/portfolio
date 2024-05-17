@@ -23,6 +23,8 @@ const fr: Lang = {
     nameCategorySkills : "Compétences",
     skillCegory1 : "fr",
     nameCategoryProjects : "Projets",
+    buttonSeeMore : "Voir plus",
+    buttonSeeLess : "Voir moins",
 }
 
 export default fr;

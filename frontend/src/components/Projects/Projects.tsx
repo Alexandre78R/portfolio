@@ -6,11 +6,14 @@ import Typography from '@material-ui/core/Typography';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ProjectComponent } from './typeProjects';
+import { useLang } from '@/context/Lang/LangContext';
 
 const Projects: React.FC<ProjectComponent> = ( { project } ) => {
   const [expandedText, setExpandedText] = useState<Set<string>>(new Set());
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   
+  const { translations } = useLang();
+
   const handleExpandClick = (cardId: string) => {
     const newExpandedCards = new Set(expandedCards);
     console.log("newExpandedCards", cardId)
@@ -47,7 +50,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
                   ? (
                     <>
                     <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 110) + '...'}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? 'Voir moins' : 'Voir plus'}</p>
+                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
@@ -56,7 +59,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
                   :
                   <>
                   <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
-                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? 'Voir moins' : 'Voir plus'}</p>
+                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
@@ -70,7 +73,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
                   ? (
                     <>
                     <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 110) + '...'}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? 'Voir moins' : 'Voir plus'}</p>
+                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
@@ -79,7 +82,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
                   :
                   <>
                   <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
-                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? 'Voir moins' : 'Voir plus'}</p>
+                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
