@@ -13,5 +13,5 @@ COPY next.config.mjs .
 COPY tsconfig.json .
 
 
-
-CMD npm run start
+CMD ["npm run build", "npm start"]
+# CMD npm start

@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 interface FormProps {
   children: ReactNode;
-  onSubmit: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: any) => void;
 }
 
 export const Form: React.FC<FormProps> = ({ children, onSubmit }) => {
