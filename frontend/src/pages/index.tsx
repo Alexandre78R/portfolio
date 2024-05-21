@@ -10,6 +10,7 @@ import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
+import Terminal from "@/components/Terminal/Terminal";
 
 const Home: React.FC = () => {
 
@@ -69,8 +70,11 @@ const Home: React.FC = () => {
       {
         selectedView === "terminal" ? 
         <>
-          <section className="ml-3 mt-[5%]">
+          <section className="ml-3 mt-[5%] mb-[5%]">
             <Title title="Terminal" />
+            <div className="ml-5 flex flex-col items-center">
+              <Terminal />
+            </div>
           </section>
         </>
         :

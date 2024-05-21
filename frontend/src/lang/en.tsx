@@ -31,6 +31,16 @@ const en: Lang = {
     footerNetworks : "Networks",
     footerContact : "Contact me",
     footerCopyright : "© 2024 Alexandre Renard | All rights reserved",
+    terminalWelcomeMessage : "Hi 👋, my name is Alexandre and I am a FullStack developer. I invite you to explore my portfolio!",
+    terminalWelcomeMessageHelp : "For the list of commands, type",
+    terminalHelpTabAction : "Tab or Ctrl + i",
+    terminalHelpTabDesc : "autocompletes the command",
+    terminalHelpArrowUpAction : "Up Arrow",
+    terminalHelpArrowUpTabDesc : "return to previous command",
+    terminalHelpArrowDownAction : "Down arrow",
+    terminalHelpArrowDownTabDesc : "return to next command",
+    terminalHelpCtrlAction : "Ctrl + l",
+    terminalHelpCtrlTabDesc : "clear the terminal",
 }
 
 export default en;
