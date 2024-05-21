@@ -31,6 +31,16 @@ const fr: Lang = {
     footerNetworks : "Réseaux",
     footerContact : "Contactez Moi",
     footerCopyright : "© 2024 Alexandre Renard | Tous droits réservés",
+    terminalWelcomeMessage : "Salut 👋, je m'appelle Alexandre et je suis développeur FullStack. Je vous invite à explorer mon portfolio !",
+    terminalWelcomeMessageHelp : "Pour la liste des commandes, tapez",
+    terminalHelpTabAction : "Tab ou Ctrl + i",
+    terminalHelpTabDesc : "complète automatiquement la commande",
+    terminalHelpArrowUpAction : "Flèche vers le haut",
+    terminalHelpArrowUpTabDesc : "revenir à la commande précédente",
+    terminalHelpArrowDownAction : "Flèche vers le bas",
+    terminalHelpArrowDownTabDesc : "revenir à la commande suivante",
+    terminalHelpCtrlAction : "Ctrl + l",
+    terminalHelpCtrlTabDesc : "effacer le terminal",
 }
 
 export default fr;
