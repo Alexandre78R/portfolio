@@ -70,9 +70,6 @@ const Terminal: React.FC = () => {
   const { theme } = useTheme();
   const { headerRef } = useSectionRefs();
 
-  const containerRef = useRef(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const [inputVal, setInputVal] = useState("");
   const [cmdHistory, setCmdHistory] = useState<string[]>(["welcome"]);
   const [rerender, setRerender] = useState(false);
@@ -153,7 +150,6 @@ const Terminal: React.FC = () => {
 
       setInputVal(cmdHistory[pointer + 1]);
       setPointer(prevState => prevState + 1);
-      inputRef?.current?.blur();
     }
 
     // Go next cmd
@@ -168,7 +164,6 @@ const Terminal: React.FC = () => {
 
       setInputVal(cmdHistory[pointer - 1]);
       setPointer(prevState => prevState - 1);
-      inputRef?.current?.blur();
     }
   };
 
@@ -190,7 +185,6 @@ const Terminal: React.FC = () => {
             spellCheck="false"
             autoFocus
             autoCapitalize="off"
-            ref={inputRef}
             value={inputVal}
             onKeyDown={handleKeyDown}
             onChange={handleChange}
