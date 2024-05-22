@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLang } from "@/context/Lang/LangContext";
-import Typography from '@material-ui/core/Typography';
-import Title from "@/components/Title/Title";
+// import { Typography } from '@mui/material';
+// import Title from "@/components/Title/Title";
 import ButtonCustom from "../Button/Button";
-import { Background } from "@tsparticles/engine";
+// import { Background } from "@tsparticles/engine";
 
 type Props = {
     selectedView : string,

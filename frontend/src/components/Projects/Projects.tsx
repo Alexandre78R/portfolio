@@ -1,8 +1,7 @@
 import { useState,} from 'react';
-import CardContent from '@material-ui/core/CardContent';
+import { CardContent, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CardActions from '@mui/material/CardActions';
-import Typography from '@material-ui/core/Typography';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ProjectComponent } from './typeProjects';

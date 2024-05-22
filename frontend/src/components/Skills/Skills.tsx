@@ -1,7 +1,5 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+import { Card, Typography } from '@mui/material';
 import { skills, skill } from './typeSkills';
 
 const Skills: React.FC<skills> = ({ category, skills }) => {
