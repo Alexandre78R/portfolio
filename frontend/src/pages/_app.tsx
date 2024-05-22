@@ -5,14 +5,17 @@ import { ThemeProvider } from "../context/Theme/ThemeContext";
 import { LangProvider } from "@/context/Lang/LangContext";
 import Navbar from "@/components/NavBar/NavBar";
 import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
+import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceView";
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <SectionRefsProvider>
     <ThemeProvider>
       <LangProvider>
-        <Navbar />
-        <Component {...pageProps} />
+        <ChoiceViewProvider>
+          <Navbar />
+          <Component {...pageProps} />
+        </ChoiceViewProvider>
       </LangProvider>
     </ThemeProvider>
     </SectionRefsProvider>
