@@ -10,7 +10,7 @@ import Modal from '@mui/material/Modal';
 const Navbar: React.FC = () => {
 
   const { lang, setLang, translations } = useLang();
-  const { aboutMeRef, projectRef, headerRef, skillRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef } = useSectionRefs();
   const { toggleTheme } = useTheme();
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -66,9 +66,10 @@ const Navbar: React.FC = () => {
             </button>
             </li>
             <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButton3}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
           </ul>
         </menu>
         <menu className="md:hidden">
@@ -88,9 +89,10 @@ const Navbar: React.FC = () => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButton1}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButton2}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButton3}</a></li>
+          <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
             <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
             <li>
             <div className="relative inline-block" onClick={toggleChecked}>

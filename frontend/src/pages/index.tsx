@@ -16,7 +16,7 @@ import { useChoiceView } from "@/context/ChoiceView/ChoiceView";
 const Home: React.FC = () => {
 
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
 
   const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
@@ -42,8 +42,8 @@ const Home: React.FC = () => {
   return (
     <>
     <Header />
-    <main className="bg-body mt-[5%]">
-      <section className="ml-3">
+    <main className="bg-body mt-[10%]">
+      <section className="ml-3" ref={choiceViewRef}>
         <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 

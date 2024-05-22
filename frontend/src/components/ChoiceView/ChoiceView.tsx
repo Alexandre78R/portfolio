@@ -15,7 +15,7 @@ const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleView
   const { translations } = useLang();
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: "25%", marginRight: '25%' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: "25%", marginRight: '25%', marginTop: "3%" }}>
         <ButtonCustom 
           onClick={() => handleViewSelect('terminal')}
           text={translations.buttonNameChoiceTerminale}
