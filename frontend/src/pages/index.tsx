@@ -10,6 +10,7 @@ import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
+import Terminal from "@/components/Terminal/Terminal";
 
 const Home: React.FC = () => {
 
@@ -34,6 +35,10 @@ const Home: React.FC = () => {
     projectDataLang(translations.file)
   }, [translations])
 
+  const handleViewSelect = (view : string) => {
+    setSelectedView(view);
+  };
+
   useEffect(() => {
     const checkChoiceViewLocalStorage: string | null = localStorage.getItem("voiceView");
     if (typeof checkChoiceViewLocalStorage === "string" && !checkSelectedView) {
@@ -54,22 +59,26 @@ const Home: React.FC = () => {
     <>
     <Header />
     <main className="bg-body mt-[5%]">
-      {/* <section className="ml-3">
-        <Title title={translations.nameCategoryChoiceView} />
+      <section className="ml-3">
+        {/* <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
           setSelectedView={setSelectedView} 
           handleViewSelect={handleViewSelect}
-        />
+        /> */}
+        {/* desable choice view */}
       </section>
       {
         selectedView === "terminal" ? 
         <>
-          <section className="ml-3 mt-[5%]">
+          <section className="ml-3 mt-[5%] mb-[5%]">
             <Title title="Terminal" />
+            <div className="ml-5 flex flex-col items-center">
+              <Terminal />
+            </div>
           </section>
         </>
-        : */}
+        :
         <>
           <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
             <Title title={translations.nameCategoryAboutMe} />
@@ -86,7 +95,7 @@ const Home: React.FC = () => {
             <HorizontalScroll data={dataProjects} category="projects" />
           </section>
         </>
-      {/* } */}
+      }
       </main>
       <Footer />
     </>

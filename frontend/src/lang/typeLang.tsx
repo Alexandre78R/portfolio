@@ -29,6 +29,16 @@ type Lang = {
     footerNetworks : string,
     footerContact : string,
     footerCopyright : string,
+    terminalWelcomeMessage : string,
+    terminalWelcomeMessageHelp : string,
+    terminalHelpTabAction : string,
+    terminalHelpTabDesc : string,
+    terminalHelpArrowUpAction : string,
+    terminalHelpArrowUpTabDesc : string,
+    terminalHelpArrowDownAction : string,
+    terminalHelpArrowDownTabDesc : string,
+    terminalHelpCtrlAction : string,
+    terminalHelpCtrlTabDesc : string,
 }
 
 export default Lang;

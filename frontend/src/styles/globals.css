@@ -81,3 +81,27 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollHandleHover-color);
 }
+
+.emulator {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  /* height: calc(100vh - 100px); */
+  /* height: calc(100vh - 20px); */
+  width: 100vh ;
+  overflow: auto;
+  /* padding: 10px; */
+}
+
+.inputTerminal {
+  background-color: var(--body-color);
+  color: var(--text-color);
+  caret-color: var(--primary-color);
+  margin-left: 5px;
+  /* margin-right  : -100px; */
+  width: 15vh;
+}
+
+.inputTerminal:focus-visible {
+  outline: none;
+}
