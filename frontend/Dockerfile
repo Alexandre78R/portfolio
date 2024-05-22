@@ -11,4 +11,6 @@ COPY public public
 COPY next.config.mjs .
 COPY tsconfig.json .
 
-CMD npm run dev
+# CMD npm run dev
+RUN npm run build
+CMD npm run start
