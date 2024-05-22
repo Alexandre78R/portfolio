@@ -10,7 +10,7 @@ export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
     // h-[calc(100vh-xpx)]
     //  h-x
     // <div className="p-5 pt-3 flex  items-center justify-center w-[100%] overflow-y-auto text-primary">
-    <div className='flex flex-col-reverse w-[100%] md:w-[70%] lg:w-[70%] h-[450px] overflow-y-auto text-text' >
+    <div className='flex flex-col-reverse w-[100%] md:w-[70%] lg:w-[70%] h-[460px] overflow-y-auto text-text' >
       {children}
     </div>
   );
