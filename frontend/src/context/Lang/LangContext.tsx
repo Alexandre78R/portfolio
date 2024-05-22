@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 import fr from "@/lang/fr"
 import en from "@/lang/en"
+import { termContext } from '@/components/Terminal/Terminal';
 
 type LangContextType = {
   lang: string;

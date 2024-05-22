@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { termContext } from "./Terminal";
 import Welcome from "./components/Commands/Welcome";
 import { Message } from "./components/TerminalStructure/Message";
 import Clear from "./components/Commands/Clear";
 import Help from "./components/Commands/Help";
+import Socials from "./components/Commands/Socials";
 
 type Props = {
     index: number;
@@ -13,7 +14,6 @@ type Props = {
 const Output: React.FC<Props> = ({ index, cmd }) => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials"];
-  
   if (!specialCmds.includes(cmd) && arg.length > 0)
     return <Message data-testid="usage-output">Usage: {cmd}</Message>;
 
@@ -23,7 +23,8 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
         {
           help: <Help />,
           welcome: <Welcome />,
-          clear: <Clear />
+          clear: <Clear />,
+          socials: <Socials />,
         }[cmd]
       }
     </div>

@@ -6,7 +6,6 @@ import { Message } from "../TerminalStructure/Message";
 const Help: React.FC = () => {
 
   const { translations } = useLang();
-
   return (
     <Message data-testid="help">
       {commands.map(({ cmd, descEN, descFR, tab }) => (

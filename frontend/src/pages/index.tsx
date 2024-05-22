@@ -60,12 +60,12 @@ const Home: React.FC = () => {
     <Header />
     <main className="bg-body mt-[5%]">
       <section className="ml-3">
-        {/* <Title title={translations.nameCategoryChoiceView} />
+        <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
           setSelectedView={setSelectedView} 
           handleViewSelect={handleViewSelect}
-        /> */}
+        />
         {/* desable choice view */}
       </section>
       {
