@@ -35,6 +35,7 @@ export const commands: Command = [
     { cmd: "welcome", descEN: "Home sections", descFR: "Rubriques d'accueil", tab: 5 },
     { cmd: "clear", descEN: "Clear the terminal", descFR: "Effacer le terminal", tab: 12 },
     { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
+    { cmd: "echo", descEN: "Print out anything", descFR: "Print out anything",  tab: 9 },
 ];
     
 type Term = {
