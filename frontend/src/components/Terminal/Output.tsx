@@ -6,6 +6,7 @@ import Clear from "./components/Commands/Clear";
 import Help from "./components/Commands/Help";
 import Socials from "./components/Commands/Socials";
 import Echo from "./components/Commands/Echo";
+import Whoami from "./components/Commands/Whoami";
 
 type Props = {
     index: number;
@@ -26,7 +27,8 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
           welcome: <Welcome />,
           clear: <Clear />,
           socials: <Socials />,
-          echo: <Echo />
+          echo: <Echo />,
+          whoami : <Whoami />
         }[cmd]
       }
     </div>
