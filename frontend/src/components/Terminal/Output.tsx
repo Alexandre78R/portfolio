@@ -12,39 +12,9 @@ import Themes from "./components/Commands/Themes";
 type Props = {
     index: number;
     cmd: string;
-    commandEnter: boolean;
 };
-  
-// const Output: React.FC<Props> = ({ index, cmd, commandEnter }) => {
-//   const { arg } = useContext(termContext);
-//   const specialCmds = ["projects", "socials", "echo", "themes"];
-//   if (!specialCmds.includes(cmd) && arg.length > 0)
-//     return <Message data-testid="usage-output">Usage: {cmd}</Message>;
-//   console.log(cmd)
-//   if (!commandEnter)
-//     return;
 
-//   return (
-//     <div className="pb-[0.25rem]" data-testid={index === 0 ? "latest-output" : null}>
-//       {
-//         {
-//           help: <Help />,
-//           welcome: <Welcome />,
-//           clear: <Clear />,
-//           socials: <Socials />,
-//           echo: <Echo />,
-//           whoami : <Whoami />,
-//           themes : <Themes />,
-//         }[cmd]
-//       }
-//     </div>
-//   );
-// };
-  
-//   export default Output;
-
-
-const Output: React.FC<Props> = ({ index, cmd, commandEnter }) => {
+const Output: React.FC<Props> = ({ index, cmd }) => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials", "echo", "themes"];
 
@@ -52,8 +22,6 @@ const Output: React.FC<Props> = ({ index, cmd, commandEnter }) => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
       return <Message data-testid="usage-output">Usage: {cmd}</Message>;
     }
-
-    console.log(commandEnter)
     // if (!commandEnter) return null;
 
     return {

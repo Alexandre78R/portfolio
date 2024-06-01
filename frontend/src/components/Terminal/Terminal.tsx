@@ -35,7 +35,6 @@ export const commands: Command = [
     { cmd: "welcome", descEN: "Home sections", descFR: "Rubriques d'accueil", tab: 5 },
     { cmd: "clear", descEN: "Clear the terminal", descFR: "Effacer le terminal", tab: 12 },
     { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
-    { cmd: "echo", descEN: "Print out anything", descFR: "Print out anything",  tab: 9 },
     { cmd: "whoami", descEN: "Know more about me - whoami <(experience|education|skills)>", descFR: "Know more about me - whoami <(experience|education|skills)>", tab: 7 },
     { cmd: "themes", descEN: "check available themes", descFR: "check available themes", tab: 7 },
 ];
@@ -79,14 +78,12 @@ const Terminal: React.FC = () => {
   const [rerender, setRerender] = useState(false);
   const [hints, setHints] = useState<string[]>([]);
   const [pointer, setPointer] = useState(-1);
-  const [commandEnter, setCommandEnter] = useState(false);
 
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setRerender(false);
       setInputVal(e.target.value);
-      setCommandEnter(false)
     },
     [inputVal]
   );
@@ -100,7 +97,6 @@ const Terminal: React.FC = () => {
     setRerender(true);
     setHints([]);
     setPointer(-1);
-    setCommandEnter(true)
   };
 
   const clearHistory = () => {
@@ -217,7 +213,7 @@ const Terminal: React.FC = () => {
             </div>
               {validCommand ? (
               <termContext.Provider value={contextValue}>
-                  <Output index={index} cmd={commandArray[0]} commandEnter={commandEnter} />
+                  <Output index={index} cmd={commandArray[0]} />
               </termContext.Provider>
               ) : cmdH === "" ? (
                   <Empty />
