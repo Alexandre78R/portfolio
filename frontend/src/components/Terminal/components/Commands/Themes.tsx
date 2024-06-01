@@ -30,7 +30,9 @@ const Themes: React.FC = () => {
 
   return arg.length > 2 ? (
     checkArg()
+    
   ) : (
+    checkArg() &&
     <Message data-testid="themes">
       <div className="flex flex-wrap">
         {tabThemes().map(theme => (
