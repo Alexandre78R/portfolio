@@ -1,4 +1,4 @@
-import { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { termContext } from "./Terminal";
 import Welcome from "./components/Commands/Welcome";
 import { Message } from "./components/TerminalStructure/Message";
@@ -12,13 +12,17 @@ import Themes from "./components/Commands/Themes";
 type Props = {
     index: number;
     cmd: string;
+    commandEnter: boolean;
 };
   
-// const Output: React.FC<Props> = ({ index, cmd }) => {
+// const Output: React.FC<Props> = ({ index, cmd, commandEnter }) => {
 //   const { arg } = useContext(termContext);
 //   const specialCmds = ["projects", "socials", "echo", "themes"];
 //   if (!specialCmds.includes(cmd) && arg.length > 0)
 //     return <Message data-testid="usage-output">Usage: {cmd}</Message>;
+//   console.log(cmd)
+//   if (!commandEnter)
+//     return;
 
 //   return (
 //     <div className="pb-[0.25rem]" data-testid={index === 0 ? "latest-output" : null}>
@@ -39,7 +43,8 @@ type Props = {
   
 //   export default Output;
 
-const Output: React.FC<Props> = ({ index, cmd }) => {
+
+const Output: React.FC<Props> = ({ index, cmd, commandEnter }) => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials", "echo", "themes"];
 
@@ -47,6 +52,9 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
       return <Message data-testid="usage-output">Usage: {cmd}</Message>;
     }
+
+    console.log(commandEnter)
+    // if (!commandEnter) return null;
 
     return {
       help: <Help />,
@@ -66,4 +74,4 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
   );
 };
 
-export default Output;
+export default React.memo(Output);

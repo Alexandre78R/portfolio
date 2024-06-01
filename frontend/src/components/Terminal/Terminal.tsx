@@ -37,7 +37,7 @@ export const commands: Command = [
     { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
     { cmd: "echo", descEN: "Print out anything", descFR: "Print out anything",  tab: 9 },
     { cmd: "whoami", descEN: "Know more about me - whoami <(experience|education|skills)>", descFR: "Know more about me - whoami <(experience|education|skills)>", tab: 7 },
-    { cmd: "themes", descEN: "check available themes", desc: "check available themes", tab: 7 },
+    { cmd: "themes", descEN: "check available themes", descFR: "check available themes", tab: 7 },
 ];
     
 type Term = {
@@ -79,23 +79,28 @@ const Terminal: React.FC = () => {
   const [rerender, setRerender] = useState(false);
   const [hints, setHints] = useState<string[]>([]);
   const [pointer, setPointer] = useState(-1);
+  const [commandEnter, setCommandEnter] = useState(false);
 
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setRerender(false);
       setInputVal(e.target.value);
+      setCommandEnter(false)
     },
     [inputVal]
   );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCmdHistory([inputVal, ...cmdHistory]);
+    // if (!inputVal.split(' ').includes("themes")) {
+      setCmdHistory([inputVal, ...cmdHistory]);
+    // }
     setInputVal("");
     setRerender(true);
     setHints([]);
     setPointer(-1);
+    setCommandEnter(true)
   };
 
   const clearHistory = () => {
@@ -198,11 +203,11 @@ const Terminal: React.FC = () => {
           const commandArray = _.split(_.trim(cmdH), " ");
           const validCommand = _.find(commands, { cmd: commandArray[0] });
           const contextValue = {
-          arg: _.drop(commandArray),
-          history: cmdHistory,
-          rerender,
-          index,
-          clearHistory,
+            arg: _.drop(commandArray),
+            history: cmdHistory,
+            rerender,
+            index,
+            clearHistory,
           };
           return (
           <div key={_.uniqueId(`${cmdH}_`)}>
@@ -212,7 +217,7 @@ const Terminal: React.FC = () => {
             </div>
               {validCommand ? (
               <termContext.Provider value={contextValue}>
-                  <Output index={index} cmd={commandArray[0]} />
+                  <Output index={index} cmd={commandArray[0]} commandEnter={commandEnter} />
               </termContext.Provider>
               ) : cmdH === "" ? (
                   <Empty />

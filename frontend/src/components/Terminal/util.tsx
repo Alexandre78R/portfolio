@@ -37,6 +37,5 @@ export const checkThemeSwitch = (
   rerender && // is submitted
   currentCommand[0] === "themes" && // current command starts with 'themes'
   currentCommand[1] === "set" && // first arg is 'set'
-  currentCommand.length > 1 && // current command has arg
-  currentCommand.length < 4 && // if num of arg is valid (not `themes set light sth`)
+  currentCommand.length > 2 && // current command has arg
   _.includes(themes, currentCommand[2]); // arg last part is one of id
