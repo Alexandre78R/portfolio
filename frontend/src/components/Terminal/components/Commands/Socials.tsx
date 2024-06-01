@@ -50,7 +50,7 @@ const Socials: React.FC = () => {
           </span>
         </div>
       ))}
-      <Usage cmd="socials" marginY />
+      <Usage cmd="socials" />
     </Message>
   )
 };

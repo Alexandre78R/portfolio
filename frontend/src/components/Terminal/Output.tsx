@@ -16,7 +16,7 @@ type Props = {
 
 const Output: React.FC<Props> = ({ index, cmd }) => {
   const { arg } = useContext(termContext);
-  const specialCmds = ["projects", "socials", "echo", "themes"];
+  const specialCmds = ["projects", "socials", "echo", "themes", "whoami"];
 
   const commandOutput = useMemo(() => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
