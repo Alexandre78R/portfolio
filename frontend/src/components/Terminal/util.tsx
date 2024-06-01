@@ -28,3 +28,15 @@ export const isArgInvalid = (
   action: string,
   options: string[]
 ) => arg[0] !== action || !_.includes(options, arg[1]) || arg.length > 2;
+
+export const checkThemeSwitch = (
+  rerender: boolean,
+  currentCommand: string[],
+  themes: string[]
+): boolean =>
+  rerender && // is submitted
+  currentCommand[0] === "themes" && // current command starts with 'themes'
+  currentCommand[1] === "set" && // first arg is 'set'
+  currentCommand.length > 1 && // current command has arg
+  currentCommand.length < 4 && // if num of arg is valid (not `themes set light sth`)
+  _.includes(themes, currentCommand[2]); // arg last part is one of id

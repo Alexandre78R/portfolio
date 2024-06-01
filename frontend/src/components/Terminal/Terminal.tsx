@@ -37,6 +37,7 @@ export const commands: Command = [
     { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
     { cmd: "echo", descEN: "Print out anything", descFR: "Print out anything",  tab: 9 },
     { cmd: "whoami", descEN: "Know more about me - whoami <(experience|education|skills)>", descFR: "Know more about me - whoami <(experience|education|skills)>", tab: 7 },
+    { cmd: "themes", descEN: "check available themes", desc: "check available themes", tab: 7 },
 ];
     
 type Term = {

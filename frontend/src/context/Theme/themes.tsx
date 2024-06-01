@@ -123,5 +123,13 @@ const themes: { [key: string]: Theme } = {
       },
     },
   };
+
+export const tabThemes = (): Theme[] => {
+  const tab: Theme[] = [];
+  for (const key in themes) {
+    tab.push(themes[key]);
+  }
+  return tab;
+}
   
-  export default themes;
+export default themes;
