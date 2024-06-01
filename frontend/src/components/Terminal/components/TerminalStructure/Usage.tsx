@@ -1,7 +1,7 @@
 import { Message } from "./Message";
 
 type Props = {
-  cmd: "socials" | "themes" ;
+  cmd: "socials" | "themes";
 };
 
 const arg = {
@@ -11,7 +11,7 @@ const arg = {
 
 const Usage: React.FC<Props> = ({ cmd }) => {
 
-  const action = "go";
+  const action = cmd === "themes" ? "set" : "go";
 
   return (
     <Message data-testid={`${cmd}-invalid-arg`}>

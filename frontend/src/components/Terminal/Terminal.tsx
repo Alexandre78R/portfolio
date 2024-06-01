@@ -36,7 +36,7 @@ export const commands: Command = [
     { cmd: "clear", descEN: "Clear the terminal", descFR: "Effacer le terminal", tab: 12 },
     { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
     { cmd: "whoami", descEN: "Know more about me - whoami <(experience|education|skills)>", descFR: "Know more about me - whoami <(experience|education|skills)>", tab: 7 },
-    { cmd: "themes", descEN: "check available themes", descFR: "check available themes", tab: 7 },
+    { cmd: "themes", descEN: "Check available themes", descFR: "Vérifier les thèmes disponibles", tab: 8 },
 ];
     
 type Term = {
