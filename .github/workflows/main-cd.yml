@@ -60,19 +60,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Invoke deployment hook
-        uses: fjogeleit/http-request-action@v1.3.1
+      - name: Invoke deployment webhook
+        uses: wei/curl@v1
         with:
-          url: ${{ secrets.WEBHOOK_URL_MAIN }}
-          method: POST
-          headers: |
-            Content-Type: application/json
-            Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_MAIN }}
-          verbose: true # This enables verbose logging for debugging
-      - name: Check webhook response
-        run: |
-          echo "Webhook response:"
-          cat ${{ steps.invoke-webhook.outputs.response }}
+          args: |
+            -X POST
+            -H "Content-Type: application/json"
+            -H "X-Hub-Signature: sha1=${{ secrets.WEBHOOK_SECRET_MAIN }}"
+            -d '{}'
+            ${{ secrets.WEBHOOK_URL_MAIN }}
