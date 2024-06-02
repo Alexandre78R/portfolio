@@ -63,15 +63,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Invoke deployment hook
-        uses: fjogeleit/http-request-action@v1.3.1
-        with:
-          url: ${{ secrets.WEBHOOK_URL_DEV }}
-          method: POST
-          headers: |
-            Content-Type: application/json
-            Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_DEV }}
-      - name: Check webhook response
+      - name: Invoke deployment hook with curl
         run: |
-          echo "Webhook response:"
-          cat ${{ steps.invoke-webhook.outputs.response }}
+          echo "Sending deployment webhook..."
+          RESPONSE=$(curl -s -w "%{http_code}" -o response.txt -X POST ${{ secrets.WEBHOOK_URL_DEV }} \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_DEV }}" \
+            -d '{}')
+          HTTP_CODE=$(tail -n1 <<< "$RESPONSE")
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "Failed to send webhook. HTTP response code: $HTTP_CODE"
+            cat response.txt
+            exit 1
+          else
+            echo "Webhook sent successfully. HTTP response code: $HTTP_CODE"
+            cat response.txt
+          fi
