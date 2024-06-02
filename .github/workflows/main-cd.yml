@@ -60,12 +60,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Invoke deployment webhook
-        uses: wei/curl@v1
-        with:
-          args: |
-            -X POST
-            -H "Content-Type: application/json"
-            -H "X-Hub-Signature: sha1=${{ secrets.WEBHOOK_SECRET_MAIN }}"
-            -d '{}'
-            ${{ secrets.WEBHOOK_URL_MAIN }}
+      - name: Invoke deployment hook
+        env:
+          SECRET_KEY: ${{ secrets.WEBHOOK_SECRET_MAIN }}
+        run: |
+          PAYLOAD='{"example": "data"}'
+          SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha1 -hmac "$SECRET_KEY" | sed 's/^.* //')
+          SIGNATURE="sha1=$SIGNATURE"
+
+          curl -X POST -H "Content-Type: application/json" -H "X-Hub-Signature: $SIGNATURE" -d "$PAYLOAD" ${{ secrets.WEBHOOK_URL_MAIN }}
