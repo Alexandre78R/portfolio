@@ -47,12 +47,27 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/main-frontend-portfolio:latest
 
+  # deployment:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #     # send deploiement hook
+  #   steps:
+  #     - name: Invoke deployment hook
+  #       uses: distributhor/workflow-webhook@v3
+  #       with:
+  #         webhook_url: ${{ secrets.WEBHOOK_URL_MAIN }}
   deployment:
-    needs: build
-    runs-on: ubuntu-latest
-      # send deploiement hook
-    steps:
-      - name: Invoke deployment hook
-        uses: distributhor/workflow-webhook@v3
-        with:
-          webhook_url: ${{ secrets.WEBHOOK_URL_MAIN }}
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Invoke deployment hook
+      uses: fjogeleit/http-request-action@v1.3.1
+      with:
+        url: ${{ secrets.WEBHOOK_URL_MAIN }}
+        method: POST
+        headers: |
+          Content-Type: application/json
+          Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_MAIN }}
