@@ -11,16 +11,16 @@ import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
+import { useChoiceView } from "@/context/ChoiceView/ChoiceView";
 
 const Home: React.FC = () => {
 
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();
+  const { selectedView, setSelectedView } = useChoiceView();
 
   const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
   const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
-  const [selectedView, setSelectedView] = useState<string>("text");
-  const [checkSelectedView, setCheckSelectedView] = useState<boolean>(false);
 
   const skillDataLang = (lang: string) : any => {
     setDataSkills(skillsData.map(skill => ({ ...skill, category: lang === "fr" ? skill.categoryFR : skill.categoryEN })))
@@ -38,34 +38,18 @@ const Home: React.FC = () => {
   const handleViewSelect = (view : string) => {
     setSelectedView(view);
   };
-
-  useEffect(() => {
-    const checkChoiceViewLocalStorage: string | null = localStorage.getItem("voiceView");
-    if (typeof checkChoiceViewLocalStorage === "string" && !checkSelectedView) {
-      if (checkChoiceViewLocalStorage == "terminal" || checkChoiceViewLocalStorage == "text") {
-        setSelectedView(checkChoiceViewLocalStorage);
-        localStorage.setItem("voiceView", checkChoiceViewLocalStorage);
-      } else {
-        setSelectedView(checkChoiceViewLocalStorage);
-        localStorage.setItem("voiceView", selectedView);
-      }
-      setCheckSelectedView(true);
-    } else {
-      localStorage.setItem("voiceView", selectedView);
-    }
-  }, [selectedView])
   
   return (
     <>
     <Header />
-    <main className="bg-body mt-[5%]">
-      <section className="ml-3">
-        {/* <Title title={translations.nameCategoryChoiceView} />
+    <main className="bg-body mt-[10%]">
+      <section className="ml-3" ref={choiceViewRef}>
+        <Title title={translations.nameCategoryChoiceView} />
         <ChoiceView 
           selectedView={selectedView} 
           setSelectedView={setSelectedView} 
           handleViewSelect={handleViewSelect}
-        /> */}
+        />
         {/* desable choice view */}
       </section>
       {
