@@ -15,16 +15,16 @@ const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleView
   const { translations } = useLang();
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: "25%", marginRight: '25%' }}>
-        <ButtonCustom 
-          onClick={() => handleViewSelect('terminal')}
-          text={translations.buttonNameChoiceTerminale}
-          disable={selectedView !== "terminal" ? true : false}
-        />
-        <ButtonCustom
-          onClick={() => handleViewSelect('text')}
-          text={translations.buttonNameChoiceText}
-          disable={selectedView !== "text" ? true : false}
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginLeft: "25%", marginRight: '25%', marginTop: "3%" }}>
+      <ButtonCustom
+        onClick={() => handleViewSelect('text')}
+        text={translations.buttonNameChoiceText}
+        disable={selectedView !== "text" ? true : false}
+      />
+      <ButtonCustom 
+        onClick={() => handleViewSelect('terminal')}
+        text={translations.buttonNameChoiceTerminale}
+        disable={selectedView !== "terminal" ? true : false}
       />
     </div>
   );
