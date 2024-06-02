@@ -57,17 +57,17 @@ jobs:
   #       with:
   #         webhook_url: ${{ secrets.WEBHOOK_URL_MAIN }}
   deployment:
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Invoke deployment hook
-      uses: fjogeleit/http-request-action@v1.3.1
-      with:
-        url: ${{ secrets.WEBHOOK_URL_MAIN }}
-        method: POST
-        headers: |
-          Content-Type: application/json
-          Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_MAIN }}
+      - name: Invoke deployment hook
+        uses: fjogeleit/http-request-action@v1.3.1
+        with:
+          url: ${{ secrets.WEBHOOK_URL_MAIN }}
+          method: POST
+          headers: |
+            Content-Type: application/json
+            Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_MAIN }}
