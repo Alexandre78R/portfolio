@@ -67,5 +67,5 @@ jobs:
             -X POST
             -H "Content-Type: application/json"
             -H "X-Hub-Signature: sha1=${{ secrets.WEBHOOK_SECRET_DEV }}"
-            -d '{"example": "data"}'
+            -d '{}'
             ${{ secrets.WEBHOOK_URL_DEV }}
