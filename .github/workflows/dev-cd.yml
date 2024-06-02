@@ -71,3 +71,7 @@ jobs:
           headers: |
             Content-Type: application/json
             Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_DEV }}
+      - name: Check webhook response
+        run: |
+          echo "Webhook response:"
+          cat ${{ steps.invoke-webhook.outputs.response }}
