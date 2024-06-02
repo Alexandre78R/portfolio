@@ -40,6 +40,9 @@ type Lang = {
     terminalHelpArrowDownTabDesc : string,
     terminalHelpCtrlAction : string,
     terminalHelpCtrlTabDesc : string,
+    terminalWhoamiNotArg : string,
+    terminalWhoamiMaxOneArg : string,
+    terminalWhoamiChoiceNotExiste : string,
 }
 
 export default Lang;
