@@ -61,21 +61,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: Invoke deployment hook with curl
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Invoke deployment webhook
         run: |
-          echo "Sending deployment webhook..."
-          RESPONSE=$(curl -s -w "%{http_code}" -o response.txt -X POST ${{ secrets.WEBHOOK_URL_DEV }} \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET_DEV }}" \
-            -d '{}')
-          HTTP_CODE=$(tail -n1 <<< "$RESPONSE")
-          if [ "$HTTP_CODE" -ne 200 ]; then
-            echo "Failed to send webhook. HTTP response code: $HTTP_CODE"
-            cat response.txt
-            exit 1
-          else
-            echo "Webhook sent successfully. HTTP response code: $HTTP_CODE"
-            cat response.txt
-          fi
+          import requests
+          import hashlib
+          import hmac
+          import json
+          import os
+
+          # Clé secrète
+          secret_key = os.getenv('WEBHOOK_SECRET_DEV')
+
+          # URL du webhook
+          url = os.getenv('WEBHOOK_URL_DEV')
+
+          # Payload (les données à envoyer)
+          payload = {
+              'example': 'data'
+          }
+
+          # Convertir le payload en JSON
+          payload_json = json.dumps(payload)
+
+          # Calculer la signature HMAC SHA1
+          signature = hmac.new(secret_key.encode(), payload_json.encode(), hashlib.sha1).hexdigest()
+
+          # Ajouter le préfixe 'sha1=' requis par GitHub
+          signature = 'sha1=' + signature
+
+          # En-têtes de la requête
+          headers = {
+              'Content-Type': 'application/json',
+              'X-Hub-Signature': signature
+          }
+
+          # Envoyer la requête POST
+          response = requests.post(url, headers=headers, data=payload_json)
+
+          # Afficher la réponse
+          print('Status Code:', response.status_code)
+          print('Response Body:', response.text)
+        env:
+          WEBHOOK_SECRET_DEV: ${{ secrets.WEBHOOK_SECRET_DEV }}
+          WEBHOOK_URL_DEV: ${{ secrets.WEBHOOK_URL_DEV }}
