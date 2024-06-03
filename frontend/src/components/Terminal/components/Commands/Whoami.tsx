@@ -18,7 +18,6 @@ const Whoami: React.FC = () => {
     return <Message>{message}</Message>;
   }
 
-
   switch (arg[0].toLowerCase()) {
     case "experience":
         message = 'experience'
