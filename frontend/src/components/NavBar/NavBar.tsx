@@ -54,6 +54,10 @@ const Navbar: React.FC = () => {
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
+            <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
+            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
             <li>
             <button  className="relative inline-block" onClick={toggleChecked}>
               <label htmlFor="toggleButton" className="cursor-pointer">
@@ -66,10 +70,6 @@ const Navbar: React.FC = () => {
             </button>
             </li>
             <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
           </ul>
         </menu>
         <menu className="md:hidden">
