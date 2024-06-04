@@ -10,7 +10,19 @@ const WhoamiSkills: React.FC = () => {
 
     return (
         <>
-        <Message>Skills</Message>
+            {
+                skillsData?.map((skill, index) => {
+                    return (
+                        <div key={skill.id}>
+                            <span className="text-primary">{`${skill.id}. ${skill.categoryEN}`}</span>
+                            {/* <span className="tab">{generateTabs(tab)}</span>
+                            <span className="text-text200 block md:inline-block lg:inline-block">
+                            {url}
+                            </span> */}
+                        </div>
+                    )
+                })
+            }
         </>
     );
 };

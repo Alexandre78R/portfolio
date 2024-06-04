@@ -10,7 +10,7 @@ import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
-import { useChoiceView } from "@/context/ChoiceView/ChoiceView";
+import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 
 const Home: React.FC = () => {
 
@@ -21,11 +21,11 @@ const Home: React.FC = () => {
   const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
   const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
 
-  const skillDataLang = (lang: string) : any => {
+  const skillDataLang = (lang: string) : void => {
     setDataSkills(skillsData.map(skill => ({ ...skill, category: lang === "fr" ? skill.categoryFR : skill.categoryEN })))
   };
 
-  const projectDataLang = (lang: string) : any => {
+  const projectDataLang = (lang: string) : void => {
     setDataProjects(projectsData.map(project => ({ ...project, description: lang === "fr" ? project.descriptionFR : project.descriptionEN })))
   };
 
@@ -49,7 +49,6 @@ const Home: React.FC = () => {
           setSelectedView={setSelectedView} 
           handleViewSelect={handleViewSelect}
         />
-        {/* desable choice view */}
       </section>
       {
         selectedView === "terminal" ? 

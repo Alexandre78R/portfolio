@@ -8,8 +8,8 @@ type Props = {
 const WhoamiError: React.FC<Props> = ({ message }) => {
     return (
         <>
-        <Message>{message}</Message>
-        <Usage cmd="whoami"/>
+            <Message>{message}</Message>
+            <Usage cmd="whoami"/>
         </>
     );
 };

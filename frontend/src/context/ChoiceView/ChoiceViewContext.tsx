@@ -11,7 +11,6 @@ interface ChoiceViewProviderProps {
 
 const ChoiceViewContext = createContext<ChoiceVieContextType | undefined>(undefined);
 
-
 export const ChoiceViewProvider: React.FC<ChoiceViewProviderProps> = ({ children }) => {
   const [selectedView, setSelectedView] = useState<string>("text");
   const [checkSelectedView, setCheckSelectedView] = useState<boolean>(false);
@@ -44,7 +43,6 @@ export const ChoiceViewProvider: React.FC<ChoiceViewProviderProps> = ({ children
   );
 };
 
-// export const useChoiceView = () => useContext(ChoiceViewContext);
 export const useChoiceView = () => {
   const context = useContext(ChoiceViewContext);
   if (!context) {

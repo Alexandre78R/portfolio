@@ -5,7 +5,7 @@ export default function middleware(request: NextRequest) {
     return checkPath(request);
 }
 
-function checkPath(request: NextRequest) {
+const checkPath = (request: NextRequest) => {
     // let response: NextResponse<unknown> = NextResponse.next();
 
     // if (request.nextUrl.pathname.startsWith("/")) {
