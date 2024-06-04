@@ -166,13 +166,13 @@ const Terminal: React.FC = () => {
 
   return (
     <Wrapper>
-      {hints.length > 1 && (
+      {/* {hints.length > 1 && (
         <div>
           {hints.map(hCmd => (
             <Hints key={hCmd}>{hCmd}</Hints>
           ))}
         </div>
-      )}
+      )} */}
       <Form onSubmit={handleSubmit}>
         <Input
           title="terminal-input"

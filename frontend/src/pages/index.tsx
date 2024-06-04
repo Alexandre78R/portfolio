@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
-import Projects from "@/components/Projects/Projects";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import { skillsData } from "@/Data/skillsData";
 import { projectsData } from "@/Data/projectsData";
@@ -87,4 +86,3 @@ const Home: React.FC = () => {
 }
 
 export default Home;
-

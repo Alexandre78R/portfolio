@@ -1,61 +1,33 @@
 import { useContext } from "react";
-import _ from "lodash";
 import { termContext } from "../../Terminal";
 import { Message } from "../TerminalStructure/Message";
-import Usage from "../TerminalStructure/Usage";
 import { useLang } from "@/context/Lang/LangContext";
+import WhoamiError from "./WhoamiStructure/WhoamiError";
+import WhoamiEducation from "./WhoamiStructure/WhoamiEducation";
+import WhoamiExperience from "./WhoamiStructure/WhoamiExperience";
+import WhoamiSkills from "./WhoamiStructure/WhoamiSkills";
 
 const Whoami: React.FC = () => {
   const { arg } = useContext(termContext);
   const { translations } = useLang();
 
   if (arg.length === 0) {
-    return (
-      <>
-        <Message>{translations.terminalWhoamiNotArg}</Message>
-        <Usage cmd="whoami"/>
-      </>
-    );
+    return <WhoamiError message={translations.terminalWhoamiNotArg} />
   }
 
   if (arg.length !== 1 && arg.length !== 0) {
-    return (
-      <>
-        <Message>{translations.terminalWhoamiMaxOneArg}</Message>
-        <Usage cmd="whoami"/>
-      </>
-    )
+    return <WhoamiError message={translations.terminalWhoamiMaxOneArg} />
   }
 
   switch (arg[0].toLowerCase()) {
     case "experience":
-      return (
-        <>
-          <Message>experience</Message>
-          <Usage cmd="whoami"/>
-        </>
-      )
+      return <WhoamiExperience />
     case "education":
-      return (
-        <>
-          <Message>education</Message>
-          <Usage cmd="whoami"/>
-        </>
-      )
+      return <WhoamiEducation />
     case "skills":
-      return (
-        <>
-          <Message>skills</Message>
-          <Usage cmd="whoami"/>
-        </>
-      )
+      return <WhoamiSkills />
     default:
-      return (
-        <>
-          <Message>{translations.terminalWhoamiChoiceNotExiste}</Message>
-          <Usage cmd="whoami"/>
-        </>
-      )
+      return <WhoamiError message={translations.terminalWhoamiChoiceNotExiste} />
   }
 
 };
