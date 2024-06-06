@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";

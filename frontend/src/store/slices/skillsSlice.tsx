@@ -10,6 +10,7 @@ type Skill = {
   id: number;
   categoryFR: string;
   categoryEN: string;
+  category?: string;
   skills: SkillSubItem[];
 }
 
