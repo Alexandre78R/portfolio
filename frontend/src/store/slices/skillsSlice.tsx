@@ -11,7 +11,6 @@ interface SkillSubItem {
     categoryFR: string;
     categoryEN: string;
     skills: SkillSubItem[];
-    color?: string; // color peut être optionnel
   }
   
   interface SkillsState {
