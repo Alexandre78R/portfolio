@@ -1,21 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { skillsData } from '@/Data/skillsData';
 
-interface SkillSubItem {
-    name: string;
-    image: string;
-  }
-  
-  interface Skill {
-    id: number;
-    categoryFR: string;
-    categoryEN: string;
-    skills: SkillSubItem[];
-  }
-  
-  interface SkillsState {
-    dataSkills: Skill[];
-  }
+type SkillSubItem = {
+  name: string;
+  image: string;
+}
+
+type Skill = {
+  id: number;
+  categoryFR: string;
+  categoryEN: string;
+  skills: SkillSubItem[];
+}
+
+type SkillsState = {
+  dataSkills: Skill[];
+}
 
 const initialState: SkillsState = {
   dataSkills: skillsData,

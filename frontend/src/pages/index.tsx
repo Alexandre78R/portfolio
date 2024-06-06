@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
-import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
@@ -13,6 +12,7 @@ import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { updateSkillCategories } from "@/store/slices/skillsSlice";
+import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 
 const Home: React.FC = () => {
 
@@ -22,16 +22,11 @@ const Home: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
-
-  const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
-
-  const projectDataLang = (lang: string) : void => {
-    setDataProjects(projectsData.map(project => ({ ...project, description: lang === "fr" ? project.descriptionFR : project.descriptionEN })))
-  };
+  const dataProjects = useSelector((state: RootState) => state.projects.dataProjects);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
-    projectDataLang(translations.file)
+    dispatch(updateProjectDescriptions(translations.file));
   }, [translations])
 
   const handleViewSelect = (view : string) => {
