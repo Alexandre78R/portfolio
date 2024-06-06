@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
-import { skillsData } from "@/Data/skillsData";
 import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
@@ -11,6 +10,9 @@ import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { updateSkillCategories } from "@/store/slices/skillsSlice";
 
 const Home: React.FC = () => {
 
@@ -18,19 +20,17 @@ const Home: React.FC = () => {
   const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
 
-  const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
-  const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
+  const dispatch = useDispatch<AppDispatch>();
+  const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
 
-  const skillDataLang = (lang: string) : void => {
-    setDataSkills(skillsData.map(skill => ({ ...skill, category: lang === "fr" ? skill.categoryFR : skill.categoryEN })))
-  };
+  const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
 
   const projectDataLang = (lang: string) : void => {
     setDataProjects(projectsData.map(project => ({ ...project, description: lang === "fr" ? project.descriptionFR : project.descriptionEN })))
   };
 
   useEffect(() => {
-    skillDataLang(translations.file)
+    dispatch(updateSkillCategories(translations.file));
     projectDataLang(translations.file)
   }, [translations])
 

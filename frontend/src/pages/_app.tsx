@@ -6,19 +6,22 @@ import { LangProvider } from "@/context/Lang/LangContext";
 import Navbar from "@/components/NavBar/NavBar";
 import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
+import ReduxProvider from '../store/provider';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <SectionRefsProvider>
-    <ThemeProvider>
-      <LangProvider>
-        <ChoiceViewProvider>
-          <Navbar />
-          <Component {...pageProps} />
-        </ChoiceViewProvider>
-      </LangProvider>
-    </ThemeProvider>
-    </SectionRefsProvider>
+    <ReduxProvider>
+      <SectionRefsProvider>
+        <ThemeProvider>
+          <LangProvider>
+            <ChoiceViewProvider>
+              <Navbar />
+              <Component {...pageProps} />
+            </ChoiceViewProvider>
+          </LangProvider>
+        </ThemeProvider>
+      </SectionRefsProvider>
+    </ReduxProvider>
   );
 }
 export default App;
