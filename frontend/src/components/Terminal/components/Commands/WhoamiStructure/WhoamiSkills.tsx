@@ -11,18 +11,28 @@ const WhoamiSkills: React.FC = () => {
 
     const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
 
+    const chunkArray = (array: any[], size: number) => {
+        const chunkedArr = [];
+        for (let i = 0; i < array.length; i += size) {
+            chunkedArr.push(array.slice(i, i + size));
+        }
+        return chunkedArr;
+    };
     return (
         <>
             {
-                dataSkills?.map((skill, index) => {
+                dataSkills?.map(skill => {
                     return (
-                        <div key={skill.id}>
+                        <Message key={skill.id}>
                             <span className="text-primary">{`${skill.id}. ${skill.category}`}</span>
-                            {/* <span className="tab">{generateTabs(tab)}</span>
-                            <span className="text-text200 block md:inline-block lg:inline-block">
-                            {url}
-                            </span> */}
-                        </div>
+                            {chunkArray(skill.skills, 3).map((skillChunk, index) => (
+                                <div key={index} className="flex space-x-2 m-2">
+                                    {skillChunk.map(skillImg => (
+                                        <img key={skillImg.name} alt={skillImg.name} src={skillImg.image} />
+                                    ))}
+                                </div>
+                            ))}
+                        </Message>
                     )
                 })
             }
