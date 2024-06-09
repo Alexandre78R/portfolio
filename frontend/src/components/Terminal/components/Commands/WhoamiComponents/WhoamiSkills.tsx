@@ -76,12 +76,14 @@ const WhoamiSkills: React.FC = () => {
                         onClick={currentPage > 1? previous : undefined}
                         text={translations.buttonPaginationPrevious}
                         disable={currentPage > 1? false : true}
+                        disableHover={currentPage > 1? false : true}
                     />
                 </div>
                 <ButtonCustom
                     onClick={currentPage < Math.ceil(dataSkills.length / datasPerPage) ? next : undefined}
                     text={translations.buttonPaginationNext}
                     disable={currentPage < Math.ceil(dataSkills.length / datasPerPage) ? false : true}
+                    disableHover={currentPage < Math.ceil(dataSkills.length / datasPerPage) ? false : true}
                 />
             </div>
         </>
