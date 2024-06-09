@@ -8,9 +8,9 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
 
     return (
-        <>
-        <Message>Experience</Message>
-        </>
+      <>
+      <Message>Experience</Message>
+      </>
     );
 };
 
