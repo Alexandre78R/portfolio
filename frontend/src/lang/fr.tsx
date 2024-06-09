@@ -45,6 +45,8 @@ const fr: Lang = {
     terminalWhoamiNotArg : "Merci d'indiquer un choix entre : experience | education | skills",
     terminalWhoamiMaxOneArg : "Merci de choisir 1 seul argument entre : experience | education | skills",
     terminalWhoamiChoiceNotExiste : "Ce choix n'existe pas !",
+    buttonPaginationPrevious : "Précédent",
+    buttonPaginationNext : "Suivant",
 }
 
 export default fr;

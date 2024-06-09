@@ -43,6 +43,8 @@ type Lang = {
     terminalWhoamiNotArg : string,
     terminalWhoamiMaxOneArg : string,
     terminalWhoamiChoiceNotExiste : string,
+    buttonPaginationPrevious : string,
+    buttonPaginationNext : string,
 }
 
 export default Lang;

@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 
 type Props = {
-  onClick: () => void,
+  onClick?: () => void,
   text: string,
   disable?: boolean,
 };
