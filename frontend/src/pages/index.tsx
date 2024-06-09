@@ -14,6 +14,7 @@ import { RootState, AppDispatch } from "@/store/store";
 import { updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
+import { updateExperiences } from "@/store/slices/experiencesSlice";
 
 const Home: React.FC = (): React.ReactElement  => {
 
@@ -29,6 +30,7 @@ const Home: React.FC = (): React.ReactElement  => {
     dispatch(updateSkillCategories(translations.file));
     dispatch(updateProjectDescriptions(translations.file));
     dispatch(updateEducationsTitle(translations.file));
+    dispatch(updateExperiences(translations.file));
   }, [translations])
 
   const handleViewSelect = (view : string) => {

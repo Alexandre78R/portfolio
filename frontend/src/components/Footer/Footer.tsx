@@ -7,7 +7,7 @@ const Footer: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
   
   return (
-    <footer className="bg-footer text-text py-3">
+    <footer className="bg-footer text-text py-4">
       <div className="container mx-auto flex flex-wrap justify-center">
         <div className="flex flex-col items-center mb-4 md:mb-0  lg:mx-15 flex-1">
             <h3 className="text-lg font-bold mb-2">{translations.footerTitle}</h3>
