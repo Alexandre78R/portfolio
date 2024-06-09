@@ -20,9 +20,9 @@ const Whoami: React.FC = (): React.ReactElement => {
   }
 
   switch (arg[0].toLowerCase()) {
-    case "experience":
+    case "experiences":
       return <WhoamiExperience />
-    case "education":
+    case "educations":
       return <WhoamiEducation />
     case "skills":
       return <WhoamiSkills />
