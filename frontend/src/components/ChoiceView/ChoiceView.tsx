@@ -4,7 +4,7 @@ import { useLang } from "@/context/Lang/LangContext";
 // import Title from "@/components/Title/Title";
 import ButtonCustom from "../Button/Button";
 // import { Background } from "@tsparticles/engine";
-
+import Lang from "@/lang/typeLang";
 type Props = {
     selectedView : string,
     setSelectedView: (view: string) => void,
@@ -12,6 +12,7 @@ type Props = {
 }
 
 const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleViewSelect }): React.ReactElement => {
+
   const { translations } = useLang();
 
   return (

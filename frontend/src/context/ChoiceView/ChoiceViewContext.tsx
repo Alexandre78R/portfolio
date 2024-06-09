@@ -43,7 +43,7 @@ export const ChoiceViewProvider: React.FC<ChoiceViewProviderProps> = ({ children
   );
 };
 
-export const useChoiceView = () => {
+export const useChoiceView: any = () => {
   const context = useContext(ChoiceViewContext);
   if (!context) {
     throw new Error('useChoiceView must be used within a ChoiceViewProvider');
