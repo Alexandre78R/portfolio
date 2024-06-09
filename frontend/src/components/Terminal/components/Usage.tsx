@@ -11,7 +11,7 @@ const arg = {
   whoami: { placeholder: "whoami-view", example: "experience" },
 };
 
-const Usage: React.FC<Props> = ({ cmd }) => {
+const Usage: React.FC<Props> = ({ cmd }): React.ReactElement => {
 
   let action = ""
 

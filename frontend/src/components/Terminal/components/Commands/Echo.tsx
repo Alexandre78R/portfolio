@@ -3,7 +3,7 @@ import _ from "lodash";
 import { termContext } from "../../Terminal";
 import { Message } from "../Message";
 
-const Echo: React.FC = () => {
+const Echo: React.FC = (): React.ReactElement => {
   const { arg } = useContext(termContext);
 
   let outputStr = _.join(arg, " ");

@@ -8,7 +8,7 @@ import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
 import ReduxProvider from '../store/provider';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <ReduxProvider>
       <SectionRefsProvider>

@@ -1,7 +1,7 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { Typography } from "@mui/material";
 
-const AboutMe: React.FC = () => {
+const AboutMe: React.FC = (): React.ReactElement => {
     const { translations } = useLang()
 
     return (

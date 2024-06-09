@@ -12,7 +12,7 @@ interface ThemeProviderProps {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): React.ReactElement => {
   const [theme, setTheme] = useState<string>('dark');
 
   const setColorVarCSS = (newTheme: keyof typeof themes): void  => {

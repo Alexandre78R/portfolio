@@ -7,7 +7,7 @@ type Props = {
   disableHover?: boolean,
 };
 
-const ButtonCustom: React.FC<Props> = ({ onClick, text, disable, disableHover }) => {
+const ButtonCustom: React.FC<Props> = ({ onClick, text, disable, disableHover }) : React.ReactElement  => {
   return (
     <Button 
       onClick={onClick}

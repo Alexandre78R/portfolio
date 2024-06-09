@@ -14,7 +14,7 @@ import { RootState, AppDispatch } from "@/store/store";
 import { updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 
-const Home: React.FC = () => {
+const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
   const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();

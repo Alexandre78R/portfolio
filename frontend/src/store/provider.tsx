@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode;
 }
 
-const ReduxProvider = ({ children }: Props) => {
+const ReduxProvider = ({ children }: Props): React.ReactElement => {
   return <Provider store={store}>{children}</Provider>;
 };
 

@@ -1,6 +1,6 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
-const Document = () => {
+const Document = (): React.ReactElement => {
   return (
     <Html lang="en">
       <Head />

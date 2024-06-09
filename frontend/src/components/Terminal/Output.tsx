@@ -14,7 +14,7 @@ type Props = {
     cmd: string;
 };
 
-const Output: React.FC<Props> = ({ index, cmd }) => {
+const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials", "echo", "themes", "whoami"];
 

@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export default function middleware(request: NextRequest) {
+const middleware = (request: NextRequest): NextResponse => {
     return checkPath(request);
 }
 
-const checkPath = (request: NextRequest) => {
+const checkPath = (request: NextRequest) : NextResponse => {
     // let response: NextResponse<unknown> = NextResponse.next();
 
     // if (request.nextUrl.pathname.startsWith("/")) {
@@ -28,3 +28,5 @@ const checkPath = (request: NextRequest) => {
 export const config = {
     matcher: "/:path",
 };
+
+export default middleware;

@@ -11,7 +11,7 @@ type Props = {
     handleViewSelect: (view: string) => void,
 }
 
-const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleViewSelect }) => {
+const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleViewSelect }): React.ReactElement => {
   const { translations } = useLang();
 
   return (

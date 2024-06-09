@@ -14,8 +14,8 @@ import { Wrapper } from "./components/Wrapper";
 import { CmdNotFound } from "./components/CmdNotFound";
 import { Empty } from "./components/Empty";
 import { Form } from "./components/Form";
-import { Input } from "./components/Input";
-import { Hints } from "./components/Hints";
+import { Input } from "./components//Input";
+// import { Hints } from "./components/Input";
 import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
@@ -63,7 +63,7 @@ export const argTab = (
   }
 };
 
-const Terminal: React.FC = () => {
+const Terminal: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
   const { theme } = useTheme();
   const { headerRef } = useSectionRefs();

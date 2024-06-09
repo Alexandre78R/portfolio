@@ -5,7 +5,7 @@ type Props = {
     message: string;
 }
 
-const WhoamiError: React.FC<Props> = ({ message }) => {
+const WhoamiError: React.FC<Props> = ({ message }): React.ReactElement => {
     return (
         <>
             <Message>{message}</Message>

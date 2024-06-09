@@ -9,7 +9,7 @@ type Props = {
   category: string;
 }
 
-const HorizontalScroll: React.FC<Props> = ({ data, category }) => {
+const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactElement => {
 
   const containerRef = useRef<any>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);

@@ -3,7 +3,7 @@ import { generateTabs } from "../../util";
 import { useLang } from "@/context/Lang/LangContext";
 import { Message } from "../Message";
 
-const Help: React.FC = () => {
+const Help: React.FC = (): React.ReactElement => {
 
   const { translations } = useLang();
   return (

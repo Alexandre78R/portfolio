@@ -15,7 +15,6 @@ const Projects: React.FC<ProjectComponent> = ( { project } ) => {
 
   const handleExpandClick = (cardId: string) => {
     const newExpandedCards = new Set(expandedCards);
-    console.log("newExpandedCards", cardId)
     if (expandedCards.has(cardId)) {
       newExpandedCards.delete(cardId);
     } else {

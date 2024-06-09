@@ -7,7 +7,7 @@ import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";
 import WhoamiExperience from "./WhoamiComponents/WhoamiExperience";
 import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
 
-const Whoami: React.FC = () => {
+const Whoami: React.FC = (): React.ReactElement => {
   
   const { arg } = useContext(termContext);
   const { translations } = useLang();

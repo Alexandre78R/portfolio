@@ -3,7 +3,7 @@ import { termContext } from "../../../Terminal";
 import { Message } from "../../Message";
 import { useLang } from "@/context/Lang/LangContext";
 
-const WhoamiEducation: React.FC = () => {
+const WhoamiEducation: React.FC = (): React.ReactElement => {
   const { arg } = useContext(termContext);
   const { translations } = useLang();
 

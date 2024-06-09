@@ -2,7 +2,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { useLang } from '@/context/Lang/LangContext';
 
-const Footer: React.FC = () => {
+const Footer: React.FC = (): React.ReactElement => {
 
   const { translations } = useLang();
   
