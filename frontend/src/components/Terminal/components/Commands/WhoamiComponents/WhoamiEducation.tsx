@@ -14,7 +14,7 @@ const WhoamiEducation: React.FC = (): React.ReactElement => {
         {
           dataEducations?.map(education => {
             return(
-              <div key={education.id}>              
+              <div key={education.id} className="m-2">              
                 <div className="flex flex-row items-center">
                   <span className=" mr-3 text-primary">{education.year}</span>
                   <p>{education.title}</p>
