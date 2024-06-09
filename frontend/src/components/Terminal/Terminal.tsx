@@ -15,7 +15,6 @@ import { CmdNotFound } from "./components/CmdNotFound";
 import { Empty } from "./components/Empty";
 import { Form } from "./components/Form";
 import { Input } from "./components//Input";
-// import { Hints } from "./components/Input";
 import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
@@ -54,8 +53,6 @@ export const termContext = createContext<Term>({
 export const argTab = (
   inputVal: string,
   setInputVal: (value: React.SetStateAction<string>) => void,
-  setHints: (value: React.SetStateAction<string[]>) => void,
-  hintsCmds: string[]
 ): string[] | undefined => {
   if (inputVal === "themes ") {
     setInputVal(`themes set`);
@@ -166,13 +163,6 @@ const Terminal: React.FC = (): React.ReactElement => {
 
   return (
     <Wrapper>
-      {/* {hints.length > 1 && (
-        <div>
-          {hints.map(hCmd => (
-            <Hints key={hCmd}>{hCmd}</Hints>
-          ))}
-        </div>
-      )} */}
       <Form onSubmit={handleSubmit}>
         <Input
           title="terminal-input"
