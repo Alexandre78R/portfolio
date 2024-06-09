@@ -19,7 +19,7 @@ type ParticlesProps = {
   particleDensity?: number;
 };
 
-export const SparklesCore = (props: ParticlesProps) => {
+export const SparklesCore = (props: ParticlesProps): React.ReactElement => {
   const {
     id,
     className,

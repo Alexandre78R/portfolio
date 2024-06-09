@@ -10,7 +10,7 @@ interface SectionRefsContextProps {
 
 const SectionRefsContext = createContext<SectionRefsContextProps | undefined>(undefined);
 
-export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({ children }): React.ReactElement => {
   const aboutMeRef = useRef<HTMLDivElement>(null);
   const projectRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -26,7 +26,7 @@ export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   );
 };
 
-export const useSectionRefs = (): SectionRefsContextProps => {
+export const useSectionRefs: any = (): SectionRefsContextProps => {
   const context = useContext(SectionRefsContext);
   if (context === undefined) {
     throw new Error('useSectionRefs must be used within a SectionRefsProvider');

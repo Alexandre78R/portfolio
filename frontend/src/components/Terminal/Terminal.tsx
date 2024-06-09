@@ -10,12 +10,12 @@ import { SparklesCore } from "../ui/SparklesCore";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
-import { Wrapper } from "./components/TerminalStructure/Wrapper";
-import { CmdNotFound } from "./components/TerminalStructure/CmdNotFound";
-import { Empty } from "./components/TerminalStructure/Empty";
-import { Form } from "./components/TerminalStructure/Form";
-import { Input } from "./components/TerminalStructure/Input";
-import { Hints } from "./components/TerminalStructure/Hints";
+import { Wrapper } from "./components/Wrapper";
+import { CmdNotFound } from "./components/CmdNotFound";
+import { Empty } from "./components/Empty";
+import { Form } from "./components/Form";
+import { Input } from "./components//Input";
+// import { Hints } from "./components/Input";
 import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
@@ -63,7 +63,7 @@ export const argTab = (
   }
 };
 
-const Terminal: React.FC = () => {
+const Terminal: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
   const { theme } = useTheme();
   const { headerRef } = useSectionRefs();
@@ -166,13 +166,13 @@ const Terminal: React.FC = () => {
 
   return (
     <Wrapper>
-      {hints.length > 1 && (
+      {/* {hints.length > 1 && (
         <div>
           {hints.map(hCmd => (
             <Hints key={hCmd}>{hCmd}</Hints>
           ))}
         </div>
-      )}
+      )} */}
       <Form onSubmit={handleSubmit}>
         <Input
           title="terminal-input"

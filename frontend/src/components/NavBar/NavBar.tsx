@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = (): React.ReactElement => {
 
   const { lang, setLang, translations } = useLang();
   const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef } = useSectionRefs();

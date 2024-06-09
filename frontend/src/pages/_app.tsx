@@ -5,20 +5,23 @@ import { ThemeProvider } from "../context/Theme/ThemeContext";
 import { LangProvider } from "@/context/Lang/LangContext";
 import Navbar from "@/components/NavBar/NavBar";
 import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
-import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceView";
+import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
+import ReduxProvider from '../store/provider';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
-    <SectionRefsProvider>
-    <ThemeProvider>
-      <LangProvider>
-        <ChoiceViewProvider>
-          <Navbar />
-          <Component {...pageProps} />
-        </ChoiceViewProvider>
-      </LangProvider>
-    </ThemeProvider>
-    </SectionRefsProvider>
+    <ReduxProvider>
+      <SectionRefsProvider>
+        <ThemeProvider>
+          <LangProvider>
+            <ChoiceViewProvider>
+              <Navbar />
+              <Component {...pageProps} />
+            </ChoiceViewProvider>
+          </LangProvider>
+        </ThemeProvider>
+      </SectionRefsProvider>
+    </ReduxProvider>
   );
 }
 export default App;

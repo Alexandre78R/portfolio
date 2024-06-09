@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 import { termContext } from "../../Terminal";
 import { getCurrentCmdArry, checkRedirect, isArgInvalid, generateTabs  } from "../../util";
-import Usage from "../TerminalStructure/Usage";
+import Usage from "../Usage";
 
 const socials = [
   {

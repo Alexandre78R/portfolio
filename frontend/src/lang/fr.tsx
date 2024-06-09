@@ -13,7 +13,7 @@ const fr: Lang = {
     navbarButtonSkill :"Compétences",
     navbarButtonProject :"Projets",
     navbarButtonChoiceView : "Choix de vue",
-    headerTitle : "Développeur FullStack",
+    headerTitle : "Développeur Fullstack",
     nameCategoryChoiceView : "Choix de vue",
     buttonNameChoiceTerminale : "Vue Terminal",
     buttonNameChoiceText : "Vue Texte",
@@ -32,7 +32,7 @@ const fr: Lang = {
     footerNetworks : "Réseaux",
     footerContact : "Contactez Moi",
     footerCopyright : "© 2024 Alexandre Renard | Tous droits réservés",
-    terminalWelcomeMessage : "Salut 👋, je m'appelle Alexandre et je suis développeur FullStack. Je vous invite à explorer mon portfolio !",
+    terminalWelcomeMessage : "Salut 👋, je m'appelle Alexandre et je suis développeur Fullstack. Je vous invite à explorer mon portfolio !",
     terminalWelcomeMessageHelp : "Pour la liste des commandes, tapez",
     terminalHelpTabAction : "Tab ou Ctrl + i",
     terminalHelpTabDesc : "complète automatiquement la commande",
@@ -42,6 +42,11 @@ const fr: Lang = {
     terminalHelpArrowDownTabDesc : "revenir à la commande suivante",
     terminalHelpCtrlAction : "Ctrl + l",
     terminalHelpCtrlTabDesc : "effacer le terminal",
+    terminalWhoamiNotArg : "Merci d'indiquer un choix entre : experience | education | skills",
+    terminalWhoamiMaxOneArg : "Merci de choisir 1 seul argument entre : experience | education | skills",
+    terminalWhoamiChoiceNotExiste : "Ce choix n'existe pas !",
+    buttonPaginationPrevious : "Précédent",
+    buttonPaginationNext : "Suivant",
 }
 
 export default fr;

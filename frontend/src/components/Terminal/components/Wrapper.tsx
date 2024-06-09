@@ -5,7 +5,7 @@ type WrapperProps = {
   ref?: any;
 }
 
-export const Wrapper: React.FC<WrapperProps> = ({ children, ref }) => {
+export const Wrapper: React.FC<WrapperProps> = ({ children, ref }): React.ReactElement => {
   return (
     // <div className="flex items-center justify-center h-1/2 w-[100vh] p-5 text-primary">
     // h-[calc(100vh-xpx)]

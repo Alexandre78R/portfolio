@@ -4,7 +4,7 @@ import { useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 
-const Header: React.FC = () => {
+const Header: React.FC = (): React.ReactElement => {
 
   const { translations } = useLang();
   const { theme } = useTheme();

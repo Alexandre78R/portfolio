@@ -1,7 +1,7 @@
 import React, { useContext, useState, useMemo } from "react";
 import { termContext } from "./Terminal";
 import Welcome from "./components/Commands/Welcome";
-import { Message } from "./components/TerminalStructure/Message";
+import { Message } from "./components/Message";
 import Clear from "./components/Commands/Clear";
 import Help from "./components/Commands/Help";
 import Socials from "./components/Commands/Socials";
@@ -14,7 +14,7 @@ type Props = {
     cmd: string;
 };
 
-const Output: React.FC<Props> = ({ index, cmd }) => {
+const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials", "echo", "themes", "whoami"];
 

@@ -1,38 +1,32 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
-import Projects from "@/components/Projects/Projects";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
-import { skillsData } from "@/Data/skillsData";
-import { projectsData } from "@/Data/projectsData";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
-import { useChoiceView } from "@/context/ChoiceView/ChoiceView";
+import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store/store";
+import { updateSkillCategories } from "@/store/slices/skillsSlice";
+import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 
-const Home: React.FC = () => {
+const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
   const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
 
-  const [dataSkills, setDataSkills] = useState<any[]>(skillsData);
-  const [dataProjects, setDataProjects] = useState<any[]>(projectsData);
-
-  const skillDataLang = (lang: string) : any => {
-    setDataSkills(skillsData.map(skill => ({ ...skill, category: lang === "fr" ? skill.categoryFR : skill.categoryEN })))
-  };
-
-  const projectDataLang = (lang: string) : any => {
-    setDataProjects(projectsData.map(project => ({ ...project, description: lang === "fr" ? project.descriptionFR : project.descriptionEN })))
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
+  const dataProjects = useSelector((state: RootState) => state.projects.dataProjects);
 
   useEffect(() => {
-    skillDataLang(translations.file)
-    projectDataLang(translations.file)
+    dispatch(updateSkillCategories(translations.file));
+    dispatch(updateProjectDescriptions(translations.file));
   }, [translations])
 
   const handleViewSelect = (view : string) => {
@@ -50,7 +44,6 @@ const Home: React.FC = () => {
           setSelectedView={setSelectedView} 
           handleViewSelect={handleViewSelect}
         />
-        {/* desable choice view */}
       </section>
       {
         selectedView === "terminal" ? 
@@ -87,4 +80,3 @@ const Home: React.FC = () => {
 }
 
 export default Home;
-
