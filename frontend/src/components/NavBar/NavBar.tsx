@@ -37,7 +37,7 @@ const Navbar: React.FC = (): React.ReactElement => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) => {
+  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
     event.preventDefault();
     if (sectionRef?.current) {
       sectionRef.current.scrollIntoView({ behavior: 'smooth' });

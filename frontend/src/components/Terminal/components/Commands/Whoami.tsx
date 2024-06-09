@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { termContext } from "../../Terminal";
-import { Message } from "../Message";
 import { useLang } from "@/context/Lang/LangContext";
 import WhoamiError from "./WhoamiComponents/WhoamiError";
 import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";

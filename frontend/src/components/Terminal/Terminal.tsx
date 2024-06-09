@@ -69,11 +69,11 @@ const Terminal: React.FC = (): React.ReactElement => {
   const { headerRef } = useSectionRefs();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [inputVal, setInputVal] = useState("");
+  const [inputVal, setInputVal] = useState<string>("");
   const [cmdHistory, setCmdHistory] = useState<string[]>(["welcome"]);
-  const [rerender, setRerender] = useState(false);
+  const [rerender, setRerender] = useState<boolean>(false);
   const [hints, setHints] = useState<string[]>([]);
-  const [pointer, setPointer] = useState(-1);
+  const [pointer, setPointer] = useState<number>(-1);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +83,7 @@ const Terminal: React.FC = (): React.ReactElement => {
     [inputVal]
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) : void => {
     e.preventDefault();
     setCmdHistory([inputVal, ...cmdHistory]);
     setInputVal("");
@@ -92,12 +92,12 @@ const Terminal: React.FC = (): React.ReactElement => {
     setPointer(-1);
   };
 
-  const clearHistory = () => {
+  const clearHistory = (): void => {
     setCmdHistory(["welcome"]);
     setHints([]);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     setRerender(false);
     const ctrlI = e.ctrlKey && e.key.toLowerCase() === "i";
     const ctrlL = e.ctrlKey && e.key.toLowerCase() === "l";

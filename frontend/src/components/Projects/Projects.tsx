@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ProjectComponent } from './typeProjects';
 import { useLang } from '@/context/Lang/LangContext';
 
-const Projects: React.FC<ProjectComponent> = ( { project } ) => {
+const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement => {
   const [expandedText, setExpandedText] = useState<Set<string>>(new Set());
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   
