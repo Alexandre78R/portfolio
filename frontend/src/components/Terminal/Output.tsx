@@ -1,7 +1,7 @@
 import React, { useContext, useState, useMemo } from "react";
 import { termContext } from "./Terminal";
 import Welcome from "./components/Commands/Welcome";
-import { Message } from "./components/TerminalStructure/Message";
+import { Message } from "./components/Message";
 import Clear from "./components/Commands/Clear";
 import Help from "./components/Commands/Help";
 import Socials from "./components/Commands/Socials";

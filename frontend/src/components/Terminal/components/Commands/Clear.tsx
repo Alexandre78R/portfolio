@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 import { termContext } from "../../Terminal";
 
 const Clear: React.FC = () => {

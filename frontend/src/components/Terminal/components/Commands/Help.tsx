@@ -1,7 +1,7 @@
 import { commands } from "../../Terminal";
 import { generateTabs } from "../../util";
 import { useLang } from "@/context/Lang/LangContext";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 
 const Help: React.FC = () => {
 

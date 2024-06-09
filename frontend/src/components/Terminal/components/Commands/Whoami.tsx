@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { termContext } from "../../Terminal";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 import { useLang } from "@/context/Lang/LangContext";
-import WhoamiError from "./WhoamiStructure/WhoamiError";
-import WhoamiEducation from "./WhoamiStructure/WhoamiEducation";
-import WhoamiExperience from "./WhoamiStructure/WhoamiExperience";
-import WhoamiSkills from "./WhoamiStructure/WhoamiSkills";
+import WhoamiError from "./WhoamiComponents/WhoamiError";
+import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";
+import WhoamiExperience from "./WhoamiComponents/WhoamiExperience";
+import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
 
 const Whoami: React.FC = () => {
   const { arg } = useContext(termContext);

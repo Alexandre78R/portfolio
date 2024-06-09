@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { termContext } from "../../../Terminal";
-import { Message } from "../../TerminalStructure/Message";
+import { Message } from "../../Message";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";

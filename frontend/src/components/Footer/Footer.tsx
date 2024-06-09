@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
           </div>
           <div className="flex flex-col items-center mx-4 mb-4 md:mb-0 lg:mx-25 flex-1">
             <h3 className="text-lg font-bold mb-2" >{translations.footerContact}</h3>
-                <p>alexandre.renard98@gmail.com</p>
+                <p>contact@alexandre-renard.dev</p>
           </div>
         </div>
         <div className="text-center mt-5">

@@ -1,7 +1,7 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { useContext, useEffect, useState } from "react";
 import { termContext } from "../../Terminal";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 
 const Welcome: React.FC = () => {
     const { arg } = useContext(termContext);

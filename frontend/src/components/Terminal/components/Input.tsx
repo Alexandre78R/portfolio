@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { forwardRef } from 'react';
-import TermInfo from '../../TermInfo';
-import HomeTerminal from '../../HomeTerminal';
+import TermInfo from '../TermInfo';
+import HomeTerminal from '../HomeTerminal';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 

@@ -1,5 +1,5 @@
-import { Message } from "../../TerminalStructure/Message";
-import Usage from "../../TerminalStructure/Usage";
+import { Message } from "../../Message";
+import Usage from "../../Usage";
 
 type Props = {
     message: string;

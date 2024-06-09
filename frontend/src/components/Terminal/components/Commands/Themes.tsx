@@ -6,8 +6,8 @@ import {
   isArgInvalid,
 } from "../../util";
 import { termContext } from "../../Terminal";
-import Usage from "../TerminalStructure/Usage";
-import { Message } from "../TerminalStructure/Message";
+import Usage from "../Usage";
+import { Message } from "../Message";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import { tabThemes, tabThemesName } from "@/context/Theme/themes";
 
