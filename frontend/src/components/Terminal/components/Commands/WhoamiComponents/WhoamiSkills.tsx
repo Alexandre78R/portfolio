@@ -5,7 +5,6 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ButtonCustom from "@/components/Button/Button";
-import { skill, skills, SkillTab } from "@/components/Skills/typeSkills";
 
 const WhoamiSkills: React.FC = () => {
     

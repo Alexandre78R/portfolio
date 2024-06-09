@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
+import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 
 const Home: React.FC = (): React.ReactElement  => {
 
@@ -27,6 +28,7 @@ const Home: React.FC = (): React.ReactElement  => {
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
     dispatch(updateProjectDescriptions(translations.file));
+    dispatch(updateEducationsTitle(translations.file));
   }, [translations])
 
   const handleViewSelect = (view : string) => {

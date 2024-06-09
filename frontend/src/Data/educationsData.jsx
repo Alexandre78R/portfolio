@@ -22,7 +22,7 @@ export const educationsData = [
     titleFR:
       "Programme Fullstack Javascript – Formation Développement web & mobile",
     titleEN: "Fullstack JavaScript Program – Web & Mobile Development Training",
-    school: "Capsule Academy",
+    school: "La Capsule Academy",
     location: "Paris (75)",
     year: 2019,
   },
