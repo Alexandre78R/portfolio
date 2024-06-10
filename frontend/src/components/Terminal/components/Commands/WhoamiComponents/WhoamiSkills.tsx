@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Key } from "react";
 import { termContext } from "../../../Terminal";
 import { Message } from "../../Message";
 import { useLang } from "@/context/Lang/LangContext";
@@ -61,7 +61,7 @@ const WhoamiSkills: React.FC = () => {
                             <span className="text-primary">{`${skill.id}. ${skill.category}`}</span>
                             {chunkArray(skill.skills, chunkSize).map((skillChunk, index) => (
                                 <div key={index} className="flex space-x-3 m-3">
-                                    {skillChunk.map(skillImg => (
+                                    {skillChunk.map((skillImg: any) => (
                                         <img key={skillImg.name} alt={skillImg.name} src={skillImg.image} />
                                     ))}
                                 </div>
