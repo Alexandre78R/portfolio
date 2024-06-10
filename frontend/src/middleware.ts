@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const middleware = (request: NextRequest): NextResponse => {
+function middleware (request: NextRequest): NextResponse  {
     return checkPath(request);
 }
 

@@ -12,12 +12,12 @@ type Props = {
 const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactElement => {
 
   const containerRef = useRef<any>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [startX, setStartX] = useState<number>(0);
-  const [scrollLeft, setScrollLeft] = useState<number>(0);
-  const [isClickOnImage, setIsClickOnImage] = useState<boolean>(false);
+  const [isDragging, setIsDragging]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [startX, setStartX]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(0);
+  const [scrollLeft, setScrollLeft]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(0);
+  const [isClickOnImage, setIsClickOnImage]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const handleMouseDown = (event: MouseEvent<HTMLDivElement>) : void => {
+  const handleMouseDown: (event: MouseEvent<HTMLDivElement>) => void = (event: MouseEvent<HTMLDivElement>) : void => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
@@ -27,20 +27,20 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) : number  => {
+  const handleMouseMove: (event: MouseEvent<HTMLDivElement>) => number = (event: MouseEvent<HTMLDivElement>) : number  => {
     if (!isDragging || isClickOnImage) return containerRef.current.scrollLeft;
     const x: number = event.pageX - containerRef.current.offsetLeft;
     const walk: number = (x - startX) * 1.0;
     return containerRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  const handleMouseUp = () : void => {
+  const handleMouseUp: () => void = () : void => {
     setIsDragging(false);
     setIsClickOnImage(false);
   };
 
   useEffect(() => {
-    const handleGlobalMouseUp = () : void => {
+    const handleGlobalMouseUp: () => void = () : void => {
       if (isDragging) {
         setIsDragging(false);
         setIsClickOnImage(false);

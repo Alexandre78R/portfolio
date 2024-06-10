@@ -19,7 +19,9 @@ const Whoami: React.FC = (): React.ReactElement => {
     return <WhoamiError message={translations.terminalWhoamiMaxOneArg} />
   }
 
-  switch (arg[0].toLowerCase()) {
+  const whoamiName: string = arg[0].toLowerCase();
+
+  switch (whoamiName) {
     case "experiences":
       return <WhoamiExperience />
     case "educations":

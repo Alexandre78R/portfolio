@@ -15,16 +15,16 @@ const Navbar: React.FC = (): React.ReactElement => {
   const { toggleTheme } = useTheme();
   const { selectedView } = useChoiceView();
 
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [open, setOpen] = React.useState<boolean>(false);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState<boolean>(false);
+  const [isChecked, setIsChecked]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const handleOpen = () :void => setOpen(true);
-  const handleClose = () :void => setOpen(false);
+  const handleOpen: () => void = () :void => setOpen(true);
+  const handleClose: () => void = () :void => setOpen(false);
 
-  const toggleMenu = () :void => setMenuOpen(!menuOpen);
+  const toggleMenu: () => void = () :void => setMenuOpen(!menuOpen);
 
-  const handleChangeColorTheme = (newTheme :string) :void => {
+  const handleChangeColorTheme: (newTheme :string) => void = (newTheme :string) :void => {
     toggleTheme(newTheme);
     handleClose();
     setMenuOpen(false);
@@ -34,12 +34,12 @@ const Navbar: React.FC = (): React.ReactElement => {
     setIsChecked(translations.file === "en");
   }, [translations]);
   
-  const toggleChecked = () : void => {
+  const toggleChecked: () => void = () : void => {
     setIsChecked(!isChecked);
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
+  const handleScrollToSection: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) => void = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
     event.preventDefault();
     if (sectionRef?.current) {
       sectionRef.current.scrollIntoView({ behavior: 'smooth' });

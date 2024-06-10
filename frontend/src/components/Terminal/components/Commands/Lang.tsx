@@ -14,7 +14,7 @@ const Lang: React.FC = (): React.ReactNode => {
 
     const { listLang, setLang } = useLang();
     const { arg, history, rerender } = useContext(termContext);
-    const [currentLang, setCurrentLang] = useState<string>("");
+    const [currentLang, setCurrentLang]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
 
     const currentCommand: any[] = getCurrentCmdArry(history);
 

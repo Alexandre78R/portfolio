@@ -13,7 +13,7 @@ type ThemeProviderProps = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): React.ReactElement => {
-  const [theme, setTheme] = useState<string>('dark');
+  const [theme, setTheme]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>('dark');
 
   const setColorVarCSS = (newTheme: keyof typeof themes): void  => {
     const colors: ThemeColors = themes[newTheme].colors;
@@ -67,7 +67,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): React
   );
 };
 
-export const useTheme: any = (): ThemeContextType => {
+export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');

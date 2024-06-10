@@ -23,10 +23,10 @@ const LangContext = createContext<LangContextType>({
 
 export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.ReactElement => {
 
-    const [lang, setLang] = useState<string>('fr');
-    const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
-    const [listLang, setListLang] = useState<string[]>(["fr", "en"]);
-    const [checkLang, setCheckLang] = useState<boolean>(false);
+    const [lang, setLang]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>('fr');
+    const [translations, setTranslations]: [{ [key: string]: string }, React.Dispatch<React.SetStateAction<{ [key: string]: string }>>] = useState<{ [key: string]: string }>(fr);
+    const [listLang, _]: [string[], React.Dispatch<React.SetStateAction<string[]>>] = useState<string[]>(["fr", "en"]);
+    const [checkLang, setCheckLang]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
     const toggleTheme = (newLang : string) : void => {
         setLang(newLang == "fr" ? "fr" : "en");
@@ -62,4 +62,4 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.R
     );
 };
 
-export const useLang: any = () => useContext(LangContext);
+export const useLang = (): LangContextType => useContext(LangContext);
