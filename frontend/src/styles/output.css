@@ -755,16 +755,24 @@ video {
   margin-top: 5%;
 }
 
-.mt-\[0\.5\%\] {
-  margin-top: 0.5%;
+.mt-10 {
+  margin-top: 2.5rem;
 }
 
-.mt-3 {
-  margin-top: 0.75rem;
+.mb-10 {
+  margin-bottom: 2.5rem;
 }
 
-.mt-1 {
-  margin-top: 0.25rem;
+.mt-\[\] {
+  margin-top: ;
+}
+
+.mt-\[-2\] {
+  margin-top: -2;
+}
+
+.mt-\[-2\%\] {
+  margin-top: -2%;
 }
 
 .block {
@@ -793,6 +801,10 @@ video {
 
 .h-6 {
   height: 1.5rem;
+}
+
+.h-\[170px\] {
+  height: 170px;
 }
 
 .h-\[460px\] {
@@ -841,6 +853,10 @@ video {
 
 .w-\[100vh\] {
   width: 100vh;
+}
+
+.w-\[350px\] {
+  width: 350px;
 }
 
 .w-full {
@@ -1365,6 +1381,14 @@ body {
 }
 
 @media (min-width: 640px) {
+  .sm\:ml-3 {
+    margin-left: 0.75rem;
+  }
+
+  .sm\:max-w-\[80\%\] {
+    max-width: 80%;
+  }
+
   .sm\:max-w-\[90\%\] {
     max-width: 90%;
   }
@@ -1373,6 +1397,10 @@ body {
 @media (min-width: 768px) {
   .md\:mb-0 {
     margin-bottom: 0px;
+  }
+
+  .md\:ml-4 {
+    margin-left: 1rem;
   }
 
   .md\:block {
@@ -1399,18 +1427,22 @@ body {
     width: 70%;
   }
 
-  .md\:max-w-\[75\%\] {
-    max-width: 75%;
+  .md\:max-w-\[60\%\] {
+    max-width: 60%;
   }
 
-  .md\:max-w-\[80\%\] {
-    max-width: 80%;
+  .md\:max-w-\[75\%\] {
+    max-width: 75%;
   }
 }
 
 @media (min-width: 1024px) {
   .lg\:ml-10 {
     margin-left: 2.5rem;
+  }
+
+  .lg\:ml-6 {
+    margin-left: 1.5rem;
   }
 
   .lg\:block {
@@ -1429,12 +1461,12 @@ body {
     width: 70%;
   }
 
-  .lg\:max-w-\[60\%\] {
-    max-width: 60%;
+  .lg\:max-w-\[50\%\] {
+    max-width: 50%;
   }
 
-  .lg\:max-w-\[70\%\] {
-    max-width: 70%;
+  .lg\:max-w-\[60\%\] {
+    max-width: 60%;
   }
 
   .lg\:text-6xl {
@@ -1452,27 +1484,15 @@ body {
     display: none;
   }
 
-  .xl\:max-w-\[50\%\] {
-    max-width: 50%;
-  }
-
-  .xl\:max-w-\[60\%\] {
-    max-width: 60%;
-  }
-
-  .xl\:max-w-\[400\%\] {
-    max-width: 400%;
+  .xl\:max-w-\[35\%\] {
+    max-width: 35%;
   }
 
   .xl\:max-w-\[40\%\] {
     max-width: 40%;
   }
 
-  .xl\:max-w-\[45\%\] {
-    max-width: 45%;
-  }
-
-  .xl\:max-w-\[30\%\] {
-    max-width: 30%;
+  .xl\:max-w-\[50\%\] {
+    max-width: 50%;
   }
 }
