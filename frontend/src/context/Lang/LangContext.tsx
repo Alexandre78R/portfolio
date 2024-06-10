@@ -46,7 +46,7 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.R
         }
     }, [lang])
 
-    const value = useMemo(() => ({
+    const value: LangContextType = useMemo(() => ({
       lang,
       setLang,
       translations,

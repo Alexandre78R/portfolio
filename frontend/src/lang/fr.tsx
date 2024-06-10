@@ -13,6 +13,7 @@ const fr: Lang = {
     navbarButtonSkill :"Compétences",
     navbarButtonProject :"Projets",
     navbarButtonChoiceView : "Choix de vue",
+    navbarButtonTerminal : "Terminal",
     headerTitle : "Développeur Fullstack",
     nameCategoryChoiceView : "Choix de vue",
     buttonNameChoiceTerminale : "Vue Terminal",

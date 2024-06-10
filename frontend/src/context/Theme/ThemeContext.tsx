@@ -1,12 +1,12 @@
 import React, { createContext, useState, useContext, useMemo, useEffect, ReactNode } from 'react';
 import themes, {ThemeColors, ThemeColorsText} from './themes';
 
-interface ThemeContextType {
+type ThemeContextType = {
   theme: keyof typeof themes;
   toggleTheme: (newTheme: string) => void;
 }
 
-interface ThemeProviderProps {
+type ThemeProviderProps = {
   children: ReactNode;
 }
 
@@ -58,7 +58,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): React
     }
   }, [])
   
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+  const value: ThemeContextType = useMemo(() => ({ theme, toggleTheme }), [theme]);
 
   return (
     <ThemeContext.Provider value={value}>

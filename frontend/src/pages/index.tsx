@@ -19,7 +19,7 @@ import { updateExperiences } from "@/store/slices/experiencesSlice";
 const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef, choiceViewRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -52,7 +52,7 @@ const Home: React.FC = (): React.ReactElement  => {
       {
         selectedView === "terminal" ? 
         <>
-          <section className="ml-3 mt-[5%] mb-[5%]">
+          <section className="ml-3 mt-[5%] mb-[5%]" ref={terminalRef}>
             <Title title="Terminal" />
             <div className="ml-5 flex flex-col items-center">
               <Terminal />
