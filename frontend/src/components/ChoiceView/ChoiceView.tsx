@@ -16,12 +16,14 @@ const ChoiceView: React.FC<Props> = ({ selectedView, setSelectedView, handleView
       <ButtonCustom
         onClick={() => handleViewSelect('text')}
         text={translations.buttonNameChoiceText}
-        disable={selectedView !== "text" ? true : false}
+        disable={selectedView == "text" ? true : false}
+        disableHover={selectedView == "text" ? true : false}
       />
       <ButtonCustom 
         onClick={() => handleViewSelect('terminal')}
         text={translations.buttonNameChoiceTerminale}
-        disable={selectedView !== "terminal" ? true : false}
+        disable={selectedView == "terminal" ? true : false}
+        disableHover={selectedView == "terminal" ? true : false}
       />
     </div>
   );
