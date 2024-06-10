@@ -31,7 +31,7 @@ export const ChoiceViewProvider: React.FC<ChoiceViewProviderProps> = ({ children
     }
   }, [selectedView])
 
-  const value = useMemo(() => ({
+  const value: ChoiceVieContextType = useMemo(() => ({
     selectedView,
     setSelectedView,
   }), [selectedView]);

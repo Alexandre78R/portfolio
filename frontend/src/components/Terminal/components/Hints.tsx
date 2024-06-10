@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-interface HintsProps {
+type HintsProps = {
   children: ReactNode;
 }
 

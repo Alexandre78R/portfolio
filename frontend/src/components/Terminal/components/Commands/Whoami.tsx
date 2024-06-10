@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { termContext } from "../../Terminal";
-import { Message } from "../Message";
 import { useLang } from "@/context/Lang/LangContext";
 import WhoamiError from "./WhoamiComponents/WhoamiError";
 import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";
@@ -21,9 +20,9 @@ const Whoami: React.FC = (): React.ReactElement => {
   }
 
   switch (arg[0].toLowerCase()) {
-    case "experience":
+    case "experiences":
       return <WhoamiExperience />
-    case "education":
+    case "educations":
       return <WhoamiEducation />
     case "skills":
       return <WhoamiSkills />

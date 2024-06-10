@@ -11,12 +11,12 @@ import { Message } from "../Message";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import { tabThemes, tabThemesName } from "@/context/Theme/themes";
 
-const Themes: React.FC = () => {
+const Themes: React.FC = (): React.ReactNode => {
   const { arg, history, rerender } = useContext(termContext);
   const { toggleTheme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState<string>("");
 
-  const currentCommand = getCurrentCmdArry(history);
+  const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {
     if (checkThemeSwitch(rerender, currentCommand, tabThemesName()) && currentCommand[2] !== currentTheme) {

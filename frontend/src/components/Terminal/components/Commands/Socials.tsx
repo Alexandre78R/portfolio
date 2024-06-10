@@ -19,9 +19,9 @@ const socials = [
   },
 ];
 
-const Socials: React.FC = () => {
+const Socials: React.FC = (): React.ReactNode => {
   const { arg, history, rerender } = useContext(termContext);
-  const currentCommand = getCurrentCmdArry(history);
+  const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {
     if (checkRedirect(rerender, currentCommand, "socials")) {

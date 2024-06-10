@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Message } from './Message';
 
-interface CmdNotFoundProps {
+type CmdNotFoundProps = {
   cmdH: string;
 }
 

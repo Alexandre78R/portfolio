@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-interface MessageDivProps {
+type MessageDivProps = {
   children: ReactNode;
 }
 

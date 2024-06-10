@@ -8,6 +8,7 @@ import Socials from "./components/Commands/Socials";
 import Echo from "./components/Commands/Echo";
 import Whoami from "./components/Commands/Whoami";
 import Themes from "./components/Commands/Themes";
+import About from "./components/Commands/About";
 
 type Props = {
     index: number;
@@ -26,6 +27,7 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
 
     return {
       help: <Help />,
+      about : <About />,
       welcome: <Welcome />,
       clear: <Clear />,
       socials: <Socials />,

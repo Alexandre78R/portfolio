@@ -12,24 +12,24 @@ const WhoamiSkills: React.FC = () => {
 
     const { translations } = useLang();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const datasPerPage = 3;
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const datasPerPage: number = 3;
     
     const pagination = () => {
-        const indexLast = currentPage * datasPerPage;
-        const indexFirst = indexLast - datasPerPage;
+        const indexLast: number = currentPage * datasPerPage;
+        const indexFirst: number = indexLast - datasPerPage;
         return dataSkills.slice(indexFirst, indexLast);
       };
     
-    const next = () => {
+    const next = () : void => {
     setCurrentPage(currentPage + 1);
     };
 
-    const previous = () => {
+    const previous = (): void => {
     setCurrentPage(currentPage - 1);
     };
     
-    const chunkArray = (array: any[], size: number) => {
+    const chunkArray = (array: any[], size: number): any[] => {
         const chunkedArr = [];
         for (let i = 0; i < array.length; i += size) {
             chunkedArr.push(array.slice(i, i + size));
@@ -37,14 +37,14 @@ const WhoamiSkills: React.FC = () => {
         return chunkedArr;
     };
 
-    const getChunkSize = () => {
+    const getChunkSize = (): number => {
         if (window.innerWidth >= 1024) return 5; // Desktop
         if (window.innerWidth >= 768) return 4; // Tablet
         if (window.innerWidth >= 300) return 3; // Large mobile
         return 2; // Mini Mobile
     };
 
-    const [chunkSize, setChunkSize] = useState(getChunkSize());
+    const [chunkSize, setChunkSize] = useState<number>(getChunkSize());
 
     useEffect(() => {
         const handleResize = () => setChunkSize(getChunkSize());
@@ -60,7 +60,7 @@ const WhoamiSkills: React.FC = () => {
                         <Message key={skill.id}>
                             <span className="text-primary">{`${skill.id}. ${skill.category}`}</span>
                             {chunkArray(skill.skills, chunkSize).map((skillChunk, index) => (
-                                <div key={index} className="flex space-x-2 m-2">
+                                <div key={index} className="flex space-x-3 m-3">
                                     {skillChunk.map(skillImg => (
                                         <img key={skillImg.name} alt={skillImg.name} src={skillImg.image} />
                                     ))}

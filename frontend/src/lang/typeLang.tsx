@@ -11,6 +11,7 @@ type Lang = {
     navbarButtonSkill : string,
     navbarButtonProject : string,
     navbarButtonChoiceView : string,
+    navbarButtonTerminal : string,
     headerTitle : string,
     nameCategoryChoiceView : string,
     buttonNameChoiceTerminale : string,

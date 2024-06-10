@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 import fr from "@/lang/fr"
 import en from "@/lang/en"
+import Lang from '@/lang/typeLang';
 
 type LangContextType = {
   lang: string;
   setLang: (lang: string) => void;
-  translations: { [key: string]: string };
+  translations: Lang | { [key: string]: string };
 };
 
 interface LangProviderProps {
@@ -45,7 +46,7 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.R
         }
     }, [lang])
 
-    const value = useMemo(() => ({
+    const value: LangContextType = useMemo(() => ({
       lang,
       setLang,
       translations,

@@ -15,7 +15,6 @@ import { CmdNotFound } from "./components/CmdNotFound";
 import { Empty } from "./components/Empty";
 import { Form } from "./components/Form";
 import { Input } from "./components//Input";
-// import { Hints } from "./components/Input";
 import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
@@ -29,6 +28,7 @@ type Command = {
 
 export const commands: Command = [
   { cmd: "help", descEN: "List of commands", descFR: "Liste des commandes", tab: 13 },
+  { cmd: "about", descEN: "About me", descFR: "A propros de moi", tab: 10 },
   { cmd: "welcome", descEN: "Home sections", descFR: "Rubriques d'accueil", tab: 5 },
   { cmd: "clear", descEN: "Clear the terminal", descFR: "Effacer le terminal", tab: 12 },
   { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
@@ -54,8 +54,6 @@ export const termContext = createContext<Term>({
 export const argTab = (
   inputVal: string,
   setInputVal: (value: React.SetStateAction<string>) => void,
-  setHints: (value: React.SetStateAction<string[]>) => void,
-  hintsCmds: string[]
 ): string[] | undefined => {
   if (inputVal === "themes ") {
     setInputVal(`themes set`);
@@ -69,11 +67,11 @@ const Terminal: React.FC = (): React.ReactElement => {
   const { headerRef } = useSectionRefs();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [inputVal, setInputVal] = useState("");
+  const [inputVal, setInputVal] = useState<string>("");
   const [cmdHistory, setCmdHistory] = useState<string[]>(["welcome"]);
-  const [rerender, setRerender] = useState(false);
+  const [rerender, setRerender] = useState<boolean>(false);
   const [hints, setHints] = useState<string[]>([]);
-  const [pointer, setPointer] = useState(-1);
+  const [pointer, setPointer] = useState<number>(-1);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +81,7 @@ const Terminal: React.FC = (): React.ReactElement => {
     [inputVal]
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) : void => {
     e.preventDefault();
     setCmdHistory([inputVal, ...cmdHistory]);
     setInputVal("");
@@ -92,12 +90,12 @@ const Terminal: React.FC = (): React.ReactElement => {
     setPointer(-1);
   };
 
-  const clearHistory = () => {
+  const clearHistory = (): void => {
     setCmdHistory(["welcome"]);
     setHints([]);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     setRerender(false);
     const ctrlI = e.ctrlKey && e.key.toLowerCase() === "i";
     const ctrlL = e.ctrlKey && e.key.toLowerCase() === "l";
@@ -166,13 +164,6 @@ const Terminal: React.FC = (): React.ReactElement => {
 
   return (
     <Wrapper>
-      {/* {hints.length > 1 && (
-        <div>
-          {hints.map(hCmd => (
-            <Hints key={hCmd}>{hCmd}</Hints>
-          ))}
-        </div>
-      )} */}
       <Form onSubmit={handleSubmit}>
         <Input
           title="terminal-input"

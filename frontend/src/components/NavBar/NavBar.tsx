@@ -6,12 +6,14 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import Box from '@mui/material/Box';
 import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
+import { useChoiceView } from '@/context/ChoiceView/ChoiceViewContext';
 
 const Navbar: React.FC = (): React.ReactElement => {
 
   const { lang, setLang, translations } = useLang();
-  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
   const { toggleTheme } = useTheme();
+  const { selectedView } = useChoiceView();
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -37,7 +39,7 @@ const Navbar: React.FC = (): React.ReactElement => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) => {
+  const handleScrollToSection = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
     event.preventDefault();
     if (sectionRef?.current) {
       sectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -50,26 +52,33 @@ const Navbar: React.FC = (): React.ReactElement => {
     <nav className="bg-body p-3 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <a href="" onClick={(e) => handleScrollToSection(e, headerRef)} className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
+          <a onClick={(e) => handleScrollToSection(e, headerRef)} className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
-            <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
-            <li>
-            <button  className="relative inline-block" onClick={toggleChecked}>
-              <label htmlFor="toggleButton" className="cursor-pointer">
-                <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
-                  <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
-                  <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
-                  <div className={`absolute left-0 w-6 h-6 rounded-full  bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
-                </div>
-              </label>
-            </button>
-            </li>
-            <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
+            <li><a onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+            { 
+              selectedView !== "terminal" ?
+              <>
+                <li><a onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
+                <li><a onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
+                <li><a onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
+                <li>
+                <button  className="relative inline-block" onClick={toggleChecked}>
+                  <label htmlFor="toggleButton" className="cursor-pointer">
+                    <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
+                      <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
+                      <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
+                      <div className={`absolute left-0 w-6 h-6 rounded-full  bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+                    </div>
+                  </label>
+                </button>
+                </li>
+                <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
+              </>
+              :
+              <li><a onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</a></li>
+            }
           </ul>
         </menu>
         <menu className="md:hidden">
@@ -89,22 +98,29 @@ const Navbar: React.FC = (): React.ReactElement => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-          <li><a href="" onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
-            <li><a href="" onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
-            <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
-            <li>
-            <div className="relative inline-block" onClick={toggleChecked}>
-              <label htmlFor="toggleButton" className="cursor-pointer">
-                <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
-                  <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>FR</div>
-                  <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>EN</div>
-                  <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+          <li><a onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+          { 
+              selectedView !== "terminal" ?
+              <>
+                <li><a onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
+                <li><a onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
+                <li><a onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
+                <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
+                <li>
+                <div className="relative inline-block" onClick={toggleChecked}>
+                  <label htmlFor="toggleButton" className="cursor-pointer">
+                    <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
+                      <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>FR</div>
+                      <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>EN</div>
+                      <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+                    </div>
+                  </label>
                 </div>
-              </label>
-            </div>
-            </li>
+                </li>
+              </>
+              : 
+              <li><a onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</a></li>
+          }
           </ul>
         </menu>
       )}
