@@ -8,13 +8,13 @@ import { ProjectComponent } from './typeProjects';
 import { useLang } from '@/context/Lang/LangContext';
 
 const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement => {
-  const [expandedText, setExpandedText] = useState<Set<string>>(new Set());
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [expandedText, setExpandedText]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
+  const [expandedCards, setExpandedCards]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
   
   const { translations } = useLang();
 
-  const handleExpandClick = (cardId: string) => {
-    const newExpandedCards = new Set(expandedCards);
+  const handleExpandClick: (cardId: string) => void = (cardId: string) : void => {
+    const newExpandedCards: Set<string> = new Set(expandedCards);
     if (expandedCards.has(cardId)) {
       newExpandedCards.delete(cardId);
     } else {
@@ -23,8 +23,8 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
     setExpandedCards(newExpandedCards);
   };
 
-  const handleExpandTextClick = (cardId: string) => {
-    const newExpandedText = new Set(expandedText);
+  const handleExpandTextClick: (cardId: string) => void = (cardId: string) : void => {
+    const newExpandedText: Set<string> = new Set(expandedText);
     if (expandedText.has(cardId)) {
       newExpandedText.delete(cardId);
     } else {

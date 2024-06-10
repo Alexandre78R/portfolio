@@ -1,14 +1,11 @@
 import React, {
   createContext,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from "react";
 import { useLang } from "@/context/Lang/LangContext";
-import { SparklesCore } from "../ui/SparklesCore";
 import { useTheme } from "@/context/Theme/ThemeContext";
-import themes from "@/context/Theme/themes";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import { Wrapper } from "./components/Wrapper";
 import { CmdNotFound } from "./components/CmdNotFound";
@@ -30,11 +27,12 @@ export const commands: Command = [
   { cmd: "help", descEN: "List of commands", descFR: "Liste des commandes", tab: 13 },
   { cmd: "welcome", descEN: "Home sections", descFR: "Rubriques d'accueil", tab: 5 },
   { cmd: "clear", descEN: "Clear the terminal", descFR: "Effacer le terminal", tab: 12 },
+  { cmd: "themes", descEN: "Check the available themes.", descFR: "Vérifier les thèmes disponibles", tab: 8 },
+  { cmd: "lang", descEN: "Check the available langues.", descFR: "Vérifier les langues disponibles", tab: 13 },
+  { cmd: "cv", descEN: "Check out my CV", descFR: "Consultez mon CV", tab: 16 },
   { cmd: "about", descEN: "About me", descFR: "A propros de moi", tab: 10 },
   { cmd: "socials", descEN: "Check out my social accounts", descFR: "Consultez mes comptes sociaux", tab: 9 },
   { cmd: "whoami", descEN: "Know more about me", descFR: "En savoir plus sur moi", tab: 7 },
-  { cmd: "themes", descEN: "Check the available themes.", descFR: "Vérifier les thèmes disponibles", tab: 8 },
-  { cmd: "lang", descEN: "Check the available langues.", descFR: "Vérifier les langues disponibles", tab: 13 },
 ];
 
 type Term = {
@@ -65,16 +63,14 @@ export const argTab = (
 };
 
 const Terminal: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
-  const { theme } = useTheme();
-  const { headerRef } = useSectionRefs();
+
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [inputVal, setInputVal] = useState<string>("");
-  const [cmdHistory, setCmdHistory] = useState<string[]>(["welcome"]);
-  const [rerender, setRerender] = useState<boolean>(false);
-  const [hints, setHints] = useState<string[]>([]);
-  const [pointer, setPointer] = useState<number>(-1);
+  const [inputVal, setInputVal]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+  const [cmdHistory, setCmdHistory]: [string[], React.Dispatch<React.SetStateAction<string[]>>] = useState<string[]>(["welcome"]);
+  const [rerender, setRerender]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [hints, setHints]: [any[], React.Dispatch<React.SetStateAction<any[]>>] = useState<any[]>([]);
+  const [pointer, setPointer]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(-1);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +80,7 @@ const Terminal: React.FC = (): React.ReactElement => {
     [inputVal]
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) : void => {
+  const handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void  = (e: React.FormEvent<HTMLFormElement>) : void => {
     e.preventDefault();
     setCmdHistory([inputVal, ...cmdHistory]);
     setInputVal("");
@@ -93,15 +89,15 @@ const Terminal: React.FC = (): React.ReactElement => {
     setPointer(-1);
   };
 
-  const clearHistory = (): void => {
+  const clearHistory: () => void = (): void => {
     setCmdHistory(["welcome"]);
     setHints([]);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     setRerender(false);
-    const ctrlI = e.ctrlKey && e.key.toLowerCase() === "i";
-    const ctrlL = e.ctrlKey && e.key.toLowerCase() === "l";
+    const ctrlI: boolean = e.ctrlKey && e.key.toLowerCase() === "i";
+    const ctrlL: boolean = e.ctrlKey && e.key.toLowerCase() === "l";
 
     if (e.key === "Tab" || ctrlI) {
       e.preventDefault();
@@ -114,7 +110,7 @@ const Terminal: React.FC = (): React.ReactElement => {
         }
       });
 
-      const returnedHints = argTab(inputVal, setInputVal, setHints, hintsCmds);
+      const returnedHints: string[] | undefined = argTab(inputVal, setInputVal, setHints, hintsCmds);
       hintsCmds = returnedHints ? [...hintsCmds, ...returnedHints] : hintsCmds;
 
       if (hintsCmds.length > 1) {
@@ -183,7 +179,7 @@ const Terminal: React.FC = (): React.ReactElement => {
         />
       </Form>
       {cmdHistory.map((cmdH, index) => {
-        const commandArray = _.split(_.trim(cmdH), " ");
+        const commandArray: string[] = _.split(_.trim(cmdH), " ");
         const validCommand = _.find(commands, { cmd: commandArray[0] });
         const contextValue = {
           arg: _.drop(commandArray),

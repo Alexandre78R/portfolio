@@ -33,7 +33,7 @@ const Home: React.FC = (): React.ReactElement  => {
     dispatch(updateExperiences(translations.file));
   }, [translations])
 
-  const handleViewSelect = (view : string) => {
+  const handleViewSelect: (view : string) => void = (view : string): void => {
     setSelectedView(view);
   };
   
