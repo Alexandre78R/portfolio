@@ -11,6 +11,7 @@ import Themes from "./components/Commands/Themes";
 import About from "./components/Commands/About";
 import Lang from "./components/Commands/Lang";
 import CV from "./components/Commands/CV";
+import Projects from "./components/Commands/ProjectsCommand";
 
 type Props = {
     index: number;
@@ -38,6 +39,7 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
       themes: <Themes />,
       lang: <Lang />,
       cv : <CV/>,
+      projects : <Projects />,
     }[cmd] || null;
   }, [cmd, arg]);
 
