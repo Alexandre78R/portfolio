@@ -89,7 +89,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
         }
 
         { category === "projects" &&
-          data?.map((project: Project) => (
+          data?.slice().reverse().map((project: Project) => (
               <Projects key={project.id} project={project} />
           ))
         }
