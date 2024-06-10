@@ -54,6 +54,8 @@ export const termContext = createContext<Term>({
 export const argTab = (
   inputVal: string,
   setInputVal: (value: React.SetStateAction<string>) => void,
+  setHints: (value: React.SetStateAction<string[]>) => void,
+  hintsCmds: string[]
 ): string[] | undefined => {
   if (inputVal === "themes ") {
     setInputVal(`themes set`);
