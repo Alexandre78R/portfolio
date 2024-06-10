@@ -13,21 +13,21 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
 
   const { translations } = useLang();
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
   const datasPerPage: number = 2;
 
-  const pagination = () => {
+  const pagination: () => any[] = (): any[] => {
     const indexLast: number = currentPage * datasPerPage;
     const indexFirst: number = indexLast - datasPerPage;
     return newOrderDataExperience.slice(indexFirst, indexLast);
   };
 
-  const next = () : void => {
-  setCurrentPage(currentPage + 1);
+  const next: () => void = () : void => {
+    setCurrentPage(currentPage + 1);
   };
 
-  const previous = (): void => {
-  setCurrentPage(currentPage - 1);
+  const previous: () => void = (): void => {
+    setCurrentPage(currentPage - 1);
   };
 
   return (

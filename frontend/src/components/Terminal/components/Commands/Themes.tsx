@@ -14,7 +14,7 @@ import { tabThemes, tabThemesName } from "@/context/Theme/themes";
 const Themes: React.FC = (): React.ReactNode => {
   const { arg, history, rerender } = useContext(termContext);
   const { toggleTheme } = useTheme();
-  const [currentTheme, setCurrentTheme] = useState<string>("");
+  const [currentTheme, setCurrentTheme]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
 
   const currentCommand: any[] = getCurrentCmdArry(history);
 

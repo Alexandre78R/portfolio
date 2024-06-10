@@ -4,7 +4,14 @@ import { termContext } from "../../Terminal";
 import { getCurrentCmdArry, checkRedirect, isArgInvalid, generateTabs  } from "../../util";
 import Usage from "../Usage";
 
-const socials = [
+type Socials = {
+  id: number,
+  title: string,
+  url: string,
+  tab: number,
+}
+
+const socials: Socials[] = [
   {
     id: 1,
     title: "GitHub",
