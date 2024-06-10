@@ -10,6 +10,7 @@ import Whoami from "./components/Commands/Whoami";
 import Themes from "./components/Commands/Themes";
 import About from "./components/Commands/About";
 import Lang from "./components/Commands/Lang";
+import CV from "./components/Commands/CV";
 
 type Props = {
     index: number;
@@ -36,6 +37,7 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
       whoami: <Whoami />,
       themes: <Themes />,
       lang: <Lang />,
+      cv : <CV/>,
     }[cmd] || null;
   }, [cmd, arg]);
 

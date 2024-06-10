@@ -10,7 +10,7 @@ const HomeTerminal: React.FC = (): React.ReactElement => {
       return "a-renard.dev"
     }
   }
-
+  
   return (
     <div className="inline-block mr-2">
       <span className="text-secondary">{textResponsive("visitor")}</span>@<span className="text-primary">{textResponsive("domaine")}</span> :~$
