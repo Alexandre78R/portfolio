@@ -5,7 +5,7 @@ import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import Title from "@/components/Title/Title";
 import ChoiceView from "@/components/ChoiceView/ChoiceView";
 import Header from "@/components/Header/Header";
-import AboutMe from "@/components/AboutMe";
+import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
