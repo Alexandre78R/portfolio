@@ -1,6 +1,8 @@
 import { Html, Head, Main, NextScript } from "next/document";
 import Script from 'next/script';
+
 const Document = (): React.ReactElement => {
+  
   return (
     <Html lang="en">
       <Head />
@@ -30,3 +32,7 @@ const Document = (): React.ReactElement => {
 }
 
 export default Document;
+function useEffect(arg0: () => () => void, arg1: any[]) {
+  throw new Error("Function not implemented.");
+}
+

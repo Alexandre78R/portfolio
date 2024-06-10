@@ -18,10 +18,10 @@ const Footer: React.FC = (): React.ReactElement => {
           <div className="flex flex-col items-center mx-4 mb-4 md:mb-0 lg:mx-25 flex-1">
             <h3 className="text-lg font-bold mb-2">{translations.footerNetworks}</h3>
             <div className='flex space-x-4'>
-                <a href="https://github.com/Alexandre78R" target='_blank'>
+                <a href="https://github.com/Alexandre78R" target='_blank' rel="alternate">
                     <GitHubIcon className='text-text hover:text-secondary' /> 
                 </a>
-                <a href="https://www.linkedin.com/in/alexandrerenard/" target='_blank'>
+                <a href="https://www.linkedin.com/in/alexandrerenard/" target='_blank' rel="alternate">
                     <LinkedInIcon className='text-text hover:text-secondary' /> 
                 </a>
             </div>

@@ -63,7 +63,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
               </div>
             ) : (
               <div className="w-320px h-170 overflow-hidden bg-body text-text">
-                <img src={project?.contentDisplay} alt="Card Image" className="max-w-[310px] pb-2 overflow-hidden" />
+                <img src={project?.contentDisplay} alt={project?.title} className="max-w-[310px] pb-2 overflow-hidden" />
                 <Typography variant="h5" component="h2" className="max-w-320px">
                   {project?.title}
                 </Typography>
@@ -88,7 +88,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
           </div>
           <CardActions disableSpacing className="flex justify-between items-center p-0">
             <IconButton aria-label="add to favorites" >
-              <a href={project?.github} target='_blank'>
+              <a href={project?.github} target='_blank' rel="alternate">
                 <GitHubIcon className='text-primary hover:text-secondary' /> 
               </a>
             </IconButton>
