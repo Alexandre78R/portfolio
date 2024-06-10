@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import Head from 'next/head';
+import { useEffect, useState } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
@@ -15,9 +16,11 @@ import { updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
+import { useRouter } from 'next/router';
 
 const Home: React.FC = (): React.ReactElement  => {
 
+  const router = useRouter();
   const { translations } = useLang();
   const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
@@ -36,9 +39,32 @@ const Home: React.FC = (): React.ReactElement  => {
   const handleViewSelect: (view : string) => void = (view : string): void => {
     setSelectedView(view);
   };
-  
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = translations.file;
+    }
+  }, [translations]);
+
+  // State pour stocker l'URL canonique
+  const [canonicalUrl, setCanonicalUrl] = useState<string>('');
+
+  useEffect(() => {
+    // Vérification pour s'assurer que le code s'exécute côté client
+    if (typeof window !== 'undefined') {
+      // Construit l'URL canonique en utilisant le chemin actuel
+      const url = `${window.location.origin}${router.asPath}`;
+      setCanonicalUrl(url);
+    }
+  }, [router.asPath]);
+
   return (
     <>
+    <Head>
+      <title>{translations.titleHTML}</title>
+      <meta name="title" content={translations.titleHTML} />
+      <meta name="description" content={translations.descHTML} />
+      <link rel="canonical" href={canonicalUrl} />
+    </Head>
     <Header />
     <main className="bg-body mt-[10%]">
       <section className="ml-3" ref={choiceViewRef}>
