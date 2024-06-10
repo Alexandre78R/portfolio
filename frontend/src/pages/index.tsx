@@ -54,7 +54,7 @@ const Home: React.FC = (): React.ReactElement  => {
         <>
           <section className="ml-3 mt-[5%] mb-[5%]" ref={terminalRef}>
             <Title title="Terminal" />
-            <div className="ml-5 flex flex-col items-center">
+            <div className="ml-3 flex flex-col items-center">
               <Terminal />
             </div>
           </section>
