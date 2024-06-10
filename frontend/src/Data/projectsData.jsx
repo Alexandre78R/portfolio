@@ -1,6 +1,6 @@
 export const projectsData = [
   {
-    id: "33",
+    id: 1,
     title: "Fast News Application",
     descriptionEN:
       "Fast News is a mobile application that allows users to access a wide range of information and view it offline. We have developed a technology to capture full articles as compressed images.",
@@ -48,7 +48,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "55",
+    id: 2,
     title: "CV Hermione Granger",
     descriptionEN:
       "The creation of a small website themed around a fictional resume, highlighting the journey of the famous Hermione Granger at Hogwarts. The site creatively showcases Hermione Granger's academic journey, skills, and achievements in the magical world of Hogwarts.",
@@ -76,7 +76,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "22",
+    id: 3,
     title: "NotesApp",
     descriptionEN:
       "NotesApp is a note-taking application with full authentication. An admin area is available to manage users. Users can log in, sign up, view notes, and benefit from password recovery and reset features.",
@@ -134,7 +134,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "44",
+    id: 4,
     title: "GuessWhat",
     descriptionEN:
       "GuessWhat is a quiz app that allows users to customize their player, choose their favorite themes, and set the number of questions as well as the time per question. GuessWhat offers personalized and flexible entertainment for quiz enthusiasts.",
@@ -192,7 +192,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "40",
+    id: 5,
     title: "Wonder Match",
     descriptionEN:
       "Wonder Match is an app for intrepid travelers, helping you choose your destination in a few simple steps: select desired continents, scroll through suggestions, then decide: Match or Pass. Explore activities, tourist sites, and selfie spots for perfectly planned vacations.",
@@ -235,7 +235,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "3",
+    id: 6,
     title: "Makesense intranet",
     descriptionEN:
       "Makesense, founded in 2010, encourages sustainability and engagement through ecological and social projects. An intranet platform is needed to create, evaluate, and vote on projects. Administrators can manage users, posts, and roles, with decisions being made through a voting system based on the user's role.",
@@ -298,7 +298,7 @@ export const projectsData = [
     ],
   },
   {
-    id: "1",
+    id: 7,
     title: "WildCodeHub",
     descriptionEN:
       "WildCodeHub is an online code development platform. Users can create, test, and share their code, with an intuitive interface and backup features. Social interactions are planned, and future developments will include support for new languages and real-time collaboration.",
