@@ -1,12 +1,10 @@
-import { useState, useEffect, Key } from "react";
-import { termContext } from "../../Terminal";
+import { useState, useEffect, useContext } from "react";
 import { Message } from "../Message";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ButtonCustom from "@/components/Button/Button";
 import { SkillTab } from "@/components/Skills/typeSkills";
-import Projects from "@/components/Projects/Projects";
 import { CardActions, CardContent, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -15,7 +13,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 const ProjectsCommand: React.FC = () => {
     
     const dataProjects = useSelector((state: RootState) => state.projects.dataProjects);
-
     const { translations } = useLang();
 
     const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
@@ -128,7 +125,7 @@ const ProjectsCommand: React.FC = () => {
                                 </div>
                                 </IconButton>
                             </CardActions>
-                            <CardContent className={`transition-opacity transition-max-h ${expandedCards.has(project?.id) ? 'opacity-100 max-h-500 expanded-animation-open' : 'opacity-0 max-h-0 overflow-hidden transition expanded-animation-close'}`}>
+                            <CardContent className={`transition-opacity transition-max-h ${expandedCards.has(project?.id) ? 'opacity-100 max-h-500' : 'opacity-0 max-h-0 overflow-hidden transition'}`}>
                             {chunkArray(project.skills, chunkSize).map((skillChunk, index) => (
                                 <div key={index} className="flex space-x-3 m-3">
                                     {skillChunk.map((skillImg: any) => (
