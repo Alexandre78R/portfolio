@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import {
-    checkThemeSwitch,
+  checkThemeSwitch,
   getCurrentCmdArry,
   isArgInvalid,
 } from "../../util";

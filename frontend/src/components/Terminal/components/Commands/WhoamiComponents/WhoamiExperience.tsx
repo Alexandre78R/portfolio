@@ -9,6 +9,8 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
 
   const dataExperiences = useSelector((state: RootState) => state.experiences.dataExperiences);
 
+  const newOrderDataExperience = dataExperiences?.slice().reverse();
+
   const { translations } = useLang();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -17,7 +19,7 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
   const pagination = () => {
     const indexLast: number = currentPage * datasPerPage;
     const indexFirst: number = indexLast - datasPerPage;
-    return dataExperiences.slice(indexFirst, indexLast);
+    return newOrderDataExperience.slice(indexFirst, indexLast);
   };
 
   const next = () : void => {
@@ -55,10 +57,10 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
                 />
             </div>
             <ButtonCustom
-                onClick={currentPage < Math.ceil(dataExperiences.length / datasPerPage) ? next : undefined}
+                onClick={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? next : undefined}
                 text={translations.buttonPaginationNext}
-                disable={currentPage < Math.ceil(dataExperiences.length / datasPerPage) ? false : true}
-                disableHover={currentPage < Math.ceil(dataExperiences.length / datasPerPage) ? false : true}
+                disable={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
+                disableHover={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
             />
           </div>
       </Message>

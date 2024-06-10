@@ -7,7 +7,7 @@ type SkillsProject = {
 }
 
 type Project = {
-    id: string;
+    id: number;
     title: string;
     descriptionFR: string;
     descriptionEN: string;
@@ -34,7 +34,7 @@ const projectsSlice = createSlice({
     },
     updateProjectDescriptions(state, action: PayloadAction<string>) {
       const lang = action.payload;
-      state.dataProjects = projectsData.map(project => ({
+      state.dataProjects = projectsData?.slice().reverse().map(project => ({
         ...project,
         description: lang === "fr" ? project.descriptionFR : project.descriptionEN,
       }));

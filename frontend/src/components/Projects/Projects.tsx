@@ -47,17 +47,17 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                 {project?.description?.length > 110 && !expandedText.has(project?.id)
                   ? (
                     <>
-                    <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 110) + '...'}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                      <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 110) + '...'}</p>
+                      <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
                   project?.description?.length < 110 ? 
-                  <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
+                    <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
                   :
                   <>
-                  <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
-                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                    <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
+                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
@@ -70,17 +70,17 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                 {project?.description?.length > 110 && !expandedText.has(project?.id)
                   ? (
                     <>
-                    <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 110) + '...'}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                      <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 110) + '...'}</p>
+                      <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
                   project?.description?.length < 110 ? 
-                  <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
+                    <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
                   :
                   <>
-                  <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
-                  <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                    <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
+                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
