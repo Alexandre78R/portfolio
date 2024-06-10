@@ -7,6 +7,7 @@ type LangContextType = {
   lang: string;
   setLang: (lang: string) => void;
   translations: Lang | { [key: string]: string };
+  listLang: any[];
 };
 
 interface LangProviderProps {
@@ -17,6 +18,7 @@ const LangContext = createContext<LangContextType>({
   lang: 'fr',
   setLang: () => {},
   translations: {},
+  listLang: ["fr", "en"],
 });
 
 export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.ReactElement => {
@@ -50,7 +52,8 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.R
       lang,
       setLang,
       translations,
-    }), [lang, translations]);
+      listLang,
+    }), [lang, translations, listLang]);
 
     return (
         <LangContext.Provider value={value}>

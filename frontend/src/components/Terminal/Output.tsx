@@ -9,6 +9,7 @@ import Echo from "./components/Commands/Echo";
 import Whoami from "./components/Commands/Whoami";
 import Themes from "./components/Commands/Themes";
 import About from "./components/Commands/About";
+import Lang from "./components/Commands/Lang";
 
 type Props = {
     index: number;
@@ -17,7 +18,7 @@ type Props = {
 
 const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
   const { arg } = useContext(termContext);
-  const specialCmds = ["projects", "socials", "echo", "themes", "whoami"];
+  const specialCmds = ["projects", "socials", "echo", "themes", "whoami", "lang"];
 
   const commandOutput = useMemo(() => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
@@ -34,6 +35,7 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
       echo: <Echo />,
       whoami: <Whoami />,
       themes: <Themes />,
+      lang: <Lang />,
     }[cmd] || null;
   }, [cmd, arg]);
 
