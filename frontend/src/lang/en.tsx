@@ -48,6 +48,7 @@ const en: Lang = {
     terminalWhoamiChoiceNotExiste : "This choice does not exist!",
     buttonPaginationPrevious : "Previous",
     buttonPaginationNext : "Next",
+    buttonCV : "Check out my CV",
 }
 
 export default en;

@@ -743,6 +743,10 @@ video {
   margin-top: 1.25rem;
 }
 
+.mt-\[-2\%\] {
+  margin-top: -2%;
+}
+
 .mt-\[1\%\] {
   margin-top: 1%;
 }
@@ -753,26 +757,6 @@ video {
 
 .mt-\[5\%\] {
   margin-top: 5%;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
-}
-
-.mb-10 {
-  margin-bottom: 2.5rem;
-}
-
-.mt-\[\] {
-  margin-top: ;
-}
-
-.mt-\[-2\] {
-  margin-top: -2;
-}
-
-.mt-\[-2\%\] {
-  margin-top: -2%;
 }
 
 .block {

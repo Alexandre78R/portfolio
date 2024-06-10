@@ -46,6 +46,7 @@ type Lang = {
     terminalWhoamiChoiceNotExiste : string,
     buttonPaginationPrevious : string,
     buttonPaginationNext : string,
+    buttonCV : string,
 }
 
 export default Lang;
