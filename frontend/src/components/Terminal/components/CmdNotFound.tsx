@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react';
 import { Message } from './Message';
 
-interface CmdNotFoundProps {
+type CmdNotFoundProps = {
   cmdH: string;
 }
 
-export const CmdNotFound: React.FC<CmdNotFoundProps> = ({ cmdH }) => {
+export const CmdNotFound: React.FC<CmdNotFoundProps> = ({ cmdH }): React.ReactElement => {
   return (
     <Message>
       Command not found: {cmdH}

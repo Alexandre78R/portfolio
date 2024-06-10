@@ -98,7 +98,6 @@ body {
   color: var(--text-color);
   caret-color: var(--primary-color);
   margin-left: 5px;
-  /* margin-right  : -100px; */
   width: 15vh;
 }
 

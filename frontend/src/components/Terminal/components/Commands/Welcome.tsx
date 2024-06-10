@@ -1,12 +1,13 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { useContext, useEffect, useState } from "react";
 import { termContext } from "../../Terminal";
-import { Message } from "../TerminalStructure/Message";
+import { Message } from "../Message";
 
-const Welcome: React.FC = () => {
+const Welcome: React.FC = (): React.ReactElement => {
+  
     const { arg } = useContext(termContext);
     const { translations } = useLang();
-    const [title, setTitle] = useState("Welcome to my terminal portfolio.")
+
     return (
         <div className="flex flex-wrap-reverse">
         <div className="w-full md:w-1/2">

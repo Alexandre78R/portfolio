@@ -1,40 +1,35 @@
 import { useContext } from "react";
-import _ from "lodash";
 import { termContext } from "../../Terminal";
-import { Message } from "../TerminalStructure/Message";
+import { useLang } from "@/context/Lang/LangContext";
+import WhoamiError from "./WhoamiComponents/WhoamiError";
+import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";
+import WhoamiExperience from "./WhoamiComponents/WhoamiExperience";
+import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
 
-const Whoami: React.FC = () => {
+const Whoami: React.FC = (): React.ReactElement => {
+  
   const { arg } = useContext(termContext);
-
-  let message = "";
+  const { translations } = useLang();
 
   if (arg.length === 0) {
-    message = "Merci d'indiquer un choix entre : experience|education|skills ";
-    return <Message>{message}</Message>;
+    return <WhoamiError message={translations.terminalWhoamiNotArg} />
   }
 
   if (arg.length !== 1 && arg.length !== 0) {
-    message = "Merci de choisir 1 seul argument maximun entre : experience|education|skills";
-    return <Message>{message}</Message>;
+    return <WhoamiError message={translations.terminalWhoamiMaxOneArg} />
   }
-
 
   switch (arg[0].toLowerCase()) {
-    case "experience":
-        message = 'experience'
-        break;
-    case "education":
-        message = 'education'
-        break;
+    case "experiences":
+      return <WhoamiExperience />
+    case "educations":
+      return <WhoamiEducation />
     case "skills":
-        message = 'skills'
-        break;
+      return <WhoamiSkills />
     default:
-        message = "ce choix n'existe pas !"
-        break;
+      return <WhoamiError message={translations.terminalWhoamiChoiceNotExiste} />
   }
 
-  return <Message>{message}</Message>;
 };
 
 export default Whoami;

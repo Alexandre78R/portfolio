@@ -8,3 +8,9 @@ export type skill = {
     name : string,
     image : string, 
 };
+
+export type SkillTab = {
+    id? : number,
+    category : string,
+    skills : skill, 
+}

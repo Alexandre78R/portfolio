@@ -1,19 +1,18 @@
 import React, { createContext, useState, useContext, useMemo, useEffect, ReactNode } from 'react';
 import themes, {ThemeColors, ThemeColorsText} from './themes';
 
-interface ThemeContextType {
+type ThemeContextType = {
   theme: keyof typeof themes;
   toggleTheme: (newTheme: string) => void;
 }
 
-interface ThemeProviderProps {
+type ThemeProviderProps = {
   children: ReactNode;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): React.ReactElement => {
   const [theme, setTheme] = useState<string>('dark');
 
   const setColorVarCSS = (newTheme: keyof typeof themes): void  => {
@@ -59,7 +58,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   }, [])
   
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+  const value: ThemeContextType = useMemo(() => ({ theme, toggleTheme }), [theme]);
 
   return (
     <ThemeContext.Provider value={value}>
@@ -68,7 +67,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
-export const useTheme = (): ThemeContextType => {
+export const useTheme: any = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');

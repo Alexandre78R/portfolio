@@ -1,11 +1,12 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { Typography } from "@mui/material";
+import { Message } from "../Message";
 
-const AboutMe: React.FC = () => {
+const About: React.FC = (): React.ReactElement => {
     const { translations } = useLang()
 
     return (
-    <div className="flex flex-col items-center">
+    <Message>
         <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
         <Typography variant="h5" component="h3" className="text-text">{translations.titleAboutMe}</Typography>
         <p className="text-text mt-4">
@@ -18,8 +19,8 @@ const AboutMe: React.FC = () => {
             {translations.descriptionAboutMe3}
         </p>
         </div>
-    </div>
+    </Message>
     );
 };
 
-export default AboutMe;
+export default About;

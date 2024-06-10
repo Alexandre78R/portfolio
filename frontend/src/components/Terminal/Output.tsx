@@ -1,20 +1,21 @@
 import React, { useContext, useState, useMemo } from "react";
 import { termContext } from "./Terminal";
 import Welcome from "./components/Commands/Welcome";
-import { Message } from "./components/TerminalStructure/Message";
+import { Message } from "./components/Message";
 import Clear from "./components/Commands/Clear";
 import Help from "./components/Commands/Help";
 import Socials from "./components/Commands/Socials";
 import Echo from "./components/Commands/Echo";
 import Whoami from "./components/Commands/Whoami";
 import Themes from "./components/Commands/Themes";
+import About from "./components/Commands/About";
 
 type Props = {
     index: number;
     cmd: string;
 };
 
-const Output: React.FC<Props> = ({ index, cmd }) => {
+const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
   const { arg } = useContext(termContext);
   const specialCmds = ["projects", "socials", "echo", "themes", "whoami"];
 
@@ -26,6 +27,7 @@ const Output: React.FC<Props> = ({ index, cmd }) => {
 
     return {
       help: <Help />,
+      about : <About />,
       welcome: <Welcome />,
       clear: <Clear />,
       socials: <Socials />,

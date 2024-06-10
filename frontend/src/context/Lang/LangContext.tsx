@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 import fr from "@/lang/fr"
 import en from "@/lang/en"
+import Lang from '@/lang/typeLang';
 
 type LangContextType = {
   lang: string;
   setLang: (lang: string) => void;
-  translations: { [key: string]: string };
+  translations: Lang | { [key: string]: string };
 };
 
 interface LangProviderProps {
@@ -18,7 +19,8 @@ const LangContext = createContext<LangContextType>({
   translations: {},
 });
 
-export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
+export const LangProvider: React.FC<LangProviderProps> = ({ children }): React.ReactElement => {
+
     const [lang, setLang] = useState<string>('fr');
     const [translations, setTranslations] = useState<{ [key: string]: string }>(fr);
     const [listLang, setListLang] = useState<string[]>(["fr", "en"]);
@@ -44,7 +46,7 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
         }
     }, [lang])
 
-    const value = useMemo(() => ({
+    const value: LangContextType = useMemo(() => ({
       lang,
       setLang,
       translations,
@@ -57,4 +59,4 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
     );
 };
 
-export const useLang = () => useContext(LangContext);
+export const useLang: any = () => useContext(LangContext);

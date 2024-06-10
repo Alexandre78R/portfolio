@@ -11,6 +11,7 @@ type Lang = {
     navbarButtonSkill : string,
     navbarButtonProject : string,
     navbarButtonChoiceView : string,
+    navbarButtonTerminal : string,
     headerTitle : string,
     nameCategoryChoiceView : string,
     buttonNameChoiceTerminale : string,
@@ -40,6 +41,11 @@ type Lang = {
     terminalHelpArrowDownTabDesc : string,
     terminalHelpCtrlAction : string,
     terminalHelpCtrlTabDesc : string,
+    terminalWhoamiNotArg : string,
+    terminalWhoamiMaxOneArg : string,
+    terminalWhoamiChoiceNotExiste : string,
+    buttonPaginationPrevious : string,
+    buttonPaginationNext : string,
 }
 
 export default Lang;
