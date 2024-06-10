@@ -1,5 +1,7 @@
 type Lang = {
     file : string,
+    titleHTML: string,
+    descHTML: string,
     welcome : string,
     theme1 : string,
     theme2 : string,

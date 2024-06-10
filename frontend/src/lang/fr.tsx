@@ -2,6 +2,8 @@ import Lang from "./typeLang";
 
 const fr: Lang = {
     file : "fr",
+    titleHTML: "Alexandre Renard | Portfolio (FR)",
+    descHTML: "Bienvenue sur mon Portfolio by Alexandre Renard ! ",
     welcome : "Bienvenue sur mon portfolio !",
     theme1 : "Sombre",
     theme2 : "Lumière",
