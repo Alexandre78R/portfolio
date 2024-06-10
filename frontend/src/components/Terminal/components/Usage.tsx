@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { Message } from "./Message";
 
 type Props = {
-  cmd: "socials" | "themes" | "whoami";
+  cmd: "socials" | "themes" | "whoami" | "lang";
 };
 
 const arg = {
   socials: { placeholder: "social", example: "1" },
   themes: { placeholder: "theme-name", example: "ubuntu" },
   whoami: { placeholder: "whoami-view", example: "experience" },
+  lang: { placeholder: "lang-name", example: "fr" },
 };
 
 const Usage: React.FC<Props> = ({ cmd }): React.ReactElement => {
@@ -19,7 +20,7 @@ const Usage: React.FC<Props> = ({ cmd }): React.ReactElement => {
     action = "go";
   }
   
-  if (cmd === "themes") {
+  if (cmd === "themes" || cmd === "lang") {
     action = "set";
   }
 

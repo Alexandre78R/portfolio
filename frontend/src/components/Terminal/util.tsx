@@ -39,3 +39,14 @@ export const checkThemeSwitch = (
   currentCommand[1] === "set" && // first arg is 'set'
   currentCommand.length > 2 && // current command has arg
   _.includes(themes, currentCommand[2]); // arg last part is one of id
+
+  export const checkLangSwitch = (
+    rerender: boolean,
+    currentCommand: string[],
+    lang: string[]
+  ): boolean =>
+    rerender && // is submitted
+    currentCommand[0] === "lang" &&
+    currentCommand[1] === "set" && 
+    currentCommand.length > 2 &&
+    _.includes(lang, currentCommand[2]);
