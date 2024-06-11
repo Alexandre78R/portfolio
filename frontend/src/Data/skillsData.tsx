@@ -80,6 +80,7 @@ export const skillsData = [
       skills: [
         { name: 'React Native', image: "https://img.shields.io/badge/-React%20Native-45b8d8?style=flat-square&logo=react&logoColor=white" },
         { name: 'Expo', image: "https://img.shields.io/badge/Expo-000000?style=flat-square&logo=expo&logoColor=white" },
+        { name: 'NativeWind', image: "https://img.shields.io/badge/NativeWind-45b8d8?style=flat-square&logo=react&logoColor=white" },
       ],
     },
     {
