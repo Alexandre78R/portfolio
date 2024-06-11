@@ -1,6 +1,5 @@
-import { useLang } from '@/context/Lang/LangContext';
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "@/store/store";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const Educations: React.FC = (): React.ReactElement => {
 
