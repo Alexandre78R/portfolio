@@ -1481,6 +1481,34 @@ body {
     margin-inline-start: 0px;
   }
 
+  .md\:-mt-\[11px\] {
+    margin-top: -11px;
+  }
+
+  .md\:-mt-\[8px\] {
+    margin-top: -8px;
+  }
+
+  .md\:-mt-\[9px\] {
+    margin-top: -9px;
+  }
+
+  .md\:-mt-\[7px\] {
+    margin-top: -7px;
+  }
+
+  .md\:-mt-\[6\.5px\] {
+    margin-top: -6.5px;
+  }
+
+  .md\:-mt-\[6px\] {
+    margin-top: -6px;
+  }
+
+  .md\:-mt-\[5px\] {
+    margin-top: -5px;
+  }
+
   .md\:block {
     display: block;
   }
