@@ -2,7 +2,7 @@ import Lang from "./typeLang";
 
 const fr: Lang = {
     file : "fr",
-    titleHTML: "Alexandre Renard - Développeur Fullstack JS | Portfolio",
+    titleHTML: "Alexandre Renard - Développeur Fullstack | Portfolio",
     descHTML: "Développeur junior passionné par l'informatique depuis l'enfance. Explorez mon Portfolio pour découvrir mes compétences !",
     welcome : "Bienvenue sur mon portfolio !",
     theme1 : "Sombre",
@@ -16,7 +16,7 @@ const fr: Lang = {
     navbarButtonProject :"Projets",
     navbarButtonChoiceView : "Choix de vue",
     navbarButtonTerminal : "Terminal",
-    headerTitle : "Développeur Fullstack JS",
+    headerTitle : "Développeur Fullstack",
     nameCategoryChoiceView : "Choix de vue",
     buttonNameChoiceTerminale : "Vue Terminal",
     buttonNameChoiceText : "Vue Texte",
