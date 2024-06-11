@@ -44,15 +44,15 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                 <Typography variant="h5" component="h4" className="max-w-320px pt-0.5">
                   {project?.title}
                 </Typography>
-                {project?.description?.length > 110 && !expandedText.has(project?.id)
+                {project?.description?.length > 150 && !expandedText.has(project?.id)
                   ? (
                     <>
-                      <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 110) + '...'}</p>
+                      <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 150) + '...'}</p>
                       <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
-                  project?.description?.length < 110 ? 
+                  project?.description?.length < 150 ? 
                     <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
                   :
                   <>
@@ -67,15 +67,15 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                 <Typography variant="h5" component="h4" className="max-w-320px">
                   {project?.title}
                 </Typography>
-                {project?.description?.length > 110 && !expandedText.has(project?.id)
+                {project?.description?.length > 150 && !expandedText.has(project?.id)
                   ? (
                     <>
-                      <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 110) + '...'}</p>
+                      <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 150) + '...'}</p>
                       <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
-                  project?.description?.length < 110 ? 
+                  project?.description?.length < 150 ? 
                     <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
                   :
                   <>
