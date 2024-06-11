@@ -661,6 +661,10 @@ video {
   margin: 0.75rem;
 }
 
+.m-5 {
+  margin: 1.25rem;
+}
+
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -1268,9 +1272,38 @@ body {
   background-color: var(--body-color);
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  display: none;
+/* .custom-scrollbar::-webkit-scrollbar {
+    display: none;
+    color: red;
+}
+
+.custom-scrollbar::-webkit-scrollbar:hover {
+  display: block;
   color: red;
+} */
+
+/* Cacher la barre de défilement par défaut */
+
+.custom-scrollbar {
+  overflow-y: hidden;
+  /* Désactiver le défilement vertical */
+}
+
+.custom-scrollbar:hover {
+  overflow-y: auto;
+  /* Activer le défilement vertical au survol */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0;
+  /* Masquer la barre de défilement */
+  height: 0;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar {
+  width: 2px;
+  /* Afficher la barre de défilement au survol */
+  height: 2px;
 }
 
 @keyframes expandOpen {
