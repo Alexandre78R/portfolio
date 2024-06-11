@@ -76,7 +76,7 @@ const themes: { [key: string]: Theme } = {
       id: "2",
       name: "light",
       colors: {
-        body: "#EFF3F3",
+        body: "#E8E8E8",
         scrollHandle: "#C1C1C1",
         scrollHandleHover: "#AAAAAA",
         primary: "#008787",

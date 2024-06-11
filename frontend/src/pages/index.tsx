@@ -15,12 +15,10 @@ import { updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
-import { useRouter } from 'next/router';
 import Seo from "@/components/Seo/Seo";
 
 const Home: React.FC = (): React.ReactElement  => {
 
-  const router = useRouter();
   const { translations } = useLang();
   const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
