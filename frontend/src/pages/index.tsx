@@ -16,11 +16,12 @@ import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
+import Educations from "@/components/Educations/Educations";
 
 const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef, educationRef } = useSectionRefs();
   const { selectedView, setSelectedView } = useChoiceView();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -76,6 +77,12 @@ const Home: React.FC = (): React.ReactElement  => {
           <section className="ml-3 mt-[5%]" ref={projectRef} id="project">
             <Title title={translations.nameCategoryProjects} />
             <HorizontalScroll data={dataProjects} category="projects" />
+          </section>
+          <section className=" mt-[4%]" ref={educationRef} id="project">
+            <div className="ml-3">
+              <Title title={translations.nameCategoryEducations} />
+            </div>
+            <Educations />
           </section>
         </>
       }
