@@ -80,7 +80,9 @@ const Home: React.FC = (): React.ReactElement  => {
         </>
       }
       </main>
-      <Footer />
+      <section className="mt-[5%]">
+        <Footer />
+      </section>
     </>
   );
 }

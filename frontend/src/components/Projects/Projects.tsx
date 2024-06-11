@@ -35,8 +35,8 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
 
   return (
     <div className='bg-body text-text' >
-      <div key={project?.id} className="flex-shrink-0 w-70 bg-body text-text">
-        <div className="flex-shrink-0 w-70 bg-body text-text m-10">
+      <div key={project?.id} className="flex-shrink-0 w-50 bg-body text-text">
+        <div className="flex-shrink-0 w-50 bg-body text-text m-5">
           <div>
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
