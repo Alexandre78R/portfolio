@@ -39,7 +39,7 @@ const Navbar: React.FC = (): React.ReactElement => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleScrollToSection: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) => void = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
+  const handleScrollToSection: (event: React.MouseEvent<HTMLElement>, sectionRef: React.RefObject<HTMLDivElement>) => void = (event: React.MouseEvent<HTMLElement>, sectionRef: React.RefObject<HTMLDivElement>) : void => {
     event.preventDefault();
     if (sectionRef?.current) {
       sectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -49,20 +49,20 @@ const Navbar: React.FC = (): React.ReactElement => {
 
   
   return (
-    <nav className="bg-body p-3 fixed top-0 left-0 w-full z-50">
+    <nav className="bg-body p-4 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <a onClick={(e) => handleScrollToSection(e, headerRef)} className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</a>
+          <button onClick={(e) => handleScrollToSection(e, headerRef)} className="hover:text-secondary text-text font-bold text-xl">{translations.navbarTitle}</button>
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
-            <li><a onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+            <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
             { 
               selectedView !== "terminal" ?
               <>
-                <li><a onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
-                <li><a onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
-                <li><a onClick={(e) => handleScrollToSection(e, projectRef)}  className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
+                <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, projectRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
                 <li>
                 <button  className="relative inline-block" onClick={toggleChecked}>
                   <label htmlFor="toggleButton" className="cursor-pointer">
@@ -77,7 +77,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
               </>
               :
-              <li><a onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</a></li>
+              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
             }
           </ul>
         </menu>
@@ -98,13 +98,13 @@ const Navbar: React.FC = (): React.ReactElement => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-          <li><a onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</a></li>
+          <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
           { 
               selectedView !== "terminal" ?
               <>
-                <li><a onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</a></li>
-                <li><a onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</a></li>
-                <li><a onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</a></li>
+                <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
                 <li>
                 <div className="relative inline-block" onClick={toggleChecked}>
@@ -119,7 +119,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 </li>
               </>
               : 
-              <li><a onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</a></li>
+              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
           }
           </ul>
         </menu>
