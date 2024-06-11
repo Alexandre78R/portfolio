@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /400
+Allow: /img/alex-pixel.png
+Allow: /img/logo.jpeg
+Allow: /Alexandre-Renard-CV.pdf
+Disallow: /admin/
+Sitemap: /sitemap.xml
+Crawl-delay: 15

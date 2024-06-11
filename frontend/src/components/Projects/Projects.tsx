@@ -41,9 +41,9 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
                 <iframe width="320" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
-                <Typography variant="h5" component="h4" className="max-w-320px pt-0.5">
+                <p className="text-xl max-w-320px pt-0.5">
                   {project?.title}
-                </Typography>
+                </p>
                 {project?.description?.length > 150 && !expandedText.has(project?.id)
                   ? (
                     <>
@@ -64,9 +64,9 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
             ) : (
               <div className="w-320px h-170 overflow-hidden bg-body text-text">
                 <img src={project?.contentDisplay} alt={project?.title} className="max-w-[310px] pb-2 overflow-hidden" />
-                <Typography variant="h5" component="h4" className="max-w-320px">
+                <p className="text-xl max-w-320px pt-0.5">
                   {project?.title}
-                </Typography>
+                </p>
                 {project?.description?.length > 150 && !expandedText.has(project?.id)
                   ? (
                     <>
