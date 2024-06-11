@@ -11,7 +11,7 @@ import { useChoiceView } from '@/context/ChoiceView/ChoiceViewContext';
 const Navbar: React.FC = (): React.ReactElement => {
 
   const { lang, setLang, translations } = useLang();
-  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef, terminalRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef, terminalRef, educationRef } = useSectionRefs();
   const { toggleTheme } = useTheme();
   const { selectedView } = useChoiceView();
 
@@ -63,6 +63,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, projectRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, educationRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
                 <li>
                 <button  className="relative inline-block" onClick={toggleChecked}>
                   <label htmlFor="toggleButton" className="cursor-pointer">
@@ -105,6 +106,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, educationRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
                 <li>
                 <div className="relative inline-block" onClick={toggleChecked}>

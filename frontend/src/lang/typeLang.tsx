@@ -14,6 +14,7 @@ type Lang = {
     navbarButtonProject : string,
     navbarButtonChoiceView : string,
     navbarButtonTerminal : string,
+    navbarButtonEducation : string,
     headerTitle : string,
     nameCategoryChoiceView : string,
     buttonNameChoiceTerminale : string,
@@ -49,6 +50,7 @@ type Lang = {
     buttonPaginationPrevious : string,
     buttonPaginationNext : string,
     buttonCV : string,
+    nameCategoryEducations : string,
 }
 
 export default Lang;
