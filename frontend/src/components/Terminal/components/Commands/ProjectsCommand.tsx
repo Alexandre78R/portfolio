@@ -114,15 +114,18 @@ const ProjectsCommand: React.FC = () => {
                             </div>
                             <CardActions disableSpacing className="flex justify-between items-center p-0">
                                 <IconButton aria-label="add to favorites" >
-                                <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
-                                    <GitHubIcon className='text-primary hover:text-secondary' /> 
-                                </a>
-                                <button className="ml-2 m-1" title={`${project?.title} - ${translations.navbarButtonSkill}`}>
-                                    <ExpandMoreIcon
-                                        onClick={() => handleExpandClick(project?.id)}
-                                        className={`text-primary hover:text-secondary transition-transform transform ${expandedCards.has(project?.id) ? 'rotate-180' : ''}`}
-                                    />
-                                </button>
+                                    {
+                                        project?.github &&
+                                        <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
+                                            <GitHubIcon className='text-primary hover:text-secondary' /> 
+                                        </a>
+                                    }
+                                    <button className="ml-2 m-1" title={`${project?.title} - ${translations.navbarButtonSkill}`}>
+                                        <ExpandMoreIcon
+                                            onClick={() => handleExpandClick(project?.id)}
+                                            className={`text-primary hover:text-secondary transition-transform transform ${expandedCards.has(project?.id) ? 'rotate-180' : ''}`}
+                                        />
+                                    </button>
                                 </IconButton>
                             </CardActions>
                             <CardContent className={`transition-opacity transition-max-h ${expandedCards.has(project?.id) ? 'opacity-100 max-h-500' : 'opacity-0 max-h-0 overflow-hidden transition'}`}>
