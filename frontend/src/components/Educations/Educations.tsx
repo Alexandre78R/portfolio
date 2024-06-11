@@ -17,16 +17,16 @@ const Educations: React.FC = (): React.ReactElement => {
                         <li>
                             <div className="flex-start flex items-center pt-2 md:block md:pt-0">
                             <div
-                                className="-ms-[5px] me-3 h-[9px] w-[9px] rounded-full bg-secondary md:-mt-[13px] md:me-0 md:ms-0"></div>
+                                className="-ms-[5px] me-3 h-[9px] w-[9px] rounded-full bg-secondary md:-mt-[5px] md:me-0 md:ms-0"></div>
                             <p className="mt-2 text-sm text-text">
                                 {education.year}
                             </p>
                             </div>
                             <div className="ms-4 mt-2 pb-5 md:ms-0">
-                            <p className=" text-primary mb-1.5  font-semibold">{education.title}</p>
-                            <p className="mb-3 text-text300">
-                                {education.school}
-                            </p>
+                                <p className=" text-primary mb-1.5  font-semibold">{education.title}</p>
+                                <p className="mb-3 text-text300">
+                                    {education.school}
+                                </p>
                             </div>
                         </li>
                     </>
