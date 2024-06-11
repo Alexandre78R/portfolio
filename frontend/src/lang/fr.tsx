@@ -3,7 +3,7 @@ import Lang from "./typeLang";
 const fr: Lang = {
     file : "fr",
     titleHTML: "Alexandre Renard - Développeur Fullstack | Portfolio (FR)",
-    descHTML: "Je suis un développeur junior français, depuis mon plus jeune âge j'ai toujours été intéressé par l'informatique dans le développement Web. Aujourd'hui, je travaille activement à faire de ma passion mon métier en poursuivant une formation et un programme en développement Web. N'hésitez pas à explorer mon Portfolio pour en savoir plus sur moi !",
+    descHTML: "Je suis un développeur junior, depuis mon plus jeune âge j'ai toujours été intéressé par l'informatique dans le développement. N'hésitez pas à explorer mon Portfolio pour en savoir plus !",
     welcome : "Bienvenue sur mon portfolio !",
     theme1 : "Sombre",
     theme2 : "Lumière",

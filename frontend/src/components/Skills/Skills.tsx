@@ -9,7 +9,7 @@ const Skills: React.FC<skills> = ({ category, skills }): React.ReactElement => {
       style={{ cursor: 'pointer', backgroundColor : "var(--body-color)"}}
     >
       <div >
-        <Typography variant="h6" component="h6" className="text-lg text-text font-bold mb-2">
+        <Typography variant="h4" component="h4" className="text-lg text-text font-bold mb-2">
           {category} 
         </Typography>
         <div className="flex flex-col">
