@@ -36,14 +36,15 @@ const Seo: React.FC = (): React.ReactElement => {
         <meta name="url" content={canonicalUrl}></meta>
         <meta property="og:title" content={translations.titleHTML} />
         <meta property="og:description" content={translations.descHTML} />
-        <meta property="og:url" content={urlDomaine} />
-        <meta property="og:type" content="Portfolio" />
+        <meta property="og:url" content={canonicalUrl ? canonicalUrl : ""} />
+        <meta property="og:type" content="Alexandre Renard - Portfolio" />
         <meta property="og:image" content="/img/logo.jpeg" />
         <meta property="og:site_name" content={translations.titleHTML} />
         <meta property="twitter:title" content={translations.titleHTML} />
         <meta property="twitter:description" content={translations.descHTML} />
         <meta property="twitter:card" content="Summary Card " />
-        <meta property="twitter:site" content={urlDomaine} />
+        <meta property="twitter:site" content={canonicalUrl} />
+        
         <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" href="/img/logo.jpeg" />
         <script type="application/ld+json">
