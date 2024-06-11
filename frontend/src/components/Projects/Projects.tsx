@@ -88,9 +88,12 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
           </div>
           <CardActions disableSpacing className="flex justify-between items-center p-0">
             <IconButton aria-label="add to favorites" >
-              <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
-                <GitHubIcon className='text-primary hover:text-secondary' /> 
-              </a>
+            {
+              project?.github && 
+                <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
+                  <GitHubIcon className='text-primary hover:text-secondary' /> 
+                </a>
+            }
             </IconButton>
             <button className="flex items-center" title={`${project?.title} - ${translations.navbarButtonSkill}`}>
               <ExpandMoreIcon
