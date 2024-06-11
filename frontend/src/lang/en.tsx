@@ -16,6 +16,7 @@ const en: Lang = {
     navbarButtonProject : "Projects",
     navbarButtonChoiceView : "View choice",
     navbarButtonTerminal : "Terminal",
+    navbarButtonEducation : "Educations",
     headerTitle : "Fullstack Developer",
     nameCategoryChoiceView : "View choice",
     buttonNameChoiceTerminale : "View Terminal",
@@ -51,6 +52,7 @@ const en: Lang = {
     buttonPaginationPrevious : "Previous",
     buttonPaginationNext : "Next",
     buttonCV : "Check out my CV",
+    nameCategoryEducations : "Educations",
 }
 
 export default en;
