@@ -47,7 +47,6 @@ const Navbar: React.FC = (): React.ReactElement => {
     setMenuOpen(false);
   };
 
-  
   return (
     <nav className="bg-body p-4 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
@@ -56,29 +55,61 @@ const Navbar: React.FC = (): React.ReactElement => {
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
-            <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
+            <li>
+              <button onClick={(e) => handleScrollToSection(e, choiceViewRef)} className="text-text hover:text-secondary">
+                <span className="hidden md:inline">{translations.navbarButtonChoiceView}</span>
+                <span className="md:hidden">Choice</span>
+              </button>
+            </li>
             { 
               selectedView !== "terminal" ?
               <>
-                <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, projectRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, educationRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
                 <li>
-                <button  className="relative inline-block" onClick={toggleChecked}>
-                  <label htmlFor="toggleButton" className="cursor-pointer">
-                    <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
-                      <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
-                      <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
-                      <div className={`absolute left-0 w-6 h-6 rounded-full  bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
-                    </div>
-                  </label>
-                </button>
+                  <button onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonAbout}</span>
+                    <span className="md:hidden">About</span>
+                  </button>
                 </li>
-                <li><ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/></li>
+                <li>
+                  <button onClick={(e) => handleScrollToSection(e, skillRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonSkill}</span>
+                    <span className="md:hidden">Skills</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonProject}</span>
+                    <span className="md:hidden">Projects</span>
+                  </button>
+                </li>
+                <li>
+                  <button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonEducation}</span>
+                    <span className="md:hidden">Education</span>
+                  </button>
+                </li>
+                <li>
+                  <button className="relative inline-block" onClick={toggleChecked}>
+                    <label htmlFor="toggleButton" className="cursor-pointer">
+                      <div className="w-12 h-6 bg-gray-300 rounded-full shadow-inner">
+                        <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
+                        <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
+                        <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+                      </div>
+                    </label>
+                  </button>
+                </li>
+                <li>
+                  <ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/>
+                </li>
               </>
               :
-              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
+              <li>
+                <button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">
+                  <span className="hidden md:inline">{translations.navbarButtonTerminal}</span>
+                  <span className="md:hidden">Terminal</span>
+                </button>
+              </li>
             }
           </ul>
         </menu>
@@ -99,30 +130,30 @@ const Navbar: React.FC = (): React.ReactElement => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-          <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)}  className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
-          { 
+            <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)} className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
+            { 
               selectedView !== "terminal" ?
               <>
                 <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, skillRef)}  className="text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, skillRef)} className="text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, educationRef)}  className="md:text-base text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
                 <li>
-                <div className="relative inline-block" onClick={toggleChecked}>
-                  <label htmlFor="toggleButton" className="cursor-pointer">
-                    <div className={`w-12 h-6 bg-gray-300 rounded-full shadow-inner 'bg-grey'`}>
-                      <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>FR</div>
-                      <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-gray-500 text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>EN</div>
-                      <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
-                    </div>
-                  </label>
-                </div>
+                  <div className="relative inline-block" onClick={toggleChecked}>
+                    <label htmlFor="toggleButton" className="cursor-pointer">
+                      <div className="w-12 h-6 bg-gray-300 rounded-full shadow-inner">
+                        <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>FR</div>
+                        <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>EN</div>
+                        <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
+                      </div>
+                    </label>
+                  </div>
                 </li>
               </>
               : 
-              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)}  className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
-          }
+              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
+            }
           </ul>
         </menu>
       )}
@@ -133,11 +164,11 @@ const Navbar: React.FC = (): React.ReactElement => {
         aria-describedby="modal-modal-description"
       >
         <Box className="bg-body absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-400 p-4 border-none">
-        <div className="p-1">
-          <Button onClick={() => handleChangeColorTheme("dark") } text={translations?.theme1}/>
-          <Button onClick={() => handleChangeColorTheme("light")}  text={translations?.theme2}/>
-          <Button onClick={() => handleChangeColorTheme("ubuntu")} text={translations?.theme3}/>
-        </div>
+          <div className="p-1">
+            <Button onClick={() => handleChangeColorTheme("dark")} text={translations?.theme1}/>
+            <Button onClick={() => handleChangeColorTheme("light")} text={translations?.theme2}/>
+            <Button onClick={() => handleChangeColorTheme("ubuntu")} text={translations?.theme3}/>
+          </div>
         </Box>
       </Modal>
     </nav>
