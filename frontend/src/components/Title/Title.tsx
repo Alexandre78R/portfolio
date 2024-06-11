@@ -7,7 +7,7 @@ type Props = {
 const Title: React.FC<Props> = ({ title }): React.ReactElement  => {
   
   return (
-    <Typography variant="h5" component="h5" className="text-text font-bold">
+    <Typography variant="h2" component="h2" className="text-text text-2xl font-bold">
       {title}
     </Typography>
   );
