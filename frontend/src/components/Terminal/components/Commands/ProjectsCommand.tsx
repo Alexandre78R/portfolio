@@ -92,7 +92,7 @@ const ProjectsCommand: React.FC = () => {
                                 )}
                             </div>
                             <div className="sm:max-w-[80%] md:max-w-[60%] lg:max-w-[50%] xl:max-w-[35%]">
-                                <Typography variant="h5" component="h2" className="max-w-320px">
+                                <Typography variant="h5" component="h4" className="max-w-320px">
                                 {project?.title}
                                 </Typography>
                                 {project?.description?.length > 90 && !expandedText.has(project?.id)
@@ -114,15 +114,15 @@ const ProjectsCommand: React.FC = () => {
                             </div>
                             <CardActions disableSpacing className="flex justify-between items-center p-0">
                                 <IconButton aria-label="add to favorites" >
-                                <a href={project?.github} target='_blank' rel="alternate">
+                                <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
                                     <GitHubIcon className='text-primary hover:text-secondary' /> 
                                 </a>
-                                <div className="ml-2 m-1">
+                                <button className="ml-2 m-1" title={`${project?.title} - ${translations.navbarButtonSkill}`}>
                                     <ExpandMoreIcon
                                         onClick={() => handleExpandClick(project?.id)}
                                         className={`text-primary hover:text-secondary transition-transform transform ${expandedCards.has(project?.id) ? 'rotate-180' : ''}`}
                                     />
-                                </div>
+                                </button>
                                 </IconButton>
                             </CardActions>
                             <CardContent className={`transition-opacity transition-max-h ${expandedCards.has(project?.id) ? 'opacity-100 max-h-500' : 'opacity-0 max-h-0 overflow-hidden transition'}`}>

@@ -8,7 +8,7 @@ const About: React.FC = (): React.ReactElement => {
     return (
     <Message>
         <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[40%]">
-        <Typography variant="h5" component="h3" className="text-text">{translations.titleAboutMe}</Typography>
+        <Typography variant="h3" component="h3" className="text-text text-2xl">{translations.titleAboutMe}</Typography>
         <p className="text-text mt-4">
             {translations.descriptionAboutMe1}
         </p>

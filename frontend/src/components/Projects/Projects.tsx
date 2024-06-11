@@ -41,14 +41,14 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
                 <iframe width="320" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
-                <Typography variant="h5" component="h2" className="max-w-320px pt-0.5">
+                <Typography variant="h5" component="h4" className="max-w-320px pt-0.5">
                   {project?.title}
                 </Typography>
                 {project?.description?.length > 110 && !expandedText.has(project?.id)
                   ? (
                     <>
                       <p className="max-w-320px pt-2 leading-normal">{project?.description.substring(0, 110) + '...'}</p>
-                      <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                      <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
@@ -57,21 +57,21 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                   :
                   <>
                     <p className="max-w-320px pt-2 leading-normal">{project?.description}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                    <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
             ) : (
               <div className="w-320px h-170 overflow-hidden bg-body text-text">
                 <img src={project?.contentDisplay} alt={project?.title} className="max-w-[310px] pb-2 overflow-hidden" />
-                <Typography variant="h5" component="h2" className="max-w-320px">
+                <Typography variant="h5" component="h4" className="max-w-320px">
                   {project?.title}
                 </Typography>
                 {project?.description?.length > 110 && !expandedText.has(project?.id)
                   ? (
                     <>
                       <p className="max-w-320px pt-2 leading-125%">{project?.description?.substring(0, 110) + '...'}</p>
-                      <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                      <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                     </>
                   )
                   : 
@@ -80,7 +80,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
                   :
                   <>
                     <p className="max-w-320px pt-2 leading-125%">{project?.description}</p>
-                    <p onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
+                    <p title={expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore} onClick={() => handleExpandTextClick(project?.id)} className='text-primary hover:text-secondary'>{expandedText.has(project?.id) ? translations.buttonSeeLess : translations.buttonSeeMore}</p>
                   </>
                 }
               </div>
@@ -88,16 +88,16 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
           </div>
           <CardActions disableSpacing className="flex justify-between items-center p-0">
             <IconButton aria-label="add to favorites" >
-              <a href={project?.github} target='_blank' rel="alternate">
+              <a href={project?.github} target='_blank' rel="alternate" title={`${project?.title} - Github`}>
                 <GitHubIcon className='text-primary hover:text-secondary' /> 
               </a>
             </IconButton>
-            <div className="flex items-center">
+            <button className="flex items-center" title={`${project?.title} - ${translations.navbarButtonSkill}`}>
               <ExpandMoreIcon
                 onClick={() => handleExpandClick(project?.id)}
                 className={`text-primary transition-transform transform ${expandedCards.has(project?.id) ? 'rotate-180' : ''}`}
               />
-            </div>
+            </button>
           </CardActions>
           <CardContent className={`transition-opacity transition-max-h ${expandedCards.has(project?.id) ? 'opacity-100 max-h-500 expanded-animation-open' : 'opacity-0 max-h-0 overflow-hidden transition expanded-animation-close'}`}>
             <div className="flex flex-col">
