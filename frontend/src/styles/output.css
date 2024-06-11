@@ -783,6 +783,10 @@ video {
   margin-top: 5%;
 }
 
+.mb-2\.5 {
+  margin-bottom: 0.625rem;
+}
+
 .block {
   display: block;
 }

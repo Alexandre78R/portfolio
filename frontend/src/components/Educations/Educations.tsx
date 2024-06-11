@@ -23,7 +23,7 @@ const Educations: React.FC = (): React.ReactElement => {
                             </p>
                             </div>
                             <div className="ms-4 mt-2 pb-5 md:ms-0">
-                                <p className="hover:text-secondary text-primary mb-1.5 font-semibold">{education.title}</p>
+                                <p className="hover:text-secondary text-primary mb-2 font-semibold">{education.title}</p>
                                 <p className="mb-3 text-text300 hover:text-text100">
                                     {education.school}
                                 </p>
