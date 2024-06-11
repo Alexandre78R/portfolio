@@ -649,10 +649,6 @@ video {
   margin: 0.25rem;
 }
 
-.m-10 {
-  margin: 2.5rem;
-}
-
 .m-2 {
   margin: 0.5rem;
 }
@@ -665,6 +661,10 @@ video {
   margin: 1.25rem;
 }
 
+.m-\[3\%\] {
+  margin: 3%;
+}
+
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -675,12 +675,24 @@ video {
   margin-right: auto;
 }
 
+.-ms-\[5px\] {
+  margin-inline-start: -5px;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
 
+.mb-1\.5 {
+  margin-bottom: 0.375rem;
+}
+
 .mb-2 {
   margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
 }
 
 .mb-4 {
@@ -697,6 +709,10 @@ video {
 
 .mb-\[5\%\] {
   margin-bottom: 5%;
+}
+
+.me-3 {
+  margin-inline-end: 0.75rem;
 }
 
 .ml-1 {
@@ -731,6 +747,10 @@ video {
   margin-right: 1rem;
 }
 
+.ms-4 {
+  margin-inline-start: 1rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -753,6 +773,10 @@ video {
 
 .mt-\[10\%\] {
   margin-top: 10%;
+}
+
+.mt-\[4\%\] {
+  margin-top: 4%;
 }
 
 .mt-\[5\%\] {
@@ -793,6 +817,10 @@ video {
 
 .h-\[460px\] {
   height: 460px;
+}
+
+.h-\[9px\] {
+  height: 9px;
 }
 
 .h-\[calc\(100vh-xpx\)\] {
@@ -841,6 +869,10 @@ video {
 
 .w-\[350px\] {
   width: 350px;
+}
+
+.w-\[9px\] {
+  width: 9px;
 }
 
 .w-full {
@@ -995,6 +1027,10 @@ video {
   border-width: 4px;
 }
 
+.border-s {
+  border-inline-start-width: 1px;
+}
+
 .border-none {
   border-style: none;
 }
@@ -1027,6 +1063,10 @@ video {
 
 .bg-primary {
   background-color: var(--primary-color);
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color);
 }
 
 .object-cover {
@@ -1087,6 +1127,10 @@ video {
   padding-bottom: 0.5rem;
 }
 
+.pb-5 {
+  padding-bottom: 1.25rem;
+}
+
 .pb-\[0\.25rem\] {
   padding-bottom: 0.25rem;
 }
@@ -1143,6 +1187,10 @@ video {
 
 .font-bold {
   font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .leading-normal {
@@ -1413,12 +1461,24 @@ body {
 }
 
 @media (min-width: 768px) {
+  .md\:-mt-\[13px\] {
+    margin-top: -13px;
+  }
+
   .md\:mb-0 {
     margin-bottom: 0px;
   }
 
+  .md\:me-0 {
+    margin-inline-end: 0px;
+  }
+
   .md\:ml-4 {
     margin-left: 1rem;
+  }
+
+  .md\:ms-0 {
+    margin-inline-start: 0px;
   }
 
   .md\:block {
@@ -1451,6 +1511,26 @@ body {
 
   .md\:max-w-\[75\%\] {
     max-width: 75%;
+  }
+
+  .md\:justify-center {
+    justify-content: center;
+  }
+
+  .md\:gap-6 {
+    gap: 1.5rem;
+  }
+
+  .md\:border-s-0 {
+    border-inline-start-width: 0px;
+  }
+
+  .md\:border-t {
+    border-top-width: 1px;
+  }
+
+  .md\:pt-0 {
+    padding-top: 0px;
   }
 
   .md\:text-base {
