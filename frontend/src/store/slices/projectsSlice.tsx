@@ -12,7 +12,7 @@ type Project = {
     descriptionFR: string;
     descriptionEN: string;
     typeDisplay: string;
-    github: string;
+    github: string | null;
     contentDisplay: string;
     skills: SkillsProject[];
 }
