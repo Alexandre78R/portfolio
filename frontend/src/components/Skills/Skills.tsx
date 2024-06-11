@@ -8,10 +8,8 @@ const Skills: React.FC<skills> = ({ category, skills }): React.ReactElement => {
       className="flex-shrink-0 min-w-80 mr-2 rounded-lg text-white overflow-hidden ml-3 p-5 lg:ml-10"
       style={{ cursor: 'pointer', backgroundColor : "var(--body-color)"}}
     >
-      <div >
-        <Typography variant="h4" component="h4" className="text-lg text-text font-bold mb-2">
-          {category} 
-        </Typography>
+      <div>
+        <p className="text-lg text-text font-bold mb-2">{category}</p>
         <div className="flex flex-col">
           {skills.map((skill: skill, index: number) => (
             index % 2 === 0 && (
