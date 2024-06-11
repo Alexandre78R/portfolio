@@ -65,6 +65,7 @@ const Home: React.FC = (): React.ReactElement  => {
       <title>{translations.titleHTML}</title>
       <meta name="title" content={translations.titleHTML} />
       <meta name="description" content={translations.descHTML} />
+      <meta name="url" content={canonicalUrl}></meta>
       <meta property="og:title" content={translations.titleHTML} />
       <meta property="og:description" content={translations.descHTML} />
       <meta property="og:url" content={urlDomaine} />
