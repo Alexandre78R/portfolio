@@ -30,51 +30,53 @@ const Seo: React.FC = (): React.ReactElement => {
 
     return (
         <Head>
-        <title>{translations.titleHTML}</title>
-        <meta name="title" content={translations.titleHTML} />
-        <meta name="description" content={translations.descHTML} />
-        <meta name="url" content={canonicalUrl}></meta>
-        <meta property="og:title" content={translations.titleHTML} />
-        <meta property="og:description" content={translations.descHTML} />
-        <meta property="og:url" content={canonicalUrl ? canonicalUrl : ""} />
-        <meta property="og:type" content="Alexandre Renard - Portfolio" />
-        <meta property="og:image" content="/img/logo.jpeg" />
-        <meta property="og:site_name" content={translations.titleHTML} />
-        <meta property="twitter:title" content={translations.titleHTML} />
-        <meta property="twitter:description" content={translations.descHTML} />
-        <meta property="twitter:card" content="Summary Card " />
-        <meta property="twitter:site" content={canonicalUrl} />
-        
-        <link rel="canonical" href={canonicalUrl} />
-        <link rel="icon" href="/img/logo.jpeg" />
-        <script type="application/ld+json">
-          {/* Organisation */}
-          {`{
-            "@context": "http://schema.org",
-            "@type": "Organization",
-            "name": ${translations.titleHTML},
-            "url": ${urlDomaine},
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "email": "contact.alexandre-renard.dev",
-              "contactType": "Service client"
-            }
-          }`}
-          {/* BreadcrumbList (fil d'Ariane) */}
-          {`{
-              "@context": "http://schema.org",
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": "Accueil",
-                  "item": ${canonicalUrl}
-                }
-              ]
-            }`}
-        </script>
-      </Head>
+            <title>{translations.titleHTML}</title>
+            <meta name="title" content={translations.titleHTML} />
+            <meta name="description" content={translations.descHTML} />
+            <meta name="url" content={canonicalUrl}></meta>
+            <meta property="og:title" content={translations.titleHTML} />
+            <meta property="og:description" content={translations.descHTML} />
+            <meta property="og:url" content={canonicalUrl ? canonicalUrl : ""} />
+            <meta property="og:type" content="Alexandre Renard - Portfolio" />
+            <meta property="og:image" content="/img/logo.jpeg" />
+            <meta property="og:site_name" content={translations.titleHTML} />
+            <meta property="twitter:card" content="summary" />
+            <meta property="twitter:title" content={translations.titleHTML} />
+            <meta property="twitter:description" content={translations.descHTML} />
+            <meta property="twitter:site" content={canonicalUrl} />
+            <meta property="twitter:image" content="/img/logo.jpeg" />
+
+            
+            <link rel="canonical" href={canonicalUrl} />
+            <link rel="icon" href="/img/logo.jpeg" />
+            <script type="application/ld+json">
+                {/* Organisation */}
+                {`{
+                    "@context": "http://schema.org",
+                    "@type": "Organization",
+                    "name": ${translations.titleHTML},
+                    "url": ${urlDomaine},
+                    "contactPoint": {
+                    "@type": "ContactPoint",
+                    "email": "contact.alexandre-renard.dev",
+                    "contactType": "Service client"
+                    }
+                }`}
+                {/* BreadcrumbList (fil d'Ariane) */}
+                {`{
+                    "@context": "http://schema.org",
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Accueil",
+                        "item": ${canonicalUrl}
+                        }
+                    ]
+                    }`}
+            </script>
+        </Head>
     );
 };
 
