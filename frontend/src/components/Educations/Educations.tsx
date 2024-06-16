@@ -63,23 +63,23 @@ const Educations: React.FC = (): React.ReactElement => {
                     <li className="">
                       <div className="flex-start flex items-center pt-2 md:block md:pt-0">
                       <div
-                          className="-ms-[5px] me-3 h-[9px] w-[9px] rounded-full bg-primary md:-mt-[5px] md:me-0 md:ms-0"></div>
-                          <p className="mt-2 text-sm text-text">
-                              {item.startDate} - {item.endDate} 
+                        className="-ms-[5px] me-3 h-[9px] w-[9px] rounded-full bg-primary md:-mt-[5px] md:me-0 md:ms-0"></div>
+                        <p className="mt-2 text-sm text-text">
+                          {item.startDate} - {item.endDate} 
+                        </p>
+                        </div>
+                        <div className="ms-4 mt-2 pb-5 md:ms-0">
+                          <p className="text-sm text-text">
+                              {item.type}
                           </p>
-                          </div>
-                          <div className="ms-4 mt-2 pb-5 md:ms-0">
-                              <p className="text-sm text-text">
-                                  {item.type}
-                              </p>
-                              <p className="max-w-[210px] hover:text-secondary text-primary mt-2  font-semibold">{(item as EducationType)?.title} {(item as ExperienceType)?.job}</p>
-                              <p className="max-w-[160px] text-sm text-text">
-                                {(item as EducationType).diplomaLevel} {(item as ExperienceType).employmentContract}
-                              </p>
-                              <p className="mt-2 text-text300 hover:text-text100">
-                                  {(item as EducationType).school} {(item as ExperienceType).business}
-                              </p>
-                          </div>
+                          <p className="max-w-[210px] hover:text-secondary text-primary mt-2  font-semibold">{(item as EducationType)?.title} {(item as ExperienceType)?.job}</p>
+                          <p className="max-w-[160px] text-sm text-text">
+                            {(item as EducationType).diplomaLevel} {(item as ExperienceType).employmentContract}
+                          </p>
+                          <p className="mt-2 text-text300 hover:text-text100">
+                              {(item as EducationType).school} {(item as ExperienceType).business}
+                          </p>
+                        </div>
                     </li>
                   </>
                 )
