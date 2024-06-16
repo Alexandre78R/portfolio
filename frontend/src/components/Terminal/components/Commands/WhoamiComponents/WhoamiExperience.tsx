@@ -14,7 +14,7 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
 
   const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
-  const datasPerPage: number = 2;
+  const datasPerPage: number = 3;
 
   const pagination: () => any[] = (): any[] => {
     const indexLast: number = currentPage * datasPerPage;
@@ -47,22 +47,25 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
             )
           })
         }
-          <div className="flex">
-            <div className="mr-4">
-                <ButtonCustom 
-                    onClick={currentPage > 1? previous : undefined}
-                    text={translations.buttonPaginationPrevious}
-                    disable={currentPage > 1? false : true}
-                    disableHover={currentPage > 1? false : true}
-                />
+        {
+          currentPage > 1 || currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) &&
+            <div className="flex">
+              <div className="mr-4">
+                  <ButtonCustom 
+                      onClick={currentPage > 1? previous : undefined}
+                      text={translations.buttonPaginationPrevious}
+                      disable={currentPage > 1? false : true}
+                      disableHover={currentPage > 1? false : true}
+                  />
+              </div>
+              <ButtonCustom
+                  onClick={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? next : undefined}
+                  text={translations.buttonPaginationNext}
+                  disable={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
+                  disableHover={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
+              />
             </div>
-            <ButtonCustom
-                onClick={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? next : undefined}
-                text={translations.buttonPaginationNext}
-                disable={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
-                disableHover={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
-            />
-          </div>
+        }
       </Message>
     );
 };
