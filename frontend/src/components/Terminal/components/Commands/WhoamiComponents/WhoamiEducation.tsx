@@ -9,7 +9,7 @@ const WhoamiEducation: React.FC = (): React.ReactElement => {
   return (
       <Message>
         {
-          dataEducations?.slice().reverse().map(education => {
+          dataEducations?.map(education => {
             return(
               <div key={education.id} className="m-2">              
                 <div className="flex flex-row items-center">
