@@ -84,7 +84,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 </li>
                 <li>
                   <button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">
-                    <span className="hidden md:inline">{translations.navbarButtonEducation}</span>
+                    <span className="hidden md:inline">{translations.navbarButtonCareer}</span>
                     <span className="md:hidden">Education</span>
                   </button>
                 </li>
@@ -137,7 +137,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><button onClick={(e) => handleScrollToSection(e, aboutMeRef)} className="text-text hover:text-secondary">{translations.navbarButtonAbout}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, skillRef)} className="text-text hover:text-secondary">{translations.navbarButtonSkill}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
-                <li><button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">{translations.navbarButtonEducation}</button></li>
+                <li><button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">{translations.navbarButtonCareer}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
                 <li>
                   <div className="relative inline-block" onClick={toggleChecked}>
