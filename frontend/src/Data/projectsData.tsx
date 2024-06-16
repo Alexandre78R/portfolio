@@ -40,6 +40,10 @@ export const projectsData = [
         image:
           "https://img.shields.io/badge/-Express-000000?style=flat-square&logoColor=white",
       },
+      { 
+        name: 'Puppeteer',
+        image: "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white"
+      },
     ],
   },
   {
@@ -87,6 +91,10 @@ export const projectsData = [
         name: "CSS3",
         image:
           "https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white",
+      },
+      { 
+        name: 'Puppeteer',
+        image: "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white"
       },
     ],
   },
@@ -415,11 +423,6 @@ export const projectsData = [
           "https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white",
       },
       {
-        name: "SASS",
-        image:
-          "https://img.shields.io/badge/-SASS-CC69BF?style=flat-square&logo=sass&logoColor=white",
-      },
-      {
         name: "Nodejs",
         image:
           "https://img.shields.io/badge/-Nodejs-44883e?style=flat-square&logo=Node.js&logoColor=white",
@@ -463,6 +466,10 @@ export const projectsData = [
         name: "Jest",
         image:
           "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
+      },
+      { 
+        name: 'Cypress',
+        image: "https://img.shields.io/badge/-Cypress-1FC824?style=flat-square&logo=cypress&logoColor=white"
       },
       {
         name: "Figma",
