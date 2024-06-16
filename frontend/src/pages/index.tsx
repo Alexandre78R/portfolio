@@ -16,7 +16,7 @@ import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
-import Educations from "@/components/Educations/Educations";
+import Educations from "@/components/Careers/Careers";
 
 const Home: React.FC = (): React.ReactElement  => {
 
