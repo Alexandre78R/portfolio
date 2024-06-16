@@ -4,7 +4,7 @@ import { RootState } from "@/store/store";
 import { EducationType } from "@/store/slices/educationsSlice";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
 
-const Educations: React.FC = (): React.ReactElement => {
+const Careers: React.FC = (): React.ReactElement => {
 
   const dataEducations = useSelector((state: RootState) => state.educations.dataEducations);
   const dataExperiences = useSelector((state: RootState) =>state.experiences.dataExperiences);
@@ -12,18 +12,18 @@ const Educations: React.FC = (): React.ReactElement => {
   type CombinedData = (EducationType | ExperienceType)[];
 
   const combinedData: CombinedData = useMemo(() => {
-    const combined = [...dataExperiences, ...dataEducations];
+    const combined: CombinedData = [...dataExperiences, ...dataEducations];
 
     const parseDate = (dateString: string): number => {
-      const [month, year] = dateString.split(' ');
+      const [month, year]: string[] = dateString.split(' ');
       return new Date(`${month} 1, ${year}`).getTime();
     };
 
     combined.sort((a, b) => {
-      const dateAStart = parseDate(a.startDateEN);
-      const dateBStart = parseDate(b.startDateEN);
-      const dateAEnd = parseDate(a.endDateEN);
-      const dateBEnd = parseDate(b.endDateEN);
+      const dateAStart: number = parseDate(a.startDateEN);
+      const dateBStart: number = parseDate(b.startDateEN);
+      const dateAEnd: number = parseDate(a.endDateEN);
+      const dateBEnd: number = parseDate(b.endDateEN);
 
       if (a.month === null) {
         return -1;
@@ -31,8 +31,8 @@ const Educations: React.FC = (): React.ReactElement => {
         return 1;
       }
 
-      const yearAStart = new Date(a.startDateEN).getFullYear();
-      const yearBStart = new Date(b.startDateEN).getFullYear();
+      const yearAStart: number = new Date(a.startDateEN).getFullYear();
+      const yearBStart: number = new Date(b.startDateEN).getFullYear();
 
       // Priorisation : expérience avant éducation si même année
       if (a.typeEN === "Experience" && b.typeEN === "Education" && yearAStart === yearBStart) {
@@ -90,4 +90,4 @@ const Educations: React.FC = (): React.ReactElement => {
   );
 };
 
-export default Educations;
+export default Careers;
