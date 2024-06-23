@@ -13,13 +13,14 @@ import { jwtVerify } from "jose";
 // import { UserResolver } from "./resolvers/user.resolver";
 import { ContactResolver } from "./resolvers/contact.resolver";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 
 async function main() {
 
     // await db.initialize();
   
     const schema = await buildSchema({
-      resolvers: [ContactResolver],
+      resolvers: [ContactResolver, GenerateImageResolver],
     });
   
     const server = new ApolloServer<{}>({
