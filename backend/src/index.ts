@@ -32,7 +32,7 @@ async function main() {
         return {};
       },
     });
-  
+    
     console.log(`🚀  Server ready at: ${url}`);
   }
   

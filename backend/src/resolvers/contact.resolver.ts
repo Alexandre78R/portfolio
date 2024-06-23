@@ -12,6 +12,8 @@ import {
     ContactResponse   
 } from "../types/contact.types"
 
+import { sendEmail } from "../mail/mail.service";
+
 @Resolver()
 export class ContactResolver {
 
@@ -28,5 +30,11 @@ export class ContactResolver {
     @Mutation(() => ContactResponse)
     async contactMe(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<ContactResponse> {
         return data;
+    }
+
+    @Mutation(() => Boolean)
+    async sendEmailTest(): Promise<Boolean> {
+        await sendEmail("contact@alexandre-renard.dev", "subject", "text")
+        return true;
     }
 }
