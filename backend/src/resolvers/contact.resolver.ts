@@ -13,6 +13,7 @@ import {
 } from "../types/contact.types"
 
 import { sendEmail } from "../mail/mail.service";
+import { MessageType } from "../types/message.types";
 
 @Resolver()
 export class ContactResolver {
@@ -32,9 +33,14 @@ export class ContactResolver {
         return data;
     }
 
-    @Mutation(() => Boolean)
-    async sendEmailTest(): Promise<Boolean> {
-        await sendEmail("contact@alexandre-renard.dev", "subject", "text")
-        return true;
+    @Mutation(() => Promise<MessageType>)
+    async sendEmailTest(): Promise<MessageType> {
+        const resultSendEmail = await sendEmail("contactalexandre-renard.dev", "subject", "text");
+        
+        if (!resultSendEmail.status) {
+            console.log("je suis dans else")
+        }
+
+        return resultSendEmail
     }
 }

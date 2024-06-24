@@ -3,7 +3,7 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import "dotenv/config";
-import { buildSchema } from "type-graphql";
+import { buildSchema } from 'type-graphql';
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -20,7 +20,7 @@ async function main() {
     // await db.initialize();
   
     const schema = await buildSchema({
-      resolvers: [ContactResolver, GenerateImageResolver],
+      resolvers: [ContactResolver],
     });
   
     const server = new ApolloServer<{}>({

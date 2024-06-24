@@ -18,7 +18,6 @@ import {
 } from '../types/generateImage.types'
 
 import { createCanvas, loadImage } from 'canvas';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
