@@ -33,14 +33,10 @@ export class ContactResolver {
         return data;
     }
 
-    @Mutation(() => Promise<MessageType>)
+    @Mutation(() => MessageType)
     async sendEmailTest(): Promise<MessageType> {
         const resultSendEmail = await sendEmail("contactalexandre-renard.dev", "subject", "text");
-        
-        if (!resultSendEmail.status) {
-            console.log("je suis dans else")
-        }
-
+        console.log(resultSendEmail)
         return resultSendEmail
     }
 }

@@ -33,6 +33,11 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
     return  { label : "emailSent", message : "Email sent", status: true }
   } catch (error) {
     console.error('Error sending email: ' + error);
-    return  { label : "emailNoSent", message : error, status: false }
+    return  { 
+      label : "emailNoSent",
+      // message : error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      status: false 
+    }
   }
 };
