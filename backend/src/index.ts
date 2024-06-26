@@ -32,6 +32,8 @@ async function main() {
       listen: { port: 4000 },
       context: async ({ req, res }) => {
         const apiKey = req.headers['x-api-key'];
+        if (apiKey !== process.env.API_KEY)
+          throw new Error('Unauthorized');
         return { apiKey };
       },
     });
