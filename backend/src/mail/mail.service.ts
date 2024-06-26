@@ -29,7 +29,7 @@ export const sendEmail = async (email: string, subject: string, text: string, ht
     subject,
     text,
     html,
-  };
+};
 
   try {
     await transporter.sendMail(mailOptions);
