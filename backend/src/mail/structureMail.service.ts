@@ -24,4 +24,3 @@ export const structureMessageMeHTML: (data: ContactFrom) => string = (data: Cont
   <p>Email : ${data.email}</p>
     `;
 };
-  

@@ -13,22 +13,18 @@ import {
 } from "../types/contact.types"
 
 import { sendEmail } from "../mail/mail.service";
-import { MessageType } from "../types/message.types";
+import { MessageType} from "../types/message.types";
 import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structureMail.service";
 
 @Resolver()
 export class ContactResolver {
 
-    @Query(() => String)  
-    async contectTest(): Promise<string> {
-        return "ok";
-    }
-
     @Mutation(() => MessageType)
     async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
-        const messageFinalTEXT = await structureMessageMeTEXT(data);
-        const messageFinalHTML = await structureMessageMeHTML(data);
-        const resultSendEmail = await sendEmail(data?.email, data?.object, messageFinalTEXT, messageFinalHTML);
-        return resultSendEmail
+        const messageFinalMETEXT = await structureMessageMeTEXT(data);
+        const messageFinalMEHTML = await structureMessageMeHTML(data);
+        const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
+
+        return resultSendEmailME;
     }
 }

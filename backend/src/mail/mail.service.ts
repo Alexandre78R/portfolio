@@ -16,13 +16,13 @@ const transporter = nodemailer.createTransport({
     user: user,
     pass: pass,
   },
-  tls: {
+  // tls: {
     // ciphers: 'SSLv3',
     // rejectUnauthorized: false,
-  },
+  // },
 } as SMTPTransport.Options);
 
-export const sendEmail = async (email: string, subject: string, text: string, html?: string): Promise<MessageType> => {
+export const sendEmail = async (email: string, subject: string, text: string, html: string): Promise<MessageType> => {
   const mailOptions = {
     from: user,
     to : user,
@@ -32,8 +32,7 @@ export const sendEmail = async (email: string, subject: string, text: string, ht
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ' + info.response);
+    await transporter.sendMail(mailOptions);
     return  { label : "emailSent", message : "Email sent", status: true }
   } catch (error) {
     return  { 
