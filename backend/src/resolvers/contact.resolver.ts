@@ -14,6 +14,7 @@ import {
 
 import { sendEmail } from "../mail/mail.service";
 import { MessageType } from "../types/message.types";
+import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structureMail.service";
 
 @Resolver()
 export class ContactResolver {
@@ -23,20 +24,11 @@ export class ContactResolver {
         return "ok";
     }
 
-    // @Mutation(() => [String])
-    // async contactMe (@Arg("data") data: ContactFrom) {
-    //     return data;
-    // }
-
-    @Mutation(() => ContactResponse)
-    async contactMe(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<ContactResponse> {
-        return data;
-    }
-
     @Mutation(() => MessageType)
-    async sendEmailTest(): Promise<MessageType> {
-        const resultSendEmail = await sendEmail("contactalexandre-renard.dev", "subject", "text");
-        console.log(resultSendEmail)
+    async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
+        const messageFinalTEXT = await structureMessageMeTEXT(data);
+        const messageFinalHTML = await structureMessageMeHTML(data);
+        const resultSendEmail = await sendEmail(data?.email, data?.object, messageFinalTEXT, messageFinalHTML);
         return resultSendEmail
     }
 }
