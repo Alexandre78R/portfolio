@@ -18,23 +18,23 @@ import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 async function main() {
 
     // await db.initialize();
-  
+
     const schema = await buildSchema({
       resolvers: [ContactResolver],
     });
-  
+
     const server = new ApolloServer<{}>({
       schema,
     });
-  
+
     const { url } = await startStandaloneServer(server, {
       listen: { port: 4000 },
       context: async ({ req, res }) => {
         return {};
       },
     });
-    
+
     console.log(`🚀  Server ready at: ${url}`);
   }
-  
+
   main();

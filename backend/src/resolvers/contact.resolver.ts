@@ -19,6 +19,11 @@ import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structur
 @Resolver()
 export class ContactResolver {
 
+    @Query(() => String)  
+    async contect(): Promise<string> {
+        return "ok";
+    }
+
     @Mutation(() => MessageType)
     async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
