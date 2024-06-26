@@ -27,9 +27,8 @@ export class ContactResolver {
 
     @Mutation(() => MessageType)
     async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: any): Promise<MessageType> {
-        if (context.apiKey !== process.env.API_KEY) {
-            throw new Error('Non autorisé');
-        }
+        if (context.apiKey !== process.env.API_KEY)
+            throw new Error('Unauthorized');
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
         const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
