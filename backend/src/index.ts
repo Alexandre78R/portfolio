@@ -23,6 +23,7 @@ async function main() {
       resolvers: [ContactResolver],
     });
 
+    const toto = true
     const server = new ApolloServer<{}>({
       schema,
     });
@@ -30,9 +31,12 @@ async function main() {
     const { url } = await startStandaloneServer(server, {
       listen: { port: 4000 },
       context: async ({ req, res }) => {
-        return {};
+        const apiKey = req.headers['x-api-key'];
+        return { apiKey };
       },
     });
+
+    
 
     console.log(`🚀  Server ready at: ${url}`);
   }

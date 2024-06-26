@@ -5,6 +5,7 @@ import {
     Mutation,
     Query,
     Resolver,
+    Ctx,
 } from "type-graphql";
 
 import {
@@ -25,7 +26,10 @@ export class ContactResolver {
     }
 
     @Mutation(() => MessageType)
-    async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
+    async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: any): Promise<MessageType> {
+        if (context.apiKey !== process.env.API_KEY) {
+            throw new Error('Non autorisé');
+        }
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
         const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);

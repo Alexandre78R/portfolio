@@ -17,8 +17,6 @@ export class ContactFrom {
     @Field()
     message: string;
 
-    @Field()
-    lang?: string;
 }
 
 @ObjectType()
@@ -38,6 +36,4 @@ export class ContactResponse {
     @Field()
     message: string;
 
-    @Field()
-    lang?: string;
 }
