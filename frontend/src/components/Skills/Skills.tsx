@@ -8,7 +8,7 @@ const Skills: React.FC<skills> = ({ category, skills }): React.ReactElement => {
       className="flex-shrink-0 w-[350px] rounded-lg text-white overflow-hidden"
       style={{ cursor: 'pointer', backgroundColor: "var(--body-color)"}}
     >
-      <div className="ml-6" >
+      <div className="ml-6">
         <p className="text-md text-text font-bold mb-2">{category}</p>
         <div className="flex flex-col">
           {skills.map((skill: skill, index: number) => (
