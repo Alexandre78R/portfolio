@@ -1490,6 +1490,10 @@ body {
   opacity: 1;
 }
 
+.hover\:opacity-\[75\%\]:hover {
+  opacity: 75%;
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
