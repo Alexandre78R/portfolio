@@ -32,7 +32,7 @@ async function main() {
       context: async ({ req, res }) => {
         const apiKey = req.headers['x-api-key'];
         if (apiKey !== process.env.API_KEY)
-          throw new Error('Unauthorized');
+          throw new Error('Unauthorized TOKEN API');
         return {};
       },
     });

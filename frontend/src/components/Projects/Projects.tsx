@@ -40,7 +40,7 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
           <div>
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
-                <iframe width="320" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
+                <iframe width="310" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
                 <p className="text-xl max-w-320px pt-0.5">
                   {project?.title}
                 </p>
