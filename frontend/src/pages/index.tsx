@@ -40,52 +40,61 @@ const Home: React.FC = (): React.ReactElement  => {
   };
 
   return (
-    <>
-    <Seo />
-    <Header />
-    <main className="bg-body mt-[10%]">
-      <section className="ml-3" ref={choiceViewRef}>
-        <Title title={translations.nameCategoryChoiceView} />
-        <ChoiceView 
-          selectedView={selectedView} 
-          setSelectedView={setSelectedView} 
-          handleViewSelect={handleViewSelect}
-        />
-      </section>
-      {
-        selectedView === "terminal" ? 
-        <>
+      <>
+      <Seo />
+      <Header />
+      <main className="bg-body">
+        <section className="ml-3" ref={choiceViewRef}>
+          <Title title={translations.nameCategoryChoiceView} />
+          <ChoiceView
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+            handleViewSelect={handleViewSelect}
+          />
+        </section>
+        {selectedView === "terminal" ? (
           <section className="ml-3 mt-[5%] mb-[5%]" ref={terminalRef}>
             <Title title="Terminal" />
             <div className="ml-3 flex flex-col items-center">
               <Terminal />
             </div>
           </section>
-        </>
-        :
-        <>
-          <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
-            <Title title={translations.nameCategoryAboutMe} />
-            <AboutMe />
-          </section>
-          <section className="ml-3 mt-[5%]" ref={skillRef} id="skill">
-            <Title title={translations.nameCategorySkills} />
-            <div className="mt-[1%]">
-              <HorizontalScroll data={dataSkills} category="skills" />
-            </div>
-          </section>
-          <section className="ml-3 mt-[5%]" ref={projectRef} id="project">
-            <Title title={translations.nameCategoryProjects} />
-            <HorizontalScroll data={dataProjects} category="projects" />
-          </section>
-          <section className=" mt-[4%]" ref={educationRef} id="project">
-            <div className="ml-3">
-              <Title title={translations.nameCategoryCareer} />
-            </div>
-            <Educations />
-          </section>
-        </>
-      }
+        ) : (
+          <>
+            <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
+              <Title title={translations.nameCategoryAboutMe} />
+              <AboutMe />
+            </section>
+            <section ref={skillRef} id="skill">
+              <div className="ml-3">
+                <Title title={translations.nameCategorySkills} />
+              </div>
+              <div className="m-5">
+                <HorizontalScroll data={dataSkills} category="skills" />
+              </div>
+            </section>
+            <section ref={projectRef} id="project">
+              <div className="ml-3">
+                <Title title={translations.nameCategoryProjects} />
+              </div>
+              <div className="m-5">
+                <HorizontalScroll data={dataProjects} category="projects" />
+              </div>
+            </section>
+            <section className="mt-[4%]" ref={educationRef} id="project">
+              <div className="ml-3">
+                <Title title={translations.nameCategoryCareer} />
+              </div>
+              <Educations />
+            </section>
+            {/* <section className="mt-[4%]" ref={educationRef} id="project">
+              <div className="ml-3">
+                <Title title={translations.nameCategoryCareer} />
+              </div>
+              <Educations />
+            </section> */}
+          </>
+        )}
       </main>
       <section className="mt-[5%]">
         <Footer />

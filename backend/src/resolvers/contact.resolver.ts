@@ -1,6 +1,7 @@
 import {
     Arg,
     Authorized,
+    Ctx,
     Float,
     Mutation,
     Query,
@@ -20,7 +21,8 @@ import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structur
 export class ContactResolver {
 
     @Query(() => String)  
-    async contect(): Promise<string> {
+    async contact(@Ctx() context: any): Promise<string> {
+        console.log(context)
         return "ok";
     }
 

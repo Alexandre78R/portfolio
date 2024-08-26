@@ -9,7 +9,7 @@ import http from "http";
 import cors from "cors";
 import Cookies from "cookies";
 import { jwtVerify } from "jose";
-// import db from "./lib/db";
+import db from "./lib/db";
 // import { UserResolver } from "./resolvers/user.resolver";
 import { ContactResolver } from "./resolvers/contact.resolver";
 import { startStandaloneServer } from "@apollo/server/standalone";
@@ -17,13 +17,12 @@ import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 
 async function main() {
 
-    // await db.initialize();
+    await db.initialize();
 
     const schema = await buildSchema({
       resolvers: [ContactResolver],
     });
 
-    const toto = true
     const server = new ApolloServer<{}>({
       schema,
     });
@@ -33,12 +32,10 @@ async function main() {
       context: async ({ req, res }) => {
         const apiKey = req.headers['x-api-key'];
         if (apiKey !== process.env.API_KEY)
-          throw new Error('Unauthorized');
-        return { apiKey };
+          throw new Error('Unauthorized TOKEN API');
+        return {};
       },
     });
-
-    
 
     console.log(`🚀  Server ready at: ${url}`);
   }
