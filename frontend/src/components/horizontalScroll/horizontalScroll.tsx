@@ -21,6 +21,16 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const [isScrollable, setIsScrollable] = useState<boolean>(false);
 
+  const itemWidth = 360; // Largeur approximative d'un élément pour le défilement
+
+  // Fonction de défilement fluide
+  const smoothScroll = (scrollBy: number) => {
+    const container = containerRef.current;
+    if (container) {
+      container.scrollBy({ left: scrollBy, behavior: 'smooth' });
+    }
+  };
+
   const handleMouseDown = (event: MouseEvent<HTMLDivElement>): void => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current!.offsetLeft);
@@ -34,7 +44,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>): void => {
     if (!isDragging || isClickOnImage) return;
     const x: number = event.pageX - containerRef.current!.offsetLeft;
-    const walk: number = (x - startX) * 1.0;
+    const walk: number = (x - startX) * 1.0; // Vitesse du défilement
     containerRef.current!.scrollLeft = scrollLeft - walk;
   };
 
@@ -44,11 +54,11 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   };
 
   const handleScrollLeft = (): void => {
-    containerRef.current!.scrollBy({ left: -360, behavior: 'smooth' });
+    smoothScroll(-itemWidth);
   };
 
   const handleScrollRight = (): void => {
-    containerRef.current!.scrollBy({ left: 360, behavior: 'smooth' });
+    smoothScroll(itemWidth);
   };
 
   const checkScrollPosition = (): void => {
@@ -94,7 +104,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
         container.removeEventListener('scroll', checkScrollPosition);
       }
     };
-  }, [startX, scrollLeft]);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -122,7 +132,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             left: 0,
             top: '50%',
             transform: 'translateY(-50%)',
-            width: '25px',
+            width: '30px',
             height: '100%',
             display: 'flex',
             justifyContent: 'center',
@@ -138,7 +148,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
 
       <div
         ref={containerRef}
-        className="flex flex-row overflow-x-auto overflow-y-hidden"
+        className="flex flex-row overflow-x-hidden overflow-y-hidden"
         style={{
           userSelect: 'none',
           boxSizing: 'border-box',
@@ -169,7 +179,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             right: 0,
             top: '50%',
             transform: 'translateY(-50%)',
-            width: '25px',
+            width: '30px',
             height: '100%',
             display: 'flex',
             justifyContent: 'center',
