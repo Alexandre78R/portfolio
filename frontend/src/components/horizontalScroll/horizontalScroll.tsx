@@ -140,10 +140,12 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
 
       <div
         ref={containerRef}
-        className="flex flex-row overflow-x-hidden overflow-y-hidden"
+        className="flex flex-row overflow-x-auto overflow-y-hidden"
         style={{
           userSelect: 'none',
           boxSizing: 'border-box',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
       >
         <div
