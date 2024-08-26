@@ -5,6 +5,7 @@ import Projects from '../Projects/Projects';
 import { Project } from '../Projects/typeProjects';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
 type Props = {
   data: any;
   category: string;
@@ -115,15 +116,14 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     <div style={{ position: 'relative' }} key={category}>
       {!isAtStart && isScrollable && (
         <div
-          className='text-secondary bg-primary opacity-[65%] hover:opacity-100 transition-opacity duration-300'
+          className='text-primary bg-black opacity-[50%] hover:opacity-100 transition-opacity duration-300'
           style={{
             position: 'absolute',
             left: 0,
             top: '50%',
             transform: 'translateY(-50%)',
             width: '25px',
-            height: '100%', 
-            // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            height: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -131,9 +131,9 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             zIndex: 10,
           }}
           onClick={handleScrollLeft}
-      >
-       <ArrowBackIosNewIcon />
-      </div>
+        >
+          <ArrowBackIosNewIcon />
+        </div>
       )}
 
       <div
@@ -163,7 +163,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
 
       {!isAtEnd && isScrollable && (
         <div
-          className='text-secondary bg-primary opacity-75 hover:opacity-100 transition-opacity duration-300'
+          className='text-primary bg-black opacity-[50%] hover:opacity-100 transition-opacity duration-300'
           style={{
             position: 'absolute',
             right: 0,
@@ -171,7 +171,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             transform: 'translateY(-50%)',
             width: '25px',
             height: '100%',
-            // backgroundColor: 'rgba(0, 0, 0, 1)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -180,8 +179,8 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
           }}
           onClick={handleScrollRight}
         >
-        <ArrowForwardIosIcon />
-      </div>
+          <ArrowForwardIosIcon />
+        </div>
       )}
     </div>
   );
