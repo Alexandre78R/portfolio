@@ -21,7 +21,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const [isScrollable, setIsScrollable] = useState<boolean>(false);
 
-  const itemWidth = 360; // Largeur approximative d'un élément pour le défilement
+  const itemWidth = 365; // Largeur approximative d'un élément pour le défilement
 
   // Fonction de défilement fluide
   const smoothScroll = (scrollBy: number) => {
@@ -146,10 +146,11 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
           boxSizing: 'border-box',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-          
+
         }}
       >
         <div
+          className="m-5"
           style={{
             display: 'flex',
             flexDirection: 'row',
