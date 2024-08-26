@@ -723,6 +723,10 @@ video {
   margin-left: 0.75rem;
 }
 
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
 .mr-2 {
   margin-right: 0.5rem;
 }
@@ -771,24 +775,12 @@ video {
   margin-top: 5%;
 }
 
-.ml-5 {
-  margin-left: 1.25rem;
-}
-
-.ml-6 {
-  margin-left: 1.5rem;
-}
-
 .block {
   display: block;
 }
 
 .inline-block {
   display: inline-block;
-}
-
-.inline {
-  display: inline;
 }
 
 .flex {
@@ -809,6 +801,10 @@ video {
 
 .h-6 {
   height: 1.5rem;
+}
+
+.h-\[100\%\] {
+  height: 100%;
 }
 
 .h-\[170px\] {
@@ -843,6 +839,10 @@ video {
   max-height: 0px;
 }
 
+.w-10 {
+  width: 2.5rem;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -865,6 +865,10 @@ video {
 
 .w-\[100vh\] {
   width: 100vh;
+}
+
+.w-\[25px\] {
+  width: 25px;
 }
 
 .w-\[350px\] {
@@ -999,10 +1003,6 @@ video {
   overflow: hidden;
 }
 
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
 .overflow-y-auto {
   overflow-y: auto;
 }
@@ -1035,10 +1035,6 @@ video {
   border-width: 4px;
 }
 
-.border {
-  border-width: 1px;
-}
-
 .border-s {
   border-inline-start-width: 1px;
 }
@@ -1053,11 +1049,6 @@ video {
 
 .border-secondary {
   border-color: var(--secondary-color);
-}
-
-.border-green-500 {
-  --tw-border-opacity: 1;
-  border-color: rgb(34 197 94 / var(--tw-border-opacity));
 }
 
 .bg-black {
@@ -1082,8 +1073,8 @@ video {
   background-color: var(--primary-color);
 }
 
-.bg-secondary {
-  background-color: var(--secondary-color);
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
 }
 
 .object-cover {
@@ -1250,30 +1241,6 @@ video {
 
 .opacity-100 {
   opacity: 1;
-}
-
-.opacity-50 {
-  opacity: 0.5;
-}
-
-.opacity-20 {
-  opacity: 0.2;
-}
-
-.opacity-75 {
-  opacity: 0.75;
-}
-
-.opacity-65 {
-  opacity: 0.65;
-}
-
-.opacity-\[\] {
-  opacity: ;
-}
-
-.opacity-\[65\%\] {
-  opacity: 65%;
 }
 
 .opacity-\[50\%\] {
@@ -1478,16 +1445,16 @@ body {
   background-color: var(--secondary-color);
 }
 
+.hover\:bg-opacity-75:hover {
+  --tw-bg-opacity: 0.75;
+}
+
 .hover\:text-secondary:hover {
   color: var(--secondary-color);
 }
 
 .hover\:text-text100:hover {
   color: var(--text100-color);
-}
-
-.hover\:opacity-100:hover {
-  opacity: 1;
 }
 
 .hover\:opacity-\[75\%\]:hover {

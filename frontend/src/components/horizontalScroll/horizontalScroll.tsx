@@ -126,19 +126,11 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     <div style={{ position: 'relative' }} key={category}>
       {!isAtStart && isScrollable && (
         <div
-          className='text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
+          className='absolute right-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
           style={{
-            position: 'absolute',
-            left: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '25px',
-            height: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            cursor: 'pointer',
-            zIndex: 10,
           }}
           onClick={handleScrollLeft}
         >
@@ -158,7 +150,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
           style={{
             display: 'flex',
             flexDirection: 'row',
-            gap: '16px',
+            gap: '15px',
           }}
         >
           {category === 'skills' &&
@@ -173,19 +165,11 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
 
       {!isAtEnd && isScrollable && (
         <div
-          className='text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
+          className='absolute right-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
           style={{
-            position: 'absolute',
-            right: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '25px',
-            height: '100%',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            cursor: 'pointer',
-            zIndex: 10,
           }}
           onClick={handleScrollRight}
         >
