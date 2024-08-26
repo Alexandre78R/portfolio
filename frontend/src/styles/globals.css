@@ -129,3 +129,16 @@ body {
 .inputTerminal:focus-visible {
   outline: none;
 }
+
+.video-container {
+  display: flex;             /* Utiliser flexbox pour centrer la vidéo */
+  justify-content: center;   /* Centrer horizontalement */
+  align-items: center;       /* Centrer verticalement */
+  overflow: hidden;          /* Éviter le débordement */
+}
+
+.custom-video {
+  width: 310px;              /* Largeur fixe */
+  height: 170px;             /* Hauteur fixe */
+  object-fit: cover;         /* Ajuster la vidéo sans déformation */
+}
