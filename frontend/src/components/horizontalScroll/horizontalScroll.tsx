@@ -126,7 +126,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     <div style={{ position: 'relative' }} key={category}>
       {!isAtStart && isScrollable && (
         <div
-          className='absolute right-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
+          className='absolute left-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
           style={{
             display: 'flex',
             justifyContent: 'center',
