@@ -1,9 +1,0 @@
-server {
-    listen 80;
-    server_name votre_domaine.com;
-
-    location / {
-        # Autres configurations...
-        add_header Permissions-Policy "ch-ua-form-factor 'none'";
-    }
-}
