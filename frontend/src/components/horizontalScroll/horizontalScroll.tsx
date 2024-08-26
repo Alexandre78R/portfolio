@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, MouseEvent } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Skills from '../Skills/Skills';
 import { skills } from '../Skills/typeSkills';
 import Projects from '../Projects/Projects';
@@ -31,7 +31,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  const handleMouseDown = (event: MouseEvent<HTMLDivElement>): void => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current!.offsetLeft);
     setScrollLeft(containerRef.current!.scrollLeft);
@@ -41,7 +41,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>): void => {
+  const handleMouseMove = (event: MouseEvent): void => {
     if (!isDragging || isClickOnImage) return;
     const x: number = event.pageX - containerRef.current!.offsetLeft;
     const walk: number = (x - startX) * 1.0; // Vitesse du défilement
@@ -91,7 +91,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('mousedown', handleMouseDown);
+      container.addEventListener('mousedown', (e) => handleMouseDown(e as unknown as React.MouseEvent<HTMLDivElement>));
       container.addEventListener('mouseup', handleMouseUp);
       container.addEventListener('scroll', checkScrollPosition);
     }
@@ -99,7 +99,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
 
     return () => {
       if (container) {
-        container.removeEventListener('mousedown', handleMouseDown);
+        container.removeEventListener('mousedown', (e) => handleMouseDown(e as unknown as React.MouseEvent<HTMLDivElement>));
         container.removeEventListener('mouseup', handleMouseUp);
         container.removeEventListener('scroll', checkScrollPosition);
       }
