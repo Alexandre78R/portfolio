@@ -1,4 +1,4 @@
-import { useState,} from 'react';
+import { useEffect, useState,} from 'react';
 import { CardContent, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CardActions from '@mui/material/CardActions';
@@ -6,12 +6,22 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ProjectComponent } from './typeProjects';
 import { useLang } from '@/context/Lang/LangContext';
+import dynamic from 'next/dynamic';
+
+// Charger ReactPlayer de manière dynamique, sans SSR
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement => {
   const [expandedText, setExpandedText]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
   const [expandedCards, setExpandedCards]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
-  
+  const [isClient, setIsClient] = useState<boolean>(false);
   const { translations } = useLang();
+
+  useEffect(() => {
+    if (project) {
+      setIsClient(true);
+    }
+  }, [project]);
 
   const handleExpandClick: (cardId: string) => void = (cardId: string) : void => {
     const newExpandedCards: Set<string> = new Set(expandedCards);
@@ -34,13 +44,22 @@ const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement
   };
 
   return (
-    <div className='bg-body text-text' >
+    <div className='bg-body text-text'>
       <div key={project?.id} className="flex-shrink-0 w-50 bg-body text-text">
         <div className="flex-shrink-0 w-50 bg-body text-text m-5">
           <div>
             {project?.typeDisplay === 'video' ? (
               <div className="w-full h-auto overflow-hidden bg-body text-text">
-                <iframe width="310" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
+                <div className="video-container">
+                  {isClient && (
+                    <ReactPlayer
+                      url={`/videos/${project.contentDisplay}`}
+                      width="310px"
+                      height="170px"
+                      controls
+                    />
+                  )}
+                </div>
                 <p className="text-xl max-w-320px pt-0.5">
                   {project?.title}
                 </p>

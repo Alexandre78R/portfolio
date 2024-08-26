@@ -839,10 +839,6 @@ video {
   max-height: 0px;
 }
 
-.w-10 {
-  width: 2.5rem;
-}
-
 .w-12 {
   width: 3rem;
 }
@@ -1071,10 +1067,6 @@ video {
 
 .bg-primary {
   background-color: var(--primary-color);
-}
-
-.bg-opacity-50 {
-  --tw-bg-opacity: 0.5;
 }
 
 .object-cover {
@@ -1441,12 +1433,29 @@ body {
   outline: none;
 }
 
-.hover\:bg-secondary:hover {
-  background-color: var(--secondary-color);
+.video-container {
+  display: flex;
+  /* Utiliser flexbox pour centrer la vidéo */
+  justify-content: center;
+  /* Centrer horizontalement */
+  align-items: center;
+  /* Centrer verticalement */
+  overflow: hidden;
+  /* Éviter le débordement */
 }
 
-.hover\:bg-opacity-75:hover {
-  --tw-bg-opacity: 0.75;
+.custom-video {
+  width: 310px;
+  /* Largeur fixe */
+  height: 170px;
+  /* Hauteur fixe */
+  -o-object-fit: cover;
+     object-fit: cover;
+  /* Ajuster la vidéo sans déformation */
+}
+
+.hover\:bg-secondary:hover {
+  background-color: var(--secondary-color);
 }
 
 .hover\:text-secondary:hover {
