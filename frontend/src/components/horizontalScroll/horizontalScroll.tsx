@@ -146,6 +146,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
           boxSizing: 'border-box',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
+          
         }}
       >
         <div
