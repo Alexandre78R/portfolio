@@ -6,10 +6,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ProjectComponent } from './typeProjects';
 import { useLang } from '@/context/Lang/LangContext';
-import dynamic from 'next/dynamic';
-
-// Charger ReactPlayer de manière dynamique, sans SSR
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
+import ReactPlayer from 'react-player';
 
 const Projects: React.FC<ProjectComponent> = ( { project } ): React.ReactElement => {
   const [expandedText, setExpandedText]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
