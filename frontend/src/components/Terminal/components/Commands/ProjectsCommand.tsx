@@ -9,6 +9,10 @@ import { CardActions, CardContent, Typography } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import dynamic from 'next/dynamic';
+
+// Charger ReactPlayer de manière dynamique, sans SSR
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 const ProjectsCommand: React.FC = () => {
     
@@ -17,6 +21,13 @@ const ProjectsCommand: React.FC = () => {
 
     const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
     const datasPerPage: number = 1;
+    const [isClient, setIsClient] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (dataProjects) {
+          setIsClient(true);
+        }
+      }, [dataProjects]);
     
     const pagination: () => SkillTab[] | any[] = (): SkillTab[] | any[] => {
         const indexLast: number = currentPage * datasPerPage;
@@ -86,7 +97,16 @@ const ProjectsCommand: React.FC = () => {
                         <Message key={project.id}>
                             <div key={index} className="flex">
                                 {project?.typeDisplay === 'video' ? (
-                                    <iframe width="320" height="170" src={`/videos/${project.contentDisplay}`} allowFullScreen></iframe>
+                                    <div className="video-container">
+                                    {isClient && (
+                                        <ReactPlayer
+                                        url={`/videos/${project.contentDisplay}`}
+                                        width="310px"
+                                        height="170px"
+                                        controls
+                                        />
+                                    )}
+                                    </div>
                                 ) : (
                                     <img src={project?.contentDisplay} alt="Card Image" className="w-[350px] h-[170px] pb-2 overflow-hidden" />
                                 )}
