@@ -4,10 +4,13 @@ import { Typography } from "@mui/material";
 import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
+import { useSendContactMutation } from "@/types/graphql";
 
 const Contact: React.FC = (): React.ReactElement => {
+
   const { translations } = useLang();
   const { showAlert } = CustomToast();
+  const [sendContact] = useSendContactMutation();
 
   const [formData, setFormData] = useState<{
     email: string;
@@ -28,7 +31,6 @@ const Contact: React.FC = (): React.ReactElement => {
   };
 
   const handleClick: () => void = (): void => {
-    console.log(formData);
     const { email, object, message } = formData;
 
     if (!email || !object || !message) {
@@ -36,7 +38,27 @@ const Contact: React.FC = (): React.ReactElement => {
       return;
     }
 
-    showAlert("success", translations.messageSuccessFormulaireSend);
+    sendContact({
+      variables: {
+        data: formData,
+      },
+      onCompleted(data) {
+        if (data?.sendContact.status) {
+          showAlert("success", "Your information should be saved!");
+        } else {
+          showAlert("error", data?.sendContact.message);
+        }
+      },
+      onError(error) {
+        showAlert(
+          'error',
+          error.message ?
+            error.message
+          :
+            "We are sorry, there seems to be an error with the server. Please try again later."
+        );
+      },
+    });
   };
 
   return (
