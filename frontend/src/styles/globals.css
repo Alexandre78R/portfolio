@@ -131,14 +131,14 @@ body {
 }
 
 .video-container {
-  display: flex;             /* Utiliser flexbox pour centrer la vidéo */
-  justify-content: center;   /* Centrer horizontalement */
-  align-items: center;       /* Centrer verticalement */
-  overflow: hidden;          /* Éviter le débordement */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .custom-video {
-  width: 310px;              /* Largeur fixe */
-  height: 170px;             /* Hauteur fixe */
-  object-fit: cover;         /* Ajuster la vidéo sans déformation */
+  width: 310px;
+  height: 170px;
+  object-fit: cover;
 }

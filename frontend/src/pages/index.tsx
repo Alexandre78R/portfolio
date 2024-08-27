@@ -69,17 +69,13 @@ const Home: React.FC = (): React.ReactElement  => {
               <div className="ml-3">
                 <Title title={translations.nameCategorySkills} />
               </div>
-              {/* <div className="m-5"> */}
                 <HorizontalScroll data={dataSkills} category="skills" />
-              {/* </div> */}
             </section>
             <section ref={projectRef} id="project">
               <div className="ml-3">
                 <Title title={translations.nameCategoryProjects} />
               </div>
-              {/* <div className="m-5"> */}
                 <HorizontalScroll data={dataProjects} category="projects" />
-              {/* </div> */}
             </section>
             <section className="mt-[4%]" ref={educationRef} id="project">
               <div className="ml-3">
