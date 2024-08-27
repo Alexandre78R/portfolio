@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 import { useChoiceView } from '@/context/ChoiceView/ChoiceViewContext';
+import ToggleButton from '../Button/ToggleButton';
 
 const Navbar: React.FC = (): React.ReactElement => {
 
@@ -17,7 +18,8 @@ const Navbar: React.FC = (): React.ReactElement => {
 
   const [menuOpen, setMenuOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState<boolean>(false);
-  const [isChecked, setIsChecked]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [isCheckedLang, setIsCheckedLang]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [isCheckedView, setIsCheckedView]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const handleOpen: () => void = () :void => setOpen(true);
   const handleClose: () => void = () :void => setOpen(false);
@@ -31,11 +33,11 @@ const Navbar: React.FC = (): React.ReactElement => {
   }
 
   useEffect(() => {
-    setIsChecked(translations.file === "en");
+    setIsCheckedLang(translations.file === "en");
   }, [translations]);
   
-  const toggleChecked: () => void = () : void => {
-    setIsChecked(!isChecked);
+  const toggleCheckedLang: () => void = () : void => {
+    setIsCheckedLang(!isCheckedLang);
     setLang(lang === "fr" ? "en" : "fr");
   };
 
@@ -89,15 +91,12 @@ const Navbar: React.FC = (): React.ReactElement => {
                   </button>
                 </li>
                 <li>
-                  <button className="relative inline-block" onClick={toggleChecked}>
-                    <label htmlFor="toggleButton" className="cursor-pointer">
-                      <div className="w-12 h-6 bg-gray-300 rounded-full shadow-inner">
-                        <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>{translations.lang1}</div>
-                        <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>{translations.lang2}</div>
-                        <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
-                      </div>
-                    </label>
-                  </button>
+                  <ToggleButton
+                      toggleChecked={toggleCheckedLang}
+                      option1='FR'
+                      option2='EN'
+                      isChecked={isCheckedLang} 
+                    />
                 </li>
                 <li>
                   <ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/>
@@ -140,15 +139,12 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">{translations.navbarButtonCareer}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
                 <li>
-                  <div className="relative inline-block" onClick={toggleChecked}>
-                    <label htmlFor="toggleButton" className="cursor-pointer">
-                      <div className="w-12 h-6 bg-gray-300 rounded-full shadow-inner">
-                        <div className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-white' : 'text-gray-500'}`}>FR</div>
-                        <div className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-20 w-6 text-xs font-bold text-center ${!isChecked ? 'text-gray-500' : 'text-white'}`}>EN</div>
-                        <div className={`absolute left-0 w-6 h-6 rounded-full bg-primary z-10 shadow-md transition-transform duration-300 ${isChecked ? 'transform translate-x-full' : ''}`}></div>
-                      </div>
-                    </label>
-                  </div>
+                  <ToggleButton
+                    toggleChecked={toggleCheckedLang}
+                    option1='FR'
+                    option2='EN'
+                    isChecked={isCheckedLang} 
+                  />
                 </li>
               </>
               : 
