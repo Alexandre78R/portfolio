@@ -8,13 +8,29 @@ import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
 import ReduxProvider from '../store/provider';
 import ToastProvider from "@/components/ToastCustom/ToastProvider";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from "@apollo/client";
 import { API_URL } from "@/config";
+import { setContext } from "@apollo/client/link/context"; // Correct import
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
-  const client = new ApolloClient({
+  const token = process.env.NEXT_PUBLIC_API_TOKEN;
+
+  const httpLink = new HttpLink({
     uri: `${API_URL}`,
+  });
+  
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        "x-api-key": token ? `${token}` : "",
+      }
+    }
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
     credentials: "include",
   });

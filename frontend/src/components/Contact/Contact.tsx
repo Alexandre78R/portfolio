@@ -44,19 +44,23 @@ const Contact: React.FC = (): React.ReactElement => {
       },
       onCompleted(data) {
         if (data?.sendContact.status) {
-          showAlert("success", "Your information should be saved!");
+          showAlert("success", translations.messageSuccessFormulaireSend);
         } else {
+          console.log("Oncompleted")
           showAlert("error", data?.sendContact.message);
         }
       },
       onError(error) {
-        showAlert(
-          'error',
-          error.message ?
-            error.message
-          :
-            "We are sorry, there seems to be an error with the server. Please try again later."
-        );
+        let message;
+        console.log("onError");
+        showAlert("error", error.message);
+        // showAlert(
+        //   'error',
+        //   error.message ?
+        //     error.message
+        //   :
+        //   translations.messageErrorServerOff
+        // );
       },
     });
   };
