@@ -413,11 +413,6 @@ export const projectsData = [
           "https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white",
       },
       {
-        name: "Redux",
-        image:
-          "https://img.shields.io/badge/-Redux-8C1EB2?style=flat-square&logo=redux&logoColor=white",
-      },
-      {
         name: "Chakra UI",
         image:
           "https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white",
