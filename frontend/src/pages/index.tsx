@@ -3,7 +3,6 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import Title from "@/components/Title/Title";
-import ChoiceView from "@/components/Button/ChoiceViewButton";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
@@ -72,7 +71,7 @@ const Home: React.FC = (): React.ReactElement  => {
               </div>
               <Educations />
             </section>
-            <section className="mt-[4%]" ref={educationRef} id="project">
+            <section className="mt-[4%]" id="contact">
               <div className="ml-3">
                 <Title title={translations.nameCategoryContact} />
               </div>
