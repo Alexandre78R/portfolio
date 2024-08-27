@@ -9,14 +9,10 @@ const Contact: React.FC = (): React.ReactElement => {
   const { showAlert } = CustomToast();
 
   const [formData, setFormData] = useState<{
-    firstname: string;
-    lastname: string;
     email: string;
     object: string;
     message: string;
   }>({
-    firstname: "",
-    lastname: "",
     email: "",
     object: "",
     message: "",
@@ -43,60 +39,6 @@ const Contact: React.FC = (): React.ReactElement => {
         </Typography>
 
         <form className="space-y-6 bg-body">
-          <TextField
-            id="firstname"
-            label="First Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={formData.firstname}
-            onChange={handleInputChange}
-            className="bg-white border border-gray-300 rounded-md text-text"
-            sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--primary-color)",
-                borderWidth: "0.2rem",
-              },
-              "& .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-            }}
-          />
-
-          <TextField
-            id="lastname"
-            label="Last Name"
-            variant="outlined"
-            fullWidth
-            required
-            value={formData.lastname}
-            onChange={handleInputChange}
-            className="bg-white border border-gray-300 rounded-md text-text"
-            sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--primary-color)",
-                borderWidth: "0.2rem",
-              },
-              "& .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-            }}
-          />
-
           <TextField
             id="email"
             label="Email"
