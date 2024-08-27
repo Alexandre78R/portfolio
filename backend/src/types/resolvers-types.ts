@@ -18,8 +18,6 @@ export type Scalars = {
 
 export type ContactFrom = {
   email: Scalars['String']['input'];
-  firstname: Scalars['String']['input'];
-  lastname: Scalars['String']['input'];
   message: Scalars['String']['input'];
   object: Scalars['String']['input'];
 };
@@ -43,7 +41,7 @@ export type MutationSendEmailTestArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  contect: Scalars['String']['output'];
+  contact: Scalars['String']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -148,7 +146,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  contect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  contact?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
