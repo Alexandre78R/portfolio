@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "../styles/globals.css";
 import "../styles/output.css";
 import type { AppProps } from "next/app";
@@ -8,10 +7,9 @@ import Navbar from "@/components/NavBar/NavBar";
 import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
 import ReduxProvider from '../store/provider';
-import { useLang } from "@/context/Lang/LangContext";
+import ToastProvider from "@/components/ToastCustom/ToastProvider";
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
-  const { translations } = useLang();
 
   return (
     <ReduxProvider>
@@ -20,6 +18,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
           <LangProvider>
             <ChoiceViewProvider>
               <Navbar />
+              <ToastProvider />
               <Component {...pageProps} />
             </ChoiceViewProvider>
           </LangProvider>

@@ -1,13 +1,20 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { TextField, Typography } from "@mui/material";
 import ButtonCustom from "../Button/Button";
+import CustomToast from "../ToastCustom/CustomToast";
 
 const Contact: React.FC = (): React.ReactElement => {
     
     const { translations } = useLang();
 
+    const { showAlert } = CustomToast();
+
     const handleClick: () => void = (): void => {
-        console.log("coucou")
+      console.log("coucou")
+      showAlert("success", "success")
+      showAlert("error", "error")
+      showAlert("info", "info")
+      showAlert("warn", "warn")
     };
 
     return (
