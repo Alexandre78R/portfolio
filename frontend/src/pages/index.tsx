@@ -17,6 +17,7 @@ import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
 import Educations from "@/components/Careers/Careers";
+import Contact from "@/components/Contact/Contact";
 
 const Home: React.FC = (): React.ReactElement  => {
 
@@ -71,12 +72,12 @@ const Home: React.FC = (): React.ReactElement  => {
               </div>
               <Educations />
             </section>
-            {/* <section className="mt-[4%]" ref={educationRef} id="project">
+            <section className="mt-[4%]" ref={educationRef} id="project">
               <div className="ml-3">
-                <Title title={translations.nameCategoryCareer} />
+                <Title title="{...}" />
               </div>
-              <Educations />
-            </section> */}
+              <Contact />
+            </section>
           </>
         )}
       </main>

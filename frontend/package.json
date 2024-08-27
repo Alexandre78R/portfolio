@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "generate": "graphql-codegen --watch",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,6 +15,10 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.13",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.9",
+    "@graphql-codegen/typescript-operations": "^4.2.3",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
     "@mui/material-nextjs": "^5.15.11",
@@ -24,6 +29,7 @@
     "@types/react-toastify": "^4.1.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.5",
+    "graphql": "^16.9.0",
     "lodash": "^4.17.21",
     "next": "14.2.3",
     "react": "^18",
