@@ -1,8 +1,9 @@
 import { useLang } from "@/context/Lang/LangContext";
 import { useState, ChangeEvent, MouseEvent } from "react";
-import { TextField, Typography } from "@mui/material";
-import ButtonCustom from "../Button/Button";
-import CustomToast from "../ToastCustom/CustomToast";
+import { Typography } from "@mui/material";
+import ButtonCustom from "@/components/Button/Button";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import InputField from "@/components/InputField/InputField";
 
 const Contact: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
@@ -27,7 +28,7 @@ const Contact: React.FC = (): React.ReactElement => {
   };
 
   const handleClick = () => {
-    console.log(formData)
+    console.log(formData);
     showAlert("success", "Form submitted successfully");
   };
 
@@ -39,88 +40,28 @@ const Contact: React.FC = (): React.ReactElement => {
         </Typography>
 
         <form className="space-y-6 bg-body">
-          <TextField
+          <InputField
             id="email"
             label="Email"
-            variant="outlined"
             type="email"
-            fullWidth
-            required
             value={formData.email}
             onChange={handleInputChange}
-            className="bg-white border border-gray-300 rounded-md text-text"
-            sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--primary-color)",
-                borderWidth: "0.2rem",
-              },
-              "& .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-            }}
           />
 
-          <TextField
+          <InputField
             id="object"
             label="Object"
-            variant="outlined"
-            fullWidth
-            required
             value={formData.object}
             onChange={handleInputChange}
-            className="bg-white border border-gray-300 rounded-md text-text"
-            sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--primary-color)",
-                borderWidth: "0.2rem",
-              },
-              "& .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-            }}
           />
 
-          <TextField
+          <InputField
             id="message"
             label="Message"
-            variant="outlined"
             multiline
             rows={6}
-            fullWidth
-            required
             value={formData.message}
             onChange={handleInputChange}
-            className="bg-white border border-gray-300 rounded-md text-text"
-            sx={{
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "var(--primary-color)",
-                borderWidth: "0.2rem",
-              },
-              "& .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiFormLabel-root": {
-                color: "var(--primary-color)",
-                fontWeight: "bold",
-                backgroundColor: "white",
-              },
-            }}
           />
 
           <ButtonCustom
