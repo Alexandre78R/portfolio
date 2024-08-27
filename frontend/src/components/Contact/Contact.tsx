@@ -27,9 +27,16 @@ const Contact: React.FC = (): React.ReactElement => {
     }));
   };
 
-  const handleClick = () => {
+  const handleClick: () => void = (): void => {
     console.log(formData);
-    showAlert("success", "Form submitted successfully");
+    const { email, object, message } = formData;
+
+    if (!email || !object || !message) {
+      showAlert("error", "Veuillez remplir tous les champs avant de soumettre le formulaire.");
+      return;
+    }
+
+    showAlert("success", "Merci pour votre message ! Je vous recontacterai dès que possible.");
   };
 
   return (
