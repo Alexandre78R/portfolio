@@ -14,13 +14,9 @@ const fr: Lang = {
     navbarButtonAbout : "A propos",
     navbarButtonSkill :"Compétences",
     navbarButtonProject :"Projets",
-    navbarButtonChoiceView : "Choix de vue",
     navbarButtonTerminal : "Terminal",
     navbarButtonCareer : "Carrières",
     headerTitle : "Développeur Fullstack",
-    nameCategoryChoiceView : "Choix de vue",
-    buttonNameChoiceTerminale : "Vue Terminal",
-    buttonNameChoiceText : "Vue Texte",
     nameCategoryAboutMe : "A propos",
     titleAboutMe : "Salut 👋, je m'appelle Alexandre",
     descriptionAboutMe1 : "Je suis un développeur junior français, passionné par l'informatique et le développement web depuis mon enfance.",
@@ -53,6 +49,14 @@ const fr: Lang = {
     buttonPaginationNext : "Suivant",
     buttonCV : "Consultez mon CV",
     nameCategoryCareer : "Carrières",
+    nameCategoryContact : "Contact",
+    nameFormulaireContact : "Contactez-moi",
+    inputNameContactEmail: "Email",
+    inputNameContactObject: "Objet",
+    inputNameContactMessage: "Message",
+    buttonSendMessageContact: "Envoyer",
+    messageErrorFillAllInput: "Veuillez remplir tous les champs avant de soumettre le formulaire.",
+    messageSuccessFormulaireSend : "Merci pour votre message ! Je vous recontacterai dès que possible.",
 }
 
 export default fr;

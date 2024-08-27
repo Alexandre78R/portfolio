@@ -12,13 +12,9 @@ type Lang = {
     navbarButtonAbout : string,
     navbarButtonSkill : string,
     navbarButtonProject : string,
-    navbarButtonChoiceView : string,
     navbarButtonTerminal : string,
     navbarButtonCareer : string,
     headerTitle : string,
-    nameCategoryChoiceView : string,
-    buttonNameChoiceTerminale : string,
-    buttonNameChoiceText : string,
     nameCategoryAboutMe : string,
     titleAboutMe : string,
     descriptionAboutMe1 : string,
@@ -51,6 +47,14 @@ type Lang = {
     buttonPaginationNext : string,
     buttonCV : string,
     nameCategoryCareer : string,
+    nameCategoryContact : string,
+    nameFormulaireContact : string,
+    inputNameContactEmail: string,
+    inputNameContactObject: string,
+    inputNameContactMessage: string,
+    buttonSendMessageContact: string,
+    messageErrorFillAllInput: string,
+    messageSuccessFormulaireSend : string,
 }
 
 export default Lang;

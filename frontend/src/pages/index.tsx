@@ -74,7 +74,7 @@ const Home: React.FC = (): React.ReactElement  => {
             </section>
             <section className="mt-[4%]" ref={educationRef} id="project">
               <div className="ml-3">
-                <Title title="{...}" />
+                <Title title={translations.nameCategoryContact} />
               </div>
               <Contact />
             </section>

@@ -32,24 +32,24 @@ const Contact: React.FC = (): React.ReactElement => {
     const { email, object, message } = formData;
 
     if (!email || !object || !message) {
-      showAlert("error", "Veuillez remplir tous les champs avant de soumettre le formulaire.");
+      showAlert("error", translations.messageErrorFillAllInput);
       return;
     }
 
-    showAlert("success", "Merci pour votre message ! Je vous recontacterai dès que possible.");
+    showAlert("success", translations.messageSuccessFormulaireSend);
   };
 
   return (
     <div className="flex flex-col items-center">
       <div className="bg-body p-8 shadow-lg mt-8 text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
         <Typography variant="h3" component="h3" className="text-2xl font-bold text-text mb-6">
-          Contact
+          {translations.nameFormulaireContact}
         </Typography>
 
         <form className="space-y-6 bg-body">
           <InputField
             id="email"
-            label="Email"
+            label={translations.inputNameContactEmail}
             type="email"
             value={formData.email}
             onChange={handleInputChange}
@@ -57,14 +57,14 @@ const Contact: React.FC = (): React.ReactElement => {
 
           <InputField
             id="object"
-            label="Object"
+            label={translations.inputNameContactObject}
             value={formData.object}
             onChange={handleInputChange}
           />
 
           <InputField
             id="message"
-            label="Message"
+            label={translations.inputNameContactMessage}
             multiline
             rows={6}
             value={formData.message}
@@ -73,7 +73,7 @@ const Contact: React.FC = (): React.ReactElement => {
 
           <ButtonCustom
             onClick={handleClick}
-            text="Send"
+            text={translations.buttonSendMessageContact}
           />
         </form>
       </div>

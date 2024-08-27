@@ -14,13 +14,9 @@ const en: Lang = {
     navbarButtonAbout : "About me",
     navbarButtonSkill : "Skills",
     navbarButtonProject : "Projects",
-    navbarButtonChoiceView : "View choice",
     navbarButtonTerminal : "Terminal",
     navbarButtonCareer : "Careers",
     headerTitle : "Fullstack Developer",
-    nameCategoryChoiceView : "View choice",
-    buttonNameChoiceTerminale : "View Terminal",
-    buttonNameChoiceText : "View Text",
     nameCategoryAboutMe : "About me",
     titleAboutMe : "Hello 👋, my name is Alexandre",
     descriptionAboutMe1 : "I am a junior French developer, passionate about computer science and web development since my childhood.",
@@ -53,6 +49,14 @@ const en: Lang = {
     buttonPaginationNext : "Next",
     buttonCV : "Check out my CV",
     nameCategoryCareer : "Careers",
+    nameCategoryContact : "Contact",
+    nameFormulaireContact : "Contact me",
+    inputNameContactEmail: "Email",
+    inputNameContactObject: "Object",
+    inputNameContactMessage: "Message",
+    buttonSendMessageContact: "Send",
+    messageErrorFillAllInput: "Please fill out all fields before submitting the form.",
+    messageSuccessFormulaireSend : "Thank you for your message! I will get back to you as soon as possible.",
 }
 
 export default en;
