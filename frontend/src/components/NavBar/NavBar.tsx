@@ -8,6 +8,7 @@ import Button from '@/components/Button/Button';
 import Modal from '@mui/material/Modal';
 import { useChoiceView } from '@/context/ChoiceView/ChoiceViewContext';
 import ToggleButton from '../Button/ToggleButton';
+import ChoiceViewButton from '../Button/ChoiceViewButton';
 
 const Navbar: React.FC = (): React.ReactElement => {
 
@@ -19,7 +20,6 @@ const Navbar: React.FC = (): React.ReactElement => {
   const [menuOpen, setMenuOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = React.useState<boolean>(false);
   const [isCheckedLang, setIsCheckedLang]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [isCheckedView, setIsCheckedView]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const handleOpen: () => void = () :void => setOpen(true);
   const handleClose: () => void = () :void => setOpen(false);
@@ -57,12 +57,6 @@ const Navbar: React.FC = (): React.ReactElement => {
         </div>
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
-            <li>
-              <button onClick={(e) => handleScrollToSection(e, choiceViewRef)} className="text-text hover:text-secondary">
-                <span className="hidden md:inline">{translations.navbarButtonChoiceView}</span>
-                <span className="md:hidden">Choice</span>
-              </button>
-            </li>
             { 
               selectedView !== "terminal" ?
               <>
@@ -99,16 +93,24 @@ const Navbar: React.FC = (): React.ReactElement => {
                     />
                 </li>
                 <li>
-                  <ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary"/>
+                  <ChoiceViewButton />
+                </li>
+                <li>
+                  <ColorLensIcon onClick={handleOpen} className="z-999 hover:text-secondary text-primary" fontSize="medium" />
                 </li>
               </>
               :
-              <li>
-                <button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">
-                  <span className="hidden md:inline">{translations.navbarButtonTerminal}</span>
-                  <span className="md:hidden">Terminal</span>
-                </button>
-              </li>
+              <>
+                <li>
+                    <ChoiceViewButton />
+                </li>
+                <li>
+                  <button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonTerminal}</span>
+                    <span className="md:hidden">Terminal</span>
+                  </button>
+                </li>
+              </>
             }
           </ul>
         </menu>
@@ -138,7 +140,7 @@ const Navbar: React.FC = (): React.ReactElement => {
                 <li><button onClick={(e) => handleScrollToSection(e, projectRef)} className="text-text hover:text-secondary">{translations.navbarButtonProject}</button></li>
                 <li><button onClick={(e) => handleScrollToSection(e, educationRef)} className="text-text hover:text-secondary">{translations.navbarButtonCareer}</button></li>
                 <li><ColorLensIcon onClick={handleOpen} className="hover:text-secondary text-primary"/></li>
-                <li>
+                <li onClick={() => setMenuOpen(false)}>
                   <ToggleButton
                     toggleChecked={toggleCheckedLang}
                     option1='FR'
@@ -146,9 +148,19 @@ const Navbar: React.FC = (): React.ReactElement => {
                     isChecked={isCheckedLang} 
                   />
                 </li>
+                <li onClick={() => setMenuOpen(false)}>
+                  <ChoiceViewButton />
+                </li>
               </>
               : 
-              <li><button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</button></li>
+              <>
+                <li onClick={() => setMenuOpen(false)}>
+                  <ChoiceViewButton />
+                </li>
+                <li>
+                  <button onClick={(e) => handleScrollToSection(e, terminalRef)} className="text-text hover:text-secondary">{translations.navbarButtonTerminal}</button>
+                </li>
+              </>
             }
           </ul>
         </menu>

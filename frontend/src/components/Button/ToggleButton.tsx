@@ -1,8 +1,8 @@
 
 type Props = {
   toggleChecked: () => void,
-  option1: string,
-  option2: string,
+  option1: string | React.ReactNode,
+  option2: string | React.ReactNode,
   isChecked: boolean,
 };
 
