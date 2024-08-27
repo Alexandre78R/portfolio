@@ -31,11 +31,11 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  sendEmailTest: MessageType;
+  sendContact: MessageType;
 };
 
 
-export type MutationSendEmailTestArgs = {
+export type MutationSendContactArgs = {
   data: ContactFrom;
 };
 
@@ -142,7 +142,7 @@ export type MessageTypeResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  sendEmailTest?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendEmailTestArgs, 'data'>>;
+  sendContact?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendContactArgs, 'data'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

@@ -27,11 +27,12 @@ export class ContactResolver {
     }
 
     @Mutation(() => MessageType)
-    async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
+    async sendContact(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
         const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
 
+        console.log("resutsSendEmail", resultSendEmailME)
         return resultSendEmailME;
     }
 }
