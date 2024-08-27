@@ -3,7 +3,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import Title from "@/components/Title/Title";
-import ChoiceView from "@/components/ChoiceView/ChoiceView";
+import ChoiceView from "@/components/Button/ChoiceViewButton";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
@@ -22,7 +22,7 @@ const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
   const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef, educationRef } = useSectionRefs();
-  const { selectedView, setSelectedView } = useChoiceView();
+  const { selectedView } = useChoiceView();
 
   const dispatch = useDispatch<AppDispatch>();
   const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
@@ -33,25 +33,13 @@ const Home: React.FC = (): React.ReactElement  => {
     dispatch(updateProjectDescriptions(translations.file));
     dispatch(updateEducationsTitle(translations.file));
     dispatch(updateExperiences(translations.file));
-  }, [translations])
-
-  const handleViewSelect: (view : string) => void = (view : string): void => {
-    setSelectedView(view);
-  };
+  }, [translations, dispatch])
 
   return (
       <>
       <Seo />
       <Header />
       <main className="bg-body">
-        <section className="ml-3" ref={choiceViewRef}>
-          <Title title={translations.nameCategoryChoiceView} />
-          <ChoiceView
-            selectedView={selectedView}
-            setSelectedView={setSelectedView}
-            handleViewSelect={handleViewSelect}
-          />
-        </section>
         {selectedView === "terminal" ? (
           <section className="ml-3 mt-[5%] mb-[5%]" ref={terminalRef}>
             <Title title="Terminal" />
@@ -69,17 +57,13 @@ const Home: React.FC = (): React.ReactElement  => {
               <div className="ml-3">
                 <Title title={translations.nameCategorySkills} />
               </div>
-              {/* <div className="m-5"> */}
                 <HorizontalScroll data={dataSkills} category="skills" />
-              {/* </div> */}
             </section>
             <section ref={projectRef} id="project">
               <div className="ml-3">
                 <Title title={translations.nameCategoryProjects} />
               </div>
-              {/* <div className="m-5"> */}
                 <HorizontalScroll data={dataProjects} category="projects" />
-              {/* </div> */}
             </section>
             <section className="mt-[4%]" ref={educationRef} id="project">
               <div className="ml-3">
