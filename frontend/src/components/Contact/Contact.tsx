@@ -47,20 +47,15 @@ const Contact: React.FC = (): React.ReactElement => {
           showAlert("success", translations.messageSuccessFormulaireSend);
         } else {
           console.log("Oncompleted")
-          showAlert("error", data?.sendContact.message);
+          showAlert("error", translations.messageErrorNotSend);
         }
       },
       onError(error) {
-        let message;
-        console.log("onError");
-        showAlert("error", error.message);
-        // showAlert(
-        //   'error',
-        //   error.message ?
-        //     error.message
-        //   :
-        //   translations.messageErrorServerOff
-        // );
+        let errorMessage: string = translations.messageErrorServerOff;
+        if (error.message === "Invaid format email.") {
+          errorMessage = translations.messageErrorFormatEmail;
+        }
+        showAlert("error", errorMessage);
       },
     });
   };

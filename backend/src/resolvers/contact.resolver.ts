@@ -18,6 +18,7 @@ import { MessageType} from "../types/message.types";
 import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structureMail.service";
 import { MyContext } from "..";
 import { checkApiKey } from "../lib/checkApiKey";
+import { checkRegex, emailRegex } from "../regex";
 
 @Resolver()
 export class ContactResolver {
@@ -30,9 +31,15 @@ export class ContactResolver {
 
     @Mutation(() => MessageType)
     async sendContact(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: MyContext): Promise<MessageType> {
+        
         if (!context.apiKey)
             throw new Error('Unauthorized TOKEN API');
+
         await checkApiKey(context.apiKey);
+
+        if (!checkRegex(emailRegex, data.email))
+            throw new Error("Invaid format email.");
+        
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
         const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
