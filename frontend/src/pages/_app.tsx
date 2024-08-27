@@ -8,23 +8,33 @@ import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
 import ReduxProvider from '../store/provider';
 import ToastProvider from "@/components/ToastCustom/ToastProvider";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { API_URL } from "@/config";
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
+  const client = new ApolloClient({
+    uri: `${API_URL}`,
+    cache: new InMemoryCache(),
+    credentials: "include",
+  });
+
   return (
-    <ReduxProvider>
-      <SectionRefsProvider>
-        <ThemeProvider>
-          <LangProvider>
-            <ChoiceViewProvider>
-              <Navbar />
-              <ToastProvider />
-              <Component {...pageProps} />
-            </ChoiceViewProvider>
-          </LangProvider>
-        </ThemeProvider>
-      </SectionRefsProvider>
-    </ReduxProvider>
+    <ApolloProvider client={client}>
+      <ReduxProvider>
+        <SectionRefsProvider>
+          <ThemeProvider>
+            <LangProvider>
+              <ChoiceViewProvider>
+                <Navbar />
+                <ToastProvider />
+                <Component {...pageProps} />
+              </ChoiceViewProvider>
+            </LangProvider>
+          </ThemeProvider>
+        </SectionRefsProvider>
+      </ReduxProvider>
+    </ApolloProvider>
   );
 }
 export default App;
