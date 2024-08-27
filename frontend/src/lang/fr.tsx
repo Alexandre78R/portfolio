@@ -56,6 +56,9 @@ const fr: Lang = {
     inputNameContactMessage: "Message",
     buttonSendMessageContact: "Envoyer",
     messageErrorFillAllInput: "Veuillez remplir tous les champs avant de soumettre le formulaire.",
+    messageErrorServerOff: "Impossible de contacter le serveur. Veuillez réessayer plus tard.",
+    messageErrorNotSend: "Impossible d'envoyer l'email. Veuillez réessayer.",
+    messageErrorFormatEmail: "Le format de l'email est invalide. Veuillez entrer une adresse email valide.",
     messageSuccessFormulaireSend : "Merci pour votre message ! Je vous recontacterai dès que possible.",
 }
 

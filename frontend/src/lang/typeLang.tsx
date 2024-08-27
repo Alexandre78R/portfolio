@@ -54,6 +54,9 @@ type Lang = {
     inputNameContactMessage: string,
     buttonSendMessageContact: string,
     messageErrorFillAllInput: string,
+    messageErrorServerOff: string,
+    messageErrorNotSend: string,
+    messageErrorFormatEmail: string,
     messageSuccessFormulaireSend : string,
 }
 
