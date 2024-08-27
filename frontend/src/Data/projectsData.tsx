@@ -398,9 +398,9 @@ export const projectsData = [
       "WildCodeHub is an online code development platform. Users can create, test, and share their code, with an intuitive interface and backup features. Social interactions are planned, and future developments will include support for new languages and real-time collaboration.",
     descriptionFR:
       "WildCodeHub est une plateforme de développement de code en ligne. Les utilisateurs peuvent créer, tester et partager leur code, avec une interface intuitive et des fonctionnalités de sauvegarde. Des interactions sociales sont prévues, et des évolutions incluront le support de nouveaux langages et la collaboration en temps réel.",
-    typeDisplay: "image",
+    typeDisplay: "video",
     github: "https://github.com/WildCodeSchool/2309-wns-jaune-wild-code-hub",
-    contentDisplay: "https://i.goopics.net/tilvu0.png",
+    contentDisplay: "wildCodeHub.mp4",
     skills: [
       {
         name: "TypeScript",
@@ -466,10 +466,6 @@ export const projectsData = [
         name: "Jest",
         image:
           "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
-      },
-      { 
-        name: 'Cypress',
-        image: "https://img.shields.io/badge/-Cypress-1FC824?style=flat-square&logo=cypress&logoColor=white"
       },
       {
         name: "Figma",
