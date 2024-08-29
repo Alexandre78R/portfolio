@@ -102,6 +102,13 @@ export class CaptchaResolver {
     const isValid = correctIndices.length === selectedIndices.length &&
       selectedIndices.every(index => correctIndices.includes(index));
 
+      if (isValid) {
+        captchaMap[idCaptcha].images.forEach((element: any) => {
+          delete captchaImageMap[element.id];
+        });
+        delete captchaMap[idCaptcha];
+      }
+
     return { isValid };
   }
 }
