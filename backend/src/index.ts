@@ -41,7 +41,7 @@ async function main() {
     const filename = imageMap[imageId];
     console.log(imageMap)
     if (filename) {
-      const imagePath = path.join(__dirname, 'public', 'images', filename);
+      const imagePath = path.join(__dirname, 'images', filename);
       console.log(imagePath)
       res.sendFile(imagePath);
     } else {

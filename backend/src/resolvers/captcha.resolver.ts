@@ -1,4 +1,4 @@
-import { Resolver, Mutation, ObjectType, Field, Ctx } from 'type-graphql';
+import { Resolver, Mutation, ObjectType, Field, Ctx, Query } from 'type-graphql';
 import { v4 as uuidv4 } from 'uuid';
 import { MyContext } from "..";
 import { imageMap } from '../imageMap';
@@ -29,7 +29,8 @@ class CaptchaImage {
 
 @Resolver()
 export class CaptchaResolver {
-  @Mutation(() => CaptchaResponse)
+
+  @Query(() => CaptchaResponse)
   async generateCaptcha(@Ctx() context: MyContext): Promise<CaptchaResponse> {
     const id = uuidv4();
 
@@ -61,11 +62,12 @@ export class CaptchaResolver {
     const challenges = ['cat', 'dog', 'car'] as const;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
 
+    const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
+    
     const captchaImages = selectedImages.map(image => {
       const imageId = uuidv4();
-      const imageUrl = `http://localhost:4000/dynamic-images/${imageId}`;
-
-      // Store the mapping of UUID to the actual image filename
+      const imageUrl = `${BASE_URL}/dynamic-images/${imageId}`;
+      
       imageMap[imageId] = image.src;
 
       return {
