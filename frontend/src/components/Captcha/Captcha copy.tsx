@@ -1,59 +1,54 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from 'react';
 import ButtonCustom from '../Button/Button';
-
-interface Image {
-  src: string;
-  type: 'cat' | 'dog' | 'car';
-}
+import {
+  useGenerateCaptchaQuery,
+  CaptchaImage,
+  useValidateCaptchaMutation
+} from '@/types/graphql';
+import { CircularProgress } from '@mui/material';
+import CustomToast from '../ToastCustom/CustomToast';
+import { useLang } from '@/context/Lang/LangContext';
 
 const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValidate }) => {
-  const [images, setImages] = useState<Image[]>([]);
+
+  const { showAlert } = CustomToast();
+  const { translations } = useLang();
+
+  const [images, setImages] = useState<CaptchaImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
-  const [challengeType, setChallengeType] = useState<'cat' | 'dog' | 'car'>('cat');
-  const [isValid, setIsValid] = useState<boolean | null>(null);
+  const [challengeType, setChallengeType] = useState<string>('');
+  const [idCaptcha, setIdCaptcha] = useState<string>('');  
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const getRandomChallenge = (): 'cat' | 'dog' | 'car' => {
-    const challenges = ['cat', 'dog', 'car'] as const;
-    return challenges[Math.floor(Math.random() * challenges.length)];
-  };
-
-  const generateImages = (): Image[] => {
-    const allImages: Image[] = [
-      { src: '/img/captcha-images/cat1.jpg', type: 'cat' },
-      { src: '/img/captcha-images/cat2.jpg', type: 'cat' },
-      { src: '/img/captcha-images/cat3.jpg', type: 'cat' },
-      { src: '/img/captcha-images/dog1.jpg', type: 'dog' },
-      { src: '/img/captcha-images/dog2.jpg', type: 'dog' },
-      { src: '/img/captcha-images/dog3.jpg', type: 'dog' },
-      { src: '/img/captcha-images/car1.jpg', type: 'car' },
-      { src: '/img/captcha-images/car2.jpg', type: 'car' },
-      { src: '/img/captcha-images/car3.jpg', type: 'car' },
-      { src: '/img/captcha-images/car4.jpg', type: 'car' },
-      { src: '/img/captcha-images/car5.jpg', type: 'car' },
-      { src: '/img/captcha-images/car6.jpg', type: 'car' },
-      { src: '/img/captcha-images/car7.jpg', type: 'car' },
-      { src: '/img/captcha-images/car8.jpg', type: 'car' },
-    ];
-    const getRandomImagesByType = (type: 'cat' | 'dog' | 'car') => {
-        return allImages
-        .filter(image => image.type === type)
-        .sort(() => Math.random() - 0.5) 
-        .slice(0, 2);
-    };
-
-    const selectedImages = [
-        ...getRandomImagesByType('cat'),
-        ...getRandomImagesByType('dog'),
-        ...getRandomImagesByType('car')
-    ];
-
-    return selectedImages.sort(() => Math.random() - 0.5);
-  };
+  const generateCaptcha = useGenerateCaptchaQuery();
+  const [validateCaptcha] = useValidateCaptchaMutation();
 
   useEffect(() => {
-    setImages(generateImages());
-    setChallengeType(getRandomChallenge());
-  }, []);
+    if (generateCaptcha?.data) {
+      setImages(generateCaptcha.data?.generateCaptcha.images);
+      setChallengeType(generateCaptcha.data?.generateCaptcha.challengeType);
+      setIdCaptcha(generateCaptcha.data?.generateCaptcha?.id);
+      setLoading(false);
+    }
+  }, [generateCaptcha]);
+
+  const regenerateCaptcha = () => {
+    setLoading(true);
+    generateCaptcha.refetch().then(response => {
+      if (response.data) {
+        setImages(response.data.generateCaptcha.images);
+        setChallengeType(response.data.generateCaptcha.challengeType);
+        setIdCaptcha(response.data.generateCaptcha.id);
+        setSelectedImages([]);
+        setLoading(false);
+      }
+    }).catch(error => {
+      console.log("Error during captcha regeneration:", error);
+      showAlert("error", translations.messageErrorServerOff);
+      setLoading(false);
+    });
+  };
 
   const handleImageClick = (index: number) => {
     if (selectedImages.includes(index)) {
@@ -64,58 +59,65 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   };
 
   const handleSubmit = async () => {
-    console.log("ddckdccd")
-    const correctIndices = images
-      .map((img, idx) => img.type === challengeType ? idx : -1)
-      .filter(idx => idx !== -1);
-
-    // Validate that the selectedIndices are correct
-    const isCorrect = correctIndices.length === selectedImages.length && 
-    selectedImages.every(index => correctIndices.includes(index));
-    console.log("isCorrect",isCorrect)
-    // try {
-    //   const { data } = await validateCaptcha({
-    //     variables: { selectedIndices: selectedImages, challengeType },
-    //   });
-
-    //   const isCorrect = data.validateCaptcha;
-    //   setIsValid(isCorrect);
-    //   onValidate(isCorrect);
-    // } catch (error) {
-    //   console.error("Error validating captcha", error);
-    //   setIsValid(false);
-    // }
+    validateCaptcha({
+      variables: {
+        selectedIndices: selectedImages,
+        challengeType : challengeType,
+        idCaptcha :idCaptcha,
+      },
+      onCompleted(data) {
+        if (data?.validateCaptcha.isValid) {
+          showAlert("success", "yes");
+        } else {
+          showAlert("error", "no");
+        }
+      },
+      onError(error) {
+        console.log(error);
+        let errorMessage: string = translations.messageErrorServerOff;
+        showAlert("error", errorMessage);
+        regenerateCaptcha();
+      },
+    });
   };
 
   return (
     <div>
-      <p className="text-text">Sélectionne toutes les images de {challengeType === 'cat' ? 'chats' : challengeType === 'dog' ? 'chiens' : 'voitures'} {`pour prouver que tu n'es pas un robot :`}</p>
-      <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-        {images.map((image, index) => (
-          <div
-            key={index}
-            onClick={() => handleImageClick(index)}
-            style={{
-              border: selectedImages.includes(index) ? '4px solid green' : '2px solid #ccc',
-              margin: '10px',
-              cursor: 'pointer',
-            }}
-          >
-            <img
-              src={image.src}
-              alt={`captcha-img-${index}`}
-              style={{ width: '100px', height: '100px' }}
-            />
+      <p className="text-text">
+        Sélectionne toutes les images de {challengeType === 'cat' ? 'chats' : challengeType === 'dog' ? 'chiens' : 'voitures'} {`pour prouver que tu n'es pas un robot :`}
+      </p>
+
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+            {images.map((image, index) => (
+              <div
+                key={index}
+                onClick={() => handleImageClick(index)}
+                style={{
+                  border: selectedImages.includes(index) ? '4px solid green' : '2px solid #ccc',
+                  margin: '10px',
+                  cursor: 'pointer',
+                }}
+              >
+                <img
+                  src={image.url}
+                  alt={`captcha-img-${index}`}
+                  style={{ width: '100px', height: '100px' }}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      {/* <button onClick={handleSubmit} style={{ marginTop: '10px' }}>Vérifier</button> */}
-      <ButtonCustom
-        onClick={handleSubmit}
-        text="vérification"
-      />
-      {isValid === false && <p style={{ color: 'red' }}>CAPTCHA incorrect. Réessaie !</p>}
-      {isValid === true && <p style={{ color: 'green' }}>CAPTCHA correct !</p>}
+          <ButtonCustom
+            onClick={handleSubmit}
+            text="vérification"
+          />
+        </>
+      )}
     </div>
   );
 };
