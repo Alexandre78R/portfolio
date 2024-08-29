@@ -5,12 +5,19 @@ import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
 import { useSendContactMutation } from "@/types/graphql";
+import Captcha from "../Captcha/Captcha";
 
 const Contact: React.FC = (): React.ReactElement => {
 
   const { translations } = useLang();
   const { showAlert } = CustomToast();
   const [sendContact] = useSendContactMutation();
+
+  const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
+
+  const handleCaptchaValidation = (isValid: boolean) => {
+    setCaptchaValid(isValid);
+  };
 
   const [formData, setFormData] = useState<{
     email: string;
@@ -98,6 +105,7 @@ const Contact: React.FC = (): React.ReactElement => {
           />
         </form>
       </div>
+      <Captcha onValidate={handleCaptchaValidation} />
     </div>
   );
 };

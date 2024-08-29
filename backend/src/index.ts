@@ -1,19 +1,16 @@
-import "reflect-metadata";
+import 'reflect-metadata'; 
+import express from "express";
+import http from "http";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import "dotenv/config";
-import { buildSchema } from 'type-graphql';
-import express from "express";
-import http from "http";
 import cors from "cors";
-import Cookies from "cookies";
-import { jwtVerify } from "jose";
-import db from "./lib/db";
-// import { UserResolver } from "./resolvers/user.resolver";
+import { buildSchema } from "type-graphql";
 import { ContactResolver } from "./resolvers/contact.resolver";
-import { startStandaloneServer } from "@apollo/server/standalone";
 import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
+import path from 'path';
+import { CaptchaResolver } from './resolvers/captcha.resolver';
+import { imageMap } from './imageMap';
 
 export interface MyContext {
   req: express.Request;
@@ -26,39 +23,51 @@ const httpServer = http.createServer(app);
 
 async function main() {
 
-    await db.initialize();
+  const schema = await buildSchema({
+    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver],
+    validate: false,
+  });
 
-    const schema = await buildSchema({
-      resolvers: [ContactResolver],
-      validate: false,
-    });
+  const server = new ApolloServer<MyContext>({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  
+  await server.start();
 
-    const server = new ApolloServer<MyContext>({
-      schema,
-      plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-    });
-    
-    await server.start();
 
-    app.use(
-      "/",
-      cors<cors.CorsRequest>({
-        origin: ["http://localhost:3000"],
-        credentials: true,
-      }),
-      express.json(),
-      expressMiddleware(server, {
-        context: async ({ req, res }) => {
-          const apiKey = req.headers['x-api-key'];
-          return { req, res, apiKey: apiKey as string | undefined };
-        },
-      })
-    );
+  app.get('/dynamic-images/:id', (req, res) => {
+    const imageId = req.params.id;
+    const filename = imageMap[imageId];
+    console.log(imageMap)
+    if (filename) {
+      const imagePath = path.join(__dirname, 'public', 'images', filename);
+      console.log(imagePath)
+      res.sendFile(imagePath);
+    } else {
+      res.status(404).send('Image not found');
+    }
+  });
 
-    await new Promise<void>((resolve) =>
-      httpServer.listen({ port: 4000 }, resolve)
-    );
-    console.log(`🚀 Server lancé sur http://localhost:4000/`);
-  }
+  app.use(
+    "/graphql",
+    cors<cors.CorsRequest>({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    }),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => {
+        const apiKey = req.headers['x-api-key'];
+        return { req, res, apiKey: apiKey as string | undefined };
+      },
+    })
+  );
 
-  main();
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`🚀 Server lancé sur http://localhost:4000/`);
+}
+
+main();
