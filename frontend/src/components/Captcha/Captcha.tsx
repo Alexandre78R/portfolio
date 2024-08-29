@@ -10,7 +10,7 @@ import { CircularProgress, Card, CardActionArea, CardMedia, IconButton } from '@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CustomToast from '../ToastCustom/CustomToast';
 import { useLang } from '@/context/Lang/LangContext';
-
+import RefreshIcon from '@mui/icons-material/Refresh';
 const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValidate }) => {
 
   const { showAlert } = CustomToast();
@@ -127,6 +127,10 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
             <ButtonCustom
               onClick={handleSubmit}
               text="vérification"
+            />
+            <RefreshIcon
+              onClick={regenerateCaptcha}
+              className='text-text cursor-pointer m-2 hover:text-secondary'
             />
           </div>
         </>
