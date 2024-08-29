@@ -20,7 +20,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
     if (generateCaptcha?.data) {
       setImages(generateCaptcha.data?.generateCaptcha.images);
       setChallengeType(generateCaptcha.data?.generateCaptcha.challengeType);
-      setLoading(false); // Les images sont maintenant chargées
+      setLoading(false);
     }
   }, [generateCaptcha]);
 
