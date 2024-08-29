@@ -1,48 +1,22 @@
 import { 
   Resolver,
   Mutation,
-  ObjectType,
-  Field,
   Ctx,
   Query,
   Arg
 } from 'type-graphql';
 import { v4 as uuidv4 } from 'uuid';
 import { MyContext } from "..";
-import { imageMap } from '../imageMap';
+import { 
+  captchaImageMap,
+  captchaMap
+} from '../CaptchaMap';
 import fs from "fs";
 import path from 'path';
-
-@ObjectType()
-class CaptchaResponse {
-  @Field()
-  id: string;
-
-  @Field(() => [CaptchaImage])
-  images: CaptchaImage[];
-
-  @Field()
-  challengeType: string;
-}
-
-@ObjectType()
-class CaptchaImage {
-  @Field()
-  id: string;
-
-  @Field()
-  url: string;
-
-  @Field()
-  type: string;
-}
-
-@ObjectType()
-class ValidationResponse {
-  @Field()
-  isValid: boolean;
-}
-
+import { 
+  CaptchaResponse,
+  ValidationResponse
+} from '../types/captcha.types';
 
 @Resolver()
 export class CaptchaResolver {
@@ -83,7 +57,7 @@ export class CaptchaResolver {
       const imageId = uuidv4();
       const imageUrl = `${BASE_URL}/dynamic-images/${imageId}`;
       
-      imageMap[imageId] = image.src;
+      captchaImageMap[imageId] = image.src;
 
       return {
         id: imageId,
@@ -92,31 +66,34 @@ export class CaptchaResolver {
       };
     });
 
-
-
-    return {
+    const resultCaptcha = {
       id,
       images: captchaImages,
       challengeType
-    };
-  }
+    }
 
+    captchaMap[id] = resultCaptcha;
+
+    return resultCaptcha;
+  }
 
   @Mutation(() => ValidationResponse)
   validateCaptcha(
     @Arg('selectedIndices', () => [Number]) selectedIndices: number[],
-    @Arg('challengeType') challengeType: string
+    @Arg('challengeType') challengeType: string,
+    @Arg('idCaptcha') idCaptcha: string
   ): ValidationResponse {
 
-    const images : any[] = [];
-    for (const key in imageMap) {
-      images.push({
-        src : key,
-        type : imageMap[key].split('-')[0]
-      })
+    if (!captchaMap[idCaptcha])
+      throw new Error("Expired captcha!")
+
+    let images : any[] = [];
+    for (const _ in captchaMap) {
+      images =  captchaMap[idCaptcha].images;
     }
 
-    console.log("imageMap",Object.keys(imageMap))
+    if (!images)
+      throw new Error("Expired captcha!")
 
     const correctIndices = images
       .map((img, idx) => img.type === challengeType ? idx : -1)

@@ -57,6 +57,7 @@ export type MutationSendContactArgs = {
 
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
+  idCaptcha: Scalars['String']['input'];
   selectedIndices: Array<Scalars['Float']['input']>;
 };
 
@@ -192,7 +193,7 @@ export type MessageTypeResolvers<ContextType = any, ParentType extends Resolvers
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   sendContact?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendContactArgs, 'data'>>;
-  validateCaptcha?: Resolver<ResolversTypes['ValidationResponse'], ParentType, ContextType, RequireFields<MutationValidateCaptchaArgs, 'challengeType' | 'selectedIndices'>>;
+  validateCaptcha?: Resolver<ResolversTypes['ValidationResponse'], ParentType, ContextType, RequireFields<MutationValidateCaptchaArgs, 'challengeType' | 'idCaptcha' | 'selectedIndices'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

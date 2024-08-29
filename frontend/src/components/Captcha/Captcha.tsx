@@ -18,8 +18,8 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   const [images, setImages] = useState<CaptchaImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [challengeType, setChallengeType] = useState<string>('');
+  const [idCaptcha, setIdCaptcha] = useState<string>('');  
   const [loading, setLoading] = useState<boolean>(true);
-  const [isValid, setIsValid] = useState<boolean | null>(null);
 
   const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
@@ -28,9 +28,27 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
     if (generateCaptcha?.data) {
       setImages(generateCaptcha.data?.generateCaptcha.images);
       setChallengeType(generateCaptcha.data?.generateCaptcha.challengeType);
+      setIdCaptcha(generateCaptcha.data?.generateCaptcha?.id);
       setLoading(false);
     }
   }, [generateCaptcha]);
+
+  const regenerateCaptcha = () => {
+    setLoading(true);
+    generateCaptcha.refetch().then(response => {
+      if (response.data) {
+        setImages(response.data.generateCaptcha.images);
+        setChallengeType(response.data.generateCaptcha.challengeType);
+        setIdCaptcha(response.data.generateCaptcha.id);
+        setSelectedImages([]);
+        setLoading(false);
+      }
+    }).catch(error => {
+      console.log("Error during captcha regeneration:", error);
+      showAlert("error", translations.messageErrorServerOff);
+      setLoading(false);
+    });
+  };
 
   const handleImageClick = (index: number) => {
     if (selectedImages.includes(index)) {
@@ -44,14 +62,13 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
     validateCaptcha({
       variables: {
         selectedIndices: selectedImages,
-        challengeType : challengeType
+        challengeType : challengeType,
+        idCaptcha :idCaptcha,
       },
       onCompleted(data) {
         if (data?.validateCaptcha.isValid) {
-          console.log(data?.validateCaptcha.isValid)
           showAlert("success", "yes");
         } else {
-          console.log("Oncompleted")
           showAlert("error", "no");
         }
       },
@@ -59,6 +76,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
         console.log(error);
         let errorMessage: string = translations.messageErrorServerOff;
         showAlert("error", errorMessage);
+        regenerateCaptcha();
       },
     });
   };

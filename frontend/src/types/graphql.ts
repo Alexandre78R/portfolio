@@ -58,6 +58,7 @@ export type MutationSendContactArgs = {
 
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
+  idCaptcha: Scalars['String']['input'];
   selectedIndices: Array<Scalars['Float']['input']>;
 };
 
@@ -75,6 +76,7 @@ export type ValidationResponse = {
 export type ValidateCaptchaMutationVariables = Exact<{
   challengeType: Scalars['String']['input'];
   selectedIndices: Array<Scalars['Float']['input']> | Scalars['Float']['input'];
+  idCaptcha: Scalars['String']['input'];
 }>;
 
 
@@ -94,10 +96,11 @@ export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __
 
 
 export const ValidateCaptchaDocument = gql`
-    mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!) {
+    mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
   validateCaptcha(
     challengeType: $challengeType
     selectedIndices: $selectedIndices
+    idCaptcha: $idCaptcha
   ) {
     isValid
   }
@@ -120,6 +123,7 @@ export type ValidateCaptchaMutationFn = Apollo.MutationFunction<ValidateCaptchaM
  *   variables: {
  *      challengeType: // value for 'challengeType'
  *      selectedIndices: // value for 'selectedIndices'
+ *      idCaptcha: // value for 'idCaptcha'
  *   },
  * });
  */

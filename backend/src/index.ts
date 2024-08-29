@@ -10,7 +10,7 @@ import { ContactResolver } from "./resolvers/contact.resolver";
 import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 import path from 'path';
 import { CaptchaResolver } from './resolvers/captcha.resolver';
-import { imageMap } from './imageMap';
+import { captchaImageMap } from './CaptchaMap';
 
 export interface MyContext {
   req: express.Request;
@@ -35,10 +35,9 @@ async function main() {
   
   await server.start();
 
-
   app.get('/dynamic-images/:id', (req, res) => {
     const imageId = req.params.id;
-    const filename = imageMap[imageId];
+    const filename = captchaImageMap[imageId];
     if (filename) {
       const imagePath = path.join(__dirname, 'images', filename);
       res.sendFile(imagePath);
