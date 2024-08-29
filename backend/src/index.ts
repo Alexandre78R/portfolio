@@ -39,10 +39,8 @@ async function main() {
   app.get('/dynamic-images/:id', (req, res) => {
     const imageId = req.params.id;
     const filename = imageMap[imageId];
-    console.log(imageMap)
     if (filename) {
       const imagePath = path.join(__dirname, 'images', filename);
-      console.log(imagePath)
       res.sendFile(imagePath);
     } else {
       res.status(404).send('Image not found');
