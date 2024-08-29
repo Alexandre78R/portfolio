@@ -3,11 +3,18 @@ import React, { useState, useEffect } from 'react';
 import ButtonCustom from '../Button/Button';
 import {
   useGenerateCaptchaQuery,
-  CaptchaImage
+  CaptchaImage,
+  useValidateCaptchaMutation
 } from '@/types/graphql';
 import { CircularProgress } from '@mui/material';
+import CustomToast from '../ToastCustom/CustomToast';
+import { useLang } from '@/context/Lang/LangContext';
 
 const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValidate }) => {
+
+  const { showAlert } = CustomToast();
+  const { translations } = useLang();
+
   const [images, setImages] = useState<CaptchaImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [challengeType, setChallengeType] = useState<string>('');
@@ -15,6 +22,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   const [isValid, setIsValid] = useState<boolean | null>(null);
 
   const generateCaptcha = useGenerateCaptchaQuery();
+  const [validateCaptcha] = useValidateCaptchaMutation();
 
   useEffect(() => {
     if (generateCaptcha?.data) {
@@ -33,27 +41,26 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   };
 
   const handleSubmit = async () => {
-    console.log("ddckdccd")
-    const correctIndices = images
-      .map((img, idx) => img.type === challengeType ? idx : -1)
-      .filter(idx => idx !== -1);
-
-    // Validate that the selectedIndices are correct
-    const isCorrect = correctIndices.length === selectedImages.length && 
-    selectedImages.every(index => correctIndices.includes(index));
-    console.log("isCorrect", isCorrect)
-    // try {
-    //   const { data } = await validateCaptcha({
-    //     variables: { selectedIndices: selectedImages, challengeType },
-    //   });
-
-    //   const isCorrect = data.validateCaptcha;
-    //   setIsValid(isCorrect);
-    //   onValidate(isCorrect);
-    // } catch (error) {
-    //   console.error("Error validating captcha", error);
-    //   setIsValid(false);
-    // }
+    validateCaptcha({
+      variables: {
+        selectedIndices: selectedImages,
+        challengeType : challengeType
+      },
+      onCompleted(data) {
+        if (data?.validateCaptcha.isValid) {
+          console.log(data?.validateCaptcha.isValid)
+          showAlert("success", "yes");
+        } else {
+          console.log("Oncompleted")
+          showAlert("error", "no");
+        }
+      },
+      onError(error) {
+        console.log(error);
+        let errorMessage: string = translations.messageErrorServerOff;
+        showAlert("error", errorMessage);
+      },
+    });
   };
 
   return (
@@ -91,8 +98,6 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
             onClick={handleSubmit}
             text="vérification"
           />
-          {isValid === false && <p style={{ color: 'red' }}>CAPTCHA incorrect. Réessaie !</p>}
-          {isValid === true && <p style={{ color: 'green' }}>CAPTCHA correct !</p>}
         </>
       )}
     </div>

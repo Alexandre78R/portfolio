@@ -1,4 +1,12 @@
-import { Resolver, Mutation, ObjectType, Field, Ctx, Query } from 'type-graphql';
+import { 
+  Resolver,
+  Mutation,
+  ObjectType,
+  Field,
+  Ctx,
+  Query,
+  Arg
+} from 'type-graphql';
 import { v4 as uuidv4 } from 'uuid';
 import { MyContext } from "..";
 import { imageMap } from '../imageMap';
@@ -28,6 +36,13 @@ class CaptchaImage {
   @Field()
   type: string;
 }
+
+@ObjectType()
+class ValidationResponse {
+  @Field()
+  isValid: boolean;
+}
+
 
 @Resolver()
 export class CaptchaResolver {
@@ -77,10 +92,39 @@ export class CaptchaResolver {
       };
     });
 
+
+
     return {
       id,
       images: captchaImages,
       challengeType
     };
+  }
+
+
+  @Mutation(() => ValidationResponse)
+  validateCaptcha(
+    @Arg('selectedIndices', () => [Number]) selectedIndices: number[],
+    @Arg('challengeType') challengeType: string
+  ): ValidationResponse {
+
+    const images : any[] = [];
+    for (const key in imageMap) {
+      images.push({
+        src : key,
+        type : imageMap[key].split('-')[0]
+      })
+    }
+
+    console.log("imageMap",Object.keys(imageMap))
+
+    const correctIndices = images
+      .map((img, idx) => img.type === challengeType ? idx : -1)
+      .filter(idx => idx !== -1);
+
+    const isValid = correctIndices.length === selectedIndices.length &&
+      selectedIndices.every(index => correctIndices.includes(index));
+
+    return { isValid };
   }
 }

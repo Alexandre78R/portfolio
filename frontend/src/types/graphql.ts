@@ -47,6 +47,7 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   sendContact: MessageType;
+  validateCaptcha: ValidationResponse;
 };
 
 
@@ -54,11 +55,30 @@ export type MutationSendContactArgs = {
   data: ContactFrom;
 };
 
+
+export type MutationValidateCaptchaArgs = {
+  challengeType: Scalars['String']['input'];
+  selectedIndices: Array<Scalars['Float']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   contact: Scalars['String']['output'];
   generateCaptcha: CaptchaResponse;
 };
+
+export type ValidationResponse = {
+  __typename?: 'ValidationResponse';
+  isValid: Scalars['Boolean']['output'];
+};
+
+export type ValidateCaptchaMutationVariables = Exact<{
+  challengeType: Scalars['String']['input'];
+  selectedIndices: Array<Scalars['Float']['input']> | Scalars['Float']['input'];
+}>;
+
+
+export type ValidateCaptchaMutation = { __typename?: 'Mutation', validateCaptcha: { __typename?: 'ValidationResponse', isValid: boolean } };
 
 export type SendContactMutationVariables = Exact<{
   data: ContactFrom;
@@ -73,6 +93,43 @@ export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', type: string, url: string, id: string }> } };
 
 
+export const ValidateCaptchaDocument = gql`
+    mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!) {
+  validateCaptcha(
+    challengeType: $challengeType
+    selectedIndices: $selectedIndices
+  ) {
+    isValid
+  }
+}
+    `;
+export type ValidateCaptchaMutationFn = Apollo.MutationFunction<ValidateCaptchaMutation, ValidateCaptchaMutationVariables>;
+
+/**
+ * __useValidateCaptchaMutation__
+ *
+ * To run a mutation, you first call `useValidateCaptchaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useValidateCaptchaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [validateCaptchaMutation, { data, loading, error }] = useValidateCaptchaMutation({
+ *   variables: {
+ *      challengeType: // value for 'challengeType'
+ *      selectedIndices: // value for 'selectedIndices'
+ *   },
+ * });
+ */
+export function useValidateCaptchaMutation(baseOptions?: Apollo.MutationHookOptions<ValidateCaptchaMutation, ValidateCaptchaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ValidateCaptchaMutation, ValidateCaptchaMutationVariables>(ValidateCaptchaDocument, options);
+      }
+export type ValidateCaptchaMutationHookResult = ReturnType<typeof useValidateCaptchaMutation>;
+export type ValidateCaptchaMutationResult = Apollo.MutationResult<ValidateCaptchaMutation>;
+export type ValidateCaptchaMutationOptions = Apollo.BaseMutationOptions<ValidateCaptchaMutation, ValidateCaptchaMutationVariables>;
 export const SendContactDocument = gql`
     mutation sendContact($data: ContactFrom!) {
   sendContact(data: $data) {
