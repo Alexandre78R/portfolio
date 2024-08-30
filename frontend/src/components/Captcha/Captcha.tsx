@@ -11,6 +11,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CustomToast from '../ToastCustom/CustomToast';
 import { useLang } from '@/context/Lang/LangContext';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import LoadingCustom from '../Loading/LoadingCustom';
+
 const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValidate }) => {
 
   const { showAlert } = CustomToast();
@@ -85,8 +87,8 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   return (
     <div>
       {loading ? (
-        <div className="flex justify-center items-center h-52">
-          <CircularProgress />
+        <div className="flex justify-center items-center h-52 text-primary">
+          <LoadingCustom />
         </div>
       ) : (
         <>
