@@ -5,5 +5,11 @@ export const VALIDATE_CAPTCHA  = gql`
     validateCaptcha(challengeType: $challengeType, selectedIndices: $selectedIndices, idCaptcha: $idCaptcha) {
     isValid
   }
-  }
+}
+`;
+
+export const CLEAR_CAPTCHA  = gql`
+  mutation ClearCaptcha($idCaptcha: String!) {
+    clearCaptcha(idCaptcha: $idCaptcha)
+}
 `;

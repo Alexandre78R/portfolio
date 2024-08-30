@@ -111,4 +111,20 @@ export class CaptchaResolver {
 
     return { isValid };
   }
+
+  @Mutation(() => Boolean)
+  clearCaptcha(@Arg('idCaptcha') idCaptcha: string): boolean {
+    console.log(idCaptcha)
+    if (!captchaMap[idCaptcha]) {
+      throw new Error("Captcha not found!");
+    }
+
+    captchaMap[idCaptcha].images.forEach((element: any) => {
+      delete captchaImageMap[element.id];
+    });
+
+    delete captchaMap[idCaptcha];
+
+    return true;
+  }
 }

@@ -4,9 +4,10 @@ import ButtonCustom from '../Button/Button';
 import {
   useGenerateCaptchaQuery,
   CaptchaImage,
-  useValidateCaptchaMutation
+  useValidateCaptchaMutation,
+  useClearCaptchaMutation,
 } from '@/types/graphql';
-import { CircularProgress, Card, CardActionArea, CardMedia, IconButton } from '@mui/material';
+import { Card, CardActionArea, CardMedia, IconButton } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CustomToast from '../ToastCustom/CustomToast';
 import { useLang } from '@/context/Lang/LangContext';
@@ -26,6 +27,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
 
   const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
+  const [clearCaptcha] = useClearCaptchaMutation();
 
   useEffect(() => {
     if (generateCaptcha?.data) {
@@ -38,19 +40,35 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
 
   const regenerateCaptcha = () => {
     setLoading(true);
-    generateCaptcha.refetch().then(response => {
-      if (response.data) {
-        setImages(response.data.generateCaptcha.images);
-        setChallengeType(response.data.generateCaptcha.challengeType);
-        setIdCaptcha(response.data.generateCaptcha.id);
-        setSelectedImages([]);
-        setLoading(false);
-      }
-    }).catch(error => {
-      console.log("Error during captcha regeneration:", error);
-      showAlert("error", translations.messageErrorServerOff);
-      setLoading(false);
-    });
+    clearCaptcha({
+      variables: {
+        idCaptcha :idCaptcha,
+      },
+      onCompleted(_) {
+        generateCaptcha.refetch().then(response => {
+          if (response.data) {
+            setImages(response.data.generateCaptcha.images);
+            setChallengeType(response.data.generateCaptcha.challengeType);
+            setIdCaptcha(response.data.generateCaptcha.id);
+            setSelectedImages([]);
+            setLoading(false);
+          }
+        }).catch(error => {
+          console.log("Error during captcha regeneration:", error);
+          let errorMessage: string = translations.messageErrorServerOff;
+          if (error.message === "Captcha not found!") {
+            errorMessage = translations.messageErrorFormatEmail;
+          }
+          showAlert("error", errorMessage);
+          setLoading(false);
+        });
+      },
+      onError(error) {
+        console.log(error);
+        let errorMessage: string = translations.messageErrorServerOff;
+        showAlert("error", errorMessage);
+      },
+    })
   };
 
   const handleImageClick = (index: number) => {
@@ -87,14 +105,14 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   return (
     <div>
       {loading ? (
-        <div className="flex justify-center items-center h-52 text-primary">
           <LoadingCustom />
-        </div>
       ) : (
         <>
+        <div className='m-4'>
           <p className="text-text">
             Sélectionne toutes les images de {challengeType === 'cat' ? 'chats' : challengeType === 'dog' ? 'chiens' : 'voitures'} {`pour prouver que tu n'es pas un robot :`}
           </p>
+        </div>
           <div className="flex justify-around flex-wrap">
             {images.map((image, index) => (
               <div key={index} className="relative">

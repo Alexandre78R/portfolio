@@ -46,8 +46,14 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  clearCaptcha: Scalars['Boolean']['output'];
   sendContact: MessageType;
   validateCaptcha: ValidationResponse;
+};
+
+
+export type MutationClearCaptchaArgs = {
+  idCaptcha: Scalars['String']['input'];
 };
 
 
@@ -81,6 +87,13 @@ export type ValidateCaptchaMutationVariables = Exact<{
 
 
 export type ValidateCaptchaMutation = { __typename?: 'Mutation', validateCaptcha: { __typename?: 'ValidationResponse', isValid: boolean } };
+
+export type ClearCaptchaMutationVariables = Exact<{
+  idCaptcha: Scalars['String']['input'];
+}>;
+
+
+export type ClearCaptchaMutation = { __typename?: 'Mutation', clearCaptcha: boolean };
 
 export type SendContactMutationVariables = Exact<{
   data: ContactFrom;
@@ -134,6 +147,37 @@ export function useValidateCaptchaMutation(baseOptions?: Apollo.MutationHookOpti
 export type ValidateCaptchaMutationHookResult = ReturnType<typeof useValidateCaptchaMutation>;
 export type ValidateCaptchaMutationResult = Apollo.MutationResult<ValidateCaptchaMutation>;
 export type ValidateCaptchaMutationOptions = Apollo.BaseMutationOptions<ValidateCaptchaMutation, ValidateCaptchaMutationVariables>;
+export const ClearCaptchaDocument = gql`
+    mutation ClearCaptcha($idCaptcha: String!) {
+  clearCaptcha(idCaptcha: $idCaptcha)
+}
+    `;
+export type ClearCaptchaMutationFn = Apollo.MutationFunction<ClearCaptchaMutation, ClearCaptchaMutationVariables>;
+
+/**
+ * __useClearCaptchaMutation__
+ *
+ * To run a mutation, you first call `useClearCaptchaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useClearCaptchaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [clearCaptchaMutation, { data, loading, error }] = useClearCaptchaMutation({
+ *   variables: {
+ *      idCaptcha: // value for 'idCaptcha'
+ *   },
+ * });
+ */
+export function useClearCaptchaMutation(baseOptions?: Apollo.MutationHookOptions<ClearCaptchaMutation, ClearCaptchaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ClearCaptchaMutation, ClearCaptchaMutationVariables>(ClearCaptchaDocument, options);
+      }
+export type ClearCaptchaMutationHookResult = ReturnType<typeof useClearCaptchaMutation>;
+export type ClearCaptchaMutationResult = Apollo.MutationResult<ClearCaptchaMutation>;
+export type ClearCaptchaMutationOptions = Apollo.BaseMutationOptions<ClearCaptchaMutation, ClearCaptchaMutationVariables>;
 export const SendContactDocument = gql`
     mutation sendContact($data: ContactFrom!) {
   sendContact(data: $data) {

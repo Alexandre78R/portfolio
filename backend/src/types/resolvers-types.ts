@@ -45,8 +45,14 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  clearCaptcha: Scalars['Boolean']['output'];
   sendContact: MessageType;
   validateCaptcha: ValidationResponse;
+};
+
+
+export type MutationClearCaptchaArgs = {
+  idCaptcha: Scalars['String']['input'];
 };
 
 
@@ -192,6 +198,7 @@ export type MessageTypeResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  clearCaptcha?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationClearCaptchaArgs, 'idCaptcha'>>;
   sendContact?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendContactArgs, 'data'>>;
   validateCaptcha?: Resolver<ResolversTypes['ValidationResponse'], ParentType, ContextType, RequireFields<MutationValidateCaptchaArgs, 'challengeType' | 'idCaptcha' | 'selectedIndices'>>;
 }>;
