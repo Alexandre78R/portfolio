@@ -134,12 +134,12 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
         <LoadingCustom />
       ) : (
         <>
-          <div className='m-4'>
+          <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
             <p className="text-text">
               Sélectionne toutes les images de {challengeType === 'cat' ? 'chats' : challengeType === 'dog' ? 'chiens' : 'voitures'} {`pour prouver que tu n'es pas un robot :`}
             </p>
           </div>
-          <div className="flex justify-around flex-wrap">
+          <div className="flex justify-center flex-wrap">
             {images.map((image, index) => (
               <div key={index} className="relative">
                 <Card
