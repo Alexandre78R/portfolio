@@ -54,11 +54,16 @@ const Contact: React.FC = (): React.ReactElement => {
         onCompleted(data) {
           if (data?.sendContact.status) {
             showAlert("success", translations.messageSuccessFormulaireSend);
+            setCaptchaValid(false);
+            setFormData({
+              email: "",
+              object: "",
+              message: "",
+            });
           } else {
             console.log("Oncompleted")
             showAlert("error", translations.messageErrorNotSend);
-            setCaptchaValid(false);
-
+            setCaptchaValid(true);
           }
         },
         onError(error) {
@@ -72,7 +77,7 @@ const Contact: React.FC = (): React.ReactElement => {
         },
       });
     }
-  }, [captchaValid])
+  }, [captchaValid,])
 
   const handleClick: () => void = (): void => {
     const { email, object, message } = formData;

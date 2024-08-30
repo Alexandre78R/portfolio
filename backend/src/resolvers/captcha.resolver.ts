@@ -18,6 +18,7 @@ import {
   ValidationResponse
 } from '../types/captcha.types';
 
+
 @Resolver()
 export class CaptchaResolver {
 

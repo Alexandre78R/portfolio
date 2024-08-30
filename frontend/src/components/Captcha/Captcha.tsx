@@ -11,6 +11,7 @@ import {
 import { useLang } from '@/context/Lang/LangContext';
 import CustomToast from '../ToastCustom/CustomToast';
 import ButtonCustom from '../Button/Button';
+import LoadingCustom from '../Loading/LoadingCustom';
 
 const modalStyle = {
   position: 'absolute' as 'absolute',
@@ -82,7 +83,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
           }
         })
         .catch(error => {
-          console.log("Error during captcha generation:", error);
           showAlert("error", getErrorMessage(error));
           setLoading(false);
         });
@@ -112,14 +112,12 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
             }
           })
           .catch(error => {
-            console.log("Error during captcha regeneration:", error);
             showAlert("error", getErrorMessage(error));
             setLoading(false);
             setRefreshing(false);
           });
       },
       onError: error => {
-        console.log(error);
         showAlert("error", getErrorMessage(error));
         setLoading(false);
         setRefreshing(false);
@@ -148,14 +146,13 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
           setSelectedImages([]);
           setIdCaptcha('');
           setLoading(true);
-          onValidate(data?.validateCaptcha.isValid || false);
+          onValidate(true);
           onClose();
         } else {
           showAlert("error", translations.messageErrorCaptchaIncorrect);
         }
       },
       onError(error) {
-        console.log(error);
         showAlert("error", getErrorMessage(error));
         onValidate(false);
       },
@@ -181,7 +178,7 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
     >
       <Box sx={modalStyle}>
         {loading ? (
-          <CircularProgress />
+          <LoadingCustom />
         ) : (
           <>
             <div className='flex justify-center'>
@@ -204,7 +201,7 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
                     <CardActionArea>
                       {
                         refreshing ?
-                          <CircularProgress />
+                          <LoadingCustom />
                         :                      
                           <CardMedia
                             component="img"
@@ -228,14 +225,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
               ))}
             </div>
             <div className="flex justify-center m-2">
-              {/* <Button
-                onClick={handleSubmit}
-                variant="contained"
-                color="primary"
-                sx={{ mr: 2 }}
-              >
-                Vérification
-              </Button> */}
               <ButtonCustom
                 onClick={handleSubmit}
                 text="vérification"
