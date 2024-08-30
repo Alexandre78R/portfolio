@@ -66,17 +66,28 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   };
 
   useEffect(() => {
-    if (generateCaptcha?.data && loading) {
-      const imageUrls = generateCaptcha.data?.generateCaptcha.images.map(img => img.url);
+    if (open && loading) {
       setLoading(true);
-      preloadImages(imageUrls).then(() => {
-        setImages(generateCaptcha.data?.generateCaptcha.images || []);
-        setChallengeType(generateCaptcha.data?.generateCaptcha.challengeType || '');
-        setIdCaptcha(generateCaptcha.data?.generateCaptcha?.id || '');
-        setLoading(false);
-      });
+      generateCaptcha.refetch()
+        .then(response => {
+          if (response.data) {
+            const imageUrls = response.data.generateCaptcha.images.map(img => img.url);
+            preloadImages(imageUrls).then(() => {
+              setImages(response.data.generateCaptcha.images || []);
+              setChallengeType(response.data.generateCaptcha.challengeType || '');
+              setIdCaptcha(response.data.generateCaptcha.id || '');
+              setSelectedImages([]);
+              setLoading(false);
+            });
+          }
+        })
+        .catch(error => {
+          console.log("Error during captcha generation:", error);
+          showAlert("error", getErrorMessage(error));
+          setLoading(false);
+        });
     }
-  }, [generateCaptcha, loading]);
+  }, [open, generateCaptcha]);
 
   const regenerateCaptcha = () => {
     if (refreshing) return;
@@ -130,12 +141,23 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
         idCaptcha,
       },
       onCompleted(data) {
-        showAlert(data?.validateCaptcha.isValid ? "success" : "error", data?.validateCaptcha.isValid ? translations.messageSuccessCaptcha : translations.messageErrorCaptchaIncorrect);
-        onValidate(data?.validateCaptcha.isValid || false);
+        if (data?.validateCaptcha.isValid) { 
+          showAlert("success", translations.messageSuccessCaptcha);
+          setImages([]);
+          setChallengeType('');
+          setSelectedImages([]);
+          setIdCaptcha('');
+          setLoading(true);
+          onValidate(data?.validateCaptcha.isValid || false);
+          onClose();
+        } else {
+          showAlert("error", translations.messageErrorCaptchaIncorrect);
+        }
       },
       onError(error) {
         console.log(error);
         showAlert("error", getErrorMessage(error));
+        onValidate(false);
       },
     });
   };
@@ -152,7 +174,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
         return "..."
     }
   };
-
   return (
     <Modal
       open={open}

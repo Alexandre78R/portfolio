@@ -1,5 +1,5 @@
 import { useLang } from "@/context/Lang/LangContext";
-import { useState, ChangeEvent, MouseEvent } from "react";
+import { useState, ChangeEvent, MouseEvent, useEffect } from "react";
 import { Typography } from "@mui/material";
 import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
@@ -14,10 +14,10 @@ const Contact: React.FC = (): React.ReactElement => {
   const [sendContact] = useSendContactMutation();
 
   const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
 
   const handleCaptchaValidation = (isValid: boolean) => {
     setCaptchaValid(isValid);
@@ -41,7 +41,34 @@ const Contact: React.FC = (): React.ReactElement => {
     }));
   };
 
-  const postFromContactSend: () => void = (): void => {
+  useEffect(() => {
+    if (captchaValid) {
+      sendContact({
+        variables: {
+          data: formData,
+        },
+        onCompleted(data) {
+          if (data?.sendContact.status) {
+            showAlert("success", translations.messageSuccessFormulaireSend);
+          } else {
+            console.log("Oncompleted")
+            showAlert("error", translations.messageErrorNotSend);
+            setCaptchaValid(false);
+          }
+        },
+        onError(error) {
+          let errorMessage: string = translations.messageErrorServerOff;
+          if (error.message === "Invaid format email.") {
+            errorMessage = translations.messageErrorFormatEmail;
+          }
+          showAlert("error", errorMessage);
+          setCaptchaValid(false);
+        },
+      });
+    }
+  }, [captchaValid])
+
+  const handleClick: () => void = (): void => {
     const { email, object, message } = formData;
 
     if (!email || !object || !message) {
@@ -49,29 +76,6 @@ const Contact: React.FC = (): React.ReactElement => {
       return;
     }
 
-    sendContact({
-      variables: {
-        data: formData,
-      },
-      onCompleted(data) {
-        if (data?.sendContact.status) {
-          showAlert("success", translations.messageSuccessFormulaireSend);
-        } else {
-          console.log("Oncompleted")
-          showAlert("error", translations.messageErrorNotSend);
-        }
-      },
-      onError(error) {
-        let errorMessage: string = translations.messageErrorServerOff;
-        if (error.message === "Invaid format email.") {
-          errorMessage = translations.messageErrorFormatEmail;
-        }
-        showAlert("error", errorMessage);
-      },
-    });
-  };
-
-  const handleClick: () => void = (): void => {
     handleOpen()
   }
 
