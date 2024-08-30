@@ -14,6 +14,7 @@ type Lang = {
     navbarButtonProject : string,
     navbarButtonTerminal : string,
     navbarButtonCareer : string,
+    navbarButtonContact : string,
     headerTitle : string,
     nameCategoryAboutMe : string,
     titleAboutMe : string,

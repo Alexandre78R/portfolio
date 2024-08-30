@@ -16,6 +16,7 @@ const fr: Lang = {
     navbarButtonProject :"Projets",
     navbarButtonTerminal : "Terminal",
     navbarButtonCareer : "Carrières",
+    navbarButtonContact : "Contactez-moi",
     headerTitle : "Développeur Fullstack",
     nameCategoryAboutMe : "A propos",
     titleAboutMe : "Salut 👋, je m'appelle Alexandre",
