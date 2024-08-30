@@ -6,6 +6,10 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
 import { useSendContactMutation } from "@/types/graphql";
 import Captcha from "../Captcha/Captcha";
+import { 
+  checkRegex,
+  emailRegex,
+} from "@/regex";
 
 const Contact: React.FC = (): React.ReactElement => {
 
@@ -54,6 +58,7 @@ const Contact: React.FC = (): React.ReactElement => {
             console.log("Oncompleted")
             showAlert("error", translations.messageErrorNotSend);
             setCaptchaValid(false);
+
           }
         },
         onError(error) {
@@ -62,7 +67,8 @@ const Contact: React.FC = (): React.ReactElement => {
             errorMessage = translations.messageErrorFormatEmail;
           }
           showAlert("error", errorMessage);
-          setCaptchaValid(false);
+          setCaptchaValid(true);
+          handleOpen();
         },
       });
     }
@@ -71,10 +77,11 @@ const Contact: React.FC = (): React.ReactElement => {
   const handleClick: () => void = (): void => {
     const { email, object, message } = formData;
 
-    if (!email || !object || !message) {
-      showAlert("error", translations.messageErrorFillAllInput);
-      return;
-    }
+    if (!email || !object || !message)
+      return showAlert("error", translations.messageErrorFillAllInput);
+
+    if (!checkRegex(emailRegex, email))
+      return showAlert("error", translations.messageErrorFormatEmail);
 
     handleOpen()
   }
