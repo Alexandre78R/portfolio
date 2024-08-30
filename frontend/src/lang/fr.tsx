@@ -60,6 +60,11 @@ const fr: Lang = {
     messageErrorNotSend: "Impossible d'envoyer l'email. Veuillez réessayer.",
     messageErrorFormatEmail: "Le format de l'email est invalide. Veuillez entrer une adresse email valide.",
     messageSuccessFormulaireSend : "Merci pour votre message ! Je vous recontacterai dès que possible.",
+    messageErrorCaptchaExpired : "Expired",
+    messageErrorCaptchaNotFound : "found",
+    messageErrorCaptchaNotClear : "clear",
+    messageErrorCaptchaIncorrect : "incoreect",
+    messageSuccessCaptcha : "succes",
 }
 
 export default fr;

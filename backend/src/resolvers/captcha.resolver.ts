@@ -106,6 +106,7 @@ export class CaptchaResolver {
         captchaMap[idCaptcha].images.forEach((element: any) => {
           delete captchaImageMap[element.id];
         });
+    
         delete captchaMap[idCaptcha];
       }
 
@@ -114,9 +115,8 @@ export class CaptchaResolver {
 
   @Mutation(() => Boolean)
   clearCaptcha(@Arg('idCaptcha') idCaptcha: string): boolean {
-    console.log(idCaptcha)
     if (!captchaMap[idCaptcha]) {
-      throw new Error("Captcha not found!");
+      return true;
     }
 
     captchaMap[idCaptcha].images.forEach((element: any) => {
@@ -124,7 +124,6 @@ export class CaptchaResolver {
     });
 
     delete captchaMap[idCaptcha];
-
     return true;
   }
 }

@@ -58,6 +58,11 @@ type Lang = {
     messageErrorNotSend: string,
     messageErrorFormatEmail: string,
     messageSuccessFormulaireSend : string,
+    messageErrorCaptchaExpired : string,
+    messageErrorCaptchaNotFound : string,
+    messageErrorCaptchaNotClear : string,
+    messageErrorCaptchaIncorrect : string,
+    messageSuccessCaptcha : string,
 }
 
 export default Lang;
