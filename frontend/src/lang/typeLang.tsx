@@ -63,6 +63,11 @@ type Lang = {
     messageErrorCaptchaNotClear : string,
     messageErrorCaptchaIncorrect : string,
     messageSuccessCaptcha : string,
+    messageInfoCategoryCatCaptcha : string,
+    messageInfoCategoryDogCaptcha : string,
+    messageInfoCategoryCarCaptcha : string,
+    messageInfoFirstCaptcha : string,
+    messageInfoLastCaptcha : string,
 }
 
 export default Lang;

@@ -60,11 +60,16 @@ const fr: Lang = {
     messageErrorNotSend: "Impossible d'envoyer l'email. Veuillez réessayer.",
     messageErrorFormatEmail: "Le format de l'email est invalide. Veuillez entrer une adresse email valide.",
     messageSuccessFormulaireSend : "Merci pour votre message ! Je vous recontacterai dès que possible.",
-    messageErrorCaptchaExpired : "Expired",
-    messageErrorCaptchaNotFound : "found",
-    messageErrorCaptchaNotClear : "clear",
-    messageErrorCaptchaIncorrect : "incoreect",
-    messageSuccessCaptcha : "succes",
+    messageErrorCaptchaExpired : "Le captcha a expiré, veuillez en générer un nouveau pour continuer.",
+    messageErrorCaptchaNotFound : "Le captcha n'a pas été trouvé, veuillez en générer un nouveau pour continuer.",
+    messageErrorCaptchaNotClear : "Impossible de supprimer le captcha actuellement, veuillez réessayer plus tard.",
+    messageErrorCaptchaIncorrect : "Vous vous êtes trompé dans la résolution du captcha. Veuillez essayer à nouveau avec la bonne réponse.",
+    messageSuccessCaptcha : "Le captcha a été validé avec succès.",
+    messageInfoCategoryCatCaptcha : "chats",
+    messageInfoCategoryDogCaptcha : "chiens",
+    messageInfoCategoryCarCaptcha : "voitures",
+    messageInfoFirstCaptcha : "Sélectionnez toutes les images contenant des",
+    messageInfoLastCaptcha : "pour prouver que vous n'êtes pas un robot.",
 }
 
 export default fr;

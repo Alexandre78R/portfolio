@@ -48,7 +48,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
           const img = new Image();
           img.src = url;
           img.onload = () => resolve();
-          img.onerror = () => resolve(); // Assurez-vous de résoudre même si une image ne peut pas être chargée
+          img.onerror = () => resolve();
         });
       })
     );
@@ -68,9 +68,9 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   }, [generateCaptcha, loading]);
 
   const regenerateCaptcha = () => {
-    if (refreshing) return; // Ignore les clics si déjà en train de rafraîchir
+    if (refreshing) return;
 
-    setRefreshing(true); // Début du rafraîchissement
+    setRefreshing(true);
     setLoading(true);
     clearCaptcha({
       variables: { idCaptcha },
@@ -85,7 +85,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
                 setIdCaptcha(response.data.generateCaptcha.id);
                 setSelectedImages([]);
                 setLoading(false);
-                setRefreshing(false); // Fin du rafraîchissement
+                setRefreshing(false);
               });
             }
           })
@@ -93,14 +93,14 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
             console.log("Error during captcha regeneration:", error);
             showAlert("error", getErrorMessage(error));
             setLoading(false);
-            setRefreshing(false); // Fin du rafraîchissement même en cas d'erreur
+            setRefreshing(false)
           });
       },
       onError: error => {
         console.log(error);
         showAlert("error", getErrorMessage(error));
         setLoading(false);
-        setRefreshing(false); // Fin du rafraîchissement en cas d'erreur
+        setRefreshing(false);
       },
     });
   };
@@ -119,7 +119,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
         idCaptcha,
       },
       onCompleted(data) {
-        showAlert(data?.validateCaptcha.isValid ? "success" : "error", data?.validateCaptcha.isValid ? "yes" : "no");
+        showAlert(data?.validateCaptcha.isValid ? "success" : "error", data?.validateCaptcha.isValid ? translations.messageSuccessCaptcha : translations.messageErrorCaptchaIncorrect);
       },
       onError(error) {
         console.log(error);
@@ -128,16 +128,31 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
     });
   };
 
+  const generateCategoryName = (): string => {
+    switch (challengeType) {
+      case "cat":
+        return translations.messageInfoCategoryCatCaptcha;
+      case "dog":
+        return translations.messageInfoCategoryDogCaptcha;
+      case "car":
+        return  translations.messageInfoCategoryCarCaptcha;
+      default:
+        return "..."
+    }
+  }
+
   return (
     <div>
       {loading ? (
         <LoadingCustom />
       ) : (
         <>
-          <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
-            <p className="text-text">
-              Sélectionne toutes les images de {challengeType === 'cat' ? 'chats' : challengeType === 'dog' ? 'chiens' : 'voitures'} {`pour prouver que tu n'es pas un robot :`}
-            </p>
+          <div className='flex justify-center'>
+            <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+              <p className="text-text">
+                {translations.messageInfoFirstCaptcha} {generateCategoryName()} {translations.messageInfoLastCaptcha}
+              </p>
+            </div>
           </div>
           <div className="flex justify-center flex-wrap">
             {images.map((image, index) => (
@@ -175,7 +190,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
               </div>
             ))}
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center m-2">
             <ButtonCustom
               onClick={handleSubmit}
               text="vérification"

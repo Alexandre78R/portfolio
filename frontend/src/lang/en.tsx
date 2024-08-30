@@ -60,11 +60,16 @@ const en: Lang = {
     messageErrorNotSend: "Unable to send the email. Please try again.",
     messageErrorFormatEmail: "The email format is invalid. Please enter a valid email address.",
     messageSuccessFormulaireSend : "Thank you for your message! I will get back to you as soon as possible.",
-    messageErrorCaptchaExpired : "string",
-    messageErrorCaptchaNotFound : "string",
-    messageErrorCaptchaNotClear : "string",
-    messageErrorCaptchaIncorrect : "string",
-    messageSuccessCaptcha : "string",
+    messageErrorCaptchaExpired : "The captcha has expired, please generate a new one to continue. ",
+    messageErrorCaptchaNotFound : "The captcha was not found, please generate a new one to continue.",
+    messageErrorCaptchaNotClear : "Unable to remove the captcha at the moment, please try again later.",
+    messageErrorCaptchaIncorrect : "You made an incorrect choice in solving the captcha. Please try again with the correct answer.",
+    messageSuccessCaptcha : "The captcha has been successfully validated.",
+    messageInfoCategoryCatCaptcha : "cats",
+    messageInfoCategoryDogCaptcha : "dogs",
+    messageInfoCategoryCarCaptcha : "cats",
+    messageInfoFirstCaptcha : "Select all the images containing",
+    messageInfoLastCaptcha : "to prove you are not a robot.",
 }
 
 export default en;
