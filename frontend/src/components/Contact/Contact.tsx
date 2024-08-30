@@ -14,6 +14,10 @@ const Contact: React.FC = (): React.ReactElement => {
   const [sendContact] = useSendContactMutation();
 
   const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleCaptchaValidation = (isValid: boolean) => {
     setCaptchaValid(isValid);
@@ -37,7 +41,7 @@ const Contact: React.FC = (): React.ReactElement => {
     }));
   };
 
-  const handleClick: () => void = (): void => {
+  const postFromContactSend: () => void = (): void => {
     const { email, object, message } = formData;
 
     if (!email || !object || !message) {
@@ -66,6 +70,10 @@ const Contact: React.FC = (): React.ReactElement => {
       },
     });
   };
+
+  const handleClick: () => void = (): void => {
+    handleOpen()
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -105,7 +113,7 @@ const Contact: React.FC = (): React.ReactElement => {
           />
         </form>
       </div>
-      <Captcha onValidate={handleCaptchaValidation} />
+      <Captcha open={open} onClose={handleClose} onValidate={handleCaptchaValidation} />
     </div>
   );
 };

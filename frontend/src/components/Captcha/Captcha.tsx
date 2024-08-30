@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import ButtonCustom from '../Button/Button';
+import { Modal, Box, Card, CardActionArea, CardMedia, IconButton, CircularProgress } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   useGenerateCaptchaQuery,
   CaptchaImage,
   useValidateCaptchaMutation,
   useClearCaptchaMutation,
 } from '@/types/graphql';
-import { Card, CardActionArea, CardMedia, IconButton } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CustomToast from '../ToastCustom/CustomToast';
 import { useLang } from '@/context/Lang/LangContext';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import LoadingCustom from '../Loading/LoadingCustom';
+import CustomToast from '../ToastCustom/CustomToast';
+import ButtonCustom from '../Button/Button';
 
-const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValidate }) => {
+const modalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '100%',
+  maxWidth: 400,
+  bgcolor : "var(--body-color)",
+  borderRadius: '16px',
+};
+
+const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (isValid: boolean) => void }> = ({ open, onClose, onValidate }) => {
+
   const { showAlert } = CustomToast();
   const { translations } = useLang();
 
@@ -22,7 +33,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
   const [challengeType, setChallengeType] = useState<string>('');
   const [idCaptcha, setIdCaptcha] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false); // État pour gérer le rafraîchissement
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
@@ -93,7 +104,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
             console.log("Error during captcha regeneration:", error);
             showAlert("error", getErrorMessage(error));
             setLoading(false);
-            setRefreshing(false)
+            setRefreshing(false);
           });
       },
       onError: error => {
@@ -120,6 +131,7 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
       },
       onCompleted(data) {
         showAlert(data?.validateCaptcha.isValid ? "success" : "error", data?.validateCaptcha.isValid ? translations.messageSuccessCaptcha : translations.messageErrorCaptchaIncorrect);
+        onValidate(data?.validateCaptcha.isValid || false);
       },
       onError(error) {
         console.log(error);
@@ -139,72 +151,87 @@ const Captcha: React.FC<{ onValidate: (isValid: boolean) => void }> = ({ onValid
       default:
         return "..."
     }
-  }
+  };
 
   return (
-    <div>
-      {loading ? (
-        <LoadingCustom />
-      ) : (
-        <>
-          <div className='flex justify-center'>
-            <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
-              <p className="text-text">
-                {translations.messageInfoFirstCaptcha} {generateCategoryName()} {translations.messageInfoLastCaptcha}
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-center flex-wrap">
-            {images.map((image, index) => (
-              <div key={index} className="relative">
-                <Card
-                  onClick={() => handleImageClick(index)}
-                  className={`m-2 cursor-pointer`}
-                  style={{
-                    border: selectedImages.includes(index) ? '4px solid var(--success-color)' : '4px solid var(--text-color)',
-                  }}
-                >
-                  <CardActionArea>
-                    {
-                      refreshing ?
-                        <LoadingCustom />
-                      :                      
-                        <CardMedia
-                          component="img"
-                          alt={`captcha-img-${index}`}
-                          image={image.url}
-                          onError={() => setImages(prev => prev.map((img, i) => i === index ? { ...img, url: '' } : img))}
-                          style={{ width: '100px', height: '100px' }}
-                        />
-                    }
-                  </CardActionArea>
-                </Card>
-                {selectedImages.includes(index) && (
-                  <IconButton
-                    className="absolute top-0 right-0"
-                    style={{ width: '10px', height: '10px', color: 'green', backgroundColor: 'white', transform: 'scale(1)', opacity: 1 }}
-                  >
-                    <CheckCircleIcon />
-                  </IconButton>
-                )}
+    <Modal
+      open={open}
+      onClose={onClose}
+    >
+      <Box sx={modalStyle}>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <>
+            <div className='flex justify-center'>
+              <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+                <p className="text-text">
+                  {translations.messageInfoFirstCaptcha} {generateCategoryName()} {translations.messageInfoLastCaptcha}
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-center m-2">
-            <ButtonCustom
-              onClick={handleSubmit}
-              text="vérification"
-            />
-            <RefreshIcon
-              onClick={regenerateCaptcha}
-              className={`text-text cursor-pointer m-2 hover:text-secondary ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`} // Désactiver le bouton lorsqu'on est en train de rafraîchir
-              style={{ pointerEvents: refreshing ? 'none' : 'auto' }} // Désactiver les événements de clic si en train de rafraîchir
-            />
-          </div>
-        </>
-      )}
-    </div>
+            </div>
+            <div className="flex justify-center flex-wrap">
+              {images.map((image, index) => (
+                <div key={index} className="relative">
+                  <Card
+                    onClick={() => handleImageClick(index)}
+                    className={`m-2 cursor-pointer`}
+                    sx={{
+                      border: selectedImages.includes(index) ? '4px solid var(--success-color)' : '4px solid var(--text-color)',
+                    }}
+                  >
+                    <CardActionArea>
+                      {
+                        refreshing ?
+                          <CircularProgress />
+                        :                      
+                          <CardMedia
+                            component="img"
+                            alt={`captcha-img-${index}`}
+                            image={image.url}
+                            onError={() => setImages(prev => prev.map((img, i) => i === index ? { ...img, url: '' } : img))}
+                            sx={{ width: 100, height: 100 }}
+                          />
+                      }
+                    </CardActionArea>
+                  </Card>
+                  {selectedImages.includes(index) && (
+                    <IconButton
+                      className="absolute top-0 right-0"
+                      sx={{ width: 24, height: 24, color: 'green', backgroundColor: 'white' }}
+                    >
+                      <CheckCircleIcon />
+                    </IconButton>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center m-2">
+              {/* <Button
+                onClick={handleSubmit}
+                variant="contained"
+                color="primary"
+                sx={{ mr: 2 }}
+              >
+                Vérification
+              </Button> */}
+              <ButtonCustom
+                onClick={handleSubmit}
+                text="vérification"
+              />
+              <IconButton
+                onClick={regenerateCaptcha}
+                className={`text-text cursor-pointer m-2 hover:text-secondary ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                sx={{ pointerEvents: refreshing ? 'none' : 'auto' }}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </div>
+          </>
+        )}
+      </Box>
+    </Modal>
   );
 };
 
-export default Captcha;
+export default CaptchaModal;
