@@ -82,10 +82,6 @@ export class CaptchaResolver {
 
     captchaMap[id] = resultCaptcha;
 
-    console.log("captchaMap", captchaMap);
-    console.log("captchaMap[id]", captchaMap[id]);
-    console.log("captchaImageMap", captchaImageMap);
-
     return resultCaptcha;
   }
 

@@ -41,7 +41,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   const [clearCaptcha] = useClearCaptchaMutation();
 
   const getErrorMessage = (error: Error): string => {
-    console.log("error.message", error.message);
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -59,8 +58,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
       imageUrls.map((url) => {
         return new Promise<void>((resolve) => {
           const img = new Image();
-          if (!img)
-            return showAlert("error", "image upload error (preloadImages) !")
           img.src = url;
           img.onload = () => resolve();
           img.onerror = () => resolve();
