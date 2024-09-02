@@ -56,7 +56,6 @@ export class CaptchaResolver {
       ...getRandomImagesByType('car')
     ].sort(() => Math.random() - 0.5);
 
-    console.log("selectedImages",selectedImages)
     const challenges = ['cat', 'dog', 'car'] as const;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
 
