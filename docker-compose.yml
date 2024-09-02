@@ -44,6 +44,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_TOKEN=${NEXT_PUBLIC_API_TOKEN}
+      - API_URL=${API_URL}
     env_file:
       - ./frontend/.env
     depends_on:

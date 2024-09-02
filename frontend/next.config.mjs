@@ -31,6 +31,10 @@ const nextConfig = {
     
   //   return config;
   // },
+  env: {
+    NEXT_PUBLIC_API_TOKEN: process.env.NEXT_PUBLIC_API_TOKEN,
+    API_URL: process.env.API_URL,
+  },
   async headers() {
     return [
       {
