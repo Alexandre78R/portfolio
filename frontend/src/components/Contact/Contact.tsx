@@ -1,24 +1,21 @@
 import { useLang } from "@/context/Lang/LangContext";
-import { useState, ChangeEvent, MouseEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Typography } from "@mui/material";
 import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
 import { useSendContactMutation } from "@/types/graphql";
 import Captcha from "../Captcha/Captcha";
-import { 
-  checkRegex,
-  emailRegex,
-} from "@/regex";
+import { checkRegex, emailRegex } from "@/regex";
 
 const Contact: React.FC = (): React.ReactElement => {
-
   const { translations } = useLang();
   const { showAlert } = CustomToast();
   const [sendContact] = useSendContactMutation();
 
   const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] = useState<boolean>(false);
 
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
@@ -61,13 +58,11 @@ const Contact: React.FC = (): React.ReactElement => {
               message: "",
             });
           } else {
-            console.log("Oncompleted")
             showAlert("error", translations.messageErrorNotSend);
             setCaptchaValid(true);
           }
         },
         onError(error) {
-          console.log("error.message", error.message);
           let errorMessage: string = translations.messageErrorServerOff;
           if (error.message === "Invaid format email.") {
             errorMessage = translations.messageErrorFormatEmail;
@@ -78,9 +73,9 @@ const Contact: React.FC = (): React.ReactElement => {
         },
       });
     }
-  }, [captchaValid,])
+  }, [captchaValid]);
 
-  const handleClick: () => void = (): void => {
+  const handleClick = (): void => {
     const { email, object, message } = formData;
 
     if (!email || !object || !message)
@@ -89,8 +84,9 @@ const Contact: React.FC = (): React.ReactElement => {
     if (!checkRegex(emailRegex, email))
       return showAlert("error", translations.messageErrorFormatEmail);
 
-    handleOpen()
-  }
+    setAuthorizeGenerateCaptcha(true);
+    handleOpen();
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -130,7 +126,16 @@ const Contact: React.FC = (): React.ReactElement => {
           />
         </form>
       </div>
-      <Captcha open={open} onClose={handleClose} onValidate={handleCaptchaValidation} />
+      {
+        open &&
+        <Captcha
+          open={open}
+          onClose={handleClose}
+          onValidate={handleCaptchaValidation}
+          authorizeGenerateCaptcha={authorizeGenerateCaptcha}
+          setAuthorizeGenerateCaptcha={setAuthorizeGenerateCaptcha}
+        />
+      }
     </div>
   );
 };

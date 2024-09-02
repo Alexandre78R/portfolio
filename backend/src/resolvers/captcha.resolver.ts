@@ -10,7 +10,7 @@ import { MyContext } from "..";
 import { 
   captchaImageMap,
   captchaMap,
-  cleanUpExpiredCaptchas
+  checkExpiredCaptcha
 } from '../CaptchaMap';
 import fs from "fs";
 import path from 'path';
@@ -106,7 +106,7 @@ export class CaptchaResolver {
 
     await checkApiKey(context.apiKey);
 
-    cleanUpExpiredCaptchas();
+    checkExpiredCaptcha(idCaptcha);
 
     if (!captchaMap[idCaptcha])
       throw new Error("Expired captcha!")
