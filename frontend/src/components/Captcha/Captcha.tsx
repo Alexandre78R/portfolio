@@ -35,7 +35,7 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   const [idCaptcha, setIdCaptcha] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
+  const [checkrefresh, setCheckRefresh] = useState<boolean>(false);
   const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
   const [clearCaptcha] = useClearCaptchaMutation();
@@ -67,8 +67,9 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   };
 
   useEffect(() => {
-    if (open && loading) {
+    if (open && loading && !checkrefresh) {
       setLoading(true);
+      setCheckRefresh(true);
       generateCaptcha.refetch()
         .then(response => {
           if (response.data) {
@@ -79,19 +80,21 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
               setIdCaptcha(response.data.generateCaptcha.id || '');
               setSelectedImages([]);
               setLoading(false);
+              setCheckRefresh(true);
             });
           }
         })
         .catch(error => {
           showAlert("error", getErrorMessage(error));
           setLoading(false);
+          setCheckRefresh(false);
         });
     }
   }, [open, generateCaptcha]);
 
   const regenerateCaptcha = () => {
     if (refreshing) return;
-
+    setCheckRefresh(true);
     setRefreshing(true);
     setLoading(true);
     clearCaptcha({
