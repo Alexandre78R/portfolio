@@ -20,12 +20,19 @@ const modalStyle = {
   transform: 'translate(-50%, -50%)',
   width: '100%',
   maxWidth: 400,
-  bgcolor : "var(--body-color)",
+  bgcolor: "var(--body-color)",
   borderRadius: '16px',
 };
 
-const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (isValid: boolean) => void }> = ({ open, onClose, onValidate }) => {
+type Props = { 
+  open: boolean,
+  onClose: () => void,
+  onValidate: (isValid: boolean) => void,
+  authorizeGenerateCaptcha: boolean,
+  setAuthorizeGenerateCaptcha: React.Dispatch<React.SetStateAction<boolean>>,
+}
 
+const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha }) => {
   const { showAlert } = CustomToast();
   const { translations } = useLang();
 
@@ -41,7 +48,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   const [clearCaptcha] = useClearCaptchaMutation();
 
   const getErrorMessage = (error: Error): string => {
-    console.log("error.message", error.message);
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -59,8 +65,6 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
       imageUrls.map((url) => {
         return new Promise<void>((resolve) => {
           const img = new Image();
-          if (!img)
-            return showAlert("error", "image upload error (preloadImages) !")
           img.src = url;
           img.onload = () => resolve();
           img.onerror = () => resolve();
@@ -70,21 +74,20 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   };
 
   useEffect(() => {
-    if (open && loading && !checkrefresh) {
+    if (open && authorizeGenerateCaptcha && !checkrefresh) {
       setLoading(true);
       setCheckRefresh(true);
       generateCaptcha.refetch()
         .then(response => {
           if (response.data) {
             const imageUrls = response.data.generateCaptcha.images.map(img => img.url);
-            console.log(imageUrls);
             preloadImages(imageUrls).then(() => {
               setImages(response.data.generateCaptcha.images);
               setChallengeType(response.data.generateCaptcha.challengeType);
               setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
-              setCheckRefresh(true);
+              setAuthorizeGenerateCaptcha(false);  // Assurer que CAPTCHA ne soit généré qu'une fois
             });
           }
         })
@@ -94,13 +97,14 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
           setCheckRefresh(false);
         });
     }
-  }, [open, generateCaptcha]);
+  }, [open, authorizeGenerateCaptcha, checkrefresh]);
 
   const regenerateCaptcha = () => {
     if (refreshing) return;
     setCheckRefresh(true);
     setRefreshing(true);
     setLoading(true);
+    setAuthorizeGenerateCaptcha(true);
     clearCaptcha({
       variables: { idCaptcha },
       onCompleted: () => {
@@ -178,6 +182,7 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
         return "..."
     }
   };
+
   return (
     <Modal
       open={open}

@@ -9,7 +9,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { MyContext } from "..";
 import { 
   captchaImageMap,
-  captchaMap
+  captchaMap,
+  checkExpiredCaptcha
 } from '../CaptchaMap';
 import fs from "fs";
 import path from 'path';
@@ -74,17 +75,20 @@ export class CaptchaResolver {
       };
     });
 
+    const expirationTime = Date.now() + 15 * 60 * 1000;
+
     const resultCaptcha = {
       id,
       images: captchaImages,
-      challengeType
+      challengeType,
+      expirationTime
     }
 
     captchaMap[id] = resultCaptcha;
 
-    console.log("captchaMap", captchaMap);
+    console.log("captchaImageMap",captchaImageMap)
     console.log("captchaMap[id]", captchaMap[id]);
-    console.log("captchaImageMap", captchaImageMap);
+    console.log("captchaMap", captchaMap); 
 
     return resultCaptcha;
   }
@@ -101,6 +105,8 @@ export class CaptchaResolver {
       throw new Error('Unauthorized TOKEN API');
 
     await checkApiKey(context.apiKey);
+
+    checkExpiredCaptcha(idCaptcha);
 
     if (!captchaMap[idCaptcha])
       throw new Error("Expired captcha!")
