@@ -73,12 +73,12 @@ const Home: React.FC = (): React.ReactElement  => {
               </div>
               <Educations />
             </section>
-            <section className="mt-[4%]" ref={contactRef} id="contact">
+            {/* <section className="mt-[4%]" ref={contactRef} id="contact">
               <div className="ml-3">
                 <Title title={translations.nameCategoryContact} />
               </div>
               <Contact />
-            </section>
+            </section> */}
           </>
         )}
       </main>
