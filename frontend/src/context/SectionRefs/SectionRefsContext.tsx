@@ -5,9 +5,9 @@ type SectionRefsContextProps = {
   projectRef: RefObject<HTMLDivElement>;
   headerRef: RefObject<HTMLDivElement>;
   skillRef: RefObject<HTMLDivElement>;
-  choiceViewRef: RefObject<HTMLDivElement>;
   terminalRef: RefObject<HTMLDivElement>;
   educationRef: RefObject<HTMLDivElement>;
+  contactRef: RefObject<HTMLDivElement>;
 }
 
 const SectionRefsContext = createContext<SectionRefsContextProps | undefined>(undefined);
@@ -17,11 +17,11 @@ export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const projectRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const skillRef = useRef<HTMLDivElement>(null);
-  const choiceViewRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const educationRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
 
-  const value: SectionRefsContextProps = useMemo(() => ({ aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef, terminalRef, educationRef }), []);
+  const value: SectionRefsContextProps = useMemo(() => ({ aboutMeRef, projectRef, headerRef, skillRef, terminalRef, educationRef, contactRef }), []);
 
   return (
     <SectionRefsContext.Provider value={value}>

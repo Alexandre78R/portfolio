@@ -23,7 +23,7 @@
 }
 
 body {
-    background-color: var(--body-color);
+  background-color: var(--body-color);
 }
 
 
@@ -141,4 +141,35 @@ body {
   width: 310px;
   height: 170px;
   object-fit: cover;
+}
+
+.Toastify__toast-container {
+  font-family: Arial, sans-serif;
+}
+
+.Toastify__toast {
+  border-radius: 4px;
+}
+
+.Toastify__toast--success .Toastify__icon {
+  color: var(--success-color);
+}
+
+.Toastify__toast--error .Toastify__icon {
+  color: var(--error-color);
+}
+
+.Toastify__toast--info .Toastify__icon {
+  color: var(--info-color);
+}
+
+.Toastify__toast--warn .Toastify__icon {
+  color: var(--warn-color);
+}
+
+.Toastify__toast--success .Toastify__close-button,
+.Toastify__toast--error .Toastify__close-button,
+.Toastify__toast--info .Toastify__close-button,
+.Toastify__toast--warn .Toastify__close-button {
+  color: var(--text-button-color);
 }

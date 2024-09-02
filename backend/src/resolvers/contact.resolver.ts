@@ -16,22 +16,35 @@ import {
 import { sendEmail } from "../mail/mail.service";
 import { MessageType} from "../types/message.types";
 import { structureMessageMeTEXT, structureMessageMeHTML } from "../mail/structureMail.service";
+import { MyContext } from "..";
+import { checkApiKey } from "../lib/checkApiKey";
+import { checkRegex, emailRegex } from "../regex";
 
 @Resolver()
 export class ContactResolver {
 
     @Query(() => String)  
-    async contact(@Ctx() context: any): Promise<string> {
+    async contact(@Ctx() context: MyContext): Promise<string> {
         console.log(context)
         return "ok";
     }
 
     @Mutation(() => MessageType)
-    async sendEmailTest(@Arg("data", () => ContactFrom) data: ContactFrom): Promise<MessageType> {
+    async sendContact(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: MyContext): Promise<MessageType> {
+        
+        if (!context.apiKey)
+            throw new Error('Unauthorized TOKEN API');
+
+        await checkApiKey(context.apiKey);
+
+        if (!checkRegex(emailRegex, data.email))
+            throw new Error("Invaid format email.");
+        
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
         const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
 
+        console.log("resutsSendEmail", resultSendEmailME)
         return resultSendEmailME;
     }
 }
