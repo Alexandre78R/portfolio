@@ -56,6 +56,8 @@ async function main() {
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const apiKey = req.headers['x-api-key'];
+        console.log("apiKey", apiKey);
+        console.log("process.env.API_KEY", process.env.API_KEY);
         return { req, res, apiKey: apiKey as string | undefined };
       },
     })
