@@ -14,6 +14,8 @@ import { setContext } from "@apollo/client/link/context"; // Correct import
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
+  console.log(API_URL)
+
   const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
   const httpLink = new HttpLink({
