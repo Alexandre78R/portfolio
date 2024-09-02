@@ -41,6 +41,7 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
   const [clearCaptcha] = useClearCaptchaMutation();
 
   const getErrorMessage = (error: Error): string => {
+    console.log("error.message", error.message);
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;

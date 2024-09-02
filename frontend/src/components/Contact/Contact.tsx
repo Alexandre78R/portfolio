@@ -67,6 +67,7 @@ const Contact: React.FC = (): React.ReactElement => {
           }
         },
         onError(error) {
+          console.log("error.message", error.message);
           let errorMessage: string = translations.messageErrorServerOff;
           if (error.message === "Invaid format email.") {
             errorMessage = translations.messageErrorFormatEmail;
