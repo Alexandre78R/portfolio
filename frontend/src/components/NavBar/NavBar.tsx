@@ -84,12 +84,12 @@ const Navbar: React.FC = (): React.ReactElement => {
                     <span className="md:hidden">Education</span>
                   </button>
                 </li>
-                {/* <li>
+                <li>
                   <button onClick={(e) => handleScrollToSection(e, contactRef)} className="text-text hover:text-secondary">
                     <span className="hidden md:inline">{translations.navbarButtonContact}</span>
                     <span className="md:hidden">Education</span>
                   </button>
-                </li> */}
+                </li>
                 <li>
                   <ToggleButton
                       toggleChecked={toggleCheckedLang}
