@@ -1,43 +1,70 @@
-import "reflect-metadata";
+import 'reflect-metadata'; 
+import express from "express";
+import http from "http";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import "dotenv/config";
-import { buildSchema } from 'type-graphql';
-import express from "express";
-import http from "http";
 import cors from "cors";
-import Cookies from "cookies";
-import { jwtVerify } from "jose";
-import db from "./lib/db";
-// import { UserResolver } from "./resolvers/user.resolver";
+import { buildSchema } from "type-graphql";
 import { ContactResolver } from "./resolvers/contact.resolver";
-import { startStandaloneServer } from "@apollo/server/standalone";
 import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
+import path from 'path';
+import { CaptchaResolver } from './resolvers/captcha.resolver';
+import { captchaImageMap } from './CaptchaMap';
+
+export interface MyContext {
+  req: express.Request;
+  res: express.Response;
+  apiKey: string | undefined;
+}
+
+const app = express();
+const httpServer = http.createServer(app);
 
 async function main() {
 
-    await db.initialize();
+  const schema = await buildSchema({
+    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver],
+    validate: false,
+  });
 
-    const schema = await buildSchema({
-      resolvers: [ContactResolver],
-    });
+  const server = new ApolloServer<MyContext>({
+    schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  
+  await server.start();
 
-    const server = new ApolloServer<{}>({
-      schema,
-    });
+  app.get('/dynamic-images/:id', (req, res) => {
+    const imageId = req.params.id;
+    const filename = captchaImageMap[imageId];
+    if (filename) {
+      const imagePath = path.join(__dirname, 'images', filename);
+      res.sendFile(imagePath);
+    } else {
+      res.status(404).send('Image not found');
+    }
+  });
 
-    const { url } = await startStandaloneServer(server, {
-      listen: { port: 4000 },
+  app.use(
+    "/graphql",
+    cors<cors.CorsRequest>({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    }),
+    express.json(),
+    expressMiddleware(server, {
       context: async ({ req, res }) => {
         const apiKey = req.headers['x-api-key'];
-        if (apiKey !== process.env.API_KEY)
-          throw new Error('Unauthorized TOKEN API');
-        return {};
+        return { req, res, apiKey: apiKey as string | undefined };
       },
-    });
+    })
+  );
 
-    console.log(`🚀  Server ready at: ${url}`);
-  }
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`🚀 Server lancé sur http://localhost:4000/`);
+}
 
-  main();
+main();

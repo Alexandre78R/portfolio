@@ -16,10 +16,22 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CaptchaImage = {
+  __typename?: 'CaptchaImage';
+  id: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type CaptchaResponse = {
+  __typename?: 'CaptchaResponse';
+  challengeType: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  images: Array<CaptchaImage>;
+};
+
 export type ContactFrom = {
   email: Scalars['String']['input'];
-  firstname: Scalars['String']['input'];
-  lastname: Scalars['String']['input'];
   message: Scalars['String']['input'];
   object: Scalars['String']['input'];
 };
@@ -33,17 +45,37 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  sendEmailTest: MessageType;
+  clearCaptcha: Scalars['Boolean']['output'];
+  sendContact: MessageType;
+  validateCaptcha: ValidationResponse;
 };
 
 
-export type MutationSendEmailTestArgs = {
+export type MutationClearCaptchaArgs = {
+  idCaptcha: Scalars['String']['input'];
+};
+
+
+export type MutationSendContactArgs = {
   data: ContactFrom;
+};
+
+
+export type MutationValidateCaptchaArgs = {
+  challengeType: Scalars['String']['input'];
+  idCaptcha: Scalars['String']['input'];
+  selectedIndices: Array<Scalars['Float']['input']>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  contect: Scalars['String']['output'];
+  contact: Scalars['String']['output'];
+  generateCaptcha: CaptchaResponse;
+};
+
+export type ValidationResponse = {
+  __typename?: 'ValidationResponse';
+  isValid: Scalars['Boolean']['output'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -119,21 +151,43 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CaptchaImage: ResolverTypeWrapper<CaptchaImage>;
+  CaptchaResponse: ResolverTypeWrapper<CaptchaResponse>;
   ContactFrom: ContactFrom;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   MessageType: ResolverTypeWrapper<MessageType>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  ValidationResponse: ResolverTypeWrapper<ValidationResponse>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean']['output'];
+  CaptchaImage: CaptchaImage;
+  CaptchaResponse: CaptchaResponse;
   ContactFrom: ContactFrom;
+  Float: Scalars['Float']['output'];
   MessageType: MessageType;
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
+  ValidationResponse: ValidationResponse;
+}>;
+
+export type CaptchaImageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CaptchaImage'] = ResolversParentTypes['CaptchaImage']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CaptchaResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CaptchaResponse'] = ResolversParentTypes['CaptchaResponse']> = ResolversObject<{
+  challengeType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  images?: Resolver<Array<ResolversTypes['CaptchaImage']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MessageTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageType'] = ResolversParentTypes['MessageType']> = ResolversObject<{
@@ -144,16 +198,27 @@ export type MessageTypeResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  sendEmailTest?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendEmailTestArgs, 'data'>>;
+  clearCaptcha?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationClearCaptchaArgs, 'idCaptcha'>>;
+  sendContact?: Resolver<ResolversTypes['MessageType'], ParentType, ContextType, RequireFields<MutationSendContactArgs, 'data'>>;
+  validateCaptcha?: Resolver<ResolversTypes['ValidationResponse'], ParentType, ContextType, RequireFields<MutationValidateCaptchaArgs, 'challengeType' | 'idCaptcha' | 'selectedIndices'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  contect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  contact?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  generateCaptcha?: Resolver<ResolversTypes['CaptchaResponse'], ParentType, ContextType>;
+}>;
+
+export type ValidationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ValidationResponse'] = ResolversParentTypes['ValidationResponse']> = ResolversObject<{
+  isValid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type Resolvers<ContextType = any> = ResolversObject<{
+  CaptchaImage?: CaptchaImageResolvers<ContextType>;
+  CaptchaResponse?: CaptchaResponseResolvers<ContextType>;
   MessageType?: MessageTypeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  ValidationResponse?: ValidationResponseResolvers<ContextType>;
 }>;
 

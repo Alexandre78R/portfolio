@@ -13,7 +13,7 @@ import ChoiceViewButton from '../Button/ChoiceViewButton';
 const Navbar: React.FC = (): React.ReactElement => {
 
   const { lang, setLang, translations } = useLang();
-  const { aboutMeRef, projectRef, headerRef, skillRef, choiceViewRef, terminalRef, educationRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, headerRef, skillRef, terminalRef, educationRef, contactRef } = useSectionRefs();
   const { toggleTheme } = useTheme();
   const { selectedView } = useChoiceView();
 
@@ -85,6 +85,12 @@ const Navbar: React.FC = (): React.ReactElement => {
                   </button>
                 </li>
                 <li>
+                  <button onClick={(e) => handleScrollToSection(e, contactRef)} className="text-text hover:text-secondary">
+                    <span className="hidden md:inline">{translations.navbarButtonContact}</span>
+                    <span className="md:hidden">Education</span>
+                  </button>
+                </li>
+                <li>
                   <ToggleButton
                       toggleChecked={toggleCheckedLang}
                       option1='FR'
@@ -131,7 +137,6 @@ const Navbar: React.FC = (): React.ReactElement => {
       {menuOpen && (
         <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
-            <li><button onClick={(e) => handleScrollToSection(e, choiceViewRef)} className="text-text hover:text-secondary">{translations.navbarButtonChoiceView}</button></li>
             { 
               selectedView !== "terminal" ?
               <>

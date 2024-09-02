@@ -3,7 +3,6 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
 import Title from "@/components/Title/Title";
-import ChoiceView from "@/components/Button/ChoiceViewButton";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
@@ -17,11 +16,12 @@ import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
 import Educations from "@/components/Careers/Careers";
+import Contact from "@/components/Contact/Contact";
 
 const Home: React.FC = (): React.ReactElement  => {
 
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef, choiceViewRef, terminalRef, educationRef } = useSectionRefs();
+  const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef } = useSectionRefs();
   const { selectedView } = useChoiceView();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -57,7 +57,9 @@ const Home: React.FC = (): React.ReactElement  => {
               <div className="ml-3">
                 <Title title={translations.nameCategorySkills} />
               </div>
+              <div className="mt-8">
                 <HorizontalScroll data={dataSkills} category="skills" />
+              </div>
             </section>
             <section ref={projectRef} id="project">
               <div className="ml-3">
@@ -71,12 +73,12 @@ const Home: React.FC = (): React.ReactElement  => {
               </div>
               <Educations />
             </section>
-            {/* <section className="mt-[4%]" ref={educationRef} id="project">
+            <section className="mt-[4%]" ref={contactRef} id="contact">
               <div className="ml-3">
-                <Title title={translations.nameCategoryCareer} />
+                <Title title={translations.nameCategoryContact} />
               </div>
-              <Educations />
-            </section> */}
+              <Contact />
+            </section>
           </>
         )}
       </main>
