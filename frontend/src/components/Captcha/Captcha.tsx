@@ -96,6 +96,7 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
           showAlert("error", getErrorMessage(error));
           setLoading(false);
           setCheckRefresh(false);
+          console.log("error", error)
         });
     }
   }, [open, authorizeGenerateCaptcha, checkrefresh]);
