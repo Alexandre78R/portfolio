@@ -59,6 +59,8 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
       imageUrls.map((url) => {
         return new Promise<void>((resolve) => {
           const img = new Image();
+          if (!img)
+            return showAlert("error", "image upload error (preloadImages) !")
           img.src = url;
           img.onload = () => resolve();
           img.onerror = () => resolve();
@@ -75,10 +77,11 @@ const CaptchaModal: React.FC<{ open: boolean, onClose: () => void, onValidate: (
         .then(response => {
           if (response.data) {
             const imageUrls = response.data.generateCaptcha.images.map(img => img.url);
+            console.log(imageUrls);
             preloadImages(imageUrls).then(() => {
-              setImages(response.data.generateCaptcha.images || []);
-              setChallengeType(response.data.generateCaptcha.challengeType || '');
-              setIdCaptcha(response.data.generateCaptcha.id || '');
+              setImages(response.data.generateCaptcha.images);
+              setChallengeType(response.data.generateCaptcha.challengeType);
+              setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
               setCheckRefresh(true);
