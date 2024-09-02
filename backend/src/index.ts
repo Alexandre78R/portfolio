@@ -10,7 +10,7 @@ import { ContactResolver } from "./resolvers/contact.resolver";
 import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 import path from 'path';
 import { CaptchaResolver } from './resolvers/captcha.resolver';
-import { captchaImageMap } from './CaptchaMap';
+import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
 
 export interface MyContext {
   req: express.Request;
@@ -60,6 +60,8 @@ async function main() {
       },
     })
   );
+
+  setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
