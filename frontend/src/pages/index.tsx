@@ -41,40 +41,40 @@ const Home: React.FC = (): React.ReactElement  => {
       <Header />
       <main className="bg-body">
         {selectedView === "terminal" ? (
-          <section className="ml-3 mt-[5%] mb-[5%]" ref={terminalRef}>
+          <section ref={terminalRef}>
             <Title title="Terminal" />
-            <div className="ml-3 flex flex-col items-center">
+            <div className="flex flex-col items-center">
               <Terminal />
             </div>
           </section>
         ) : (
           <>
-            <section className="ml-3 mt-[5%]" ref={aboutMeRef} id="aboutme">
+            <section ref={aboutMeRef} id="aboutme">
               <Title title={translations.nameCategoryAboutMe} />
               <AboutMe />
             </section>
             <section ref={skillRef} id="skill">
-              <div className="ml-3">
+              <div>
                 <Title title={translations.nameCategorySkills} />
               </div>
-              <div className="mt-8">
+              <div>
                 <HorizontalScroll data={dataSkills} category="skills" />
               </div>
             </section>
             <section ref={projectRef} id="project">
-              <div className="ml-3">
+              <div>
                 <Title title={translations.nameCategoryProjects} />
               </div>
                 <HorizontalScroll data={dataProjects} category="projects" />
             </section>
-            <section className="mt-[4%]" ref={educationRef} id="project">
-              <div className="ml-3">
+            <section ref={educationRef} id="project">
+              <div>
                 <Title title={translations.nameCategoryCareer} />
               </div>
               <Educations />
             </section>
-            <section className="mt-[4%]" ref={contactRef} id="contact">
-              <div className="ml-3">
+            <section ref={contactRef} id="contact">
+              <div>
                 <Title title={translations.nameCategoryContact} />
               </div>
               <Contact />
@@ -82,7 +82,7 @@ const Home: React.FC = (): React.ReactElement  => {
           </>
         )}
       </main>
-      <section className="mt-[5%]">
+      <section>
         <Footer />
       </section>
     </>
