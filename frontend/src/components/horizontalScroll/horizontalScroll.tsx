@@ -21,11 +21,10 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const [isScrollable, setIsScrollable] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState<number>(0); // Gestion de l'index actif
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
-  const itemWidth = 365; // Largeur approximative d'un élément pour le défilement
+  const itemWidth = 365;
 
-  // Fonction de défilement fluide par index
   const scrollToIndex = (index: number) => {
     const container = containerRef.current;
     if (container) {
@@ -34,7 +33,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  // Défilement à gauche
   const handleScrollLeft = (): void => {
     if (activeIndex > 0) {
       setActiveIndex(prevIndex => {
@@ -45,7 +43,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  // Défilement à droite
   const handleScrollRight = (): void => {
     if (activeIndex < data.length - 1) {
       setActiveIndex(prevIndex => {
@@ -56,7 +53,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
     }
   };
 
-  // Défilement via la souris ou le toucher
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current!.offsetLeft);
