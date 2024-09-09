@@ -12,6 +12,7 @@ type Props = {
 };
 
 const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactElement => {
+
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startX, setStartX] = useState<number>(0);
@@ -20,14 +21,35 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const [isAtStart, setIsAtStart] = useState<boolean>(true);
   const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
   const [isScrollable, setIsScrollable] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
 
-  const itemWidth = 365; // Largeur approximative d'un élément pour le défilement
+  const itemWidth = 365;
 
-  // Fonction de défilement fluide
-  const smoothScroll = (scrollBy: number) => {
+  const scrollToIndex = (index: number) => {
     const container = containerRef.current;
     if (container) {
-      container.scrollBy({ left: scrollBy, behavior: 'smooth' });
+      const newScrollLeft = index * itemWidth;
+      container.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+    }
+  };
+
+  const handleScrollLeft = (): void => {
+    if (activeIndex > 0) {
+      setActiveIndex(prevIndex => {
+        const newIndex = prevIndex - 1;
+        scrollToIndex(newIndex);
+        return newIndex;
+      });
+    }
+  };
+
+  const handleScrollRight = (): void => {
+    if (activeIndex < data.length - 1) {
+      setActiveIndex(prevIndex => {
+        const newIndex = prevIndex + 1;
+        scrollToIndex(newIndex);
+        return newIndex;
+      });
     }
   };
 
@@ -51,14 +73,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   const handleMouseUp = (): void => {
     setIsDragging(false);
     setIsClickOnImage(false);
-  };
-
-  const handleScrollLeft = (): void => {
-    smoothScroll(-itemWidth);
-  };
-
-  const handleScrollRight = (): void => {
-    smoothScroll(itemWidth);
   };
 
   const checkScrollPosition = (): void => {
@@ -146,7 +160,6 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
           boxSizing: 'border-box',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-
         }}
       >
         <div
