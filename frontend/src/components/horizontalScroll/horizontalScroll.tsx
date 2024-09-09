@@ -121,6 +121,14 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
   }, []);
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkScrollPosition();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [data]);
+
+  useEffect(() => {
     const container = containerRef.current;
     if (container) {
       if (isDragging && !isClickOnImage) {
