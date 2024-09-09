@@ -113,7 +113,7 @@ export class CaptchaResolver {
 
     let images : any[] = [];
     for (const _ in captchaMap) {
-      images =  captchaMap[idCaptcha].images;
+      images = captchaMap[idCaptcha].images;
     }
 
     if (!images)

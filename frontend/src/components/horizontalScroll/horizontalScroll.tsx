@@ -12,23 +12,137 @@ type Props = {
 };
 
 const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactElement => {
-  
-  const [currentIndex, setCurrentIndex] = useState<number>(0);  // Index de l'élément actuel
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [startX, setStartX] = useState<number>(0);
+  const [scrollLeft, setScrollLeft] = useState<number>(0);
+  const [isClickOnImage, setIsClickOnImage] = useState<boolean>(false);
+  const [isAtStart, setIsAtStart] = useState<boolean>(true);
+  const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
+  const [isScrollable, setIsScrollable] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState<number>(0); // Gestion de l'index actif
+
   const itemWidth = 365; // Largeur approximative d'un élément pour le défilement
-  const maxIndex = data ? data.length - 1 : 0; // Le dernier index basé sur le nombre d'éléments
 
-  // Fonction pour changer l'index
-  const handlePrev = (): void => {
-    setCurrentIndex(prev => (prev > 0 ? prev - 1 : prev));  // Ne va pas au-delà du début
+  // Fonction de défilement fluide par index
+  const scrollToIndex = (index: number) => {
+    const container = containerRef.current;
+    if (container) {
+      const newScrollLeft = index * itemWidth;
+      container.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+    }
   };
 
-  const handleNext = (): void => {
-    setCurrentIndex(prev => (prev < maxIndex ? prev + 1 : prev));  // Ne va pas au-delà de la fin
+  // Défilement à gauche
+  const handleScrollLeft = (): void => {
+    if (activeIndex > 0) {
+      setActiveIndex(prevIndex => {
+        const newIndex = prevIndex - 1;
+        scrollToIndex(newIndex);
+        return newIndex;
+      });
+    }
   };
+
+  // Défilement à droite
+  const handleScrollRight = (): void => {
+    if (activeIndex < data.length - 1) {
+      setActiveIndex(prevIndex => {
+        const newIndex = prevIndex + 1;
+        scrollToIndex(newIndex);
+        return newIndex;
+      });
+    }
+  };
+
+  // Défilement via la souris ou le toucher
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
+    setIsDragging(true);
+    setStartX(event.pageX - containerRef.current!.offsetLeft);
+    setScrollLeft(containerRef.current!.scrollLeft);
+    const target: HTMLElement = event.target as HTMLElement;
+    if (target.tagName === 'IMG') {
+      setIsClickOnImage(true);
+    }
+  };
+
+  const handleMouseMove = (event: MouseEvent): void => {
+    if (!isDragging || isClickOnImage) return;
+    const x: number = event.pageX - containerRef.current!.offsetLeft;
+    const walk: number = (x - startX) * 1.0; // Vitesse du défilement
+    containerRef.current!.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = (): void => {
+    setIsDragging(false);
+    setIsClickOnImage(false);
+  };
+
+  const checkScrollPosition = (): void => {
+    const container = containerRef.current;
+    if (container) {
+      const isScrollableContent = container.scrollWidth > container.clientWidth;
+      setIsScrollable(isScrollableContent);
+      setIsAtStart(container.scrollLeft === 0);
+      setIsAtEnd(container.scrollLeft + container.clientWidth >= container.scrollWidth);
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalMouseUp = (): void => {
+      if (isDragging) {
+        setIsDragging(false);
+        setIsClickOnImage(false);
+      }
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    window.addEventListener('resize', checkScrollPosition);
+
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+      window.removeEventListener('resize', checkScrollPosition);
+    };
+  }, [isDragging]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousedown', (e) => handleMouseDown(e as unknown as React.MouseEvent<HTMLDivElement>));
+      container.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('scroll', checkScrollPosition);
+    }
+    checkScrollPosition();
+
+    return () => {
+      if (container) {
+        container.removeEventListener('mousedown', (e) => handleMouseDown(e as unknown as React.MouseEvent<HTMLDivElement>));
+        container.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('scroll', checkScrollPosition);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      if (isDragging && !isClickOnImage) {
+        container.addEventListener('mousemove', handleMouseMove);
+      } else {
+        container.removeEventListener('mousemove', handleMouseMove);
+      }
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, [isDragging, isClickOnImage]);
 
   return (
     <div style={{ position: 'relative' }} key={category}>
-      {currentIndex > 0 && (
+      {!isAtStart && isScrollable && (
         <div
           className='absolute left-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
           style={{
@@ -36,40 +150,41 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onClick={handlePrev}
+          onClick={handleScrollLeft}
         >
           <ArrowBackIosNewIcon />
         </div>
       )}
 
       <div
-        className="flex flex-row overflow-hidden"
+        ref={containerRef}
+        className="flex flex-row overflow-x-auto overflow-y-hidden"
         style={{
           userSelect: 'none',
           boxSizing: 'border-box',
-          width: `${itemWidth}px`,
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
       >
         <div
-          className="flex transition-transform duration-300"
+          className="m-5"
           style={{
-            transform: `translateX(-${currentIndex * itemWidth}px)`,  // Translate selon l'index
             display: 'flex',
             flexDirection: 'row',
             gap: '15px',
           }}
         >
           {category === 'skills' &&
-            data?.map((skill: skills, index: number) => (
+            data?.map((skill: skills) => (
               <Skills key={skill.id} category={skill.category} skills={skill.skills} />
             ))}
 
           {category === 'projects' &&
-            data?.map((project: Project, index: number) => <Projects key={project.id} project={project} />)}
+            data?.map((project: Project) => <Projects key={project.id} project={project} />)}
         </div>
       </div>
 
-      {currentIndex < maxIndex && (
+      {!isAtEnd && isScrollable && (
         <div
           className='absolute right-0 top-1/2 transform -translate-y-1/2 w-[25px] h-[100%] cursor-pointer z-10 text-primary hover:text-secondary bg-black opacity-[50%] hover:opacity-[75%] transition-opacity duration-300'
           style={{
@@ -77,7 +192,7 @@ const HorizontalScroll: React.FC<Props> = ({ data, category }): React.ReactEleme
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onClick={handleNext}
+          onClick={handleScrollRight}
         >
           <ArrowForwardIosIcon />
         </div>
