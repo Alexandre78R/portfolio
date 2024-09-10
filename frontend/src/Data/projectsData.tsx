@@ -40,9 +40,10 @@ export const projectsData = [
         image:
           "https://img.shields.io/badge/-Express-000000?style=flat-square&logoColor=white",
       },
-      { 
-        name: 'Puppeteer',
-        image: "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white"
+      {
+        name: "Puppeteer",
+        image:
+          "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white",
       },
     ],
   },
@@ -92,9 +93,10 @@ export const projectsData = [
         image:
           "https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white",
       },
-      { 
-        name: 'Puppeteer',
-        image: "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white"
+      {
+        name: "Puppeteer",
+        image:
+          "https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white",
       },
     ],
   },

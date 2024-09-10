@@ -14,13 +14,20 @@ import CV from "./components/Commands/CV";
 import Projects from "./components/Commands/ProjectsCommand";
 
 type Props = {
-    index: number;
-    cmd: string;
+  index: number;
+  cmd: string;
 };
 
 const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
   const { arg } = useContext(termContext);
-  const specialCmds: string[] = ["projects", "socials", "echo", "themes", "whoami", "lang"];
+  const specialCmds: string[] = [
+    "projects",
+    "socials",
+    "echo",
+    "themes",
+    "whoami",
+    "lang",
+  ];
 
   const commandOutput = useMemo(() => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
@@ -28,23 +35,28 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
     }
     // if (!commandEnter) return null;
 
-    return {
-      help: <Help />,
-      about : <About />,
-      welcome: <Welcome />,
-      clear: <Clear />,
-      socials: <Socials />,
-      echo: <Echo />,
-      whoami: <Whoami />,
-      themes: <Themes />,
-      lang: <Lang />,
-      cv : <CV/>,
-      projects : <Projects />,
-    }[cmd] || null;
+    return (
+      {
+        help: <Help />,
+        about: <About />,
+        welcome: <Welcome />,
+        clear: <Clear />,
+        socials: <Socials />,
+        echo: <Echo />,
+        whoami: <Whoami />,
+        themes: <Themes />,
+        lang: <Lang />,
+        cv: <CV />,
+        projects: <Projects />,
+      }[cmd] || null
+    );
   }, [cmd, arg]);
 
   return (
-    <div className="pb-[0.25rem]" data-testid={index === 0 ? "latest-output" : null}>
+    <div
+      className="pb-[0.25rem]"
+      data-testid={index === 0 ? "latest-output" : null}
+    >
       {commandOutput}
     </div>
   );

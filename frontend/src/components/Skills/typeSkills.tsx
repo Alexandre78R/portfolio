@@ -1,16 +1,16 @@
 export type skills = {
-    id? : number,
-    category : string,
-    skills : any, 
+  id?: number;
+  category: string;
+  skills: any;
 };
 
 export type skill = {
-    name : string,
-    image : string, 
+  name: string;
+  image: string;
 };
 
 export type SkillTab = {
-    id? : number,
-    category : string,
-    skills : skill, 
-}
+  id?: number;
+  category: string;
+  skills: skill;
+};

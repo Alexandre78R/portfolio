@@ -34,10 +34,11 @@ const InputField: React.FC<InputFieldProps> = ({
       rows={rows}
       className="bg-white border border-gray-300 rounded-md text-text"
       sx={{
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "var(--primary-color)",
-          borderWidth: "0.2rem",
-        },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+          {
+            borderColor: "var(--primary-color)",
+            borderWidth: "0.2rem",
+          },
         "& .MuiFormLabel-root": {
           color: "var(--primary-color)",
           fontWeight: "bold",

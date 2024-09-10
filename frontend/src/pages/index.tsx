@@ -18,25 +18,33 @@ import Seo from "@/components/Seo/Seo";
 import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
 
-const Home: React.FC = (): React.ReactElement  => {
-
+const Home: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
-  const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef } = useSectionRefs();
+  const {
+    aboutMeRef,
+    projectRef,
+    skillRef,
+    terminalRef,
+    educationRef,
+    contactRef,
+  } = useSectionRefs();
   const { selectedView } = useChoiceView();
 
   const dispatch = useDispatch<AppDispatch>();
   const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
-  const dataProjects = useSelector((state: RootState) => state.projects.dataProjects);
+  const dataProjects = useSelector(
+    (state: RootState) => state.projects.dataProjects
+  );
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
     dispatch(updateProjectDescriptions(translations.file));
     dispatch(updateEducationsTitle(translations.file));
     dispatch(updateExperiences(translations.file));
-  }, [translations, dispatch])
+  }, [translations, dispatch]);
 
   return (
-      <>
+    <>
       <Seo />
       <Header />
       <main className="bg-body">
@@ -65,7 +73,7 @@ const Home: React.FC = (): React.ReactElement  => {
               <div>
                 <Title title={translations.nameCategoryProjects} />
               </div>
-                <HorizontalScroll data={dataProjects} category="projects" />
+              <HorizontalScroll data={dataProjects} category="projects" />
             </section>
             <section ref={educationRef} id="project">
               <div>
@@ -87,6 +95,6 @@ const Home: React.FC = (): React.ReactElement  => {
       </section>
     </>
   );
-}
+};
 
 export default Home;

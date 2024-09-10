@@ -21,12 +21,12 @@
 //   const [index, setIndex] = useState<number>(0);
 
 //   const value = useMemo(() => (
-//     { 
+//     {
 //       arg,
 //       setArg,
 //       history,
 //       setHistory,
-//       rerenderContext, 
+//       rerenderContext,
 //       setRerenderContext,
 //       index,
 //       setIndex,

@@ -7,6 +7,5 @@ const TermInfo: React.FC = (): React.ReactElement => {
     </div>
   );
 };
-  
-  export default TermInfo;
-  
+
+export default TermInfo;

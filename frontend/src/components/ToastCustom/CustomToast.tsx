@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef, MutableRefObject } from "react";
 import { toast, ToastOptions, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 interface Alert {
-  type: 'success' | 'info' | 'warn' | 'error';
+  type: "success" | "info" | "warn" | "error";
   message: string;
 }
 
 const CustomToast = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
-  const showAlertRef: MutableRefObject<((type: Alert['type'], message: string) => void) | null> = useRef(null);
+  const showAlertRef: MutableRefObject<
+    ((type: Alert["type"], message: string) => void) | null
+  > = useRef(null);
 
   useEffect(() => {
     showAlertRef.current = showAlert;
@@ -28,11 +30,11 @@ const CustomToast = () => {
     }
   }, [alerts]);
 
-  const showAlert = (type: Alert['type'], message: string) => {
+  const showAlert = (type: Alert["type"], message: string) => {
     setAlerts((prevAlerts) => [...prevAlerts, { type, message }]);
   };
 
-  const getToastOptions = (type: Alert['type']): ToastOptions => {
+  const getToastOptions = (type: Alert["type"]): ToastOptions => {
     const baseStyles: ToastOptions = {
       position: "top-right",
       autoClose: 3500,
@@ -43,45 +45,45 @@ const CustomToast = () => {
       progress: undefined,
     };
 
-    const styles: { [key in Alert['type']]: ToastOptions } = {
+    const styles: { [key in Alert["type"]]: ToastOptions } = {
       error: {
         ...baseStyles,
         style: {
-          backgroundColor: 'var(--footer-color)',
-          color: 'var(--text-color)',
+          backgroundColor: "var(--footer-color)",
+          color: "var(--text-color)",
         },
         progressStyle: {
-          backgroundColor: 'var(--error-color)',
+          backgroundColor: "var(--error-color)",
         },
       },
       success: {
         ...baseStyles,
         style: {
-          backgroundColor: 'var(--footer-color)',
-          color: 'var(--text-color)',
+          backgroundColor: "var(--footer-color)",
+          color: "var(--text-color)",
         },
         progressStyle: {
-          backgroundColor: 'var(--success-color)',
+          backgroundColor: "var(--success-color)",
         },
       },
       info: {
         ...baseStyles,
         style: {
-          backgroundColor: 'var(--footer-color)',
-          color: 'var(--text-color)',
+          backgroundColor: "var(--footer-color)",
+          color: "var(--text-color)",
         },
         progressStyle: {
-          backgroundColor: 'var(--info-color)',
+          backgroundColor: "var(--info-color)",
         },
       },
       warn: {
         ...baseStyles,
         style: {
-          backgroundColor: 'var(--footer-color)',
-          color: 'var(--text-color)',
+          backgroundColor: "var(--footer-color)",
+          color: "var(--text-color)",
         },
         progressStyle: {
-          backgroundColor: 'var(--warn-color)',
+          backgroundColor: "var(--warn-color)",
         },
       },
     };
