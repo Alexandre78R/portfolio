@@ -7,31 +7,31 @@ import WhoamiExperience from "./WhoamiComponents/WhoamiExperience";
 import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
 
 const Whoami: React.FC = (): React.ReactElement => {
-  
   const { arg } = useContext(termContext);
   const { translations } = useLang();
 
   if (arg.length === 0) {
-    return <WhoamiError message={translations.terminalWhoamiNotArg} />
+    return <WhoamiError message={translations.terminalWhoamiNotArg} />;
   }
 
   if (arg.length !== 1 && arg.length !== 0) {
-    return <WhoamiError message={translations.terminalWhoamiMaxOneArg} />
+    return <WhoamiError message={translations.terminalWhoamiMaxOneArg} />;
   }
 
   const whoamiName: string = arg[0].toLowerCase();
 
   switch (whoamiName) {
     case "experiences":
-      return <WhoamiExperience />
+      return <WhoamiExperience />;
     case "educations":
-      return <WhoamiEducation />
+      return <WhoamiEducation />;
     case "skills":
-      return <WhoamiSkills />
+      return <WhoamiSkills />;
     default:
-      return <WhoamiError message={translations.terminalWhoamiChoiceNotExiste} />
+      return (
+        <WhoamiError message={translations.terminalWhoamiChoiceNotExiste} />
+      );
   }
-
 };
 
 export default Whoami;

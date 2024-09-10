@@ -6,14 +6,18 @@ import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 
 const WhoamiExperience: React.FC = (): React.ReactElement => {
-
-  const dataExperiences = useSelector((state: RootState) => state.experiences.dataExperiences);
+  const dataExperiences = useSelector(
+    (state: RootState) => state.experiences.dataExperiences
+  );
 
   const newOrderDataExperience = dataExperiences?.slice().reverse();
 
   const { translations } = useLang();
 
-  const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
+  const [currentPage, setCurrentPage]: [
+    number,
+    React.Dispatch<React.SetStateAction<number>>
+  ] = useState<number>(1);
   const datasPerPage: number = 3;
 
   const pagination: () => any[] = (): any[] => {
@@ -22,7 +26,7 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
     return newOrderDataExperience.slice(indexFirst, indexLast);
   };
 
-  const next: () => void = () : void => {
+  const next: () => void = (): void => {
     setCurrentPage(currentPage + 1);
   };
 
@@ -31,43 +35,62 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
   };
 
   return (
-      <Message>
-        {
-          pagination()?.slice().reverse().map(experience => {
-            return(
-              <div key={experience.id} className="m-2">              
-                <div className="flex flex-row items-center">
-                  <p className="text-primary">{experience.job}</p>
-                  <p className="ml-2" >{experience.business}</p>
-                </div>
-                <div className="flex flex-row items-center">
-                  <span className=" mr-3 text-text300">{experience.startDate} - {experience.endDate}</span>
-                </div>
+    <Message>
+      {pagination()
+        ?.slice()
+        .reverse()
+        .map((experience) => {
+          return (
+            <div key={experience.id} className="m-2">
+              <div className="flex flex-row items-center">
+                <p className="text-primary">{experience.job}</p>
+                <p className="ml-2">{experience.business}</p>
               </div>
-            )
-          })
-        }
-        {
-          currentPage > 1 || currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) &&
-            <div className="flex">
-              <div className="mr-4">
-                  <ButtonCustom 
-                      onClick={currentPage > 1? previous : undefined}
-                      text={translations.buttonPaginationPrevious}
-                      disable={currentPage > 1? false : true}
-                      disableHover={currentPage > 1? false : true}
-                  />
+              <div className="flex flex-row items-center">
+                <span className=" mr-3 text-text300">
+                  {experience.startDate} - {experience.endDate}
+                </span>
               </div>
+            </div>
+          );
+        })}
+      {currentPage > 1 ||
+        (currentPage <
+          Math.ceil(newOrderDataExperience.length / datasPerPage) && (
+          <div className="flex">
+            <div className="mr-4">
               <ButtonCustom
-                  onClick={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? next : undefined}
-                  text={translations.buttonPaginationNext}
-                  disable={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
-                  disableHover={currentPage < Math.ceil(newOrderDataExperience.length / datasPerPage) ? false : true}
+                onClick={currentPage > 1 ? previous : undefined}
+                text={translations.buttonPaginationPrevious}
+                disable={currentPage > 1 ? false : true}
+                disableHover={currentPage > 1 ? false : true}
               />
             </div>
-        }
-      </Message>
-    );
+            <ButtonCustom
+              onClick={
+                currentPage <
+                Math.ceil(newOrderDataExperience.length / datasPerPage)
+                  ? next
+                  : undefined
+              }
+              text={translations.buttonPaginationNext}
+              disable={
+                currentPage <
+                Math.ceil(newOrderDataExperience.length / datasPerPage)
+                  ? false
+                  : true
+              }
+              disableHover={
+                currentPage <
+                Math.ceil(newOrderDataExperience.length / datasPerPage)
+                  ? false
+                  : true
+              }
+            />
+          </div>
+        ))}
+    </Message>
+  );
 };
 
 export default WhoamiExperience;

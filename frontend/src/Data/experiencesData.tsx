@@ -11,8 +11,8 @@ export const experiencesData = [
     endDateEN: "December 2019",
     endDateFR: "Décember 2019",
     month: 3,
-    typeEN:"Experience",
-    typeFR:"Expérience",
+    typeEN: "Experience",
+    typeFR: "Expérience",
   },
   {
     id: 2,
@@ -26,8 +26,8 @@ export const experiencesData = [
     endDateEN: "March 2020",
     endDateFR: "Mars 2020",
     month: 2,
-    typeEN:"Experience",
-    typeFR:"Expérience",
+    typeEN: "Experience",
+    typeFR: "Expérience",
   },
   {
     id: 3,
@@ -41,7 +41,7 @@ export const experiencesData = [
     endDateEN: "September 2024",
     endDateFR: "Septembre 2024",
     month: 12,
-    typeEN:"Experience",
-    typeFR:"Expérience",
+    typeEN: "Experience",
+    typeFR: "Expérience",
   },
 ];

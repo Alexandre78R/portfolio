@@ -1,11 +1,11 @@
 import _ from "lodash";
 
 export const generateTabs = (num = 0): string => {
-    let tabs = "\xA0\xA0";
-    for (let i = 0; i < num; i++) {
-      tabs += "\xA0";
-    }
-    return tabs;
+  let tabs = "\xA0\xA0";
+  for (let i = 0; i < num; i++) {
+    tabs += "\xA0";
+  }
+  return tabs;
 };
 
 export const checkRedirect = (
@@ -40,13 +40,13 @@ export const checkThemeSwitch = (
   currentCommand.length > 2 && // current command has arg
   _.includes(themes, currentCommand[2]); // arg last part is one of id
 
-  export const checkLangSwitch = (
-    rerender: boolean,
-    currentCommand: string[],
-    lang: string[]
-  ): boolean =>
-    rerender && // is submitted
-    currentCommand[0] === "lang" &&
-    currentCommand[1] === "set" && 
-    currentCommand.length > 2 &&
-    _.includes(lang, currentCommand[2]);
+export const checkLangSwitch = (
+  rerender: boolean,
+  currentCommand: string[],
+  lang: string[]
+): boolean =>
+  rerender && // is submitted
+  currentCommand[0] === "lang" &&
+  currentCommand[1] === "set" &&
+  currentCommand.length > 2 &&
+  _.includes(lang, currentCommand[2]);

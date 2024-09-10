@@ -1,11 +1,10 @@
 export const educationsData = [
   {
     id: 1,
-    titleFR:
-      "Formation Développement web & mobile",
+    titleFR: "Formation Développement web & mobile",
     titleEN: "Web & Mobile Development Training",
-    diplomaLevelEN: "Training", 
-    diplomaLevelFR: "Formation", 
+    diplomaLevelEN: "Training",
+    diplomaLevelFR: "Formation",
     school: "La Capsule Academy",
     location: "Paris (75)",
     year: 2019,
@@ -36,12 +35,10 @@ export const educationsData = [
   },
   {
     id: 3,
-    titleFR:
-      "Alternance Concepteur Développeur d'Applications",
-    titleEN:
-      "Apprenticeship Application Designer and Developer",
+    titleFR: "Alternance Concepteur Développeur d'Applications",
+    titleEN: "Apprenticeship Application Designer and Developer",
     diplomaLevelEN: "RNCP Level 6 (Bachelor's/Master's degree equivalent)",
-    diplomaLevelFR: "RNCP Level 6 (Bac +3/4)", 
+    diplomaLevelFR: "RNCP Level 6 (Bac +3/4)",
     school: "Wild Code School",
     location: "Paris (75) (Remote)",
     year: 2024,

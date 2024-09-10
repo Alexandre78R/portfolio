@@ -1,74 +1,74 @@
 type Lang = {
-    file : string,
-    titleHTML: string,
-    descHTML: string,
-    welcome : string,
-    theme1 : string,
-    theme2 : string,
-    theme3 : string,
-    lang1 : string,
-    lang2 : string,
-    navbarTitle : string,
-    navbarButtonAbout : string,
-    navbarButtonSkill : string,
-    navbarButtonProject : string,
-    navbarButtonTerminal : string,
-    navbarButtonCareer : string,
-    navbarButtonContact : string,
-    headerTitle : string,
-    nameCategoryAboutMe : string,
-    titleAboutMe : string,
-    descriptionAboutMe1 : string,
-    descriptionAboutMe2 : string,
-    descriptionAboutMe3 : string,
-    nameCategorySkills : string,
-    skillCegory1 : string,
-    nameCategoryProjects : string,
-    buttonSeeMore : string,
-    buttonSeeLess : string,
-    footerTitle : string,
-    footerAdmin : string,
-    footerNetworks : string,
-    footerContact : string,
-    footerCopyright : string,
-    terminalWelcomeMessage : string,
-    terminalWelcomeMessageHelp : string,
-    terminalHelpTabAction : string,
-    terminalHelpTabDesc : string,
-    terminalHelpArrowUpAction : string,
-    terminalHelpArrowUpTabDesc : string,
-    terminalHelpArrowDownAction : string,
-    terminalHelpArrowDownTabDesc : string,
-    terminalHelpCtrlAction : string,
-    terminalHelpCtrlTabDesc : string,
-    terminalWhoamiNotArg : string,
-    terminalWhoamiMaxOneArg : string,
-    terminalWhoamiChoiceNotExiste : string,
-    buttonPaginationPrevious : string,
-    buttonPaginationNext : string,
-    buttonCV : string,
-    nameCategoryCareer : string,
-    nameCategoryContact : string,
-    nameFormulaireContact : string,
-    inputNameContactEmail: string,
-    inputNameContactObject: string,
-    inputNameContactMessage: string,
-    buttonSendMessageContact: string,
-    messageErrorFillAllInput: string,
-    messageErrorServerOff: string,
-    messageErrorNotSend: string,
-    messageErrorFormatEmail: string,
-    messageSuccessFormulaireSend : string,
-    messageErrorCaptchaExpired : string,
-    messageErrorCaptchaNotFound : string,
-    messageErrorCaptchaNotClear : string,
-    messageErrorCaptchaIncorrect : string,
-    messageSuccessCaptcha : string,
-    messageInfoCategoryCatCaptcha : string,
-    messageInfoCategoryDogCaptcha : string,
-    messageInfoCategoryCarCaptcha : string,
-    messageInfoFirstCaptcha : string,
-    messageInfoLastCaptcha : string,
-}
+  file: string;
+  titleHTML: string;
+  descHTML: string;
+  welcome: string;
+  theme1: string;
+  theme2: string;
+  theme3: string;
+  lang1: string;
+  lang2: string;
+  navbarTitle: string;
+  navbarButtonAbout: string;
+  navbarButtonSkill: string;
+  navbarButtonProject: string;
+  navbarButtonTerminal: string;
+  navbarButtonCareer: string;
+  navbarButtonContact: string;
+  headerTitle: string;
+  nameCategoryAboutMe: string;
+  titleAboutMe: string;
+  descriptionAboutMe1: string;
+  descriptionAboutMe2: string;
+  descriptionAboutMe3: string;
+  nameCategorySkills: string;
+  skillCegory1: string;
+  nameCategoryProjects: string;
+  buttonSeeMore: string;
+  buttonSeeLess: string;
+  footerTitle: string;
+  footerAdmin: string;
+  footerNetworks: string;
+  footerContact: string;
+  footerCopyright: string;
+  terminalWelcomeMessage: string;
+  terminalWelcomeMessageHelp: string;
+  terminalHelpTabAction: string;
+  terminalHelpTabDesc: string;
+  terminalHelpArrowUpAction: string;
+  terminalHelpArrowUpTabDesc: string;
+  terminalHelpArrowDownAction: string;
+  terminalHelpArrowDownTabDesc: string;
+  terminalHelpCtrlAction: string;
+  terminalHelpCtrlTabDesc: string;
+  terminalWhoamiNotArg: string;
+  terminalWhoamiMaxOneArg: string;
+  terminalWhoamiChoiceNotExiste: string;
+  buttonPaginationPrevious: string;
+  buttonPaginationNext: string;
+  buttonCV: string;
+  nameCategoryCareer: string;
+  nameCategoryContact: string;
+  nameFormulaireContact: string;
+  inputNameContactEmail: string;
+  inputNameContactObject: string;
+  inputNameContactMessage: string;
+  buttonSendMessageContact: string;
+  messageErrorFillAllInput: string;
+  messageErrorServerOff: string;
+  messageErrorNotSend: string;
+  messageErrorFormatEmail: string;
+  messageSuccessFormulaireSend: string;
+  messageErrorCaptchaExpired: string;
+  messageErrorCaptchaNotFound: string;
+  messageErrorCaptchaNotClear: string;
+  messageErrorCaptchaIncorrect: string;
+  messageSuccessCaptcha: string;
+  messageInfoCategoryCatCaptcha: string;
+  messageInfoCategoryDogCaptcha: string;
+  messageInfoCategoryCarCaptcha: string;
+  messageInfoFirstCaptcha: string;
+  messageInfoLastCaptcha: string;
+};
 
 export default Lang;

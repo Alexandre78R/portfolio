@@ -7,9 +7,14 @@ import { LangProvider } from "@/context/Lang/LangContext";
 import Navbar from "@/components/NavBar/NavBar";
 import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
 import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
-import ReduxProvider from '../store/provider';
+import ReduxProvider from "../store/provider";
 import ToastProvider from "@/components/ToastCustom/ToastProvider";
-import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
 import { API_URL } from "@/config";
 import { setContext } from "@apollo/client/link/context";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
@@ -29,7 +34,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
         headers: {
           ...headers,
           "x-api-key": token ? `${token}` : "",
-        }
+        },
       };
     });
 
@@ -43,7 +48,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   }, []);
 
   if (!client) {
-    return <LoadingCustom />;  // ou un spinner de chargement
+    return <LoadingCustom />; // ou un spinner de chargement
   }
 
   return (
@@ -63,6 +68,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
       </ReduxProvider>
     </ApolloProvider>
   );
-}
+};
 
 export default App;

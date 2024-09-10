@@ -1,15 +1,20 @@
 import { useContext, useEffect } from "react";
 import { Message } from "../Message";
 import { termContext } from "../../Terminal";
-import { getCurrentCmdArry, checkRedirect, isArgInvalid, generateTabs  } from "../../util";
+import {
+  getCurrentCmdArry,
+  checkRedirect,
+  isArgInvalid,
+  generateTabs,
+} from "../../util";
 import Usage from "../Usage";
 
 type Socials = {
-  id: number,
-  title: string,
-  url: string,
-  tab: number,
-}
+  id: number;
+  title: string;
+  url: string;
+  tab: number;
+};
 
 const socials: Socials[] = [
   {
@@ -40,9 +45,7 @@ const Socials: React.FC = (): React.ReactNode => {
   }, [arg, rerender, currentCommand]);
 
   const checkArg = () =>
-    isArgInvalid(arg, "go", ["1", "2"]) ? (
-      <Usage cmd="socials" />
-    ) : null;
+    isArgInvalid(arg, "go", ["1", "2"]) ? <Usage cmd="socials" /> : null;
 
   return arg.length > 0 || arg.length > 2 ? (
     checkArg()
@@ -59,7 +62,7 @@ const Socials: React.FC = (): React.ReactNode => {
       ))}
       <Usage cmd="socials" />
     </Message>
-  )
+  );
 };
 
 export default Socials;

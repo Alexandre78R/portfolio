@@ -19,4 +19,3 @@ export type ProjectComponent = {
     skills: { id: string; name: string; image: string }[];
   };
 };
-  
