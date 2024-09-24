@@ -15,7 +15,8 @@ const Contact: React.FC = (): React.ReactElement => {
 
   const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] = useState<boolean>(false);
+  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] =
+    useState<boolean>(false);
 
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
@@ -34,7 +35,9 @@ const Contact: React.FC = (): React.ReactElement => {
     message: "",
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -63,7 +66,7 @@ const Contact: React.FC = (): React.ReactElement => {
           }
         },
         onError(error) {
-          console.log("error", error)
+          console.log("error", error);
           let errorMessage: string = translations.messageErrorServerOff;
           if (error.message === "Invaid format email.") {
             errorMessage = translations.messageErrorFormatEmail;
@@ -92,7 +95,11 @@ const Contact: React.FC = (): React.ReactElement => {
   return (
     <div className="flex flex-col items-center">
       <div className="bg-body p-8 shadow-lg mt-8 text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-        <Typography variant="h3" component="h3" className="text-2xl font-bold text-text mb-6">
+        <Typography
+          variant="h3"
+          component="h3"
+          className="text-2xl font-bold text-text mb-6"
+        >
           {translations.nameFormulaireContact}
         </Typography>
 
@@ -127,8 +134,7 @@ const Contact: React.FC = (): React.ReactElement => {
           />
         </form>
       </div>
-      {
-        open &&
+      {open && (
         <Captcha
           open={open}
           onClose={handleClose}
@@ -136,7 +142,7 @@ const Contact: React.FC = (): React.ReactElement => {
           authorizeGenerateCaptcha={authorizeGenerateCaptcha}
           setAuthorizeGenerateCaptcha={setAuthorizeGenerateCaptcha}
         />
-      }
+      )}
     </div>
   );
 };

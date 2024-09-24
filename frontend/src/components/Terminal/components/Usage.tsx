@@ -13,13 +13,12 @@ const arg = {
 };
 
 const Usage: React.FC<Props> = ({ cmd }): React.ReactElement => {
-
-  let action = ""
+  let action = "";
 
   if (cmd === "socials") {
     action = "go";
   }
-  
+
   if (cmd === "themes" || cmd === "lang") {
     action = "set";
   }
@@ -27,14 +26,13 @@ const Usage: React.FC<Props> = ({ cmd }): React.ReactElement => {
   if (cmd === "whoami") {
     action = "";
   }
-  
+
   return (
     <Message data-testid={`${cmd}-invalid-arg`}>
       Usage: {cmd} {action} &#60;{arg[cmd]?.placeholder}&#62; <br />
       Ex: {cmd} {action} {arg[cmd].example}
     </Message>
   );
-
 };
 
 export default Usage;
