@@ -62,17 +62,17 @@ const Seo: React.FC = (): React.ReactElement => {
         }`}
         {/* BreadcrumbList (fil d'Ariane) */}
         {`{
-                    "@context": "http://schema.org",
-                    "@type": "BreadcrumbList",
-                    "itemListElement": [
-                        {
-                        "@type": "ListItem",
-                        "position": 1,
-                        "name": "Accueil",
-                        "item": ${canonicalUrl}
-                        }
-                    ]
-                    }`}
+          "@context": "http://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+              {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Accueil",
+              "item": ${canonicalUrl}
+              }
+          ]
+        }`}
       </script>
     </Head>
   );
