@@ -19,7 +19,8 @@ export type Scalars = {
 export type CaptchaImage = {
   __typename?: 'CaptchaImage';
   id: Scalars['String']['output'];
-  type: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
   url: Scalars['String']['output'];
 };
 
@@ -178,7 +179,8 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type CaptchaImageResolvers<ContextType = any, ParentType extends ResolversParentTypes['CaptchaImage'] = ResolversParentTypes['CaptchaImage']> = ResolversObject<{
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  typeEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  typeFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
