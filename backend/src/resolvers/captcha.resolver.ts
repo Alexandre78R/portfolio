@@ -44,18 +44,27 @@ export class CaptchaResolver {
       return { src: file, typeEN, typeFR };
     });
     
-    const getRandomImagesByType = (type: 'cat' | 'dog' | 'car') => {
+    // const getRandomImagesByType = (type: string) => {
+    //   return images
+    //     .filter(image => image.typeEN === type)
+    //     .sort(() => Math.random() - 0.5)
+    //     .slice(0, 2);
+    // };
+
+    // const selectedImages = [
+    //   ...getRandomImagesByType('cat'),
+    //   ...getRandomImagesByType('dog'),
+    //   ...getRandomImagesByType('car')
+    // ].sort(() => Math.random() - 0.5);
+    
+    const categories = [...new Set(images.map(image => image.typeEN))];
+
+    const selectedImages = categories.flatMap(category => {
       return images
-        .filter(image => image.typeEN === type)
+        .filter(image => image.typeEN === category)
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
-    };
-
-    const selectedImages = [
-      ...getRandomImagesByType('cat'),
-      ...getRandomImagesByType('dog'),
-      ...getRandomImagesByType('car')
-    ].sort(() => Math.random() - 0.5);
+    }).sort(() => Math.random() - 0.5);
 
     const challenges = ['cat', 'dog', 'car'] as const;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
