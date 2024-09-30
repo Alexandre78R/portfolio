@@ -40,13 +40,13 @@ export class CaptchaResolver {
 
     const images = files.map(file => {
       const fileName = path.basename(file, path.extname(file));
-      const [type, _] = fileName.split('-');
-      return { src: file, type };
+      const [typeEN, typeFR, _] = fileName.split('-');
+      return { src: file, typeEN, typeFR };
     });
     
     const getRandomImagesByType = (type: 'cat' | 'dog' | 'car') => {
       return images
-        .filter(image => image.type === type)
+        .filter(image => image.typeEN === type)
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
     };
@@ -71,7 +71,8 @@ export class CaptchaResolver {
       return {
         id: imageId,
         url: imageUrl,
-        type: image.type,
+        typeEN: image.typeEN,
+        typeFR : image.typeFR,
       };
     });
 
