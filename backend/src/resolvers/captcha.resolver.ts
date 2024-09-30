@@ -66,7 +66,7 @@ export class CaptchaResolver {
         .slice(0, 2);
     }).sort(() => Math.random() - 0.5);
 
-    const challenges = ['cat', 'dog', 'car'] as const;
+    const challenges = categories;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
 
     const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
