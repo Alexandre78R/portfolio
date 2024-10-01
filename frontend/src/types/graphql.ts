@@ -20,7 +20,8 @@ export type Scalars = {
 export type CaptchaImage = {
   __typename?: 'CaptchaImage';
   id: Scalars['String']['output'];
-  type: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
   url: Scalars['String']['output'];
 };
 
@@ -105,7 +106,7 @@ export type SendContactMutation = { __typename?: 'Mutation', sendContact: { __ty
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', type: string, url: string, id: string }> } };
+export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', typeEN: string, typeFR: string, url: string, id: string }> } };
 
 
 export const ValidateCaptchaDocument = gql`
@@ -218,7 +219,8 @@ export const GenerateCaptchaDocument = gql`
   generateCaptcha {
     id
     images {
-      type
+      typeEN
+      typeFR
       url
       id
     }

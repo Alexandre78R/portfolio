@@ -40,24 +40,23 @@ export class CaptchaResolver {
 
     const images = files.map(file => {
       const fileName = path.basename(file, path.extname(file));
-      const [type, _] = fileName.split('-');
-      return { src: file, type };
+      const [typeEN, typeFR, _] = fileName.split('-');
+      return { src: file, typeEN, typeFR };
     });
     
-    const getRandomImagesByType = (type: 'cat' | 'dog' | 'car') => {
+    const categories = [...new Set(images.map(image => image.typeEN))];
+
+    const selectedImages = categories
+    .map(category => {
       return images
-        .filter(image => image.type === type)
+        .filter(image => image.typeEN === category)
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
-    };
+    })
+    .reduce((acc, val) => acc.concat(val), [])
+    .sort(() => Math.random() - 0.5);
 
-    const selectedImages = [
-      ...getRandomImagesByType('cat'),
-      ...getRandomImagesByType('dog'),
-      ...getRandomImagesByType('car')
-    ].sort(() => Math.random() - 0.5);
-
-    const challenges = ['cat', 'dog', 'car'] as const;
+    const challenges = categories;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
 
     const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
@@ -71,7 +70,8 @@ export class CaptchaResolver {
       return {
         id: imageId,
         url: imageUrl,
-        type: image.type,
+        typeEN: image.typeEN,
+        typeFR : image.typeFR,
       };
     });
 
@@ -120,9 +120,9 @@ export class CaptchaResolver {
       throw new Error("Expired captcha!")
 
     const correctIndices = images
-      .map((img, idx) => img.type === challengeType ? idx : -1)
-      .filter(idx => idx !== -1);
-
+    .map((img, idx) => img.typeEN === challengeType ? idx : -1)
+    .filter(idx => idx !== -1);
+    
     const isValid = correctIndices.length === selectedIndices.length &&
       selectedIndices.every(index => correctIndices.includes(index));
 

@@ -5,7 +5,8 @@ export const GENERATOR_CAPTCHA = gql`
     generateCaptcha {
         id
         images {
-            type
+            typeEN
+            typeFR
             url
             id
         }

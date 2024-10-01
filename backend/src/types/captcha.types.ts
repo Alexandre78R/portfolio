@@ -24,7 +24,10 @@ import {
     url: string;
   
     @Field()
-    type: string;
+    typeEN: string;
+
+    @Field()
+    typeFR: string;
   }
   
   @ObjectType()
