@@ -105,7 +105,7 @@ const CaptchaModal: React.FC<Props> = ({
               setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
-              setAuthorizeGenerateCaptcha(false);
+              setAuthorizeGenerateCaptcha(false); // Assurer que CAPTCHA ne soit généré qu'une fois
             });
           }
         })
