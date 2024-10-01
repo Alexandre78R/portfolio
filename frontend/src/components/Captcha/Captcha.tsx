@@ -63,6 +63,7 @@ const CaptchaModal: React.FC<Props> = ({
 
   const getErrorMessage = (error: Error): string => {
     console.log("error", error);
+    console.log("eorror message", error.message);
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -114,6 +115,7 @@ const CaptchaModal: React.FC<Props> = ({
           setLoading(false);
           setCheckRefresh(false);
           console.log("error", error);
+          console.log("errror message", error.message);
         });
     }
   }, [open, authorizeGenerateCaptcha, checkrefresh]);
@@ -165,6 +167,12 @@ const CaptchaModal: React.FC<Props> = ({
   };
 
   const handleSubmit = async () => {
+    const toto = {
+      selectedIndices: selectedImages,
+      challengeType,
+      idCaptcha,
+    };
+    console.log("toto", toto);
     validateCaptcha({
       variables: {
         selectedIndices: selectedImages,
@@ -172,6 +180,11 @@ const CaptchaModal: React.FC<Props> = ({
         idCaptcha,
       },
       onCompleted(data) {
+        console.log(
+          "data?.validateCaptcha.isValid",
+          data?.validateCaptcha.isValid
+        );
+        console.log("data", data);
         if (data?.validateCaptcha.isValid) {
           showAlert("success", translations.messageSuccessCaptcha);
           setImages([]);
