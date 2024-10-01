@@ -44,19 +44,6 @@ export class CaptchaResolver {
       return { src: file, typeEN, typeFR };
     });
     
-    // const getRandomImagesByType = (type: string) => {
-    //   return images
-    //     .filter(image => image.typeEN === type)
-    //     .sort(() => Math.random() - 0.5)
-    //     .slice(0, 2);
-    // };
-
-    // const selectedImages = [
-    //   ...getRandomImagesByType('cat'),
-    //   ...getRandomImagesByType('dog'),
-    //   ...getRandomImagesByType('car')
-    // ].sort(() => Math.random() - 0.5);
-    
     const categories = [...new Set(images.map(image => image.typeEN))];
 
     const selectedImages = categories
@@ -68,15 +55,6 @@ export class CaptchaResolver {
     })
     .reduce((acc, val) => acc.concat(val), [])
     .sort(() => Math.random() - 0.5);
-
-    // const selectedImages = categories
-    // .flatMap(category =>
-    //   images
-    //     .filter(image => image.typeEN === category)
-    //     .sort(() => Math.random() - 0.5)
-    //     .slice(0, 2)
-    // )
-    // .sort(() => Math.random() - 0.5);
 
     const challenges = categories;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
@@ -141,12 +119,10 @@ export class CaptchaResolver {
     if (!images)
       throw new Error("Expired captcha!")
 
-    
     const correctIndices = images
-    .map((img, idx) => img.type === challengeType ? idx : -1)
+    .map((img, idx) => img.typeEN === challengeType ? idx : -1)
     .filter(idx => idx !== -1);
     
-    console.log("correctIndices", correctIndices)
     const isValid = correctIndices.length === selectedIndices.length &&
       selectedIndices.every(index => correctIndices.includes(index));
 
