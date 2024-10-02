@@ -6,7 +6,6 @@ import {
   CardActionArea,
   CardMedia,
   IconButton,
-  CircularProgress,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -96,6 +95,7 @@ const CaptchaModal: React.FC<Props> = ({
       generateCaptcha
         .refetch()
         .then((response) => {
+          console.log(response?.data);
           if (response.data) {
             const imageUrls = response.data.generateCaptcha.images.map(
               (img) => img.url
@@ -106,7 +106,7 @@ const CaptchaModal: React.FC<Props> = ({
               setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
-              setAuthorizeGenerateCaptcha(false); // Assurer que CAPTCHA ne soit généré qu'une fois
+              setAuthorizeGenerateCaptcha(false);
             });
           }
         })
