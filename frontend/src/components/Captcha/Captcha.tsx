@@ -167,11 +167,6 @@ const CaptchaModal: React.FC<Props> = ({
   };
 
   const handleSubmit = async () => {
-    const toto = {
-      selectedIndices: selectedImages,
-      challengeType,
-      idCaptcha,
-    };
     validateCaptcha({
       variables: {
         selectedIndices: selectedImages,
