@@ -172,7 +172,6 @@ const CaptchaModal: React.FC<Props> = ({
       challengeType,
       idCaptcha,
     };
-    console.log("toto", toto);
     validateCaptcha({
       variables: {
         selectedIndices: selectedImages,
@@ -180,11 +179,6 @@ const CaptchaModal: React.FC<Props> = ({
         idCaptcha,
       },
       onCompleted(data) {
-        console.log(
-          "data?.validateCaptcha.isValid",
-          data?.validateCaptcha.isValid
-        );
-        console.log("data", data);
         if (data?.validateCaptcha.isValid) {
           showAlert("success", translations.messageSuccessCaptcha);
           setImages([]);

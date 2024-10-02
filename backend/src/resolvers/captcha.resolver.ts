@@ -149,10 +149,6 @@ export class CaptchaResolver {
       return true;
     }
 
-    captchaMap[idCaptcha].images.forEach((element: any) => {
-      delete captchaImageMap[element.id];
-    });
-
     delete captchaMap[idCaptcha];
     return true;
   }
