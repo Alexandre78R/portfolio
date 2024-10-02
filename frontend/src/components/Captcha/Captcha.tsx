@@ -6,7 +6,6 @@ import {
   CardActionArea,
   CardMedia,
   IconButton,
-  CircularProgress,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -96,6 +95,7 @@ const CaptchaModal: React.FC<Props> = ({
       generateCaptcha
         .refetch()
         .then((response) => {
+          console.log(response?.data);
           if (response.data) {
             const imageUrls = response.data.generateCaptcha.images.map(
               (img) => img.url
@@ -106,7 +106,7 @@ const CaptchaModal: React.FC<Props> = ({
               setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
-              setAuthorizeGenerateCaptcha(false); // Assurer que CAPTCHA ne soit généré qu'une fois
+              setAuthorizeGenerateCaptcha(false);
             });
           }
         })
@@ -167,12 +167,6 @@ const CaptchaModal: React.FC<Props> = ({
   };
 
   const handleSubmit = async () => {
-    const toto = {
-      selectedIndices: selectedImages,
-      challengeType,
-      idCaptcha,
-    };
-    console.log("toto", toto);
     validateCaptcha({
       variables: {
         selectedIndices: selectedImages,
@@ -180,11 +174,6 @@ const CaptchaModal: React.FC<Props> = ({
         idCaptcha,
       },
       onCompleted(data) {
-        console.log(
-          "data?.validateCaptcha.isValid",
-          data?.validateCaptcha.isValid
-        );
-        console.log("data", data);
         if (data?.validateCaptcha.isValid) {
           showAlert("success", translations.messageSuccessCaptcha);
           setImages([]);

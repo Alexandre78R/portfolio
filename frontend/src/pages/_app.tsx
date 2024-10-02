@@ -25,6 +25,12 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_API_TOKEN;
 
+    if (!token) {
+      console.error(
+        "Le token d'API n'est pas défini. Vérifiez votre fichier .env."
+      );
+    }
+
     const httpLink = new HttpLink({
       uri: `${API_URL}`,
     });

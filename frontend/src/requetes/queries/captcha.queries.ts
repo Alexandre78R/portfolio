@@ -5,12 +5,16 @@ export const GENERATOR_CAPTCHA = gql`
     generateCaptcha {
         id
         images {
-            typeEN
-            typeFR
-            url
-            id
+          typeEN
+          typeFR
+          url
+          id
         }
         challengeType
+        challengeTypeTranslation {
+          typeEN
+          typeFR
+        }
     }
   }
 `;
