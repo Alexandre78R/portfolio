@@ -1,45 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Box, Card, CardActionArea, CardMedia, IconButton, CircularProgress } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Box,
+  Card,
+  CardActionArea,
+  CardMedia,
+  IconButton,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   useGenerateCaptchaQuery,
   CaptchaImage,
   useValidateCaptchaMutation,
   useClearCaptchaMutation,
-} from '@/types/graphql';
-import { useLang } from '@/context/Lang/LangContext';
-import CustomToast from '../ToastCustom/CustomToast';
-import ButtonCustom from '../Button/Button';
-import LoadingCustom from '../Loading/LoadingCustom';
+} from "@/types/graphql";
+import { useLang } from "@/context/Lang/LangContext";
+import CustomToast from "../ToastCustom/CustomToast";
+import ButtonCustom from "../Button/Button";
+import LoadingCustom from "../Loading/LoadingCustom";
 
 const modalStyle = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '100%',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "100%",
   maxWidth: 400,
   bgcolor: "var(--body-color)",
-  borderRadius: '16px',
+  borderRadius: "16px",
 };
 
-type Props = { 
-  open: boolean,
-  onClose: () => void,
-  onValidate: (isValid: boolean) => void,
-  authorizeGenerateCaptcha: boolean,
-  setAuthorizeGenerateCaptcha: React.Dispatch<React.SetStateAction<boolean>>,
-}
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  onValidate: (isValid: boolean) => void;
+  authorizeGenerateCaptcha: boolean;
+  setAuthorizeGenerateCaptcha: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha }) => {
+const CaptchaModal: React.FC<Props> = ({
+  open,
+  onClose,
+  onValidate,
+  authorizeGenerateCaptcha,
+  setAuthorizeGenerateCaptcha,
+}) => {
   const { showAlert } = CustomToast();
   const { translations } = useLang();
 
   const [images, setImages] = useState<CaptchaImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
-  const [challengeType, setChallengeType] = useState<string>('');
-  const [idCaptcha, setIdCaptcha] = useState<string>('');
+  const [challengeType, setChallengeType] = useState<string>("");
+  const [idCaptcha, setIdCaptcha] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [checkrefresh, setCheckRefresh] = useState<boolean>(false);
@@ -48,7 +61,6 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
   const [clearCaptcha] = useClearCaptchaMutation();
 
   const getErrorMessage = (error: Error): string => {
-    console.log("error", error)
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -78,25 +90,27 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
     if (open && authorizeGenerateCaptcha && !checkrefresh) {
       setLoading(true);
       setCheckRefresh(true);
-      generateCaptcha.refetch()
-        .then(response => {
+      generateCaptcha
+        .refetch()
+        .then((response) => {
           if (response.data) {
-            const imageUrls = response.data.generateCaptcha.images.map(img => img.url);
+            const imageUrls = response.data.generateCaptcha.images.map(
+              (img) => img.url
+            );
             preloadImages(imageUrls).then(() => {
               setImages(response.data.generateCaptcha.images);
               setChallengeType(response.data.generateCaptcha.challengeType);
               setIdCaptcha(response.data.generateCaptcha.id);
               setSelectedImages([]);
               setLoading(false);
-              setAuthorizeGenerateCaptcha(false);  // Assurer que CAPTCHA ne soit généré qu'une fois
+              setAuthorizeGenerateCaptcha(false);
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           showAlert("error", getErrorMessage(error));
           setLoading(false);
           setCheckRefresh(false);
-          console.log("error", error)
         });
     }
   }, [open, authorizeGenerateCaptcha, checkrefresh]);
@@ -110,10 +124,13 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
     clearCaptcha({
       variables: { idCaptcha },
       onCompleted: () => {
-        generateCaptcha.refetch()
-          .then(response => {
+        generateCaptcha
+          .refetch()
+          .then((response) => {
             if (response.data) {
-              const imageUrls = response.data.generateCaptcha.images.map(img => img.url);
+              const imageUrls = response.data.generateCaptcha.images.map(
+                (img) => img.url
+              );
               preloadImages(imageUrls).then(() => {
                 setImages(response.data.generateCaptcha.images);
                 setChallengeType(response.data.generateCaptcha.challengeType);
@@ -124,13 +141,13 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
               });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             showAlert("error", getErrorMessage(error));
             setLoading(false);
             setRefreshing(false);
           });
       },
-      onError: error => {
+      onError: (error) => {
         showAlert("error", getErrorMessage(error));
         setLoading(false);
         setRefreshing(false);
@@ -139,8 +156,8 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
   };
 
   const handleImageClick = (index: number) => {
-    setSelectedImages(prev => 
-      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    setSelectedImages((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
 
@@ -152,12 +169,12 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
         idCaptcha,
       },
       onCompleted(data) {
-        if (data?.validateCaptcha.isValid) { 
+        if (data?.validateCaptcha.isValid) {
           showAlert("success", translations.messageSuccessCaptcha);
           setImages([]);
-          setChallengeType('');
+          setChallengeType("");
           setSelectedImages([]);
-          setIdCaptcha('');
+          setIdCaptcha("");
           setLoading(true);
           onValidate(true);
           onClose();
@@ -179,26 +196,24 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
       case "dog":
         return translations.messageInfoCategoryDogCaptcha;
       case "car":
-        return  translations.messageInfoCategoryCarCaptcha;
+        return translations.messageInfoCategoryCarCaptcha;
       default:
-        return "..."
+        return "...";
     }
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-    >
+    <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
         {loading ? (
           <LoadingCustom />
         ) : (
           <>
-            <div className='flex justify-center'>
+            <div className="flex justify-center">
               <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
                 <p className="text-text">
-                  {translations.messageInfoFirstCaptcha} {generateCategoryName()} {translations.messageInfoLastCaptcha}
+                  {translations.messageInfoFirstCaptcha}{" "}
+                  {generateCategoryName()} {translations.messageInfoLastCaptcha}
                 </p>
               </div>
             </div>
@@ -209,28 +224,40 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
                     onClick={() => handleImageClick(index)}
                     className={`m-2 cursor-pointer`}
                     sx={{
-                      border: selectedImages.includes(index) ? '4px solid var(--success-color)' : '4px solid var(--text-color)',
+                      border: selectedImages.includes(index)
+                        ? "4px solid var(--success-color)"
+                        : "4px solid var(--text-color)",
                     }}
                   >
                     <CardActionArea>
-                      {
-                        refreshing ?
-                          <LoadingCustom />
-                        :                      
-                          <CardMedia
-                            component="img"
-                            alt={`captcha-img-${index}`}
-                            image={image.url}
-                            onError={() => setImages(prev => prev.map((img, i) => i === index ? { ...img, url: '' } : img))}
-                            sx={{ width: 100, height: 100 }}
-                          />
-                      }
+                      {refreshing ? (
+                        <LoadingCustom />
+                      ) : (
+                        <CardMedia
+                          component="img"
+                          alt={`captcha-img-${index}`}
+                          image={image.url}
+                          onError={() =>
+                            setImages((prev) =>
+                              prev.map((img, i) =>
+                                i === index ? { ...img, url: "" } : img
+                              )
+                            )
+                          }
+                          sx={{ width: 100, height: 100 }}
+                        />
+                      )}
                     </CardActionArea>
                   </Card>
                   {selectedImages.includes(index) && (
                     <IconButton
                       className="absolute top-0 right-0"
-                      sx={{ width: 24, height: 24, color: 'green', backgroundColor: 'white' }}
+                      sx={{
+                        width: 24,
+                        height: 24,
+                        color: "green",
+                        backgroundColor: "white",
+                      }}
                     >
                       <CheckCircleIcon />
                     </IconButton>
@@ -239,14 +266,13 @@ const CaptchaModal: React.FC<Props> = ({ open, onClose, onValidate, authorizeGen
               ))}
             </div>
             <div className="flex justify-center m-2">
-              <ButtonCustom
-                onClick={handleSubmit}
-                text="vérification"
-              />
+              <ButtonCustom onClick={handleSubmit} text="vérification" />
               <IconButton
                 onClick={regenerateCaptcha}
-                className={`text-text cursor-pointer m-2 hover:text-secondary ${refreshing ? 'opacity-50 cursor-not-allowed' : ''}`}
-                sx={{ pointerEvents: refreshing ? 'none' : 'auto' }}
+                className={`text-text cursor-pointer m-2 hover:text-secondary ${
+                  refreshing ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                sx={{ pointerEvents: refreshing ? "none" : "auto" }}
               >
                 <RefreshIcon />
               </IconButton>

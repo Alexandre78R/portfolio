@@ -4,6 +4,15 @@ import {
   } from 'type-graphql';
   
   @ObjectType()
+  export class ChallengeTypeTranslation {
+    @Field()
+    typeEN: string;
+
+    @Field()
+    typeFR: string;
+  }
+
+  @ObjectType()
   export class CaptchaResponse {
     @Field()
     id: string;
@@ -13,6 +22,12 @@ import {
   
     @Field()
     challengeType: string;
+
+    @Field(() => ChallengeTypeTranslation)
+    challengeTypeTranslation: ChallengeTypeTranslation;
+  
+    @Field()
+    expirationTime: number;
   }
   
   @ObjectType()
@@ -24,7 +39,10 @@ import {
     url: string;
   
     @Field()
-    type: string;
+    typeEN: string;
+
+    @Field()
+    typeFR: string;
   }
   
   @ObjectType()

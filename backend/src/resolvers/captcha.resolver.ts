@@ -16,7 +16,8 @@ import fs from "fs";
 import path from 'path';
 import { 
   CaptchaResponse,
-  ValidationResponse
+  ValidationResponse,
+  ChallengeTypeTranslation,
 } from '../types/captcha.types';
 import { checkApiKey } from '../lib/checkApiKey';
 
@@ -27,10 +28,10 @@ export class CaptchaResolver {
   @Query(() => CaptchaResponse)
   async generateCaptcha(@Ctx() context: MyContext): Promise<CaptchaResponse> {
 
-    // if (!context.apiKey)
-    //   throw new Error('Unauthorized TOKEN API');
+    if (!context.apiKey)
+      throw new Error('Unauthorized TOKEN API');
 
-    // await checkApiKey(context.apiKey);
+    await checkApiKey(context.apiKey);
     
     const id = uuidv4();
 
@@ -40,25 +41,26 @@ export class CaptchaResolver {
 
     const images = files.map(file => {
       const fileName = path.basename(file, path.extname(file));
-      const [type, _] = fileName.split('-');
-      return { src: file, type };
+      const [typeEN, typeFR, _] = fileName.split('-');
+      return { src: file, typeEN, typeFR };
     });
     
-    const getRandomImagesByType = (type: 'cat' | 'dog' | 'car') => {
+    const categories = [...new Set(images.map(image => image.typeEN))];
+
+    const selectedImages = categories
+    .map(category => {
       return images
-        .filter(image => image.type === type)
+        .filter(image => image.typeEN === category)
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
-    };
+    })
+    .reduce((acc, val) => acc.concat(val), [])
+    .sort(() => Math.random() - 0.5);
 
-    const selectedImages = [
-      ...getRandomImagesByType('cat'),
-      ...getRandomImagesByType('dog'),
-      ...getRandomImagesByType('car')
-    ].sort(() => Math.random() - 0.5);
-
-    const challenges = ['cat', 'dog', 'car'] as const;
+    const challenges = categories;
     const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
+
+    const challengeTypeFR = images.find(image => image.typeEN === challengeType)?.typeFR || '';
 
     const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
 
@@ -71,16 +73,23 @@ export class CaptchaResolver {
       return {
         id: imageId,
         url: imageUrl,
-        type: image.type,
+        typeEN: image.typeEN,
+        typeFR : image.typeFR,
       };
     });
 
     const expirationTime = Date.now() + 15 * 60 * 1000;
 
+    const challengeTypeTranslation: ChallengeTypeTranslation = {
+      typeEN: challengeType,
+      typeFR: challengeTypeFR,
+    };
+
     const resultCaptcha = {
       id,
       images: captchaImages,
       challengeType,
+      challengeTypeTranslation,
       expirationTime
     }
 
@@ -101,10 +110,10 @@ export class CaptchaResolver {
     @Ctx() context: MyContext
   ): Promise<ValidationResponse> {
 
-    // if (!context.apiKey)
-    //   throw new Error('Unauthorized TOKEN API');
+    if (!context.apiKey)
+      throw new Error('Unauthorized TOKEN API');
 
-    // await checkApiKey(context.apiKey);
+    await checkApiKey(context.apiKey);
 
     checkExpiredCaptcha(idCaptcha);
 
@@ -120,9 +129,9 @@ export class CaptchaResolver {
       throw new Error("Expired captcha!")
 
     const correctIndices = images
-      .map((img, idx) => img.type === challengeType ? idx : -1)
-      .filter(idx => idx !== -1);
-
+    .map((img, idx) => img.typeEN === challengeType ? idx : -1)
+    .filter(idx => idx !== -1);
+    
     const isValid = correctIndices.length === selectedIndices.length &&
       selectedIndices.every(index => correctIndices.includes(index));
 
@@ -140,18 +149,14 @@ export class CaptchaResolver {
   @Mutation(() => Boolean)
   async clearCaptcha(@Arg('idCaptcha') idCaptcha: string, @Ctx() context: MyContext): Promise<boolean> {
     
-    // if (!context.apiKey)
-    //   throw new Error('Unauthorized TOKEN API');
+    if (!context.apiKey)
+      throw new Error('Unauthorized TOKEN API');
 
-    // await checkApiKey(context.apiKey);
+    await checkApiKey(context.apiKey);
     
     if (!captchaMap[idCaptcha]) {
       return true;
     }
-
-    captchaMap[idCaptcha].images.forEach((element: any) => {
-      delete captchaImageMap[element.id];
-    });
 
     delete captchaMap[idCaptcha];
     return true;

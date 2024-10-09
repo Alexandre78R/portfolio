@@ -11,6 +11,10 @@ COPY public public
 COPY next.config.mjs .
 COPY tsconfig.json .
 
-# CMD npm run dev
-RUN npm run build
-CMD npm run start
+CMD npm run dev
+# RUN npm run build
+# CMD npm run start
+
+
+# RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
+# CMD if [ "$NODE_ENV" = "production" ]; then npm run start; else npm run dev; fi
