@@ -24,7 +24,7 @@ const en: Lang = {
   descriptionAboutMe1:
     "I am a junior French developer, passionate about computer science and web development since my childhood.",
   descriptionAboutMe2:
-    "Today, I am actively working to make my passion my profession by pursuing training and a program in web development.",
+    "I have completed my training in web development, and I am currently looking for a professional opportunity.",
   descriptionAboutMe3:
     "Discover my portfolio to learn more about my journey and projects!",
   nameCategorySkills: "Skills",
