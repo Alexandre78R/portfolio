@@ -46,6 +46,8 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dev-frontend-portfolio:latest
+          build-args: 
+            NEXT_PUBLIC_API_TOKEN: ${{ secrets.NEXT_PUBLIC_API_TOKEN }}
 
       # build an push the newly created image backend
       - uses: docker/build-push-action@v4
