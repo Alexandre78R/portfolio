@@ -61,8 +61,6 @@ const CaptchaModal: React.FC<Props> = ({
   const [clearCaptcha] = useClearCaptchaMutation();
 
   const getErrorMessage = (error: Error): string => {
-    console.log("error", error);
-    console.log("eorror message", error.message);
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -95,7 +93,6 @@ const CaptchaModal: React.FC<Props> = ({
       generateCaptcha
         .refetch()
         .then((response) => {
-          console.log(response?.data);
           if (response.data) {
             const imageUrls = response.data.generateCaptcha.images.map(
               (img) => img.url
@@ -114,8 +111,6 @@ const CaptchaModal: React.FC<Props> = ({
           showAlert("error", getErrorMessage(error));
           setLoading(false);
           setCheckRefresh(false);
-          console.log("error", error);
-          console.log("errror message", error.message);
         });
     }
   }, [open, authorizeGenerateCaptcha, checkrefresh]);

@@ -24,7 +24,7 @@ const fr: Lang = {
   descriptionAboutMe1:
     "Je suis un développeur junior français, passionné par l'informatique et le développement web depuis mon enfance.",
   descriptionAboutMe2:
-    "Aujourd'hui, je travaille activement à faire de ma passion mon métier en poursuivant une formation et un programme en développement Web.",
+    "J'ai terminé ma formation en développement web, et je suis actuellement à la recherche d'une opportunité professionnelle.",
   descriptionAboutMe3:
     "Découvrez mon portfolio pour en apprendre davantage sur mon parcours et mes projets !",
   nameCategorySkills: "Compétences",

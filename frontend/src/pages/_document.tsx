@@ -3,7 +3,7 @@ import Script from "next/script";
 
 const Document = (): React.ReactElement => {
   return (
-    <Html lang="en">
+    <Html lang="fr">
       <Head />
       <body>
         <Main />
