@@ -23,7 +23,7 @@ const Document = (): React.ReactElement => {
               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
               })(window,document,'script','dataLayer','GTM-MT75FPT5');
-            `}
+          `}
         </Script>
       </body>
     </Html>
