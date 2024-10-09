@@ -10,6 +10,7 @@ COPY public public
 # COPY codegen.ts .
 COPY next.config.mjs .
 COPY tsconfig.json .
+COPY .env .
 
 ARG NEXT_PUBLIC_API_TOKEN
 ENV NEXT_PUBLIC_API_TOKEN=${NEXT_PUBLIC_API_TOKEN}
