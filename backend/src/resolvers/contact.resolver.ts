@@ -23,12 +23,6 @@ import { checkRegex, emailRegex } from "../regex";
 @Resolver()
 export class ContactResolver {
 
-    @Query(() => String)  
-    async contact(@Ctx() context: MyContext): Promise<string> {
-        console.log(context)
-        return "ok";
-    }
-
     @Mutation(() => MessageType)
     async sendContact(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: MyContext): Promise<MessageType> {
         
