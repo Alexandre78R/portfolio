@@ -21,6 +21,10 @@ import {
     @Field()
     @Column({ nullable: true })
     image: string;
+
+    @Field()
+    @Column({ length: 50 })
+    category: string;
   
     @Field(() => Skill)
     @ManyToOne(() => Skill, (skill) => skill.skills)
