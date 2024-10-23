@@ -9,7 +9,8 @@ import {
   } from "typeorm";
   import { Field, ID, ObjectType } from "type-graphql";
   import { SkillSubItem } from "./skillSubItem.entity";
-  
+import { Length } from "class-validator";
+
   @ObjectType()
   @Entity()
   export class Project {
@@ -19,6 +20,9 @@ import {
   
     @Field()
     @Column({ length: 100 })
+    @Length(1, 100, {
+        message: "Title must have between 1 to 100 characters",
+    })
     title: string;
   
     @Field()
@@ -31,6 +35,9 @@ import {
   
     @Field()
     @Column({ length: 50 })
+    @Length(1, 50, {
+        message: "TypeDisplay must have between 1 to 50 characters",
+    })
     typeDisplay: string;
   
     @Field({ nullable: true })
