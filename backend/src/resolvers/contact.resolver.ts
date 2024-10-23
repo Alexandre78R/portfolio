@@ -23,19 +23,13 @@ import { checkRegex, emailRegex } from "../regex";
 @Resolver()
 export class ContactResolver {
 
-    @Query(() => String)  
-    async contact(@Ctx() context: MyContext): Promise<string> {
-        console.log(context)
-        return "ok";
-    }
-
     @Mutation(() => MessageType)
     async sendContact(@Arg("data", () => ContactFrom) data: ContactFrom, @Ctx() context: MyContext): Promise<MessageType> {
         
-        // if (!context.apiKey)
-        //     throw new Error('Unauthorized TOKEN API');
+        if (!context.apiKey)
+            throw new Error('Unauthorized TOKEN API');
 
-        // await checkApiKey(context.apiKey);
+        await checkApiKey(context.apiKey);
 
         if (!checkRegex(emailRegex, data.email))
             throw new Error("Invaid format email.");

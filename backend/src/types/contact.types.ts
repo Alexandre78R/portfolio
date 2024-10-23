@@ -10,7 +10,6 @@ export class ContactFrom {
 
     @Field()
     message: string;
-
 }
 
 @ObjectType()
@@ -23,5 +22,4 @@ export class ContactResponse {
 
     @Field()
     message: string;
-
 }
