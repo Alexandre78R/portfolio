@@ -36,19 +36,19 @@ import {
   
     @Field()
     @Column({ length: 50 })
-    startDateEN: Date;
+    startDateEN: string;
   
     @Field()
     @Column({ length: 50 })
-    startDateFR: Date; 
+    startDateFR: string; 
   
     @Field()
     @Column({ length: 50 })
-    endDateEN: Date;
+    endDateEN: string;
   
     @Field()
     @Column({ length: 50 })
-    endDateFR: Date;
+    endDateFR: string;
   
     @Field({ nullable: true })
     @Column({ nullable: true, type: "int" })
