@@ -8,7 +8,7 @@ import {
     UpdateDateColumn,
   } from "typeorm";
   import { Field, ID, ObjectType } from "type-graphql";
-  import { SkillSubItem } from "./skillSubItem.entity";  // Importer SkillSubItem
+  import { SkillSubItem } from "./skillSubItem.entity";
   
   @ObjectType()
   @Entity()
@@ -41,10 +41,9 @@ import {
     @Column("text")
     contentDisplay: string;
   
-    // Relation Many-to-Many avec SkillSubItem
     @Field(() => [SkillSubItem])
     @ManyToMany(() => SkillSubItem, { cascade: true })
-    @JoinTable() // Cette table de jointure sera nommée 'project_skillsubitem'
+    @JoinTable()
     skills: SkillSubItem[];
   
     @Field()
