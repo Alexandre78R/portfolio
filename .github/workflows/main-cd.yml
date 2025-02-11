@@ -20,7 +20,7 @@ jobs:
 
       - name: Tester le build des services
         run: |
-          docker compose -f docker-compose-main.yml build
+          docker compose -f docker-compose.yml build
         continue-on-error: false  # Stoppe le workflow si le build échoue
 
   check-webhook:
