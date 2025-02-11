@@ -11,8 +11,18 @@ jobs:
   build:
     if: github.event.pull_request.merged == true 
     runs-on: ubuntu-latest
+    steps:
+      - name: Check webhook access
+        id: check_webhook
+        continue-on-error: true
+        run: |
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" ${{ secrets.WEBHOOK_URL_MAIN }})
+          echo "Webhook status: $HTTP_STATUS"
+          if [[ "$HTTP_STATUS" -ne 200 ]]; then
+            echo "Error: The webhook is not responding correctly (HTTP $HTTP_STATUS)."
+            exit 1
+          fi
     #Deactivation due to new Docker Hub conditions
-    # steps:
     #   - uses: actions/checkout@v4
 
     #   - uses: docker/login-action@v2
