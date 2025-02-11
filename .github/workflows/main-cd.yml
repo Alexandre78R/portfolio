@@ -8,19 +8,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    if: github.event.pull_request.merged == true 
-    
+  check-build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Check webhook access
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Vérifier que Docker Compose fonctionne
+        run: docker compose version
+
+      - name: Tester le build des services
+        run: |
+          docker compose -f docker-compose-main.yml build
+        continue-on-error: false  # Stoppe le workflow si le build échoue
+
+  check-webhook:
+    needs: check-build  # Exécute cette étape seulement si le build a réussi
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier l'accès au webhook
         id: check_webhook
         continue-on-error: true
         run: |
           HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" ${{ secrets.WEBHOOK_URL_MAIN }})
           echo "Webhook status: $HTTP_STATUS"
           if [[ "$HTTP_STATUS" -ne 200 ]]; then
-            echo "Error: The webhook is not responding correctly (HTTP $HTTP_STATUS)."
+            echo "Erreur : Le webhook ne répond pas correctement (HTTP $HTTP_STATUS)."
             exit 1
           fi
 
@@ -60,7 +74,7 @@ jobs:
   #       with:
   #         webhook_url: ${{ secrets.WEBHOOK_URL_MAIN }}
   deployment:
-    needs: build
+    needs: [check-build, check-webhook]
     runs-on: ubuntu-latest
     steps:
       - name: Invoke deployment hook
