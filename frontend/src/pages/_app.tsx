@@ -54,7 +54,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   }, []);
 
   if (!client) {
-    return <LoadingCustom />; // ou un spinner de chargement
+    return <LoadingCustom />;
   }
 
   return (
