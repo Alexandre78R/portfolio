@@ -1,0 +1,20 @@
+import { Resolver, Query } from "type-graphql";
+import { Skill } from "../types/skill.types";
+import { skillsData } from "../Data/skillsData"; 
+
+@Resolver()
+export class CaptchaResolver {
+
+  @Query(() => [Skill])
+  async skillCategories(): Promise<Skill[]> {
+    return skillsData.map(skill => ({
+      id: skill.id,
+      categoryFR: skill.categoryFR,
+      categoryEN: skill.categoryEN,
+      skills: skill.skills.map(skillItem => ({
+        name: skillItem.name,
+        image: skillItem.image
+      }))
+    }));
+  }
+}
