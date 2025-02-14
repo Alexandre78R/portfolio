@@ -3,7 +3,7 @@ import { Skill } from "../types/skill.types";
 import { skillsData } from "../Data/skillsData"; 
 
 @Resolver()
-export class CaptchaResolver {
+export class SkillResolver {
 
   @Query(() => [Skill])
   async skillCategories(): Promise<Skill[]> {
