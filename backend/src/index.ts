@@ -12,6 +12,8 @@ import path from 'path';
 import { CaptchaResolver } from './resolvers/captcha.resolver';
 import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
 import { SkillResolver } from './resolvers/skill.resolver';
+import { ProjectResolver } from './resolvers/project.resolver';
+
 export interface MyContext {
   req: express.Request;
   res: express.Response;
@@ -24,7 +26,7 @@ const httpServer = http.createServer(app);
 async function main() {
 
   const schema = await buildSchema({
-    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver, SkillResolver],
+    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver, SkillResolver, ProjectResolver],
     validate: false,
   });
 

@@ -7,7 +7,7 @@ export const projectsData = [
     descriptionFR:
       "Semantik est un outil SEO qui vous permet d'identifier les questions les plus posées par les internautes sur Google. En renseignant simplement votre thématique, vous obtenez en un clic une liste exhaustive de ces questions. Utilisez-les pour optimiser la sémantique de vos contenus et répondre aux besoins du SEO.",
     typeDisplay: "image",
-    github: null,
+    github: undefined,
     contentDisplay: "https://i.goopics.net/6iqbww.png",
     skills: [
       {
