@@ -5,7 +5,7 @@ import { projectsData } from "../Data/projectsData";
 @Resolver()
 export class ProjectResolver {
   @Query(() => [Project])
-  async projects(): Promise<Project[]> {
+  async projectsList(): Promise<Project[]> {
     return projectsData.map(project => ({
       id: project.id,
       title: project.title,
