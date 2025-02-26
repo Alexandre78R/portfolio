@@ -13,6 +13,7 @@ import { CaptchaResolver } from './resolvers/captcha.resolver';
 import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
 import { SkillResolver } from './resolvers/skill.resolver';
 import { ProjectResolver } from './resolvers/project.resolver';
+import { checkApiKey } from './lib/checkApiKey';
 
 export interface MyContext {
   req: express.Request;
@@ -57,10 +58,15 @@ async function main() {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => {
-        const apiKey = req.headers['x-api-key'];
-        console.log("apiKey", apiKey);
-        console.log("process.env.API_KEY", process.env.API_KEY);
-        return { req, res, apiKey: apiKey as string | undefined };
+        const apiKeyHeader = req.headers['x-api-key'];
+        const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
+
+        if (!apiKey)
+          throw new Error('Unauthorized TOKEN API');
+    
+        await checkApiKey(apiKey);
+
+        return { req, res, apiKey };
       },
     })
   );
