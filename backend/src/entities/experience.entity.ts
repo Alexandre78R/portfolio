@@ -36,14 +36,14 @@ import { Length } from "class-validator";
     })
     business: string;
   
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @Column({ length: 50, nullable: true })
     @Length(1, 50, {
         message: "EmploymentContractEN must have between 1 to 50 characters",
     })
     employmentContractEN: string | null;
   
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @Column({ length: 100, nullable: true })
     @Length(1, 50, {
         message: "EmploymentContractFR must have between 1 to 50 characters",
@@ -78,7 +78,7 @@ import { Length } from "class-validator";
     })
     endDateFR: string;
   
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @Column({ nullable: true, type: "int" })
     month: number | null;
   
@@ -96,15 +96,15 @@ import { Length } from "class-validator";
     })
     typeFR: string;
   
-    @Field()
-    @CreateDateColumn({ default: () => "CURRENT_TIMESTAMP" })
-    created_at: Date;
+    // @Field()
+    // @CreateDateColumn({ default: () => "CURRENT_TIMESTAMP" })
+    // created_at: Date;
   
-    @Field()
-    @UpdateDateColumn({
-      name: "updated_at",
-      default: () => "CURRENT_TIMESTAMP",
-      onUpdate: "CURRENT_TIMESTAMP",
-    })
-    updated_at: Date;
+    // @Field()
+    // @UpdateDateColumn({
+    //   name: "updated_at",
+    //   default: () => "CURRENT_TIMESTAMP",
+    //   onUpdate: "CURRENT_TIMESTAMP",
+    // })
+    // updated_at: Date;
   }

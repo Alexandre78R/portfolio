@@ -14,7 +14,7 @@ import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
 import { SkillResolver } from './resolvers/skill.resolver';
 import { ProjectResolver } from './resolvers/project.resolver';
 import { checkApiKey } from './lib/checkApiKey';
-
+import { ExperienceResolver } from './resolvers/experience.resolver';
 export interface MyContext {
   req: express.Request;
   res: express.Response;
@@ -27,7 +27,7 @@ const httpServer = http.createServer(app);
 async function main() {
 
   const schema = await buildSchema({
-    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver, SkillResolver, ProjectResolver],
+    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver, SkillResolver, ProjectResolver, ExperienceResolver],
     validate: false,
   });
 
