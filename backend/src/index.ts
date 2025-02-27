@@ -61,10 +61,10 @@ async function main() {
         const apiKeyHeader = req.headers['x-api-key'];
         const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
 
-        if (!apiKey)
-          throw new Error('Unauthorized TOKEN API');
+        // if (!apiKey)
+        //   throw new Error('Unauthorized TOKEN API');
     
-        await checkApiKey(apiKey);
+        // await checkApiKey(apiKey);
 
         return { req, res, apiKey };
       },

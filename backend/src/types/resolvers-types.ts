@@ -45,6 +45,23 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type Experience = {
+  __typename?: 'Experience';
+  business: Scalars['String']['output'];
+  employmentContractEN?: Maybe<Scalars['String']['output']>;
+  employmentContractFR?: Maybe<Scalars['String']['output']>;
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  jobEN: Scalars['String']['output'];
+  jobFR: Scalars['String']['output'];
+  month?: Maybe<Scalars['String']['output']>;
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -76,10 +93,38 @@ export type MutationValidateCaptchaArgs = {
   selectedIndices: Array<Scalars['Float']['input']>;
 };
 
+export type Project = {
+  __typename?: 'Project';
+  contentDisplay: Scalars['String']['output'];
+  descriptionEN: Scalars['String']['output'];
+  descriptionFR: Scalars['String']['output'];
+  github?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+  title: Scalars['String']['output'];
+  typeDisplay: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  contact: Scalars['String']['output'];
+  experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
+  projectsList: Array<Project>;
+  skillCategoriesList: Array<Skill>;
+};
+
+export type Skill = {
+  __typename?: 'Skill';
+  categoryEN: Scalars['String']['output'];
+  categoryFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+};
+
+export type SkillSubItem = {
+  __typename?: 'SkillSubItem';
+  image: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type ValidationResponse = {
@@ -164,10 +209,15 @@ export type ResolversTypes = ResolversObject<{
   CaptchaResponse: ResolverTypeWrapper<CaptchaResponse>;
   ChallengeTypeTranslation: ResolverTypeWrapper<ChallengeTypeTranslation>;
   ContactFrom: ContactFrom;
+  Experience: ResolverTypeWrapper<Experience>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   MessageType: ResolverTypeWrapper<MessageType>;
   Mutation: ResolverTypeWrapper<{}>;
+  Project: ResolverTypeWrapper<Project>;
   Query: ResolverTypeWrapper<{}>;
+  Skill: ResolverTypeWrapper<Skill>;
+  SkillSubItem: ResolverTypeWrapper<SkillSubItem>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   ValidationResponse: ResolverTypeWrapper<ValidationResponse>;
 }>;
@@ -179,10 +229,15 @@ export type ResolversParentTypes = ResolversObject<{
   CaptchaResponse: CaptchaResponse;
   ChallengeTypeTranslation: ChallengeTypeTranslation;
   ContactFrom: ContactFrom;
+  Experience: Experience;
   Float: Scalars['Float']['output'];
+  ID: Scalars['ID']['output'];
   MessageType: MessageType;
   Mutation: {};
+  Project: Project;
   Query: {};
+  Skill: Skill;
+  SkillSubItem: SkillSubItem;
   String: Scalars['String']['output'];
   ValidationResponse: ValidationResponse;
 }>;
@@ -210,6 +265,23 @@ export type ChallengeTypeTranslationResolvers<ContextType = any, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type ExperienceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Experience'] = ResolversParentTypes['Experience']> = ResolversObject<{
+  business?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  employmentContractEN?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  employmentContractFR?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  endDateEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  endDateFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  jobEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  jobFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  month?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  startDateEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  startDateFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  typeEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  typeFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MessageTypeResolvers<ContextType = any, ParentType extends ResolversParentTypes['MessageType'] = ResolversParentTypes['MessageType']> = ResolversObject<{
   label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -223,9 +295,37 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   validateCaptcha?: Resolver<ResolversTypes['ValidationResponse'], ParentType, ContextType, RequireFields<MutationValidateCaptchaArgs, 'challengeType' | 'idCaptcha' | 'selectedIndices'>>;
 }>;
 
+export type ProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = ResolversObject<{
+  contentDisplay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  descriptionEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  descriptionFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  github?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  skills?: Resolver<Array<ResolversTypes['SkillSubItem']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  typeDisplay?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  contact?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  experienceList?: Resolver<Array<ResolversTypes['Experience']>, ParentType, ContextType>;
   generateCaptcha?: Resolver<ResolversTypes['CaptchaResponse'], ParentType, ContextType>;
+  projectsList?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
+  skillCategoriesList?: Resolver<Array<ResolversTypes['Skill']>, ParentType, ContextType>;
+}>;
+
+export type SkillResolvers<ContextType = any, ParentType extends ResolversParentTypes['Skill'] = ResolversParentTypes['Skill']> = ResolversObject<{
+  categoryEN?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  categoryFR?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  skills?: Resolver<Array<ResolversTypes['SkillSubItem']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SkillSubItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['SkillSubItem'] = ResolversParentTypes['SkillSubItem']> = ResolversObject<{
+  image?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type ValidationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ValidationResponse'] = ResolversParentTypes['ValidationResponse']> = ResolversObject<{
@@ -237,9 +337,13 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   CaptchaImage?: CaptchaImageResolvers<ContextType>;
   CaptchaResponse?: CaptchaResponseResolvers<ContextType>;
   ChallengeTypeTranslation?: ChallengeTypeTranslationResolvers<ContextType>;
+  Experience?: ExperienceResolvers<ContextType>;
   MessageType?: MessageTypeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  Project?: ProjectResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Skill?: SkillResolvers<ContextType>;
+  SkillSubItem?: SkillSubItemResolvers<ContextType>;
   ValidationResponse?: ValidationResponseResolvers<ContextType>;
 }>;
 
