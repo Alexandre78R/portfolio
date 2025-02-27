@@ -17,7 +17,7 @@ COPY package.json .
 RUN npm i 
 
 COPY src src
-COPY codegen.ts .
+# COPY codegen.ts .
 
 COPY tsconfig.json .
 
