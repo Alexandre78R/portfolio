@@ -46,6 +46,23 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type Experience = {
+  __typename?: 'Experience';
+  business: Scalars['String']['output'];
+  employmentContractEN?: Maybe<Scalars['String']['output']>;
+  employmentContractFR?: Maybe<Scalars['String']['output']>;
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  jobEN: Scalars['String']['output'];
+  jobFR: Scalars['String']['output'];
+  month?: Maybe<Scalars['String']['output']>;
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -77,10 +94,38 @@ export type MutationValidateCaptchaArgs = {
   selectedIndices: Array<Scalars['Float']['input']>;
 };
 
+export type Project = {
+  __typename?: 'Project';
+  contentDisplay: Scalars['String']['output'];
+  descriptionEN: Scalars['String']['output'];
+  descriptionFR: Scalars['String']['output'];
+  github?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+  title: Scalars['String']['output'];
+  typeDisplay: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  contact: Scalars['String']['output'];
+  experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
+  projectsList: Array<Project>;
+  skillCategoriesList: Array<Skill>;
+};
+
+export type Skill = {
+  __typename?: 'Skill';
+  categoryEN: Scalars['String']['output'];
+  categoryFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+};
+
+export type SkillSubItem = {
+  __typename?: 'SkillSubItem';
+  image: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type ValidationResponse = {
