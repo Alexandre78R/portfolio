@@ -161,6 +161,11 @@ export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', typeEN: string, typeFR: string, url: string, id: string }>, challengeTypeTranslation: { __typename?: 'ChallengeTypeTranslation', typeEN: string, typeFR: string } } };
 
+export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsListQuery = { __typename?: 'Query', projectsList: Array<{ __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, github?: string | null, contentDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', name: string, image: string }> }> };
+
 
 export const ValidateCaptchaDocument = gql`
     mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
@@ -317,3 +322,52 @@ export type GenerateCaptchaQueryHookResult = ReturnType<typeof useGenerateCaptch
 export type GenerateCaptchaLazyQueryHookResult = ReturnType<typeof useGenerateCaptchaLazyQuery>;
 export type GenerateCaptchaSuspenseQueryHookResult = ReturnType<typeof useGenerateCaptchaSuspenseQuery>;
 export type GenerateCaptchaQueryResult = Apollo.QueryResult<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>;
+export const GetProjectsListDocument = gql`
+    query GetProjectsList {
+  projectsList {
+    id
+    title
+    descriptionFR
+    descriptionEN
+    typeDisplay
+    github
+    contentDisplay
+    skills {
+      name
+      image
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectsListQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProjectsListQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+      }
+export function useGetProjectsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+        }
+export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+        }
+export type GetProjectsListQueryHookResult = ReturnType<typeof useGetProjectsListQuery>;
+export type GetProjectsListLazyQueryHookResult = ReturnType<typeof useGetProjectsListLazyQuery>;
+export type GetProjectsListSuspenseQueryHookResult = ReturnType<typeof useGetProjectsListSuspenseQuery>;
+export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
