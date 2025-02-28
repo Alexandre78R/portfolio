@@ -7,8 +7,8 @@ export const GET_SKILLS_LIST = gql`
             categoryFR
             categoryEN
             skills {
-            name
-            image
+                name
+                image
             }
         }
     }

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { skillsData } from "@/Data/skillsData";
 
 type SkillSubItem = {
   name: string;
@@ -19,7 +18,7 @@ type SkillsState = {
 };
 
 const initialState: SkillsState = {
-  dataSkills: skillsData,
+  dataSkills: [],
 };
 
 const skillsSlice = createSlice({
@@ -31,7 +30,7 @@ const skillsSlice = createSlice({
     },
     updateSkillCategories(state, action: PayloadAction<string>) {
       const lang = action.payload;
-      state.dataSkills = skillsData.map((skill) => ({
+      state.dataSkills = state.dataSkills.map((skill) => ({
         ...skill,
         category: lang === "fr" ? skill.categoryFR : skill.categoryEN,
       }));

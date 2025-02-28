@@ -12,7 +12,7 @@ import Terminal from "@/components/Terminal/Terminal";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
-import { updateSkillCategories } from "@/store/slices/skillsSlice";
+import { setSkills, updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions, setProjects} from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
@@ -21,11 +21,13 @@ import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
 import {
   useGetProjectsListQuery,
+  useGetSkillsListQuery
 } from "@/types/graphql";
 
 const Home: React.FC = (): React.ReactElement => {
   
-  const { data, loading, error } = useGetProjectsListQuery();
+  const projectsData = useGetProjectsListQuery();
+  const skillsData = useGetSkillsListQuery();
 
   const { translations } = useLang();
   const {
@@ -45,8 +47,8 @@ const Home: React.FC = (): React.ReactElement => {
   );
 
   useEffect(() => {
-    if (data?.projectsList) {
-      const formattedProjects = data.projectsList.map((project) => ({
+    if (projectsData.data?.projectsList) {
+      const formattedProjects = projectsData.data.projectsList.map((project) => ({
         ...project,
         id: Number(project.id),
         github: project.github ?? null,
@@ -55,7 +57,18 @@ const Home: React.FC = (): React.ReactElement => {
       }));
       dispatch(setProjects(formattedProjects));
     }
-  }, [data, dispatch]);
+  }, [projectsData, dispatch, translations]);
+
+    useEffect(() => {
+    if (skillsData?.data?.skillList) {
+      const formattedSkills = skillsData.data.skillList.map((skill) => ({
+        ...skill,
+        id: Number(skill.id),
+        category: translations.file === "fr" ? skill.categoryFR : skill.categoryEN,
+      }));
+      dispatch(setSkills(formattedSkills));
+    }
+  }, [skillsData, dispatch, translations]);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));

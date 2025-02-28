@@ -60,7 +60,7 @@ async function main() {
       context: async ({ req, res }) => {
         const apiKeyHeader = req.headers['x-api-key'];
         const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
-        console.log("HEADERS >>>", req.headers); 
+        // console.log("HEADERS >>>", req.headers); 
         if (!apiKey)
           throw new Error('Unauthorized TOKEN API');
     
