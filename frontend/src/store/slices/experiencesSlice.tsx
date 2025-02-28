@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { experiencesData } from "@/Data/experiencesData";
 
 export type ExperienceType = {
   id: number;
@@ -7,8 +6,8 @@ export type ExperienceType = {
   jobFR: string;
   job?: string;
   business: string;
-  employmentContractEN: string | null;
-  employmentContractFR: string | null;
+  employmentContractEN?: string | null;
+  employmentContractFR?: string | null;
   employmentContract?: string | null;
   startDateEN: string;
   startDateFR: string;
@@ -16,7 +15,7 @@ export type ExperienceType = {
   endDateEN: string;
   endDateFR: string;
   endDate?: string;
-  month: number | null;
+  month: number | null | undefined;
   typeEN: string;
   typeFR: string;
   type?: string;
@@ -27,7 +26,7 @@ type ExperiencesState = {
 };
 
 const initialState: ExperiencesState = {
-  dataExperiences: experiencesData,
+  dataExperiences: [],
 };
 
 const experiencesSlice = createSlice({
@@ -39,7 +38,7 @@ const experiencesSlice = createSlice({
     },
     updateExperiences(state, action: PayloadAction<string>) {
       const lang = action.payload;
-      state.dataExperiences = experiencesData.map((experience) => ({
+      state.dataExperiences = state.dataExperiences.map((experience) => ({
         ...experience,
         job: lang === "fr" ? experience.jobFR : experience.jobEN,
         employmentContract:

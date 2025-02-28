@@ -14,20 +14,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { setSkills, updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions, setProjects} from "@/store/slices/projectsSlice";
-import { updateEducationsTitle } from "@/store/slices/educationsSlice";
-import { updateExperiences } from "@/store/slices/experiencesSlice";
+import { setEducations, updateEducationsTitle } from "@/store/slices/educationsSlice";
+import { setExperiences, updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
 import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
 import {
   useGetProjectsListQuery,
-  useGetSkillsListQuery
+  useGetSkillsListQuery,
+  useGetEducationsListQuery,
+  useGetExperiencesListQuery,
 } from "@/types/graphql";
+
 
 const Home: React.FC = (): React.ReactElement => {
   
   const projectsData = useGetProjectsListQuery();
   const skillsData = useGetSkillsListQuery();
+  const educationsData = useGetEducationsListQuery();
+  const experiencesData = useGetExperiencesListQuery();
 
   const { translations } = useLang();
   const {
@@ -45,9 +50,16 @@ const Home: React.FC = (): React.ReactElement => {
   const dataProjects = useSelector(
     (state: RootState) => state.projects.dataProjects
   );
+  const dataEducations = useSelector(
+    (state: RootState) => state.educations.dataEducations
+  );
+  const dataExperiences = useSelector(
+    (state: RootState) => state.experiences.dataExperiences
+  );
 
   useEffect(() => {
-    if (projectsData.data?.projectsList) {
+    if (projectsData.data?.projectsList && dataProjects.length === 0) {
+      console.log("dddd")
       const formattedProjects = projectsData.data.projectsList.map((project) => ({
         ...project,
         id: Number(project.id),
@@ -57,10 +69,8 @@ const Home: React.FC = (): React.ReactElement => {
       }));
       dispatch(setProjects(formattedProjects));
     }
-  }, [projectsData, dispatch, translations]);
 
-    useEffect(() => {
-    if (skillsData?.data?.skillList) {
+    if (skillsData?.data?.skillList && dataSkills.length === 0) {
       const formattedSkills = skillsData.data.skillList.map((skill) => ({
         ...skill,
         id: Number(skill.id),
@@ -68,7 +78,54 @@ const Home: React.FC = (): React.ReactElement => {
       }));
       dispatch(setSkills(formattedSkills));
     }
-  }, [skillsData, dispatch, translations]);
+
+    if (educationsData?.data?.educationList && dataEducations.length === 0) {
+      const formattedEducation = educationsData?.data?.educationList.map((edu) => ({
+        ...edu,
+        id: parseInt(edu.id, 10),
+        month: edu.month ?? null,
+        title: translations.file === "fr" ? edu.titleFR : edu.titleEN,
+        diplomaLevel:
+          translations.file  === "fr" ? edu.diplomaLevelFR : edu.diplomaLevelEN,
+        startDate:
+          translations.file  === "fr" ? edu.startDateFR : edu.startDateEN,
+        endDate: translations.file  === "fr" ? edu.endDateFR : edu.endDateEN,
+        type: translations.file  === "fr" ? edu.typeFR : edu.typeEN,
+      }));
+      dispatch(setEducations(formattedEducation));
+    }
+
+    if (experiencesData?.data?.experienceList && dataExperiences.length === 0) {
+      const formattedExperience = experiencesData?.data?.experienceList.map((exp) => ({
+        ...exp,
+        id: parseInt(exp.id, 10),
+        month: exp.month ?? null, 
+        employmentContractEN: exp.employmentContractEN ?? null,
+        employmentContractFR: exp.employmentContractFR ?? null,
+        job: translations.file === "fr" ? exp.jobFR : exp.jobEN,
+        employmentContract:
+          translations.file === "fr"
+            ? exp.employmentContractFR
+            : exp.employmentContractEN,
+        startDate:
+          translations.file === "fr" ? exp.startDateFR : exp.startDateEN,
+        endDate: translations.file === "fr" ? exp.endDateFR : exp.endDateEN,
+        type: translations.file === "fr" ? exp.typeFR : exp.typeEN,
+      }));
+      dispatch(setExperiences(formattedExperience));
+    }
+  }, [
+      educationsData,
+      experiencesData,
+      projectsData,
+      skillsData,
+      dispatch,
+      translations, 
+      dataSkills,
+      dataEducations,
+      dataProjects,
+      dataExperiences,
+    ]);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
