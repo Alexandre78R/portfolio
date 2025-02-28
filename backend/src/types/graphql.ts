@@ -108,7 +108,7 @@ export type Query = {
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectsList: Array<Project>;
-  skillCategoriesList: Array<Skill>;
+  skillList: Array<Skill>;
 };
 
 export type Skill = {

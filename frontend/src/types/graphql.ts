@@ -111,7 +111,7 @@ export type Query = {
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectsList: Array<Project>;
-  skillCategoriesList: Array<Skill>;
+  skillList: Array<Skill>;
 };
 
 export type Skill = {
@@ -165,6 +165,11 @@ export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetProjectsListQuery = { __typename?: 'Query', projectsList: Array<{ __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, github?: string | null, contentDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', name: string, image: string }> }> };
+
+export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSkillsListQuery = { __typename?: 'Query', skillList: Array<{ __typename?: 'Skill', id: string, categoryFR: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', name: string, image: string }> }> };
 
 
 export const ValidateCaptchaDocument = gql`
@@ -371,3 +376,48 @@ export type GetProjectsListQueryHookResult = ReturnType<typeof useGetProjectsLis
 export type GetProjectsListLazyQueryHookResult = ReturnType<typeof useGetProjectsListLazyQuery>;
 export type GetProjectsListSuspenseQueryHookResult = ReturnType<typeof useGetProjectsListSuspenseQuery>;
 export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
+export const GetSkillsListDocument = gql`
+    query GetSkillsList {
+  skillList {
+    id
+    categoryFR
+    categoryEN
+    skills {
+      name
+      image
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSkillsListQuery__
+ *
+ * To run a query within a React component, call `useGetSkillsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSkillsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSkillsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSkillsListQuery(baseOptions?: Apollo.QueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+      }
+export function useGetSkillsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+        }
+export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+        }
+export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQuery>;
+export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
+export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
+export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;

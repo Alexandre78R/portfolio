@@ -6,7 +6,7 @@ import { skillsData } from "../Data/skillsData";
 export class SkillResolver {
 
   @Query(() => [Skill])
-  async skillCategoriesList(): Promise<Skill[]> {
+  async skillList(): Promise<Skill[]> {
     return skillsData.map(skill => ({
       id: skill.id,
       categoryFR: skill.categoryFR,
