@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
@@ -11,14 +13,20 @@ import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/store/store";
 import { updateSkillCategories } from "@/store/slices/skillsSlice";
-import { updateProjectDescriptions } from "@/store/slices/projectsSlice";
+import { updateProjectDescriptions, setProjects} from "@/store/slices/projectsSlice";
 import { updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { updateExperiences } from "@/store/slices/experiencesSlice";
 import Seo from "@/components/Seo/Seo";
 import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
+import {
+  useGetProjectsListQuery,
+} from "@/types/graphql";
 
 const Home: React.FC = (): React.ReactElement => {
+  
+  const { data, loading, error } = useGetProjectsListQuery();
+
   const { translations } = useLang();
   const {
     aboutMeRef,
@@ -35,6 +43,19 @@ const Home: React.FC = (): React.ReactElement => {
   const dataProjects = useSelector(
     (state: RootState) => state.projects.dataProjects
   );
+
+  useEffect(() => {
+    if (data?.projectsList) {
+      const formattedProjects = data.projectsList.map((project) => ({
+        ...project,
+        id: Number(project.id),
+        github: project.github ?? null,
+        description:
+          translations.file === "fr" ? project.descriptionFR : project.descriptionEN,
+      }));
+      dispatch(setProjects(formattedProjects));
+    }
+  }, [data, dispatch]);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
