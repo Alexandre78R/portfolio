@@ -78,7 +78,7 @@ import { Length } from "class-validator";
     })
     endDateFR: string;
   
-    @Field(() => String, { nullable: true })
+    @Field(() => Number, { nullable: true }) 
     @Column({ nullable: true, type: "int" })
     month: number | null;
   
@@ -96,11 +96,11 @@ import { Length } from "class-validator";
     })
     typeFR: string;
   
-    // @Field()
+    // @Field({ nullable: true })
     // @CreateDateColumn({ default: () => "CURRENT_TIMESTAMP" })
     // created_at: Date;
   
-    // @Field()
+    // @Field({ nullable: true })
     // @UpdateDateColumn({
     //   name: "updated_at",
     //   default: () => "CURRENT_TIMESTAMP",

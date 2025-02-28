@@ -15,6 +15,7 @@ import { SkillResolver } from './resolvers/skill.resolver';
 import { ProjectResolver } from './resolvers/project.resolver';
 import { checkApiKey } from './lib/checkApiKey';
 import { ExperienceResolver } from './resolvers/experience.resolver';
+import { EducationResolver } from './resolvers/education.resolver';
 export interface MyContext {
   req: express.Request;
   res: express.Response;
@@ -27,7 +28,14 @@ const httpServer = http.createServer(app);
 async function main() {
 
   const schema = await buildSchema({
-    resolvers: [ContactResolver, GenerateImageResolver, CaptchaResolver, SkillResolver, ProjectResolver, ExperienceResolver],
+    resolvers: [
+      ContactResolver,
+      GenerateImageResolver,
+      CaptchaResolver,
+      SkillResolver, ProjectResolver,
+      ExperienceResolver,
+      EducationResolver
+    ],
     validate: false,
   });
 

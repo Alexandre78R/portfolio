@@ -46,6 +46,25 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type Education = {
+  __typename?: 'Education';
+  diplomaLevelEN: Scalars['String']['output'];
+  diplomaLevelFR: Scalars['String']['output'];
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  location: Scalars['String']['output'];
+  month?: Maybe<Scalars['Float']['output']>;
+  school: Scalars['String']['output'];
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  titleEN: Scalars['String']['output'];
+  titleFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+  year: Scalars['Float']['output'];
+};
+
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
@@ -56,7 +75,7 @@ export type Experience = {
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['String']['output']>;
+  month?: Maybe<Scalars['Float']['output']>;
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
@@ -108,6 +127,7 @@ export type Project = {
 
 export type Query = {
   __typename?: 'Query';
+  educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectsList: Array<Project>;
@@ -160,6 +180,16 @@ export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', typeEN: string, typeFR: string, url: string, id: string }>, challengeTypeTranslation: { __typename?: 'ChallengeTypeTranslation', typeEN: string, typeFR: string } } };
+
+export type GetEducationsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEducationsListQuery = { __typename?: 'Query', educationList: Array<{ __typename?: 'Education', id: string, titleEN: string, titleFR: string, diplomaLevelEN: string, diplomaLevelFR: string, school: string, location: string, year: number, startDateEN: string, startDateFR: string, endDateEN: string, endDateFR: string, month?: number | null, typeEN: string, typeFR: string }> };
+
+export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: Array<{ __typename?: 'Experience', id: string, jobEN: string, jobFR: string, business: string, employmentContractEN?: string | null, employmentContractFR?: string | null, startDateEN: string, startDateFR: string, endDateEN: string, endDateFR: string, month?: number | null, typeEN: string, typeFR: string }> };
 
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -327,6 +357,110 @@ export type GenerateCaptchaQueryHookResult = ReturnType<typeof useGenerateCaptch
 export type GenerateCaptchaLazyQueryHookResult = ReturnType<typeof useGenerateCaptchaLazyQuery>;
 export type GenerateCaptchaSuspenseQueryHookResult = ReturnType<typeof useGenerateCaptchaSuspenseQuery>;
 export type GenerateCaptchaQueryResult = Apollo.QueryResult<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>;
+export const GetEducationsListDocument = gql`
+    query GetEducationsList {
+  educationList {
+    id
+    titleEN
+    titleFR
+    diplomaLevelEN
+    diplomaLevelFR
+    school
+    location
+    year
+    startDateEN
+    startDateFR
+    endDateEN
+    endDateFR
+    month
+    typeEN
+    typeFR
+  }
+}
+    `;
+
+/**
+ * __useGetEducationsListQuery__
+ *
+ * To run a query within a React component, call `useGetEducationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEducationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEducationsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetEducationsListQuery(baseOptions?: Apollo.QueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+      }
+export function useGetEducationsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+        }
+export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+        }
+export type GetEducationsListQueryHookResult = ReturnType<typeof useGetEducationsListQuery>;
+export type GetEducationsListLazyQueryHookResult = ReturnType<typeof useGetEducationsListLazyQuery>;
+export type GetEducationsListSuspenseQueryHookResult = ReturnType<typeof useGetEducationsListSuspenseQuery>;
+export type GetEducationsListQueryResult = Apollo.QueryResult<GetEducationsListQuery, GetEducationsListQueryVariables>;
+export const GetExperiencesListDocument = gql`
+    query GetExperiencesList {
+  experienceList {
+    id
+    jobEN
+    jobFR
+    business
+    employmentContractEN
+    employmentContractFR
+    startDateEN
+    startDateFR
+    endDateEN
+    endDateFR
+    month
+    typeEN
+    typeFR
+  }
+}
+    `;
+
+/**
+ * __useGetExperiencesListQuery__
+ *
+ * To run a query within a React component, call `useGetExperiencesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExperiencesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExperiencesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetExperiencesListQuery(baseOptions?: Apollo.QueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+      }
+export function useGetExperiencesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+        }
+export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+        }
+export type GetExperiencesListQueryHookResult = ReturnType<typeof useGetExperiencesListQuery>;
+export type GetExperiencesListLazyQueryHookResult = ReturnType<typeof useGetExperiencesListLazyQuery>;
+export type GetExperiencesListSuspenseQueryHookResult = ReturnType<typeof useGetExperiencesListSuspenseQuery>;
+export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
 export const GetProjectsListDocument = gql`
     query GetProjectsList {
   projectsList {

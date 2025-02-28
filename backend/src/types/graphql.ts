@@ -43,6 +43,25 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type Education = {
+  __typename?: 'Education';
+  diplomaLevelEN: Scalars['String']['output'];
+  diplomaLevelFR: Scalars['String']['output'];
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  location: Scalars['String']['output'];
+  month?: Maybe<Scalars['Float']['output']>;
+  school: Scalars['String']['output'];
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  titleEN: Scalars['String']['output'];
+  titleFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+  year: Scalars['Float']['output'];
+};
+
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
@@ -53,7 +72,7 @@ export type Experience = {
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['String']['output']>;
+  month?: Maybe<Scalars['Float']['output']>;
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
@@ -105,6 +124,7 @@ export type Project = {
 
 export type Query = {
   __typename?: 'Query';
+  educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectsList: Array<Project>;

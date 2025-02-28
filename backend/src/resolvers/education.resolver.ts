@@ -1,27 +1,29 @@
 import { Resolver, Query } from "type-graphql";
-import { Experience } from "../entities/experience.entity";
-import { experiencesData } from "../Data/experiencesData";
+import { Education } from "../entities/education.entity";
+import { educationsData } from "../Data/educationsData";
 
 @Resolver()
-export class ExperienceResolver {
-  @Query(() => [Experience])
-  async experienceList(): Promise<Experience[]> {
-    return experiencesData.map(experience => ({
-      id: experience.id,
-      jobEN: experience.jobEN,
-      jobFR: experience.jobFR,
-      business: experience.business,
-      employmentContractEN: experience.employmentContractEN,
-      employmentContractFR: experience.employmentContractFR,
-      startDateEN: experience.startDateEN,
-      startDateFR: experience.startDateFR,
-      endDateEN: experience.endDateEN,
-      endDateFR: experience.endDateFR,
-      month: experience.month,
-      typeEN: experience.typeEN,
-      typeFR: experience.typeFR,
-      // created_at: experience.created_at,
-      // updated_at: experience.updated_at,
+export class EducationResolver {
+  @Query(() => [Education])
+  async educationList(): Promise<Education[]> {
+    return educationsData.map(education => ({
+      id: education.id,
+      titleFR: education.titleFR,
+      titleEN: education.titleEN,
+      diplomaLevelEN: education.diplomaLevelEN,
+      diplomaLevelFR: education.diplomaLevelFR,
+      school: education.school,
+      location: education.location,
+      year: education.year,
+      startDateEN: education.startDateEN,
+      startDateFR: education.startDateFR,
+      endDateEN: education.endDateEN,
+      endDateFR: education.endDateFR,
+      month: education.month,
+      typeEN: education.typeEN,
+      typeFR: education.typeFR,
+      // created_at: education.created_at,
+      // updated_at: education.updated_at,
     }));
   }
 }
