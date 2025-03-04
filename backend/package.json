@@ -6,6 +6,8 @@
   "scripts": {
     "start": "ts-node-dev --watch ./src ./src/index.ts",
     "generate": "dotenv -e .env -- graphql-codegen --config codegen.yml --watch",
+    "prisma": "prisma generate --schema=src/prisma/schema.prisma && prisma db push --schema=src/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --name init --schema=src/prisma/schema.prisma",
     "migrate": "ts-node-dev src/migrate.ts",
     "test": "jest --runInBand --watch",
     "test:ci": "jest --runInBand"
