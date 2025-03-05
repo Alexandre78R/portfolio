@@ -1,20 +1,26 @@
 import { Resolver, Query } from "type-graphql";
-import { Skill } from "../types/skill.types";
-import { skillsData } from "../Data/skillsData"; 
+import { Skill as GQLSkill } from "../types/skill.types";
+import prisma from "../lib/prisma";
 
 @Resolver()
 export class SkillResolver {
-
-  @Query(() => [Skill])
-  async skillList(): Promise<Skill[]> {
-    return skillsData.map(skill => ({
-      id: skill.id,
-      categoryFR: skill.categoryFR,
-      categoryEN: skill.categoryEN,
-      skills: skill.skills.map(skillItem => ({
-        name: skillItem.name,
-        image: skillItem.image
-      }))
+  @Query(() => [GQLSkill])
+  async skillList(): Promise<GQLSkill[]> {
+    const categories = await prisma.skillCategory.findMany({
+      include: { skills: true },
+      orderBy: { id: "asc" },
+    });
+    
+    if (!categories || !Array.isArray(categories)) return [];
+    
+    return categories.map((cat: any): GQLSkill => ({
+      id: cat.id,
+      categoryFR: cat.categoryFR,
+      categoryEN: cat.categoryEN,
+      skills: cat.skills.map((s: any) => ({
+        name: s.name,
+        image: s.image,
+      })),
     }));
   }
 }

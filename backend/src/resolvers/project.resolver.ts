@@ -1,23 +1,35 @@
 import { Resolver, Query } from "type-graphql";
-import { Project } from "../types/project.types";
-import { projectsData } from "../Data/projectsData"; 
+import { Project as GQLProject } from "../types/project.types";
+import prisma from "../lib/prisma";
+import { SkillSubItem } from "../types/skillSubItems.types";
 
 @Resolver()
 export class ProjectResolver {
-  @Query(() => [Project])
-  async projectsList(): Promise<Project[]> {
-    return projectsData.map(project => ({
-      id: project.id,
-      title: project.title,
-      descriptionFR: project.descriptionFR,
-      descriptionEN: project.descriptionEN,
-      typeDisplay: project.typeDisplay,
-      github: project.github,
-      contentDisplay: project.contentDisplay,
-      skills: project.skills.map(skillItem => ({
-        name: skillItem.name,
-        image: skillItem.image
-      }))
+  @Query(() => [GQLProject])
+  async projectsList(): Promise<GQLProject[]> {
+    const projects = await prisma.project.findMany({
+      include: {
+        skills: {
+          include: { skill: true },
+        },
+      },
+      orderBy: { id: "asc" },
+    });
+
+    if (!projects || !Array.isArray(projects)) return [];
+
+    return projects.map((p: any): GQLProject => ({
+      id: p.id,
+      title: p.title,
+      descriptionFR: p.descriptionFR,
+      descriptionEN: p.descriptionEN,
+      typeDisplay: p.typeDisplay,
+      github: p.github ?? undefined,
+      contentDisplay: p.contentDisplay,
+      skills: p.skills.map((ps: any): SkillSubItem => ({
+        name: ps.skill.name,
+        image: ps.skill.image,
+      })),
     }));
   }
 }
