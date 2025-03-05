@@ -14,14 +14,14 @@ generator client {
 }
 
 model Project {
-  id              Int           @id @default(autoincrement())
-  title           String
-  descriptionEN   String
-  descriptionFR   String
-  typeDisplay     String
-  github          String?       // Peut être null
-  contentDisplay  String
-  skills          ProjectSkill[] // Relation N:M via la table pivot
+  id             Int      @id @default(autoincrement())
+  title          String
+  descriptionEN  String   @db.Text     
+  descriptionFR  String   @db.Text      
+  typeDisplay    String
+  github         String?  
+  contentDisplay String   @db.Text      
+  skills         ProjectSkill[]
 }
 
 model SkillCategory {
