@@ -21,8 +21,6 @@ export class SkillResolver {
         image: s.image,
         category: s.category,
       })),
-      // created_at: new Date(), // ou utilise cat.created_at si tu l'as
-      // update_at: new Date(),
     }));
   }
 }

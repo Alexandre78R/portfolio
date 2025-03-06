@@ -1,6 +1,5 @@
 import { Resolver, Query } from "type-graphql";
 import { Project } from "../entities/project.entity";
-import { SkillSubItem } from "../entities/skillSubItem.entity";
 import prisma from "../lib/prisma";
 
 @Resolver(() => Project)
