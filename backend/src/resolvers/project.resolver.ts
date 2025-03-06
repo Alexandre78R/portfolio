@@ -13,6 +13,9 @@ export class ProjectResolver {
           include: { skill: true },
         },
       },
+      orderBy: {
+        id: "desc",
+      },
     });
 
     return projects.map((p) => ({

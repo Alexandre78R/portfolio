@@ -59,7 +59,6 @@ const Home: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (projectsData.data?.projectList && dataProjects.length === 0) {
-      console.log("dddd")
       const formattedProjects = projectsData.data.projectList.map((project) => ({
         ...project,
         id: Number(project.id),

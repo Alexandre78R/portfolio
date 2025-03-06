@@ -8,6 +8,7 @@
     "generate": "dotenv -e .env -- graphql-codegen --config codegen.yml --watch",
     "prisma": "prisma generate --schema=src/prisma/schema.prisma && prisma db push --schema=src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --name init --schema=src/prisma/schema.prisma",
+    "prisma:update": "npx prisma format --schema=src/prisma/schema.prisma",
     "db:seed": "ts-node src/prisma/scripts/seed.ts",
     "test": "jest --runInBand --watch",
     "test:ci": "jest --runInBand"
