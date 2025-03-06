@@ -1,6 +1,6 @@
 import { Resolver, Query } from "type-graphql";
 import { Experience } from "../entities/experience.entity";
-import { experiencesData } from "../Data/experiencesData";
+import { experiencesData } from "../prisma/seed/experiencesData";
 
 @Resolver()
 export class ExperienceResolver {
