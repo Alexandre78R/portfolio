@@ -12,10 +12,10 @@ import path from 'path';
 import { CaptchaResolver } from './resolvers/captcha.resolver';
 import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
 import { SkillResolver } from './resolvers/skill.resolver';
-import { ProjectResolver } from './resolvers/project.resolver';
 import { checkApiKey } from './lib/checkApiKey';
 import { ExperienceResolver } from './resolvers/experience.resolver';
 import { EducationResolver } from './resolvers/education.resolver';
+import { ProjectResolver } from './resolvers/project.resolver';
 export interface MyContext {
   req: express.Request;
   res: express.Response;
@@ -32,7 +32,8 @@ async function main() {
       ContactResolver,
       GenerateImageResolver,
       CaptchaResolver,
-      SkillResolver, ProjectResolver,
+      SkillResolver,
+      ProjectResolver,
       ExperienceResolver,
       EducationResolver
     ],

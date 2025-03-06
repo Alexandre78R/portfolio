@@ -7,26 +7,17 @@ import {
   import { Field, ID, ObjectType } from "type-graphql";
   import { Skill } from "./skill.entity";
   
-  @ObjectType()
-  @Entity()
-  export class SkillSubItem {
-    @Field(() => ID)
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Field()
-    @Column({ length: 50 })
-    name: string;
-  
-    @Field()
-    @Column({ nullable: true })
-    image: string;
+@ObjectType()
+export class SkillSubItem {
+  @Field(() => ID)
+  id: number;
 
-    @Field()
-    @Column({ length: 50 })
-    category: string;
-  
-    @Field(() => Skill)
-    @ManyToOne(() => Skill, (skill) => skill.skills)
-    skill: Skill;
-  }
+  @Field()
+  name: string;
+
+  @Field()
+  image: string;
+
+  @Field()
+  categoryId: number;
+}
