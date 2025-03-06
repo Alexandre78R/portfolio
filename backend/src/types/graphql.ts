@@ -127,7 +127,7 @@ export type Query = {
   educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
-  projectsList: Array<Project>;
+  projectList: Array<Project>;
   skillList: Array<Skill>;
 };
 
@@ -141,6 +141,8 @@ export type Skill = {
 
 export type SkillSubItem = {
   __typename?: 'SkillSubItem';
+  categoryId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };

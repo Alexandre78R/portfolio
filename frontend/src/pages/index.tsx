@@ -58,9 +58,9 @@ const Home: React.FC = (): React.ReactElement => {
   );
 
   useEffect(() => {
-    if (projectsData.data?.projectsList && dataProjects.length === 0) {
+    if (projectsData.data?.projectList && dataProjects.length === 0) {
       console.log("dddd")
-      const formattedProjects = projectsData.data.projectsList.map((project) => ({
+      const formattedProjects = projectsData.data.projectList.map((project) => ({
         ...project,
         id: Number(project.id),
         github: project.github ?? null,

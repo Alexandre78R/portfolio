@@ -130,7 +130,7 @@ export type Query = {
   educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
-  projectsList: Array<Project>;
+  projectList: Array<Project>;
   skillList: Array<Skill>;
 };
 
@@ -144,6 +144,8 @@ export type Skill = {
 
 export type SkillSubItem = {
   __typename?: 'SkillSubItem';
+  categoryId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };
@@ -194,7 +196,7 @@ export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: Ar
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsListQuery = { __typename?: 'Query', projectsList: Array<{ __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, github?: string | null, contentDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', name: string, image: string }> }> };
+export type GetProjectsListQuery = { __typename?: 'Query', projectList: Array<{ __typename?: 'Project', id: string, title: string, github?: string | null, descriptionFR: string, descriptionEN: string, contentDisplay: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -463,17 +465,19 @@ export type GetExperiencesListSuspenseQueryHookResult = ReturnType<typeof useGet
 export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
 export const GetProjectsListDocument = gql`
     query GetProjectsList {
-  projectsList {
+  projectList {
     id
     title
+    github
     descriptionFR
     descriptionEN
-    typeDisplay
-    github
     contentDisplay
+    typeDisplay
     skills {
+      id
       name
       image
+      categoryId
     }
   }
 }
