@@ -1,4 +1,4 @@
-import { Resolver, Query } from "type-graphql";
+import { Resolver, Query, Arg, Int } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import prisma from "../lib/prisma";
 
@@ -32,5 +32,31 @@ export class ProjectResolver {
         categoryId: ps.skill.categoryId,
       })),
     }));
+  }
+  @Query(() => Project, { nullable: true })
+  async projectById(
+    @Arg("id", () => Int) id: number
+  ): Promise<Project | null> {
+    const project = await prisma.project.findUnique({
+      where: { id },
+      include: {
+        skills: {
+          include: {
+            skill: true,
+          },
+        },
+      },
+    });
+
+    console.log("Project found:", project);
+
+    if (!project) return null;
+
+    return {
+      ...project,
+      skills: project.skills.map((ps) => ({
+        ...ps.skill,
+      })),
+    };
   }
 }

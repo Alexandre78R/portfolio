@@ -51,7 +51,7 @@ export type Education = {
   endDateFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   location: Scalars['String']['output'];
-  month?: Maybe<Scalars['Float']['output']>;
+  month?: Maybe<Scalars['Int']['output']>;
   school: Scalars['String']['output'];
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
@@ -59,7 +59,7 @@ export type Education = {
   titleFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
   typeFR: Scalars['String']['output'];
-  year: Scalars['Float']['output'];
+  year: Scalars['Int']['output'];
 };
 
 export type Experience = {
@@ -72,7 +72,7 @@ export type Experience = {
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['Float']['output']>;
+  month?: Maybe<Scalars['Int']['output']>;
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
