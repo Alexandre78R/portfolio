@@ -1,7 +1,7 @@
 import { Resolver, Query, Arg, Int, Mutation } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import prisma from "../lib/prisma";
-import { CreateProjectInput } from "../entities/inputs/project.input";
+import { CreateProjectInput, UpdateProjectInput } from "../entities/inputs/project.input";
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -95,6 +95,53 @@ export class ProjectResolver {
       github: newProject.github ?? null,
       contentDisplay: newProject.contentDisplay,
       skills: newProject.skills.map((ps) => ({
+        id: ps.skill.id,
+        name: ps.skill.name,
+        image: ps.skill.image,
+        categoryId: ps.skill.categoryId,
+      })),
+    };
+  }
+
+  @Mutation(() => Project)
+  async updateProject(
+    @Arg("data") data: UpdateProjectInput
+  ): Promise<Project> {
+    const { id, skillIds, ...rest } = data;
+
+    const existingProject = await prisma.project.findUnique({
+      where: { id },
+      include: { skills: true },
+    });
+    if (!existingProject) throw new Error("Project not found");
+
+    if (skillIds) {
+      const validSkills = await prisma.skill.findMany({
+        where: { id: { in: skillIds } },
+      });
+      if (validSkills.length !== skillIds.length) {
+        throw new Error("One or more skill IDs are invalid.");
+      }
+
+      await prisma.projectSkill.deleteMany({ where: { projectId: id } });
+    }
+
+    const updatedProject = await prisma.project.update({
+      where: { id },
+      data: {
+        ...rest,
+        skills: skillIds
+          ? { create: skillIds.map((skillId) => ({ skill: { connect: { id: skillId } } })) }
+          : undefined,
+      },
+      include: {
+        skills: { include: { skill: true } },
+      },
+    });
+
+    return {
+      ...updatedProject,
+      skills: updatedProject.skills.map((ps) => ({
         id: ps.skill.id,
         name: ps.skill.name,
         image: ps.skill.image,

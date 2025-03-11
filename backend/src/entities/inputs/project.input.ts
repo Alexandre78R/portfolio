@@ -1,4 +1,4 @@
-import { InputType, Field } from "type-graphql";
+import { InputType, Field, Int } from "type-graphql";
 
 @InputType()
 export class CreateProjectInput {
@@ -22,4 +22,31 @@ export class CreateProjectInput {
 
   @Field(() => [Number])
   skillIds: number[];
+}
+
+@InputType()
+export class UpdateProjectInput {
+  @Field(() => Int)
+  id: number;
+
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  descriptionFR?: string;
+
+  @Field({ nullable: true })
+  descriptionEN?: string;
+
+  @Field({ nullable: true })
+  github?: string;
+
+  @Field({ nullable: true })
+  typeDisplay?: string;
+
+  @Field({ nullable: true })
+  contentDisplay?: string;
+
+  @Field(() => [Int], { nullable: true })
+  skillIds?: number[];
 }
