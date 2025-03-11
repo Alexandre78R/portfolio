@@ -58,8 +58,10 @@ const Home: React.FC = (): React.ReactElement => {
   );
 
   useEffect(() => {
-    if (projectsData.data?.projectList && dataProjects.length === 0) {
-      const formattedProjects = projectsData.data.projectList.map((project) => ({
+    const responseProject = projectsData.data?.projectList;
+
+    if (responseProject?.code === 200 && responseProject.projects && dataProjects.length === 0) {
+      const formattedProjects = responseProject.projects.map((project) => ({
         ...project,
         id: Number(project.id),
         github: project.github ?? null,

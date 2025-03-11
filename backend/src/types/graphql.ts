@@ -43,6 +43,16 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type CreateProjectInput = {
+  contentDisplay: Scalars['String']['input'];
+  descriptionEN: Scalars['String']['input'];
+  descriptionFR: Scalars['String']['input'];
+  github?: InputMaybe<Scalars['String']['input']>;
+  skillIds: Array<Scalars['Float']['input']>;
+  title: Scalars['String']['input'];
+  typeDisplay: Scalars['String']['input'];
+};
+
 export type Education = {
   __typename?: 'Education';
   diplomaLevelEN: Scalars['String']['output'];
@@ -89,7 +99,10 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
+  createProject: ProjectResponse;
+  deleteProject: Response;
   sendContact: MessageType;
+  updateProject: ProjectResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -99,8 +112,23 @@ export type MutationClearCaptchaArgs = {
 };
 
 
+export type MutationCreateProjectArgs = {
+  data: CreateProjectInput;
+};
+
+
+export type MutationDeleteProjectArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationSendContactArgs = {
   data: ContactFrom;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  data: UpdateProjectInput;
 };
 
 
@@ -122,13 +150,39 @@ export type Project = {
   typeDisplay: Scalars['String']['output'];
 };
 
+export type ProjectResponse = {
+  __typename?: 'ProjectResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  project?: Maybe<Project>;
+};
+
+export type ProjectsResponse = {
+  __typename?: 'ProjectsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  projects?: Maybe<Array<Project>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
-  projectList: Array<Project>;
+  projectById: ProjectResponse;
+  projectList: ProjectsResponse;
   skillList: Array<Skill>;
+};
+
+
+export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type Response = {
+  __typename?: 'Response';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
 };
 
 export type Skill = {
@@ -145,6 +199,17 @@ export type SkillSubItem = {
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type UpdateProjectInput = {
+  contentDisplay?: InputMaybe<Scalars['String']['input']>;
+  descriptionEN?: InputMaybe<Scalars['String']['input']>;
+  descriptionFR?: InputMaybe<Scalars['String']['input']>;
+  github?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  typeDisplay?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ValidationResponse = {

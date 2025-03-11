@@ -46,6 +46,16 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type CreateProjectInput = {
+  contentDisplay: Scalars['String']['input'];
+  descriptionEN: Scalars['String']['input'];
+  descriptionFR: Scalars['String']['input'];
+  github?: InputMaybe<Scalars['String']['input']>;
+  skillIds: Array<Scalars['Float']['input']>;
+  title: Scalars['String']['input'];
+  typeDisplay: Scalars['String']['input'];
+};
+
 export type Education = {
   __typename?: 'Education';
   diplomaLevelEN: Scalars['String']['output'];
@@ -54,7 +64,7 @@ export type Education = {
   endDateFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   location: Scalars['String']['output'];
-  month?: Maybe<Scalars['Float']['output']>;
+  month?: Maybe<Scalars['Int']['output']>;
   school: Scalars['String']['output'];
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
@@ -62,7 +72,7 @@ export type Education = {
   titleFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
   typeFR: Scalars['String']['output'];
-  year: Scalars['Float']['output'];
+  year: Scalars['Int']['output'];
 };
 
 export type Experience = {
@@ -75,7 +85,7 @@ export type Experience = {
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['Float']['output']>;
+  month?: Maybe<Scalars['Int']['output']>;
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
@@ -92,7 +102,10 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
+  createProject: ProjectResponse;
+  deleteProject: Response;
   sendContact: MessageType;
+  updateProject: ProjectResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -102,8 +115,23 @@ export type MutationClearCaptchaArgs = {
 };
 
 
+export type MutationCreateProjectArgs = {
+  data: CreateProjectInput;
+};
+
+
+export type MutationDeleteProjectArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationSendContactArgs = {
   data: ContactFrom;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  data: UpdateProjectInput;
 };
 
 
@@ -125,13 +153,39 @@ export type Project = {
   typeDisplay: Scalars['String']['output'];
 };
 
+export type ProjectResponse = {
+  __typename?: 'ProjectResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  project?: Maybe<Project>;
+};
+
+export type ProjectsResponse = {
+  __typename?: 'ProjectsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  projects?: Maybe<Array<Project>>;
+};
+
 export type Query = {
   __typename?: 'Query';
   educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
-  projectList: Array<Project>;
+  projectById: ProjectResponse;
+  projectList: ProjectsResponse;
   skillList: Array<Skill>;
+};
+
+
+export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type Response = {
+  __typename?: 'Response';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
 };
 
 export type Skill = {
@@ -148,6 +202,17 @@ export type SkillSubItem = {
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type UpdateProjectInput = {
+  contentDisplay?: InputMaybe<Scalars['String']['input']>;
+  descriptionEN?: InputMaybe<Scalars['String']['input']>;
+  descriptionFR?: InputMaybe<Scalars['String']['input']>;
+  github?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  typeDisplay?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ValidationResponse = {
@@ -196,7 +261,7 @@ export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: Ar
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsListQuery = { __typename?: 'Query', projectList: Array<{ __typename?: 'Project', id: string, title: string, github?: string | null, descriptionFR: string, descriptionEN: string, contentDisplay: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> };
+export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -466,18 +531,22 @@ export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesLis
 export const GetProjectsListDocument = gql`
     query GetProjectsList {
   projectList {
-    id
-    title
-    github
-    descriptionFR
-    descriptionEN
-    contentDisplay
-    typeDisplay
-    skills {
+    message
+    code
+    projects {
+      contentDisplay
+      descriptionEN
+      descriptionFR
+      github
       id
-      name
-      image
-      categoryId
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      title
+      typeDisplay
     }
   }
 }
