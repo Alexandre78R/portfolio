@@ -38,15 +38,5 @@ export class Project {
   @Field(() => [SkillSubItem])
   skills: SkillSubItem[];
   
-    // @Field()
-    // @CreateDateColumn({ default: () => "CURRENT_TIMESTAMP" })
-    // created_at: Date;
-  
-    // @Field()
-    // @UpdateDateColumn({
-    //   name: "updated_at",
-    //   default: () => "CURRENT_TIMESTAMP",
-    //   onUpdate: "CURRENT_TIMESTAMP",
-    // })
-    // updated_at: Date;
 }
+
