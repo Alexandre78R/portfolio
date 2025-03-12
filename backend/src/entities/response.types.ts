@@ -1,5 +1,7 @@
 import { ObjectType, Field, Int } from "type-graphql";
-import { Project } from "../entities/project.entity";
+import { Project } from "./project.entity";
+import { Skill } from "./skill.entity";
+import { SkillSubItem } from "./skillSubItem.entity";
 
 @ObjectType()
 export class Response {
@@ -32,4 +34,16 @@ export class ProjectsResponse {
 
   @Field(() => [Project], { nullable: true })
   projects?: Project[];
+}
+
+@ObjectType()
+export class CategoryResponse extends Response {
+  @Field(() => [Skill], { nullable: true })
+  categories?: Skill[];
+}
+
+@ObjectType()
+export class SubItemResponse extends Response {
+  @Field(() => [SkillSubItem], { nullable: true })
+  subItems?: SkillSubItem[];
 }

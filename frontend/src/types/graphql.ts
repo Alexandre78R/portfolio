@@ -34,6 +34,13 @@ export type CaptchaResponse = {
   images: Array<CaptchaImage>;
 };
 
+export type CategoryResponse = {
+  __typename?: 'CategoryResponse';
+  categories?: Maybe<Array<Skill>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
 export type ChallengeTypeTranslation = {
   __typename?: 'ChallengeTypeTranslation';
   typeEN: Scalars['String']['output'];
@@ -46,6 +53,11 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type CreateCategoryInput = {
+  categoryEN: Scalars['String']['input'];
+  categoryFR: Scalars['String']['input'];
+};
+
 export type CreateProjectInput = {
   contentDisplay: Scalars['String']['input'];
   descriptionEN: Scalars['String']['input'];
@@ -54,6 +66,12 @@ export type CreateProjectInput = {
   skillIds: Array<Scalars['Float']['input']>;
   title: Scalars['String']['input'];
   typeDisplay: Scalars['String']['input'];
+};
+
+export type CreateSkillInput = {
+  categoryId: Scalars['Int']['input'];
+  image: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type Education = {
@@ -102,7 +120,9 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
+  createCategory: CategoryResponse;
   createProject: ProjectResponse;
+  createSkill: SubItemResponse;
   deleteProject: Response;
   sendContact: MessageType;
   updateProject: ProjectResponse;
@@ -115,8 +135,18 @@ export type MutationClearCaptchaArgs = {
 };
 
 
+export type MutationCreateCategoryArgs = {
+  data: CreateCategoryInput;
+};
+
+
 export type MutationCreateProjectArgs = {
   data: CreateProjectInput;
+};
+
+
+export type MutationCreateSkillArgs = {
+  data: CreateSkillInput;
 };
 
 
@@ -174,7 +204,7 @@ export type Query = {
   generateCaptcha: CaptchaResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
-  skillList: Array<Skill>;
+  skillList: CategoryResponse;
 };
 
 
@@ -202,6 +232,13 @@ export type SkillSubItem = {
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type SubItemResponse = {
+  __typename?: 'SubItemResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  subItems?: Maybe<Array<SkillSubItem>>;
 };
 
 export type UpdateProjectInput = {
@@ -266,7 +303,7 @@ export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __type
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillsListQuery = { __typename?: 'Query', skillList: Array<{ __typename?: 'Skill', id: string, categoryFR: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', name: string, image: string }> }> };
+export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
 
 
 export const ValidateCaptchaDocument = gql`
@@ -586,13 +623,19 @@ export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery
 export const GetSkillsListDocument = gql`
     query GetSkillsList {
   skillList {
-    id
-    categoryFR
-    categoryEN
-    skills {
-      name
-      image
+    categories {
+      categoryFR
+      id
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      categoryEN
     }
+    code
+    message
   }
 }
     `;

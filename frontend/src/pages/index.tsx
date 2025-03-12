@@ -70,9 +70,10 @@ const Home: React.FC = (): React.ReactElement => {
       }));
       dispatch(setProjects(formattedProjects));
     }
+    const responseSkill = skillsData.data?.skillList;
 
-    if (skillsData?.data?.skillList && dataSkills.length === 0) {
-      const formattedSkills = skillsData.data.skillList.map((skill) => ({
+    if (responseSkill?.code === 200 && responseSkill.categories && dataSkills.length === 0) {
+      const formattedSkills = responseSkill.categories.map((skill) => ({
         ...skill,
         id: Number(skill.id),
         category: translations.file === "fr" ? skill.categoryFR : skill.categoryEN,
