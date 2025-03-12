@@ -129,4 +129,54 @@ export class SkillResolver {
     }
   }
 
+  @Mutation(() => CategoryResponse)
+  async deleteCategory(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
+    try {
+      const existing = await prisma.skillCategory.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Category not found" };
+
+      const skills = await prisma.skill.findMany({ where: { categoryId: id }, select: { id: true } });
+      const skillIds = skills.map(s => s.id);
+
+      if (skillIds.length) {
+        await prisma.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
+      }
+
+      if (skillIds.length) {
+        await prisma.skill.deleteMany({ where: { id: { in: skillIds } } });
+      }
+
+      await prisma.skill.deleteMany({ where: { categoryId: id } });
+
+      await prisma.skillCategory.delete({ where: { id } });
+
+      return { code: 200, message: "Category and related skills deleted" };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error deleting category" };
+    }
+  }
+
+
+    @Mutation(() => SubItemResponse)
+  async deleteSkill(
+    @Arg("id", () => Int) id: number
+  ): Promise<SubItemResponse> {
+    try {
+      const existing = await prisma.skill.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Skill not found" };
+
+      await prisma.projectSkill.deleteMany({ where: { skillId: id } });
+
+      await prisma.skill.deleteMany({ where: { id: id } });
+
+      await prisma.skill.deleteMany({ where: { id } });
+
+      return { code: 200, message: "Skill and related sub-items deleted" };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error deleting skill" };
+    }
+  }
+  
 }

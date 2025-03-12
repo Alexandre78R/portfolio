@@ -120,7 +120,9 @@ export type Mutation = {
   createCategory: CategoryResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  deleteCategory: CategoryResponse;
   deleteProject: Response;
+  deleteSkill: SubItemResponse;
   sendContact: MessageType;
   updateCategory: CategoryResponse;
   updateProject: ProjectResponse;
@@ -149,7 +151,17 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationDeleteCategoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteProjectArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSkillArgs = {
   id: Scalars['Int']['input'];
 };
 
