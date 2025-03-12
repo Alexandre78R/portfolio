@@ -122,7 +122,9 @@ export type Mutation = {
   createSkill: SubItemResponse;
   deleteProject: Response;
   sendContact: MessageType;
+  updateCategory: CategoryResponse;
   updateProject: ProjectResponse;
+  updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -157,8 +159,20 @@ export type MutationSendContactArgs = {
 };
 
 
+export type MutationUpdateCategoryArgs = {
+  data: UpdateCategoryInput;
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSkillArgs = {
+  data: UpdateSkillInput;
+  id: Scalars['Int']['input'];
 };
 
 
@@ -238,6 +252,11 @@ export type SubItemResponse = {
   subItems?: Maybe<Array<SkillSubItem>>;
 };
 
+export type UpdateCategoryInput = {
+  categoryEN?: InputMaybe<Scalars['String']['input']>;
+  categoryFR?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateProjectInput = {
   contentDisplay?: InputMaybe<Scalars['String']['input']>;
   descriptionEN?: InputMaybe<Scalars['String']['input']>;
@@ -247,6 +266,12 @@ export type UpdateProjectInput = {
   skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSkillInput = {
+  categoryId: Scalars['Int']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ValidationResponse = {

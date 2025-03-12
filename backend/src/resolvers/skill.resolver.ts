@@ -1,7 +1,7 @@
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Int } from "type-graphql";
 import prisma from "../lib/prisma";
 import { Skill } from "../entities/skill.entity";
-import { CreateCategoryInput, CreateSkillInput } from "../entities/inputs/skill.input";
+import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { CategoryResponse, SubItemResponse } from "../entities/response.types";
 
@@ -77,4 +77,56 @@ export class SkillResolver {
       return { code: 500, message: "Failed to create skill" };
     }
   }
+
+  @Mutation(() => CategoryResponse)
+  async updateCategory(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") data: UpdateCategoryInput
+  ): Promise<CategoryResponse> {
+    try {
+      const existing = await prisma.skillCategory.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Category not found" };
+      const cat = await prisma.skillCategory.update({
+        where: { id },
+        data: {
+          categoryEN: data.categoryEN ?? existing.categoryEN,
+          categoryFR: data.categoryFR ?? existing.categoryFR,
+        },
+      });
+      const dto: Skill = { id: cat.id, categoryEN: cat.categoryEN, categoryFR: cat.categoryFR, skills: [] };
+      return { code: 200, message: "Category updated", categories: [dto] };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error updating category" };
+    }
+  }
+
+  @Mutation(() => SubItemResponse)
+  async updateSkill(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") data: UpdateSkillInput
+  ): Promise<SubItemResponse> {
+    try {
+      const existing = await prisma.skill.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Skill not found" };
+      if (data.categoryId) {
+        const validCat = await prisma.skillCategory.findUnique({ where: { id: data.categoryId } });
+        if (!validCat) return { code: 400, message: "Invalid category" };
+      }
+      const subItem = await prisma.skill.update({
+        where: { id },
+        data: {
+          name: data.name ?? existing.name,
+          image: data.image ?? existing.image,
+          categoryId: data.categoryId ?? existing.categoryId,
+        },
+      });
+      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId: subItem.categoryId };
+      return { code: 200, message: "Skill updated", subItems: [dto] };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error updating skill" };
+    }
+  }
+
 }
