@@ -55,6 +55,23 @@ export type CreateCategoryInput = {
   categoryFR: Scalars['String']['input'];
 };
 
+export type CreateEducationInput = {
+  diplomaLevelEN: Scalars['String']['input'];
+  diplomaLevelFR: Scalars['String']['input'];
+  endDateEN: Scalars['String']['input'];
+  endDateFR: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  month: Scalars['Int']['input'];
+  school: Scalars['String']['input'];
+  startDateEN: Scalars['String']['input'];
+  startDateFR: Scalars['String']['input'];
+  titleEN: Scalars['String']['input'];
+  titleFR: Scalars['String']['input'];
+  typeEN: Scalars['String']['input'];
+  typeFR: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
 export type CreateProjectInput = {
   contentDisplay: Scalars['String']['input'];
   descriptionEN: Scalars['String']['input'];
@@ -94,7 +111,6 @@ export type EducationResponse = {
   __typename?: 'EducationResponse';
   code: Scalars['Int']['output'];
   education?: Maybe<Education>;
-  educations?: Maybe<Array<Education>>;
   message: Scalars['String']['output'];
 };
 
@@ -126,6 +142,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
   createCategory: CategoryResponse;
+  createEducation: EducationResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
   deleteCategory: CategoryResponse;
@@ -146,6 +163,11 @@ export type MutationClearCaptchaArgs = {
 
 export type MutationCreateCategoryArgs = {
   data: CreateCategoryInput;
+};
+
+
+export type MutationCreateEducationArgs = {
+  data: CreateEducationInput;
 };
 
 

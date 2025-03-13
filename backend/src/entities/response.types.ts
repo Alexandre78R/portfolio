@@ -50,12 +50,12 @@ export class SubItemResponse extends Response {
 }
 
 @ObjectType()
-export class EducationResponseByID extends Response {
+export class EducationResponse extends Response {
   @Field(() => Education, { nullable: true })
   education?: Education;
 }
 
-export class EducationResponse extends Response {
+export class EducationsResponse extends Response {
   @Field(() => [Education], { nullable: true })
   educations?: Education[];
 }
