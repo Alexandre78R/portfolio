@@ -70,6 +70,7 @@ const Home: React.FC = (): React.ReactElement => {
       }));
       dispatch(setProjects(formattedProjects));
     }
+
     const responseSkill = skillsData.data?.skillList;
 
     if (responseSkill?.code === 200 && responseSkill.categories && dataSkills.length === 0) {
@@ -81,8 +82,10 @@ const Home: React.FC = (): React.ReactElement => {
       dispatch(setSkills(formattedSkills));
     }
 
-    if (educationsData?.data?.educationList && dataEducations.length === 0) {
-      const formattedEducation = educationsData?.data?.educationList.map((edu) => ({
+    const responseEducation = educationsData.data?.educationList;
+
+    if (responseEducation?.code === 200 && responseEducation.educations && dataEducations.length === 0) {
+      const formattedEducation = responseEducation.educations.map((edu) => ({
         ...edu,
         id: parseInt(edu.id, 10),
         month: edu.month ?? null,

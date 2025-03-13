@@ -50,12 +50,13 @@ export class SubItemResponse extends Response {
 }
 
 @ObjectType()
-export class EducationResponse extends Response {
-  @Field(() => Education, { nullable: true })
-  education?: Education;
-}
-
 export class EducationsResponse extends Response {
   @Field(() => [Education], { nullable: true })
   educations?: Education[];
+}
+
+@ObjectType()
+export class EducationResponse extends Response {
+  @Field(() => Education, { nullable: true })
+  education?: Education;
 }

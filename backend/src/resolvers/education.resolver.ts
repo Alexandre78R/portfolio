@@ -6,11 +6,18 @@ import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/e
 
 const prisma = new PrismaClient();
 
-@Resolver()
+@Resolver(() => Education)
 export class EducationResolver {
-  @Query(() => [Education])
-  async educationList(): Promise<Education[]> {
-    return await prisma.education.findMany();
+
+  @Query(() => EducationsResponse)
+  async educationList(): Promise<EducationsResponse> {
+    try {
+      const list = await prisma.education.findMany();
+      return { code: 200, message: "Educations fetched", educations: list };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error fetching educations" };
+    }
   }
 
   @Query(() => EducationResponse)

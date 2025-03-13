@@ -58,6 +58,23 @@ export type CreateCategoryInput = {
   categoryFR: Scalars['String']['input'];
 };
 
+export type CreateEducationInput = {
+  diplomaLevelEN: Scalars['String']['input'];
+  diplomaLevelFR: Scalars['String']['input'];
+  endDateEN: Scalars['String']['input'];
+  endDateFR: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  month: Scalars['Int']['input'];
+  school: Scalars['String']['input'];
+  startDateEN: Scalars['String']['input'];
+  startDateFR: Scalars['String']['input'];
+  titleEN: Scalars['String']['input'];
+  titleFR: Scalars['String']['input'];
+  typeEN: Scalars['String']['input'];
+  typeFR: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
 export type CreateProjectInput = {
   contentDisplay: Scalars['String']['input'];
   descriptionEN: Scalars['String']['input'];
@@ -93,6 +110,20 @@ export type Education = {
   year: Scalars['Int']['output'];
 };
 
+export type EducationResponse = {
+  __typename?: 'EducationResponse';
+  code: Scalars['Int']['output'];
+  education?: Maybe<Education>;
+  message: Scalars['String']['output'];
+};
+
+export type EducationsResponse = {
+  __typename?: 'EducationsResponse';
+  code: Scalars['Int']['output'];
+  educations?: Maybe<Array<Education>>;
+  message: Scalars['String']['output'];
+};
+
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
@@ -121,11 +152,18 @@ export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
   createCategory: CategoryResponse;
+  createEducation: EducationResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  deleteCategory: CategoryResponse;
+  deleteEducation: EducationResponse;
   deleteProject: Response;
+  deleteSkill: SubItemResponse;
   sendContact: MessageType;
+  updateCategory: CategoryResponse;
+  updateEducation: EducationResponse;
   updateProject: ProjectResponse;
+  updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -140,6 +178,11 @@ export type MutationCreateCategoryArgs = {
 };
 
 
+export type MutationCreateEducationArgs = {
+  data: CreateEducationInput;
+};
+
+
 export type MutationCreateProjectArgs = {
   data: CreateProjectInput;
 };
@@ -150,7 +193,22 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationDeleteCategoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteEducationArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteProjectArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSkillArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -160,8 +218,25 @@ export type MutationSendContactArgs = {
 };
 
 
+export type MutationUpdateCategoryArgs = {
+  data: UpdateCategoryInput;
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateEducationArgs = {
+  data: UpdateEducationInput;
+};
+
+
 export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSkillArgs = {
+  data: UpdateSkillInput;
+  id: Scalars['Int']['input'];
 };
 
 
@@ -199,12 +274,18 @@ export type ProjectsResponse = {
 
 export type Query = {
   __typename?: 'Query';
-  educationList: Array<Education>;
+  educationById: EducationResponse;
+  educationList: EducationsResponse;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
+};
+
+
+export type QueryEducationByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -241,6 +322,29 @@ export type SubItemResponse = {
   subItems?: Maybe<Array<SkillSubItem>>;
 };
 
+export type UpdateCategoryInput = {
+  categoryEN?: InputMaybe<Scalars['String']['input']>;
+  categoryFR?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateEducationInput = {
+  diplomaLevelEN?: InputMaybe<Scalars['String']['input']>;
+  diplomaLevelFR?: InputMaybe<Scalars['String']['input']>;
+  endDateEN?: InputMaybe<Scalars['String']['input']>;
+  endDateFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  month?: InputMaybe<Scalars['Int']['input']>;
+  school?: InputMaybe<Scalars['String']['input']>;
+  startDateEN?: InputMaybe<Scalars['String']['input']>;
+  startDateFR?: InputMaybe<Scalars['String']['input']>;
+  titleEN?: InputMaybe<Scalars['String']['input']>;
+  titleFR?: InputMaybe<Scalars['String']['input']>;
+  typeEN?: InputMaybe<Scalars['String']['input']>;
+  typeFR?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type UpdateProjectInput = {
   contentDisplay?: InputMaybe<Scalars['String']['input']>;
   descriptionEN?: InputMaybe<Scalars['String']['input']>;
@@ -250,6 +354,12 @@ export type UpdateProjectInput = {
   skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSkillInput = {
+  categoryId: Scalars['Int']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ValidationResponse = {
@@ -288,7 +398,7 @@ export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __
 export type GetEducationsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEducationsListQuery = { __typename?: 'Query', educationList: Array<{ __typename?: 'Education', id: string, titleEN: string, titleFR: string, diplomaLevelEN: string, diplomaLevelFR: string, school: string, location: string, year: number, startDateEN: string, startDateFR: string, endDateEN: string, endDateFR: string, month?: number | null, typeEN: string, typeFR: string }> };
+export type GetEducationsListQuery = { __typename?: 'Query', educationList: { __typename?: 'EducationsResponse', message: string, code: number, educations?: Array<{ __typename?: 'Education', diplomaLevelEN: string, diplomaLevelFR: string, endDateEN: string, endDateFR: string, id: string, location: string, month?: number | null, school: string, startDateEN: string, startDateFR: string, titleEN: string, titleFR: string, typeEN: string, typeFR: string, year: number }> | null } };
 
 export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -464,21 +574,25 @@ export type GenerateCaptchaQueryResult = Apollo.QueryResult<GenerateCaptchaQuery
 export const GetEducationsListDocument = gql`
     query GetEducationsList {
   educationList {
-    id
-    titleEN
-    titleFR
-    diplomaLevelEN
-    diplomaLevelFR
-    school
-    location
-    year
-    startDateEN
-    startDateFR
-    endDateEN
-    endDateFR
-    month
-    typeEN
-    typeFR
+    message
+    code
+    educations {
+      diplomaLevelEN
+      diplomaLevelFR
+      endDateEN
+      endDateFR
+      id
+      location
+      month
+      school
+      startDateEN
+      startDateFR
+      titleEN
+      titleFR
+      typeEN
+      typeFR
+      year
+    }
   }
 }
     `;
