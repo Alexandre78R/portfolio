@@ -73,4 +73,18 @@ export class EducationResolver {
     }
   }
 
+  @Mutation(() => EducationResponse)
+  async deleteEducation(
+    @Arg("id", () => Int) id: number
+  ): Promise<EducationResponse> {
+    try {
+      const existing = await prisma.education.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Education not found" };
+      await prisma.education.delete({ where: { id } });
+      return { code: 200, message: "Education deleted" };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error deleting education" };
+    }
+  }
 }

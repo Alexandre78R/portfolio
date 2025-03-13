@@ -146,10 +146,12 @@ export type Mutation = {
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
   deleteCategory: CategoryResponse;
+  deleteEducation: EducationResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
   sendContact: MessageType;
   updateCategory: CategoryResponse;
+  updateEducation: EducationResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
@@ -186,6 +188,11 @@ export type MutationDeleteCategoryArgs = {
 };
 
 
+export type MutationDeleteEducationArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteProjectArgs = {
   id: Scalars['Int']['input'];
 };
@@ -204,6 +211,11 @@ export type MutationSendContactArgs = {
 export type MutationUpdateCategoryArgs = {
   data: UpdateCategoryInput;
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateEducationArgs = {
+  data: UpdateEducationInput;
 };
 
 
@@ -303,6 +315,24 @@ export type SubItemResponse = {
 export type UpdateCategoryInput = {
   categoryEN?: InputMaybe<Scalars['String']['input']>;
   categoryFR?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateEducationInput = {
+  diplomaLevelEN?: InputMaybe<Scalars['String']['input']>;
+  diplomaLevelFR?: InputMaybe<Scalars['String']['input']>;
+  endDateEN?: InputMaybe<Scalars['String']['input']>;
+  endDateFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  month?: InputMaybe<Scalars['Int']['input']>;
+  school?: InputMaybe<Scalars['String']['input']>;
+  startDateEN?: InputMaybe<Scalars['String']['input']>;
+  startDateFR?: InputMaybe<Scalars['String']['input']>;
+  titleEN?: InputMaybe<Scalars['String']['input']>;
+  titleFR?: InputMaybe<Scalars['String']['input']>;
+  typeEN?: InputMaybe<Scalars['String']['input']>;
+  typeFR?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateProjectInput = {
