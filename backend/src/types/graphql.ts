@@ -90,6 +90,14 @@ export type Education = {
   year: Scalars['Int']['output'];
 };
 
+export type EducationResponse = {
+  __typename?: 'EducationResponse';
+  code: Scalars['Int']['output'];
+  education?: Maybe<Education>;
+  educations?: Maybe<Array<Education>>;
+  message: Scalars['String']['output'];
+};
+
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
@@ -222,12 +230,18 @@ export type ProjectsResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  educationById: EducationResponse;
   educationList: Array<Education>;
   experienceList: Array<Experience>;
   generateCaptcha: CaptchaResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
+};
+
+
+export type QueryEducationByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
