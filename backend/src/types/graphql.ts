@@ -72,6 +72,21 @@ export type CreateEducationInput = {
   year: Scalars['Int']['input'];
 };
 
+export type CreateExperienceInput = {
+  business: Scalars['String']['input'];
+  employmentContractEN: Scalars['String']['input'];
+  employmentContractFR: Scalars['String']['input'];
+  endDateEN: Scalars['String']['input'];
+  endDateFR: Scalars['String']['input'];
+  jobEN: Scalars['String']['input'];
+  jobFR: Scalars['String']['input'];
+  month: Scalars['Float']['input'];
+  startDateEN: Scalars['String']['input'];
+  startDateFR: Scalars['String']['input'];
+  typeEN: Scalars['String']['input'];
+  typeFR: Scalars['String']['input'];
+};
+
 export type CreateProjectInput = {
   contentDisplay: Scalars['String']['input'];
   descriptionEN: Scalars['String']['input'];
@@ -124,14 +139,14 @@ export type EducationsResponse = {
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
-  employmentContractEN?: Maybe<Scalars['String']['output']>;
-  employmentContractFR?: Maybe<Scalars['String']['output']>;
+  employmentContractEN: Scalars['String']['output'];
+  employmentContractFR: Scalars['String']['output'];
   endDateEN: Scalars['String']['output'];
   endDateFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['Int']['output']>;
+  month: Scalars['Float']['output'];
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
@@ -164,6 +179,7 @@ export type Mutation = {
   clearCaptcha: Scalars['Boolean']['output'];
   createCategory: CategoryResponse;
   createEducation: EducationResponse;
+  createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
   deleteCategory: CategoryResponse;
@@ -191,6 +207,11 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationCreateEducationArgs = {
   data: CreateEducationInput;
+};
+
+
+export type MutationCreateExperienceArgs = {
+  data: CreateExperienceInput;
 };
 
 

@@ -1,9 +1,7 @@
-import { ObjectType, Field, ID, Int } from "type-graphql";
+import { InputType, Field, Int } from "type-graphql";
 
-@ObjectType()
-export class Experience {
-  @Field(() => ID)
-  id: number;
+@InputType()
+export class CreateExperienceInput {
 
   @Field()
   jobEN: string;
@@ -40,4 +38,5 @@ export class Experience {
 
   @Field()
   typeFR: string;
+
 }
