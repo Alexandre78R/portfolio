@@ -189,6 +189,7 @@ export type Mutation = {
   sendContact: MessageType;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
+  updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
@@ -258,6 +259,11 @@ export type MutationUpdateCategoryArgs = {
 
 export type MutationUpdateEducationArgs = {
   data: UpdateEducationInput;
+};
+
+
+export type MutationUpdateExperienceArgs = {
+  data: UpdateExperienceInput;
 };
 
 
@@ -381,6 +387,22 @@ export type UpdateEducationInput = {
   typeEN?: InputMaybe<Scalars['String']['input']>;
   typeFR?: InputMaybe<Scalars['String']['input']>;
   year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateExperienceInput = {
+  business?: InputMaybe<Scalars['String']['input']>;
+  employmentContractEN?: InputMaybe<Scalars['String']['input']>;
+  employmentContractFR?: InputMaybe<Scalars['String']['input']>;
+  endDateEN?: InputMaybe<Scalars['String']['input']>;
+  endDateFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  jobEN?: InputMaybe<Scalars['String']['input']>;
+  jobFR?: InputMaybe<Scalars['String']['input']>;
+  month?: InputMaybe<Scalars['Float']['input']>;
+  startDateEN?: InputMaybe<Scalars['String']['input']>;
+  startDateFR?: InputMaybe<Scalars['String']['input']>;
+  typeEN?: InputMaybe<Scalars['String']['input']>;
+  typeFR?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProjectInput = {
