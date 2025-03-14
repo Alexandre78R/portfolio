@@ -46,7 +46,7 @@ export class ExperienceResolver {
     }
   }
 
-    @Mutation(() => ExperienceResponse)
+  @Mutation(() => ExperienceResponse)
   async updateExperience(
     @Arg("data") data: UpdateExperienceInput
   ): Promise<ExperienceResponse> {
@@ -74,6 +74,21 @@ export class ExperienceResolver {
     } catch (error) {
       console.error(error);
       return { code: 500, message: "Error updating experience" };
+    }
+  }
+
+  @Mutation(() => ExperienceResponse)
+  async deleteExperience(
+    @Arg("id", () => Int) id: number
+  ): Promise<ExperienceResponse> {
+    try {
+      const existing = await prisma.experience.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Experience not found" };
+      await prisma.experience.delete({ where: { id } });
+      return { code: 200, message: "Experience deleted" };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error deleting experience" };
     }
   }
 }

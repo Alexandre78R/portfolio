@@ -184,6 +184,7 @@ export type Mutation = {
   createSkill: SubItemResponse;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
+  deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
   sendContact: MessageType;
@@ -232,6 +233,11 @@ export type MutationDeleteCategoryArgs = {
 
 
 export type MutationDeleteEducationArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteExperienceArgs = {
   id: Scalars['Int']['input'];
 };
 
