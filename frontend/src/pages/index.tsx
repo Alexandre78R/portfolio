@@ -100,8 +100,10 @@ const Home: React.FC = (): React.ReactElement => {
       dispatch(setEducations(formattedEducation));
     }
 
-    if (experiencesData?.data?.experienceList && dataExperiences.length === 0) {
-      const formattedExperience = experiencesData?.data?.experienceList.map((exp) => ({
+    const responseExperience = experiencesData.data?.experienceList;
+
+    if (responseExperience?.code === 200 && responseExperience.experiences && dataExperiences.length === 0) {
+      const formattedExperience = responseExperience.experiences.map((exp) => ({
         ...exp,
         id: parseInt(exp.id, 10),
         month: exp.month ?? null, 

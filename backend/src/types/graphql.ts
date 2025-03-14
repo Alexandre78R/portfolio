@@ -138,6 +138,20 @@ export type Experience = {
   typeFR: Scalars['String']['output'];
 };
 
+export type ExperienceResponse = {
+  __typename?: 'ExperienceResponse';
+  code: Scalars['Int']['output'];
+  experience?: Maybe<Experience>;
+  message: Scalars['String']['output'];
+};
+
+export type ExperiencesResponse = {
+  __typename?: 'ExperiencesResponse';
+  code: Scalars['Int']['output'];
+  experiences?: Maybe<Array<Experience>>;
+  message: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -273,7 +287,8 @@ export type Query = {
   __typename?: 'Query';
   educationById: EducationResponse;
   educationList: EducationsResponse;
-  experienceList: Array<Experience>;
+  experienceById: ExperienceResponse;
+  experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
@@ -282,6 +297,11 @@ export type Query = {
 
 
 export type QueryEducationByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryExperienceByIdArgs = {
   id: Scalars['Int']['input'];
 };
 

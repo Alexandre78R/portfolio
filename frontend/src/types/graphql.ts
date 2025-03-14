@@ -141,6 +141,20 @@ export type Experience = {
   typeFR: Scalars['String']['output'];
 };
 
+export type ExperienceResponse = {
+  __typename?: 'ExperienceResponse';
+  code: Scalars['Int']['output'];
+  experience?: Maybe<Experience>;
+  message: Scalars['String']['output'];
+};
+
+export type ExperiencesResponse = {
+  __typename?: 'ExperiencesResponse';
+  code: Scalars['Int']['output'];
+  experiences?: Maybe<Array<Experience>>;
+  message: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -276,7 +290,8 @@ export type Query = {
   __typename?: 'Query';
   educationById: EducationResponse;
   educationList: EducationsResponse;
-  experienceList: Array<Experience>;
+  experienceById: ExperienceResponse;
+  experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
@@ -285,6 +300,11 @@ export type Query = {
 
 
 export type QueryEducationByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryExperienceByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -403,7 +423,7 @@ export type GetEducationsListQuery = { __typename?: 'Query', educationList: { __
 export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: Array<{ __typename?: 'Experience', id: string, jobEN: string, jobFR: string, business: string, employmentContractEN?: string | null, employmentContractFR?: string | null, startDateEN: string, startDateFR: string, endDateEN: string, endDateFR: string, month?: number | null, typeEN: string, typeFR: string }> };
+export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN?: string | null, business: string, employmentContractFR?: string | null, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month?: number | null, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
 
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -631,19 +651,23 @@ export type GetEducationsListQueryResult = Apollo.QueryResult<GetEducationsListQ
 export const GetExperiencesListDocument = gql`
     query GetExperiencesList {
   experienceList {
-    id
-    jobEN
-    jobFR
-    business
-    employmentContractEN
-    employmentContractFR
-    startDateEN
-    startDateFR
-    endDateEN
-    endDateFR
-    month
-    typeEN
-    typeFR
+    message
+    code
+    experiences {
+      employmentContractEN
+      business
+      employmentContractFR
+      endDateEN
+      endDateFR
+      jobEN
+      id
+      jobFR
+      month
+      startDateEN
+      startDateFR
+      typeEN
+      typeFR
+    }
   }
 }
     `;
