@@ -10,6 +10,7 @@
     "prisma:migrate": "prisma migrate dev --name init --schema=src/prisma/schema.prisma",
     "prisma:update": "npx prisma format --schema=src/prisma/schema.prisma",
     "db:seed": "ts-node src/prisma/scripts/seed.ts",
+    "db:clean": "ts-node src/prisma/scripts/clean.ts",
     "test": "jest --runInBand --watch",
     "test:ci": "jest --runInBand"
   },
