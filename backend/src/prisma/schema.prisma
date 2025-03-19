@@ -82,3 +82,19 @@ model Experience {
   typeEN               String
   typeFR               String
 }
+
+enum Role {
+  admin
+  editor
+  view
+}
+
+model User {
+  id               Int     @id @default(autoincrement())
+  firstname        String
+  lastname         String
+  email            String  @unique
+  password         String
+  role             Role    @default(view)
+  isPasswordChange Boolean @default(false)
+}

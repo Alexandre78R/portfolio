@@ -26,6 +26,7 @@ async function seed() {
   // Vide education et experience
   await prisma.education.deleteMany();
   await prisma.experience.deleteMany();
+  await prisma.user.deleteMany();
 
   // 1) Seed des catégories et des skills déclarés
   for (const cat of skillsData) {

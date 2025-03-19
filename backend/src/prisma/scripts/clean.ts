@@ -26,6 +26,7 @@ async function cleanDatabase() {
     await prisma.skillCategory.deleteMany();
     await prisma.education.deleteMany();
     await prisma.experience.deleteMany();
+    await prisma.user.deleteMany();
     console.log("Data deleted.");
 
     console.log("Resetting auto-increments...");
@@ -36,6 +37,7 @@ async function cleanDatabase() {
 
     await prisma.$executeRawUnsafe('ALTER TABLE `Education` AUTO_INCREMENT = 1;');
     await prisma.$executeRawUnsafe('ALTER TABLE `Experience` AUTO_INCREMENT = 1;');
+    await prisma.$executeRawUnsafe('ALTER TABLE `User` AUTO_INCREMENT = 1;');
     console.log("Auto-increments reset.");
 
     await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1;');
