@@ -30,7 +30,7 @@ export class ContactResolver {
         
         const messageFinalMETEXT = await structureMessageMeTEXT(data);
         const messageFinalMEHTML = await structureMessageMeHTML(data);
-        const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML);
+        const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML, true);
 
         console.log("resutsSendEmail", resultSendEmailME)
         return resultSendEmailME;
