@@ -4,6 +4,7 @@ import { Skill } from "./skill.entity";
 import { SkillSubItem } from "./skillSubItem.entity";
 import { Education } from "./education.entity";
 import { Experience } from "./experience.entity";
+import { User } from "./user.entity";
 
 @ObjectType()
 export class Response {
@@ -72,4 +73,16 @@ export class ExperiencesResponse extends Response {
 export class ExperienceResponse extends Response {
   @Field(() => Experience, { nullable: true })
   experience?: Experience;
+}
+
+@ObjectType()
+export class UserResponse extends Response{
+  @Field(() => User, { nullable: true })
+  user?: User;
+}
+
+@ObjectType()
+export class UsersResponse extends Response{
+  @Field(() => [User], { nullable: true })
+  users?: User[];
 }

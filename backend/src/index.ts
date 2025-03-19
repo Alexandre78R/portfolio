@@ -16,6 +16,8 @@ import { checkApiKey } from './lib/checkApiKey';
 import { ExperienceResolver } from './resolvers/experience.resolver';
 import { EducationResolver } from './resolvers/education.resolver';
 import { ProjectResolver } from './resolvers/project.resolver';
+import { UserResolver } from './resolvers/user.resolver';
+
 export interface MyContext {
   req: express.Request;
   res: express.Response;
@@ -35,7 +37,8 @@ async function main() {
       SkillResolver,
       ProjectResolver,
       ExperienceResolver,
-      EducationResolver
+      EducationResolver,
+      UserResolver,
     ],
     validate: false,
   });
