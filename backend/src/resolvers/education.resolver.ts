@@ -1,8 +1,10 @@
-import { Resolver, Query, Int, Arg, Mutation } from "type-graphql";
+import { Resolver, Query, Int, Arg, Mutation, Authorized, Ctx } from "type-graphql";
 import { Education } from "../entities/education.entity";
 import { PrismaClient } from "@prisma/client";
 import { EducationResponse, EducationsResponse } from "../entities/response.types";
 import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/education.input";
+import { UserRole } from "../entities/user.entity";
+import { MyContext } from "..";
 
 const prisma = new PrismaClient();
 
@@ -34,11 +36,22 @@ export class EducationResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => EducationResponse)
   async createEducation(
-    @Arg("data") data: CreateEducationInput
+    @Arg("data") data: CreateEducationInput,
+    @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const edu = await prisma.education.create({ data });
       return { code: 200, message: "Education created", education: edu };
     } catch (error) {
@@ -47,11 +60,22 @@ export class EducationResolver {
     }
   }
 
+  @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => EducationResponse)
   async updateEducation(
-    @Arg("data") data: UpdateEducationInput
+    @Arg("data") data: UpdateEducationInput,
+    @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin or Editor role required." };
+      }
+
       const existing = await prisma.education.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Education not found" };
       const up = await prisma.education.update({
@@ -80,11 +104,22 @@ export class EducationResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => EducationResponse)
   async deleteEducation(
-    @Arg("id", () => Int) id: number
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const existing = await prisma.education.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Education not found" };
       await prisma.education.delete({ where: { id } });
