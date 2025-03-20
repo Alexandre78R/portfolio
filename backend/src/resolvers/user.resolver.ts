@@ -1,15 +1,16 @@
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { PrismaClient } from "@prisma/client";
 import { User } from "../entities/user.entity";
-import { UsersResponse, UserResponse } from "../entities/response.types";
+import { UsersResponse, UserResponse, LoginResponse } from "../entities/response.types";
 import { UserRole } from "../entities/user.entity";
 import { generateSecurePassword } from "../lib/generateSecurePassword";
 import { sendEmail } from "../mail/mail.service";
-import { CreateUserInput } from "../entities/inputs/user.input";
+import { CreateUserInput, LoginInput } from "../entities/inputs/user.input";
 import argon2 from "argon2";
 import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
 import { Response } from "../entities/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -130,6 +131,44 @@ export class UserResolver {
       return {
         code: 500,
         message: "Server error while updating password.",
+      };
+    }
+  }
+
+  @Mutation(() => LoginResponse) // Spécifie le type de retour
+  async login(@Arg("data") { email, password }: LoginInput): Promise<LoginResponse> {
+    try {
+
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        return { code: 401, message: "Invalid credentials (email or password incorrect)." };
+      }
+
+      const isPasswordValid = await argon2.verify(user.password, password);
+      if (!isPasswordValid) {
+        return { code: 401, message: "Invalid credentials (email or password incorrect)." };
+      }
+
+      const tokenPayload = {
+        userId: user.id,
+      };
+
+      if (!process.env.JWT_SECRET) {
+        return { code: 500, message: "Please check your JWT configuration !" };
+      }
+
+      const token = jwt.sign(tokenPayload, process.env.JWT_SECRET , { expiresIn: "1h" });
+
+      return {
+        code: 200,
+        message: "Login successful.",
+        token: token,
+      };
+    } catch (error) {
+      console.error("Erreur dans login:", error);
+      return {
+        code: 500,
+        message: error instanceof Error ? error.message : "Unexpected server error during login.",
       };
     }
   }

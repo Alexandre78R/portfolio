@@ -15,3 +15,12 @@ export class CreateUserInput {
   @Field()
   role: UserRole;
 }
+
+@InputType()
+export class LoginInput {
+  @Field()
+  email!: string;
+
+  @Field()
+  password!: string;
+}

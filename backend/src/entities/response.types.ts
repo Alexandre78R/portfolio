@@ -86,3 +86,9 @@ export class UsersResponse extends Response{
   @Field(() => [User], { nullable: true })
   users?: User[];
 }
+
+@ObjectType()
+export class LoginResponse extends Response {
+  @Field(() => String, { nullable: true })
+  token?: string;
+}
