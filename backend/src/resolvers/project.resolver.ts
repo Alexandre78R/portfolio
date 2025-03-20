@@ -1,8 +1,10 @@
-import { Resolver, Query, Arg, Int, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Int, Mutation, Authorized, Ctx } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import prisma from "../lib/prisma";
 import { CreateProjectInput, UpdateProjectInput } from "../entities/inputs/project.input";
 import { Response, ProjectResponse, ProjectsResponse } from "../entities/response.types";
+import { UserRole } from "../entities/user.entity";
+import { MyContext } from "..";
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -71,11 +73,22 @@ export class ProjectResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => ProjectResponse)
   async createProject(
-    @Arg("data") data: CreateProjectInput
+    @Arg("data") data: CreateProjectInput,
+    @Ctx() ctx: MyContext
   ): Promise<ProjectResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const validSkills = await prisma.skill.findMany({
         where: { id: { in: data.skillIds } },
       });
@@ -127,11 +140,24 @@ export class ProjectResolver {
     }
   }
 
+  @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => ProjectResponse)
   async updateProject(
-    @Arg("data") data: UpdateProjectInput
+    @Arg("data") data: UpdateProjectInput,
+    @Ctx() ctx: MyContext
   ): Promise<ProjectResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      const authorizedRoles = [UserRole.admin, UserRole.editor];
+
+      if (!authorizedRoles.includes(ctx.user.role)) {
+        return { code: 403, message: "Access denied. Admin or Editor role required." };
+      }
+
       const { id, skillIds, ...rest } = data;
 
       const existingProject = await prisma.project.findUnique({
@@ -186,11 +212,22 @@ export class ProjectResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => Response)
   async deleteProject(
-    @Arg("id", () => Int) id: number
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
   ): Promise<Response> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const existingProject = await prisma.project.findUnique({ where: { id } });
       if (!existingProject) {
         return { code: 404, message: "Project not found" };
