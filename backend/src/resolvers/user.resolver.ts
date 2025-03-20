@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
 import { PrismaClient } from "@prisma/client";
 import { User } from "../entities/user.entity";
 import { UsersResponse, UserResponse, LoginResponse } from "../entities/response.types";
@@ -11,6 +11,8 @@ import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT 
 import { Response } from "../entities/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
 import jwt from "jsonwebtoken";
+import Cookies from "cookies";
+import { MyContext } from "..";
 
 const prisma = new PrismaClient();
 
@@ -135,8 +137,8 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => LoginResponse) // Spécifie le type de retour
-  async login(@Arg("data") { email, password }: LoginInput): Promise<LoginResponse> {
+  @Mutation(() => LoginResponse)
+  async login(@Arg("data") { email, password }: LoginInput, @Ctx() ctx: MyContext): Promise<LoginResponse> {
     try {
 
       const user = await prisma.user.findUnique({ where: { email } });
@@ -157,7 +159,17 @@ export class UserResolver {
         return { code: 500, message: "Please check your JWT configuration !" };
       }
 
-      const token = jwt.sign(tokenPayload, process.env.JWT_SECRET , { expiresIn: "1h" });
+      const token = jwt.sign(tokenPayload, process.env.JWT_SECRET , { expiresIn: "7d" }); 
+
+       const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' as const,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        path: '/',
+      };
+
+      ctx.cookies.set("jwt", token, cookieOptions);
 
       return {
         code: 200,

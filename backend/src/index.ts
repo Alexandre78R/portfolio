@@ -1,4 +1,4 @@
-import 'reflect-metadata'; 
+import 'reflect-metadata';
 import express from "express";
 import http from "http";
 import { ApolloServer } from "@apollo/server";
@@ -17,18 +17,30 @@ import { ExperienceResolver } from './resolvers/experience.resolver';
 import { EducationResolver } from './resolvers/education.resolver';
 import { ProjectResolver } from './resolvers/project.resolver';
 import { UserResolver } from './resolvers/user.resolver';
+import Cookies from "cookies";
+import { PrismaClient } from "@prisma/client";
+import { User, UserRole } from "./entities/user.entity"; 
+import { jwtVerify } from "jose";
+import "dotenv/config";
+
+const prisma = new PrismaClient(); 
+
+export interface JwtPayload {
+  userId: number;
+}
 
 export interface MyContext {
   req: express.Request;
   res: express.Response;
   apiKey: string | undefined;
+  cookies: Cookies;
+  user: User | null;
 }
 
 const app = express();
 const httpServer = http.createServer(app);
 
 async function main() {
-
   const schema = await buildSchema({
     resolvers: [
       ContactResolver,
@@ -41,13 +53,14 @@ async function main() {
       UserResolver,
     ],
     validate: false,
+    // authChecker: customAuthChecker, 
   });
 
   const server = new ApolloServer<MyContext>({
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
-  
+
   await server.start();
 
   app.get('/dynamic-images/:id', (req, res) => {
@@ -70,15 +83,59 @@ async function main() {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => {
+        const cookies = new Cookies(req, res);
+        console.log("cookies:", cookies.get("jwt")); 
+        let user: User | null = null;
+
+        const token = cookies.get("jwt"); 
+        console.log("Token du cookie:", token ? "Présent" : "Absent"); // Log plus clair
+
+        if (token && process.env.JWT_SECRET) {
+          try {
+            const { payload } = await jwtVerify<JwtPayload>(
+              token,
+              new TextEncoder().encode(process.env.JWT_SECRET)
+            );
+
+            console.log("Payload du token décodé:", payload); 
+
+            const prismaUser = await prisma.user.findUnique({
+                where: { id: payload.userId } 
+            });
+
+            if (prismaUser) {
+                user = {
+                  id: prismaUser.id,
+                  email: prismaUser.email,
+                  firstname: prismaUser.firstname,
+                  lastname: prismaUser.lastname,
+                  role: prismaUser.role as UserRole,
+                  isPasswordChange: prismaUser.isPasswordChange,
+                };
+            } else {
+              // console.log("Utilisateur non trouvé en DB pour ID:", payload.userId);
+            }
+
+          } catch (err) {
+            console.error("Erreur de vérification JWT:", err); // Log l'erreur complète
+            cookies.set("jwt", "", { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const });
+          }
+        }
+
         const apiKeyHeader = req.headers['x-api-key'];
         const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
-        // console.log("HEADERS >>>", req.headers); 
-        if (!apiKey)
-          throw new Error('Unauthorized TOKEN API');
-    
-        await checkApiKey(apiKey);
 
-        return { req, res, apiKey };
+        const operationName = req.body.operationName || (req.body.query && req.body.query.match(/(mutation|query)\s+(\w+)/)?.[2]);
+
+        if (!apiKey) {
+          throw new Error('Unauthorized: x-api-key header is missing.');
+        }
+
+        if (apiKey) {
+          await checkApiKey(apiKey);
+        }
+
+        return { req, res, apiKey, cookies, user };
       },
     })
   );

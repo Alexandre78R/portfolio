@@ -26,7 +26,7 @@ export class User {
   email: string;
 
   @Field(() => UserRole)
-  role: UserRole;
+  role!: UserRole;
 
   @Field()
   isPasswordChange: boolean;
