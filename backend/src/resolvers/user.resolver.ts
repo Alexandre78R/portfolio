@@ -1,4 +1,4 @@
-import { Resolver, Query, Arg, Mutation, Ctx } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, Ctx, Authorized } from "type-graphql";
 import { PrismaClient } from "@prisma/client";
 import { User } from "../entities/user.entity";
 import { UsersResponse, UserResponse, LoginResponse } from "../entities/response.types";
@@ -18,9 +18,20 @@ const prisma = new PrismaClient();
 
 @Resolver(() => User)
 export class UserResolver {
+
+  @Authorized([UserRole.admin])
   @Query(() => UsersResponse)
-  async userList(): Promise<UsersResponse> {
+  async userList(@Ctx() ctx: MyContext): Promise<UsersResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const listUserFromPrisma = await prisma.user.findMany();
 
       const users: User[] = listUserFromPrisma.map((u) => ({
@@ -191,6 +202,11 @@ export class UserResolver {
   ): Promise<Response> {
 
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
       ctx.cookies.set("jwt", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

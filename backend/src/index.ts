@@ -22,6 +22,7 @@ import { PrismaClient } from "@prisma/client";
 import { User, UserRole } from "./entities/user.entity"; 
 import { jwtVerify } from "jose";
 import "dotenv/config";
+import { customAuthChecker } from "./lib/authChecker";
 
 const prisma = new PrismaClient(); 
 
@@ -53,7 +54,7 @@ async function main() {
       UserResolver,
     ],
     validate: false,
-    // authChecker: customAuthChecker, 
+    authChecker: customAuthChecker, 
   });
 
   const server = new ApolloServer<MyContext>({
