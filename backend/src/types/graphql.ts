@@ -103,6 +103,13 @@ export type CreateSkillInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreateUserInput = {
+  email: Scalars['String']['input'];
+  firstname: Scalars['String']['input'];
+  lastname: Scalars['String']['input'];
+  role: Scalars['String']['input'];
+};
+
 export type Education = {
   __typename?: 'Education';
   diplomaLevelEN: Scalars['String']['output'];
@@ -176,6 +183,7 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword: Response;
   clearCaptcha: Scalars['Boolean']['output'];
   createCategory: CategoryResponse;
   createEducation: EducationResponse;
@@ -187,6 +195,7 @@ export type Mutation = {
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
+  registerUser: UserResponse;
   sendContact: MessageType;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
@@ -194,6 +203,12 @@ export type Mutation = {
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
+};
+
+
+export type MutationChangePasswordArgs = {
+  email: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
 };
 
 
@@ -249,6 +264,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteSkillArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationRegisterUserArgs = {
+  data: CreateUserInput;
 };
 
 
@@ -326,6 +346,7 @@ export type Query = {
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
+  userList: UsersResponse;
 };
 
 
@@ -348,6 +369,13 @@ export type Response = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
 };
+
+/** User roles */
+export enum Role {
+  Admin = 'admin',
+  Editor = 'editor',
+  View = 'view'
+}
 
 export type Skill = {
   __typename?: 'Skill';
@@ -426,6 +454,30 @@ export type UpdateSkillInput = {
   categoryId: Scalars['Int']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isPasswordChange: Scalars['Boolean']['output'];
+  lastname: Scalars['String']['output'];
+  role: Role;
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  user?: Maybe<User>;
+};
+
+export type UsersResponse = {
+  __typename?: 'UsersResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  users?: Maybe<Array<User>>;
 };
 
 export type ValidationResponse = {

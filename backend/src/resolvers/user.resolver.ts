@@ -8,6 +8,8 @@ import { sendEmail } from "../mail/mail.service";
 import { CreateUserInput } from "../entities/inputs/user.input";
 import argon2 from "argon2";
 import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
+import { Response } from "../entities/response.types";
+import { emailRegex, passwordRegex, checkRegex } from "../regex";
 
 const prisma = new PrismaClient();
 
@@ -39,6 +41,14 @@ export class UserResolver {
     try {
       const existing = await prisma.user.findUnique({ where: { email: data.email } });
       if (existing) return { code: 409, message: "Email already exists" };
+
+      if (!checkRegex(emailRegex, data.email)) {
+      return {
+        code: 400,
+        message:
+          "You have entered an invalid email address.",
+      };
+    }
 
       const plainPassword = generateSecurePassword();
       const hashedPassword = await argon2.hash(plainPassword);
@@ -73,6 +83,53 @@ export class UserResolver {
       return {
         code: 500,
         message: error instanceof Error ? error.message : "Unexpected error",
+      };
+    }
+  }
+
+  @Mutation(() => Response)
+  async changePassword(
+    @Arg("email") email: string,
+    @Arg("newPassword") newPassword: string
+  ): Promise<Response> {
+
+    if (!checkRegex(passwordRegex, newPassword)) {
+      return {
+        code: 400,
+        message:
+          "The password must contain at least 9 characters, with at least one uppercase letter, one lowercase letter, one number and one symbol.",
+      };
+    }
+
+    try {
+
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        return {
+          code: 404,
+          message: "User not found with this email.",
+        };
+      }
+
+      const hashedPassword = await argon2.hash(newPassword);
+
+      await prisma.user.update({
+        where: { email },
+        data: {
+          password: hashedPassword,
+          isPasswordChange: true,
+        },
+      });
+
+      return {
+        code: 200,
+        message: "Password updated successfully.",
+      };
+    } catch (error) {
+      console.error("Erreur dans changePassword:", error);
+      return {
+        code: 500,
+        message: "Server error while updating password.",
       };
     }
   }
