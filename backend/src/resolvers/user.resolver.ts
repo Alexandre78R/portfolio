@@ -184,4 +184,27 @@ export class UserResolver {
       };
     }
   }
+
+  @Mutation(() => Response)
+  async logout(
+    @Ctx() ctx: MyContext 
+  ): Promise<Response> {
+
+    try {
+      ctx.cookies.set("jwt", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' as const,
+        expires: new Date(0),
+        path: '/',
+      });
+
+      ctx.user = null;
+      return { code: 200, message: "Logged out successfully." };
+
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      return { code: 500, message: "An error occurred during logout." };
+    }
+  }
 }

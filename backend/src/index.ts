@@ -88,7 +88,7 @@ async function main() {
         let user: User | null = null;
 
         const token = cookies.get("jwt"); 
-        console.log("Token du cookie:", token ? "Présent" : "Absent"); // Log plus clair
+        console.log("Token du cookie:", token ? "Présent" : "Absent");
 
         if (token && process.env.JWT_SECRET) {
           try {
@@ -104,16 +104,14 @@ async function main() {
             });
 
             if (prismaUser) {
-                user = {
-                  id: prismaUser.id,
-                  email: prismaUser.email,
-                  firstname: prismaUser.firstname,
-                  lastname: prismaUser.lastname,
-                  role: prismaUser.role as UserRole,
-                  isPasswordChange: prismaUser.isPasswordChange,
-                };
-            } else {
-              // console.log("Utilisateur non trouvé en DB pour ID:", payload.userId);
+              user = {
+                id: prismaUser.id,
+                email: prismaUser.email,
+                firstname: prismaUser.firstname,
+                lastname: prismaUser.lastname,
+                role: prismaUser.role as UserRole,
+                isPasswordChange: prismaUser.isPasswordChange,
+              };
             }
 
           } catch (err) {
@@ -125,7 +123,7 @@ async function main() {
         const apiKeyHeader = req.headers['x-api-key'];
         const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
 
-        const operationName = req.body.operationName || (req.body.query && req.body.query.match(/(mutation|query)\s+(\w+)/)?.[2]);
+        // const operationName = req.body.operationName || (req.body.query && req.body.query.match(/(mutation|query)\s+(\w+)/)?.[2]);
 
         if (!apiKey) {
           throw new Error('Unauthorized: x-api-key header is missing.');
