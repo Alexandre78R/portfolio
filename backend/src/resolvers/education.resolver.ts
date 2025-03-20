@@ -72,7 +72,9 @@ export class EducationResolver {
         return { code: 401, message: "Authentication required." };
       }
 
-      if (ctx.user.role !== UserRole.admin) {
+      const authorizedRoles = [UserRole.admin, UserRole.editor];
+
+      if (!authorizedRoles.includes(ctx.user.role)) {
         return { code: 403, message: "Access denied. Admin or Editor role required." };
       }
 

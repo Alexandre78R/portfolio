@@ -1,13 +1,16 @@
-import { Resolver, Query, Arg, Int, Mutation } from "type-graphql";
+import { Resolver, Query, Arg, Int, Mutation, Ctx, Authorized } from "type-graphql";
 import { Experience } from "../entities/experience.entity";
 import { PrismaClient } from "@prisma/client";
 import { ExperienceResponse, ExperiencesResponse } from "../entities/response.types";
 import { CreateExperienceInput, UpdateExperienceInput } from "../entities/inputs/experience.input";
+import { UserRole } from "../entities/user.entity";
+import { MyContext } from "..";
 
 const prisma = new PrismaClient();
 
 @Resolver(() => Experience)
 export class ExperienceResolver {
+
   @Query(() => ExperiencesResponse)
   async experienceList(): Promise<ExperiencesResponse> {
     try {
@@ -33,11 +36,22 @@ export class ExperienceResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => ExperienceResponse)
   async createExperience(
-    @Arg("data") data: CreateExperienceInput
+    @Arg("data") data: CreateExperienceInput,
+    @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const addExperience = await prisma.experience.create({ data });
       return { code: 200, message: "Experience created", experience: addExperience };
     } catch (error) {
@@ -46,11 +60,24 @@ export class ExperienceResolver {
     }
   }
 
+  @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => ExperienceResponse)
   async updateExperience(
-    @Arg("data") data: UpdateExperienceInput
+    @Arg("data") data: UpdateExperienceInput,
+    @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      const authorizedRoles = [UserRole.admin, UserRole.editor];
+
+      if (!authorizedRoles.includes(ctx.user.role)) {
+        return { code: 403, message: "Access denied. Admin or Editor role required." };
+      }
+
       const existing = await prisma.experience.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Experience not found" };
       const up = await prisma.experience.update({
@@ -77,11 +104,22 @@ export class ExperienceResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => ExperienceResponse)
   async deleteExperience(
-    @Arg("id", () => Int) id: number
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const existing = await prisma.experience.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Experience not found" };
       await prisma.experience.delete({ where: { id } });
