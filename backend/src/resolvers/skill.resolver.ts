@@ -1,9 +1,11 @@
-import { Resolver, Query, Mutation, Arg, Int } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Int, Authorized, Ctx } from "type-graphql";
 import prisma from "../lib/prisma";
 import { Skill } from "../entities/skill.entity";
 import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { CategoryResponse, SubItemResponse } from "../entities/response.types";
+import { UserRole } from "../entities/user.entity";
+import { MyContext } from "..";
 
 @Resolver()
 export class SkillResolver {
@@ -32,11 +34,21 @@ export class SkillResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => CategoryResponse)
   async createCategory(
-    @Arg("data") data: CreateCategoryInput
+    @Arg("data") data: CreateCategoryInput,
+    @Ctx() ctx: MyContext
   ): Promise<CategoryResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
       const category = await prisma.skillCategory.create({
         data: { categoryEN: data.categoryEN, categoryFR: data.categoryFR },
       });
@@ -53,11 +65,22 @@ export class SkillResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => SubItemResponse)
   async createSkill(
-    @Arg("data") data: CreateSkillInput
+    @Arg("data") data: CreateSkillInput,
+    @Ctx() ctx: MyContext
   ): Promise<SubItemResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const category = await prisma.skillCategory.findUnique({ where: { id: data.categoryId } });
       if (!category) {
         return { code: 400, message: "Category not found" };
@@ -78,12 +101,25 @@ export class SkillResolver {
     }
   }
 
+  @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => CategoryResponse)
   async updateCategory(
     @Arg("id", () => Int) id: number,
-    @Arg("data") data: UpdateCategoryInput
+    @Arg("data") data: UpdateCategoryInput,
+    @Ctx() ctx: MyContext
   ): Promise<CategoryResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      const authorizedRoles = [UserRole.admin, UserRole.editor];
+
+      if (!authorizedRoles.includes(ctx.user.role)) {
+        return { code: 403, message: "Access denied. Admin or Editor role required." };
+      }
+
       const existing = await prisma.skillCategory.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Category not found" };
       const cat = await prisma.skillCategory.update({
@@ -101,12 +137,25 @@ export class SkillResolver {
     }
   }
 
+  @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => SubItemResponse)
   async updateSkill(
     @Arg("id", () => Int) id: number,
-    @Arg("data") data: UpdateSkillInput
+    @Arg("data") data: UpdateSkillInput,
+     @Ctx() ctx: MyContext
   ): Promise<SubItemResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      const authorizedRoles = [UserRole.admin, UserRole.editor];
+
+      if (!authorizedRoles.includes(ctx.user.role)) {
+        return { code: 403, message: "Access denied. Admin or Editor role required." };
+      }
+
       const existing = await prisma.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found" };
       if (data.categoryId) {
@@ -129,9 +178,19 @@ export class SkillResolver {
     }
   }
 
+  @Authorized([UserRole.admin])
   @Mutation(() => CategoryResponse)
-  async deleteCategory(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
+  async deleteCategory(@Arg("id", () => Int) id: number, @Ctx() ctx: MyContext): Promise<CategoryResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const existing = await prisma.skillCategory.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Category not found" };
 
@@ -157,12 +216,22 @@ export class SkillResolver {
     }
   }
 
-
-    @Mutation(() => SubItemResponse)
+  @Authorized([UserRole.admin])
+  @Mutation(() => SubItemResponse)
   async deleteSkill(
-    @Arg("id", () => Int) id: number
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
   ): Promise<SubItemResponse> {
     try {
+
+      if (!ctx.user) {
+        return { code: 401, message: "Authentication required." };
+      }
+
+      if (ctx.user.role !== UserRole.admin) {
+        return { code: 403, message: "Access denied. Admin role required." };
+      }
+
       const existing = await prisma.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found" };
 
