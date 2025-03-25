@@ -10,6 +10,7 @@ RUN apk --no-cache add \
     musl-dev \
     giflib-dev \
     librsvg-dev \
+    mysql-client \
     python3
 
 RUN mkdir /app

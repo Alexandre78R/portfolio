@@ -23,6 +23,7 @@ import { User, UserRole } from "./entities/user.entity";
 import { jwtVerify } from "jose";
 import "dotenv/config";
 import { customAuthChecker } from "./lib/authChecker";
+import { AdminResolver } from './resolvers/admin.resolver';
 
 const prisma = new PrismaClient(); 
 
@@ -52,6 +53,7 @@ async function main() {
       ExperienceResolver,
       EducationResolver,
       UserResolver,
+      AdminResolver,
     ],
     validate: false,
     authChecker: customAuthChecker, 
