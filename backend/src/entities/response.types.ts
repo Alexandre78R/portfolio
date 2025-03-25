@@ -123,3 +123,25 @@ export class GlobalStatsResponse extends Response {
   @Field(() => GlobalStats, { nullable: true })
   stats?: GlobalStats;
 }
+
+@ObjectType()
+export class BackupFileInfo {
+  @Field()
+  fileName!: string; 
+
+  @Field(() => Int)
+  sizeBytes!: number;
+
+  @Field()
+  createdAt!: Date;
+
+  @Field()
+  modifiedAt!: Date;
+}
+
+@ObjectType()
+export class BackupFilesResponse extends Response {
+
+  @Field(() => [BackupFileInfo], { nullable: true })
+  files?: BackupFileInfo[];
+}
