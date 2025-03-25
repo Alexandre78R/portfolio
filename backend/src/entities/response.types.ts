@@ -92,3 +92,34 @@ export class LoginResponse extends Response {
   @Field(() => String, { nullable: true })
   token?: string;
 }
+
+export @ObjectType()
+class GlobalStats {
+  @Field(() => Int)
+  totalUsers!: number;
+
+  @Field(() => Int)
+  totalProjects!: number;
+
+  @Field(() => Int)
+  totalSkills!: number;
+
+  @Field(() => Int)
+  totalEducations!: number;
+
+  @Field(() => Int)
+  totalExperiences!: number;
+
+  @Field(() => Int)
+  usersByRoleAdmin!: number; 
+  @Field(() => Int)
+  usersByRoleEditor!: number;
+  @Field(() => Int)
+  usersByRoleView!: number;
+}
+
+@ObjectType()
+export class GlobalStatsResponse extends Response {
+  @Field(() => GlobalStats, { nullable: true })
+  stats?: GlobalStats;
+}

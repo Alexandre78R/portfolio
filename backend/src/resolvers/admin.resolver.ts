@@ -1,10 +1,13 @@
-import { Resolver, Mutation, Authorized } from "type-graphql";
+import { Resolver, Mutation, Authorized, Query } from "type-graphql";
 import { UserRole } from "../entities/user.entity";
 import { exec } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import * as util from "util";
-import { Response } from "../entities/response.types";
+import { GlobalStats, GlobalStatsResponse, Response } from "../entities/response.types";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const execPromise = util.promisify(exec);
 
@@ -21,11 +24,10 @@ export class AdminResolver {
   @Mutation(() => Response)
   async generateDatabaseBackup(): Promise<Response> {
     const backupFileName = "bdd.sql";
-    const dataFolderPath = path.join(__dirname, "../data"); // Chemin vers le dossier 'data' à la racine du projet
+    const dataFolderPath = path.join(__dirname, "../data");
     const backupFilePath = path.join(dataFolderPath, backupFileName);
 
     try {
-      // 1. Vérifier et créer le dossier 'data' s'il n'existe pas
       if (!fs.existsSync(dataFolderPath)) {
         fs.mkdirSync(dataFolderPath, { recursive: true });
         console.log(`Dossier 'data' créé à: ${dataFolderPath}`);
@@ -63,6 +65,55 @@ export class AdminResolver {
     } catch (error) {
       console.error("Erreur lors de la génération de la sauvegarde de la base de données:", error);
       return { code: 500, message: "Erreur lors de la génération de la sauvegarde de la base de données" };
+    }
+  }
+
+    /**
+    * Récupère des statistiques globales sur le contenu de la base de données.
+    * Seuls les administrateurs peuvent y accéder.
+    */
+  @Authorized([UserRole.admin])
+  @Query(() => GlobalStatsResponse) // Retourne un objet de statistiques globales
+  async getGlobalStats(): Promise<GlobalStatsResponse> {
+    try {
+
+      const totalUsers = await prisma.user.count();
+      const totalProjects = await prisma.project.count();
+      const totalSkills = await prisma.skill.count();
+      const totalEducations = await prisma.education.count();
+      const totalExperiences = await prisma.experience.count();
+
+      const usersByRole = await prisma.user.groupBy({
+        by: ['role'],
+        _count: {
+          id: true,
+        },
+      });
+
+      const usersByRoleMap = usersByRole.reduce((acc, item) => {
+        acc[item.role] = item._count.id;
+        return acc;
+      }, {} as Record<UserRole, number>); 
+
+      const stats: GlobalStats = {
+        totalUsers,
+        totalProjects,
+        totalSkills,
+        totalEducations,
+        totalExperiences,
+        usersByRoleAdmin: usersByRoleMap[UserRole.admin] || 0,
+        usersByRoleEditor: usersByRoleMap[UserRole.editor] || 0,
+        usersByRoleView: usersByRoleMap[UserRole.view] || 0,
+      };
+
+      return {
+        code: 200,
+        message: "Global statistics fetched successfully.",
+        stats,
+      };
+    } catch (error) {
+      console.error("Error fetching global stats:", error);
+      return { code: 500, message: "Failed to fetch global statistics." };
     }
   }
 }
