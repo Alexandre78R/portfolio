@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Authorized, Query } from "type-graphql";
+import { Resolver, Mutation, Authorized, Query, Arg } from "type-graphql";
 import { UserRole } from "../entities/user.entity";
 import { exec } from "child_process";
 import * as path from "path";
@@ -187,10 +187,56 @@ export class AdminResolver {
 
     } catch (error) {
       console.error("Error listing backup files:", error);
-        return {
+      return {
         code: 500,
         message: `Failed to list backup files: ${error instanceof Error ? error.message : "Unknown error"}`,
         files : [],
+      };
+    }
+  }
+
+    /**
+   * Supprime un fichier de sauvegarde spécifique du dossier 'data'.
+   * Seuls les administrateurs peuvent effectuer cette action.
+   * @param fileName Le nom du fichier de sauvegarde à supprimer.
+   * @returns Un message indiquant le succès ou l'échec de l'opération.
+   */
+  @Authorized([UserRole.admin])
+  @Mutation(() => Response) 
+  async deleteBackupFile(
+    @Arg("fileName") fileName: string
+  ): Promise<Response> {
+    const dataFolderPath = path.join(__dirname, "../data");
+    const filePathToDelete = path.join(dataFolderPath, fileName);
+
+    try {
+      const normalizedFilePath = path.normalize(filePathToDelete);
+      if (!normalizedFilePath.startsWith(dataFolderPath + path.sep)) {
+        // console.warn(`Attempted path traversal detected: ${fileName}`);
+        return {
+          code: 400,
+          message: "Invalid file path. Cannot delete files outside the backup directory.",}
+      }
+
+      if (!fs.existsSync(filePathToDelete)) {
+        return {
+          code: 404,
+          message: `Backup file '${fileName}' not found.`,
+        };
+      }
+
+      await fs.promises.unlink(filePathToDelete);
+
+      return {
+        code: 200,
+        message: `Backup file '${fileName}' deleted successfully.`,
+      };
+
+    } catch (error) {
+      console.error(`Error deleting backup file '${fileName}':`, error);
+      return {
+        code: 500,
+        message: `Failed to delete backup file '${fileName}': ${error instanceof Error ? error.message : "Unknown error"}`,
       };
     }
   }
