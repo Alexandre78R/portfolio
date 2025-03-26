@@ -25,7 +25,6 @@ import "dotenv/config";
 import { customAuthChecker } from "./lib/authChecker";
 import { AdminResolver } from './resolvers/admin.resolver';
 import { generateBadgeSvg } from './lib/badgeGenerator';
-import { loadedLogos, loadLogos } from './lib/logoLoader'; 
 
 const prisma = new PrismaClient(); 
 
@@ -79,9 +78,9 @@ async function main() {
     }
   });
 
-  app.get('/badge/:label/:message/:messageColor/:labelColor/:logo', (req, res) => {
-    const { label, message, messageColor, labelColor, logo } = req.params;
-    const { logoColor, logoPosition } = req.query;
+  app.get('/badge/:label/:message/:messageColor/:labelColor', (req, res) => {
+    const { label, message, messageColor, labelColor } = req.params;
+    const { logo, logoColor, logoPosition } = req.query;
 
     try {
       const decodedLabel = decodeURIComponent(label);
@@ -92,45 +91,34 @@ async function main() {
       const finalLogoPosition: 'left' | 'right' =
         logoPosition === 'right' ? 'right' : 'left';
 
-      let logoDataForBadge: { base64: string; mimeType: string } | undefined;
-      if (logo) {
-        logoDataForBadge = loadedLogos.get(String(logo).toLowerCase());
-        if (!logoDataForBadge) {
-          console.warn(`Logo personnalisé '${logo}' non trouvé dans les logos chargés.`);
-        }
-      }
-
       const svg = generateBadgeSvg(
         decodedLabel,
         decodedMessage,
         decodedMessageColor,
         decodedLabelColor,
-        logoDataForBadge,
+        logo ? String(logo) : undefined,
         logoColor ? String(logoColor) : undefined,
         finalLogoPosition
       );
 
-      res.setHeader('Content-Type', 'image/svg+xml');
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Content-Type', 'image/svg+xml'); 
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
       res.send(svg);
     } catch (error) {
       console.error("Erreur lors de la génération du badge SVG:", error);
-      res.status(500).send('<svg width="120" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
+      res.status(500).send('<svg width="120" height="20" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
     }
   });
 
   app.get('/badge/stats/projects-count', async (req, res) => {
     try {
       const projectCount = await prisma.project.count();
-      const logoData = loadedLogos.get('github'); 
-      if (!logoData) console.warn("Logo 'github' non trouvé pour le badge projets.");
-
       const svg = generateBadgeSvg(
         'Projets',
         String(projectCount),
         '4CAF50',
-        '2F4F4F',
-        logoData,
+        '2F4F4F',  
+        'JavaScript',
         'white',
         'right'
       );
@@ -139,7 +127,7 @@ async function main() {
       res.send(svg);
     } catch (error) {
       console.error("Erreur lors de la génération du badge des projets:", error);
-      res.status(500).send('<svg width="120" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
+      res.status(500).send('<svg width="120" height="20" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
     }
   });
 
@@ -216,4 +204,3 @@ async function main() {
 }
 
 main();
-loadLogos();
