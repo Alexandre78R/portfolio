@@ -8,7 +8,7 @@ export const projectsData = [
       "Semantik est un outil SEO qui vous permet d'identifier les questions les plus posées par les internautes sur Google. En renseignant simplement votre thématique, vous obtenez en un clic une liste exhaustive de ces questions. Utilisez-les pour optimiser la sémantique de vos contenus et répondre aux besoins du SEO.",
     typeDisplay: "image",
     github: undefined,
-    contentDisplay: "https://i.goopics.net/6iqbww.png",
+    contentDisplay: "Semantik.png",
     skills: [
       {
         name: "JavaScript",
@@ -137,7 +137,7 @@ export const projectsData = [
       "NotesApp est une application de prise de notes avec une authentification complète. Espace de administrateur pour gérer les utilisateur, Les utilisateurs peuvent se connecter, s'inscrire, consulter les notes, tout en bénéficiant de fonctionnalités de récupération et de réinitialisation du mot de passe.",
     typeDisplay: "image",
     github: "https://github.com/Alexandre78R/NotesApp",
-    contentDisplay: "https://i.goopics.net/3av36l.png",
+    contentDisplay: "NotesApp.png",
     skills: [
       {
         name: "JavaScript",
@@ -195,7 +195,7 @@ export const projectsData = [
       "Tchat est une application de chat en temps réel où les utilisateurs peuvent s'envoyer des messages instantanément. Le frontend est développé en React, tandis que le backend utilise Express et WebSocket pour gérer la communication en temps réel.",
     typeDisplay: "image",
     github: "https://github.com/Alexandre78R/tchat",
-    contentDisplay: "https://i.goopics.net/r36pm9.png",
+    contentDisplay: "Tchat.png",
     skills: [
       {
         name: "JavaScript",

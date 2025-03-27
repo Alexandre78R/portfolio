@@ -12,6 +12,22 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTimeISO: { input: any; output: any; }
+};
+
+export type BackupFileInfo = {
+  __typename?: 'BackupFileInfo';
+  createdAt: Scalars['DateTimeISO']['output'];
+  fileName: Scalars['String']['output'];
+  modifiedAt: Scalars['DateTimeISO']['output'];
+  sizeBytes: Scalars['Int']['output'];
+};
+
+export type BackupFilesResponse = {
+  __typename?: 'BackupFilesResponse';
+  code: Scalars['Int']['output'];
+  files?: Maybe<Array<BackupFileInfo>>;
+  message: Scalars['String']['output'];
 };
 
 export type CaptchaImage = {
@@ -174,6 +190,37 @@ export type ExperiencesResponse = {
   message: Scalars['String']['output'];
 };
 
+export type GlobalStats = {
+  __typename?: 'GlobalStats';
+  totalEducations: Scalars['Int']['output'];
+  totalExperiences: Scalars['Int']['output'];
+  totalProjects: Scalars['Int']['output'];
+  totalSkills: Scalars['Int']['output'];
+  totalUsers: Scalars['Int']['output'];
+  usersByRoleAdmin: Scalars['Int']['output'];
+  usersByRoleEditor: Scalars['Int']['output'];
+  usersByRoleView: Scalars['Int']['output'];
+};
+
+export type GlobalStatsResponse = {
+  __typename?: 'GlobalStatsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  stats?: Maybe<GlobalStats>;
+};
+
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  token?: Maybe<Scalars['String']['output']>;
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -190,11 +237,15 @@ export type Mutation = {
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
+  generateDatabaseBackup: Response;
+  login: LoginResponse;
+  logout: Response;
   registerUser: UserResponse;
   sendContact: MessageType;
   updateCategory: CategoryResponse;
@@ -242,6 +293,11 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationDeleteBackupFileArgs = {
+  fileName: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteCategoryArgs = {
   id: Scalars['Int']['input'];
 };
@@ -264,6 +320,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteSkillArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  data: LoginInput;
 };
 
 
@@ -343,6 +404,8 @@ export type Query = {
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  getGlobalStats: GlobalStatsResponse;
+  listBackupFiles: BackupFilesResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;

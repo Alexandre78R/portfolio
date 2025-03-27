@@ -143,6 +143,25 @@ async function main() {
     }
   });
 
+  app.get('/upload/:type/:filename', (req, res) => {
+    const { type, filename } = req.params;
+
+    if (!['image', 'video'].includes(type)) {
+      return res.status(400).send('Invalid type. Use "image" or "video".');
+    }
+
+    const filePath = path.join(__dirname, '.', 'uploads', `${type}s`, filename);
+
+    res.sendFile(filePath, (err) => {
+      if (err) {
+        if (!res.headersSent) {
+          console.error(`Fichier non trouvé : ${filePath}`);
+          return res.status(404).send('Fichier non trouvé');
+        }
+      }
+    });
+  });
+
   app.use(
     "/graphql",
     cors<cors.CorsRequest>({
@@ -153,11 +172,11 @@ async function main() {
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const cookies = new Cookies(req, res);
-        console.log("cookies:", cookies.get("jwt")); 
+        // console.log("cookies:", cookies.get("jwt")); 
         let user: User | null = null;
 
         const token = cookies.get("jwt"); 
-        console.log("Token du cookie:", token ? "Présent" : "Absent");
+        // console.log("Token du cookie:", token ? "Présent" : "Absent");
 
         if (token && process.env.JWT_SECRET) {
           try {
@@ -166,7 +185,7 @@ async function main() {
               new TextEncoder().encode(process.env.JWT_SECRET)
             );
 
-            console.log("Payload du token décodé:", payload); 
+            // console.log("Payload du token décodé:", payload); 
 
             const prismaUser = await prisma.user.findUnique({
                 where: { id: payload.userId } 
