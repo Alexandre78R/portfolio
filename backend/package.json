@@ -12,6 +12,7 @@
     "db:seed": "ts-node src/prisma/scripts/seed.ts",
     "db:clean": "ts-node src/prisma/scripts/clean.ts",
     "test": "jest --runInBand --watch",
+    "test:onetest": "jest --runInBand --watch -- tests/resolvers/user/register.test.ts",
     "test:ci": "jest --runInBand"
   },
   "author": "Alexandre Renard",
