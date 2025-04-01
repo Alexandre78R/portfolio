@@ -22,6 +22,9 @@ COPY src/prisma ./src/prisma
 RUN npx prisma generate --schema=src/prisma/schema.prisma
 
 COPY src src
+COPY tests tests
+COPY jest.config.ts jest.config.ts
+
 # COPY codegen.ts .
 
 COPY tsconfig.json .

@@ -14,10 +14,11 @@ import jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { MyContext } from "..";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 @Resolver(() => User)
 export class UserResolver {
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Authorized([UserRole.admin])
   @Query(() => UsersResponse)
@@ -32,7 +33,7 @@ export class UserResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const listUserFromPrisma = await prisma.user.findMany();
+      const listUserFromPrisma = await this.db.user.findMany();
 
       const users: User[] = listUserFromPrisma.map((u) => ({
         id: u.id,
@@ -52,8 +53,9 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async registerUser(@Arg("data") data: CreateUserInput): Promise<UserResponse> {
+    // console.log("📦 DB class used =", this.db === prisma ? "REAL" : "MOCK");
     try {
-      const existing = await prisma.user.findUnique({ where: { email: data.email } });
+      const existing = await this.db.user.findUnique({ where: { email: data.email } });
       if (existing) return { code: 409, message: "Email already exists" };
 
       if (!checkRegex(emailRegex, data.email)) {
@@ -67,7 +69,7 @@ export class UserResolver {
       const plainPassword = generateSecurePassword();
       const hashedPassword = await argon2.hash(plainPassword);
 
-      const createdUser = await prisma.user.create({
+      const createdUser = await this.db.user.create({
         data: {
           firstname: data.firstname,
           lastname: data.lastname,
@@ -117,7 +119,7 @@ export class UserResolver {
 
     try {
 
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await this.db.user.findUnique({ where: { email } });
       if (!user) {
         return {
           code: 404,
@@ -127,7 +129,7 @@ export class UserResolver {
 
       const hashedPassword = await argon2.hash(newPassword);
 
-      await prisma.user.update({
+      await this.db.user.update({
         where: { email },
         data: {
           password: hashedPassword,
@@ -152,7 +154,7 @@ export class UserResolver {
   async login(@Arg("data") { email, password }: LoginInput, @Ctx() ctx: MyContext): Promise<LoginResponse> {
     try {
 
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await this.db.user.findUnique({ where: { email } });
       if (!user) {
         return { code: 401, message: "Invalid credentials (email or password incorrect)." };
       }
