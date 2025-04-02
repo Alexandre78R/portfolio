@@ -11,7 +11,6 @@ import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT 
 import { Response } from "../entities/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
 import jwt from "jsonwebtoken";
-import Cookies from "cookies";
 import { MyContext } from "..";
 
 // const prisma = new PrismaClient();
