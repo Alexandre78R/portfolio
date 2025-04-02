@@ -33,7 +33,7 @@ describe("UserResolver - registerUser", () => {
     (passwordUtils.generateSecurePassword as jest.Mock).mockReturnValue("Secure123!");
     (argon2.hash as jest.Mock).mockResolvedValue("hashed-password");
     (mailService.sendEmail as jest.Mock).mockResolvedValue(undefined);
-    (checkRegex as jest.Mock).mockReturnValue(true); // Assure-toi que la validation regex passe par défaut
+    (checkRegex as jest.Mock).mockReturnValue(true);
   });
 
   it("should return error if email already exists", async () => {
