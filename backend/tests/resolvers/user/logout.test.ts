@@ -20,7 +20,6 @@ describe("UserResolver - logout", () => {
     isPasswordChange: true,
   };
 
-
   const baseMockContext: MyContext = {
     req: {} as any,
     res: {} as any, 
@@ -38,8 +37,6 @@ describe("UserResolver - logout", () => {
     mockCookies.get.mockClear();
   });
 
-
-
   it("should successfully log out an authenticated user", async () => {
 
     const authenticatedContext: MyContext = {
@@ -47,13 +44,10 @@ describe("UserResolver - logout", () => {
       user: mockAuthenticatedUser,
     };
 
-
     const result = await resolver.logout(authenticatedContext);
-
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Logged out successfully.");
-
 
     expect(mockCookies.set).toHaveBeenCalledTimes(1);
     expect(mockCookies.set).toHaveBeenCalledWith(
@@ -71,8 +65,6 @@ describe("UserResolver - logout", () => {
     const setArgs = mockCookies.set.mock.calls[0];
     expect(setArgs[2]?.expires?.getTime()).toBe(0);
 
-
-    
     expect(authenticatedContext.user).toBeNull();
   });
 
@@ -82,17 +74,13 @@ describe("UserResolver - logout", () => {
       ...baseMockContext,
       user: null,
     };
-
    
     const result = await resolver.logout(unauthenticatedContext);
-
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
 
-
     expect(mockCookies.set).not.toHaveBeenCalled();
-
 
     expect(unauthenticatedContext.user).toBeNull();
   });
@@ -110,9 +98,7 @@ describe("UserResolver - logout", () => {
       throw new Error(errorMessage);
     });
 
-
     const result = await resolver.logout(authenticatedContext);
-
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("An error occurred during logout.");

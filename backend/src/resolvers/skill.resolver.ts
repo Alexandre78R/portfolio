@@ -1,18 +1,20 @@
 import { Resolver, Query, Mutation, Arg, Int, Authorized, Ctx } from "type-graphql";
-import prisma from "../lib/prisma";
 import { Skill } from "../entities/skill.entity";
 import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { CategoryResponse, SubItemResponse } from "../entities/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
+import { PrismaClient } from "@prisma/client";
+// import prisma from "../lib/prisma";
 
 @Resolver()
 export class SkillResolver {
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
   @Query(() => CategoryResponse)
   async skillList(): Promise<CategoryResponse> {
     try {
-      const categories = await prisma.skillCategory.findMany({
+      const categories = await this.db.skillCategory.findMany({
         include: { skills: true },
         orderBy: { id: "asc" },
       });
@@ -49,7 +51,7 @@ export class SkillResolver {
       if (ctx.user.role !== UserRole.admin) {
         return { code: 403, message: "Access denied. Admin role required." };
       }
-      const category = await prisma.skillCategory.create({
+      const category = await this.db.skillCategory.create({
         data: { categoryEN: data.categoryEN, categoryFR: data.categoryFR },
       });
       const dto: Skill = {
@@ -81,11 +83,11 @@ export class SkillResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const category = await prisma.skillCategory.findUnique({ where: { id: data.categoryId } });
+      const category = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
       if (!category) {
         return { code: 400, message: "Category not found" };
       }
-      const subItem = await prisma.skill.create({
+      const subItem = await this.db.skill.create({
         data: { name: data.name, image: data.image, categoryId: data.categoryId },
       });
       const dto: SkillSubItem = {
@@ -120,9 +122,9 @@ export class SkillResolver {
         return { code: 403, message: "Access denied. Admin or Editor role required." };
       }
 
-      const existing = await prisma.skillCategory.findUnique({ where: { id } });
+      const existing = await this.db.skillCategory.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Category not found" };
-      const cat = await prisma.skillCategory.update({
+      const cat = await this.db.skillCategory.update({
         where: { id },
         data: {
           categoryEN: data.categoryEN ?? existing.categoryEN,
@@ -156,13 +158,13 @@ export class SkillResolver {
         return { code: 403, message: "Access denied. Admin or Editor role required." };
       }
 
-      const existing = await prisma.skill.findUnique({ where: { id } });
+      const existing = await this.db.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found" };
       if (data.categoryId) {
-        const validCat = await prisma.skillCategory.findUnique({ where: { id: data.categoryId } });
+        const validCat = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!validCat) return { code: 400, message: "Invalid category" };
       }
-      const subItem = await prisma.skill.update({
+      const subItem = await this.db.skill.update({
         where: { id },
         data: {
           name: data.name ?? existing.name,
@@ -191,23 +193,23 @@ export class SkillResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const existing = await prisma.skillCategory.findUnique({ where: { id } });
+      const existing = await this.db.skillCategory.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Category not found" };
 
-      const skills = await prisma.skill.findMany({ where: { categoryId: id }, select: { id: true } });
+      const skills = await this.db.skill.findMany({ where: { categoryId: id }, select: { id: true } });
       const skillIds = skills.map(s => s.id);
 
       if (skillIds.length) {
-        await prisma.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
+        await this.db.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
       }
 
       if (skillIds.length) {
-        await prisma.skill.deleteMany({ where: { id: { in: skillIds } } });
+        await this.db.skill.deleteMany({ where: { id: { in: skillIds } } });
       }
 
-      await prisma.skill.deleteMany({ where: { categoryId: id } });
+      await this.db.skill.deleteMany({ where: { categoryId: id } });
 
-      await prisma.skillCategory.delete({ where: { id } });
+      await this.db.skillCategory.delete({ where: { id } });
 
       return { code: 200, message: "Category and related skills deleted" };
     } catch (error) {
@@ -232,14 +234,14 @@ export class SkillResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const existing = await prisma.skill.findUnique({ where: { id } });
+      const existing = await this.db.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found" };
 
-      await prisma.projectSkill.deleteMany({ where: { skillId: id } });
+      await this.db.projectSkill.deleteMany({ where: { skillId: id } });
 
-      await prisma.skill.deleteMany({ where: { id: id } });
+      await this.db.skill.deleteMany({ where: { id: id } });
 
-      await prisma.skill.deleteMany({ where: { id } });
+      await this.db.skill.deleteMany({ where: { id } });
 
       return { code: 200, message: "Skill and related sub-items deleted" };
     } catch (error) {
