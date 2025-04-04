@@ -223,7 +223,6 @@ export class SkillResolver {
     @Ctx() ctx: MyContext
   ): Promise<SubItemResponse> {
     try {
-
       if (!ctx.user) {
         return { code: 401, message: "Authentication required." };
       }
@@ -237,9 +236,7 @@ export class SkillResolver {
 
       await this.db.projectSkill.deleteMany({ where: { skillId: id } });
 
-      await this.db.skill.deleteMany({ where: { id: id } });
-
-      await this.db.skill.deleteMany({ where: { id } });
+      await this.db.skill.delete({ where: { id } });
 
       return { code: 200, message: "Skill and related sub-items deleted" };
     } catch (error) {
