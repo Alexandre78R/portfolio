@@ -7,7 +7,6 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import cors from "cors";
 import { buildSchema } from "type-graphql";
 import { ContactResolver } from "./resolvers/contact.resolver";
-import { GenerateImageResolver } from "./resolvers/generateImage.resolver";
 import path from 'path';
 import { CaptchaResolver } from './resolvers/captcha.resolver';
 import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
@@ -48,7 +47,6 @@ async function main() {
   const schema = await buildSchema({
     resolvers: [
       ContactResolver,
-      GenerateImageResolver,
       CaptchaResolver,
       SkillResolver,
       ProjectResolver,
