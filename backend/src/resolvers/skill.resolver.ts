@@ -11,6 +11,7 @@ import { PrismaClient } from "@prisma/client";
 @Resolver()
 export class SkillResolver {
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
+  
   @Query(() => CategoryResponse)
   async skillList(): Promise<CategoryResponse> {
     try {
