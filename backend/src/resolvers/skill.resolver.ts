@@ -182,9 +182,11 @@ export class SkillResolver {
 
   @Authorized([UserRole.admin])
   @Mutation(() => CategoryResponse)
-  async deleteCategory(@Arg("id", () => Int) id: number, @Ctx() ctx: MyContext): Promise<CategoryResponse> {
+  async deleteCategory(
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
+  ): Promise<CategoryResponse> {
     try {
-
       if (!ctx.user) {
         return { code: 401, message: "Authentication required." };
       }
@@ -201,10 +203,6 @@ export class SkillResolver {
 
       if (skillIds.length) {
         await this.db.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
-      }
-
-      if (skillIds.length) {
-        await this.db.skill.deleteMany({ where: { id: { in: skillIds } } });
       }
 
       await this.db.skill.deleteMany({ where: { categoryId: id } });
