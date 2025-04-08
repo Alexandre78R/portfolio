@@ -6,7 +6,6 @@ import { CategoryResponse, SubItemResponse } from "../entities/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 import { PrismaClient } from "@prisma/client";
-// import prisma from "../lib/prisma";
 
 @Resolver()
 export class SkillResolver {

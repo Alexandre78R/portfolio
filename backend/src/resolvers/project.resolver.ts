@@ -1,18 +1,19 @@
 import { Resolver, Query, Arg, Int, Mutation, Authorized, Ctx } from "type-graphql";
 import { Project } from "../entities/project.entity";
-import prisma from "../lib/prisma";
 import { CreateProjectInput, UpdateProjectInput } from "../entities/inputs/project.input";
 import { Response, ProjectResponse, ProjectsResponse } from "../entities/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
+import { PrismaClient } from "@prisma/client";
 
 @Resolver(() => Project)
 export class ProjectResolver {
-  
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
+
   @Query(() => ProjectsResponse)
   async projectList(): Promise<ProjectsResponse> {
     try {
-      const projects = await prisma.project.findMany({
+      const projects = await this.db.project.findMany({
         include: {
           skills: {
             include: { skill: true },
@@ -48,7 +49,7 @@ export class ProjectResolver {
     @Arg("id", () => Int) id: number
   ): Promise<ProjectResponse> {
     try {
-      const project = await prisma.project.findUnique({
+      const project = await this.db.project.findUnique({
         where: { id },
         include: { skills: { include: { skill: true } } },
       });
@@ -89,7 +90,7 @@ export class ProjectResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const validSkills = await prisma.skill.findMany({
+      const validSkills = await this.db.skill.findMany({
         where: { id: { in: data.skillIds } },
       });
 
@@ -97,7 +98,7 @@ export class ProjectResolver {
         return { code: 400, message: "One or more skill IDs are invalid." };
       }
 
-      const newProject = await prisma.project.create({
+      const newProject = await this.db.project.create({
         data: {
           title: data.title,
           descriptionEN: data.descriptionEN,
@@ -160,7 +161,7 @@ export class ProjectResolver {
 
       const { id, skillIds, ...rest } = data;
 
-      const existingProject = await prisma.project.findUnique({
+      const existingProject = await this.db.project.findUnique({
         where: { id },
         include: { skills: true },
       });
@@ -170,7 +171,7 @@ export class ProjectResolver {
       }
 
       if (skillIds) {
-        const validSkills = await prisma.skill.findMany({
+        const validSkills = await this.db.skill.findMany({
           where: { id: { in: skillIds } },
         });
 
@@ -178,10 +179,10 @@ export class ProjectResolver {
           return { code: 400, message: "One or more skill IDs are invalid." };
         }
 
-        await prisma.projectSkill.deleteMany({ where: { projectId: id } });
+        await this.db.projectSkill.deleteMany({ where: { projectId: id } });
       }
 
-      const updatedProject = await prisma.project.update({
+      const updatedProject = await this.db.project.update({
         where: { id },
         data: {
           ...rest,
@@ -228,13 +229,13 @@ export class ProjectResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const existingProject = await prisma.project.findUnique({ where: { id } });
+      const existingProject = await this.db.project.findUnique({ where: { id } });
       if (!existingProject) {
         return { code: 404, message: "Project not found" };
       }
 
-      await prisma.projectSkill.deleteMany({ where: { projectId: id } });
-      await prisma.project.delete({ where: { id } });
+      await this.db.projectSkill.deleteMany({ where: { projectId: id } });
+      await this.db.project.delete({ where: { id } });
 
       return { code: 200, message: "Project deleted successfully" };
     } catch (error) {
