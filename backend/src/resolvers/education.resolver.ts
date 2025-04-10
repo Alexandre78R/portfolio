@@ -6,15 +6,15 @@ import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/e
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 
-const prisma = new PrismaClient();
-
 @Resolver(() => Education)
 export class EducationResolver {
+
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => EducationsResponse)
   async educationList(): Promise<EducationsResponse> {
     try {
-      const list = await prisma.education.findMany();
+      const list = await this.db.education.findMany();
       return { code: 200, message: "Educations fetched", educations: list };
     } catch (error) {
       console.error(error);
@@ -27,7 +27,7 @@ export class EducationResolver {
     @Arg("id", () => Int) id: number
   ): Promise<EducationResponse> {
     try {
-      const edu = await prisma.education.findUnique({ where: { id } });
+      const edu = await this.db.education.findUnique({ where: { id } });
       if (!edu) return { code: 404, message: "Education not found" };
       return { code: 200, message: "Education fetched", education: edu };
     } catch (error) {
@@ -52,7 +52,7 @@ export class EducationResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const edu = await prisma.education.create({ data });
+      const edu = await this.db.education.create({ data });
       return { code: 200, message: "Education created", education: edu };
     } catch (error) {
       console.error(error);
@@ -78,9 +78,9 @@ export class EducationResolver {
         return { code: 403, message: "Access denied. Admin or Editor role required." };
       }
 
-      const existing = await prisma.education.findUnique({ where: { id: data.id } });
+      const existing = await this.db.education.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Education not found" };
-      const up = await prisma.education.update({
+      const up = await this.db.education.update({
         where: { id: data.id },
         data: {
           titleFR: data.titleFR ?? existing.titleFR,
@@ -122,9 +122,9 @@ export class EducationResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const existing = await prisma.education.findUnique({ where: { id } });
+      const existing = await this.db.education.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Education not found" };
-      await prisma.education.delete({ where: { id } });
+      await this.db.education.delete({ where: { id } });
       return { code: 200, message: "Education deleted" };
     } catch (error) {
       console.error(error);
