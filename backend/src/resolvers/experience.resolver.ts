@@ -1,20 +1,19 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx, Authorized } from "type-graphql";
 import { Experience } from "../entities/experience.entity";
-import { PrismaClient } from "@prisma/client";
 import { ExperienceResponse, ExperiencesResponse } from "../entities/response.types";
 import { CreateExperienceInput, UpdateExperienceInput } from "../entities/inputs/experience.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
-
-const prisma = new PrismaClient();
+import { PrismaClient } from "@prisma/client";
 
 @Resolver(() => Experience)
 export class ExperienceResolver {
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => ExperiencesResponse)
   async experienceList(): Promise<ExperiencesResponse> {
     try {
-      const list = await prisma.experience.findMany();
+      const list = await this.db.experience.findMany();
       return { code: 200, message: "Experiences fetched", experiences: list };
     } catch (error) {
       console.error(error);
@@ -27,7 +26,7 @@ export class ExperienceResolver {
     @Arg("id", () => Int) id: number
   ): Promise<ExperienceResponse> {
     try {
-      const exp = await prisma.experience.findUnique({ where: { id } });
+      const exp = await this.db.experience.findUnique({ where: { id } });
       if (!exp) return { code: 404, message: "Experience not found" };
       return { code: 200, message: "Experience fetched", experience: exp };
     } catch (error) {
@@ -52,7 +51,7 @@ export class ExperienceResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const addExperience = await prisma.experience.create({ data });
+      const addExperience = await this.db.experience.create({ data });
       return { code: 200, message: "Experience created", experience: addExperience };
     } catch (error) {
       console.error(error);
@@ -78,9 +77,9 @@ export class ExperienceResolver {
         return { code: 403, message: "Access denied. Admin or Editor role required." };
       }
 
-      const existing = await prisma.experience.findUnique({ where: { id: data.id } });
+      const existing = await this.db.experience.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Experience not found" };
-      const up = await prisma.experience.update({
+      const up = await this.db.experience.update({
         where: { id: data.id },
         data: {
           jobEN: data.jobEN ?? existing.jobEN,
@@ -120,9 +119,9 @@ export class ExperienceResolver {
         return { code: 403, message: "Access denied. Admin role required." };
       }
 
-      const existing = await prisma.experience.findUnique({ where: { id } });
+      const existing = await this.db.experience.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Experience not found" };
-      await prisma.experience.delete({ where: { id } });
+      await this.db.experience.delete({ where: { id } });
       return { code: 200, message: "Experience deleted" };
     } catch (error) {
       console.error(error);
