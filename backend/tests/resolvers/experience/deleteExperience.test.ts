@@ -147,7 +147,7 @@ describe("ExperienceResolver - deleteExperience", () => {
     const result: ExperienceResponse = await resolver.deleteExperience(mockExistingExperience.id, adminContext);
 
     expect(result.code).toBe(500);
-    expect(result.message).toBe("Error deleting experience"); // CORRECTED LINE
+    expect(result.message).toBe("Error deleting experience");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
