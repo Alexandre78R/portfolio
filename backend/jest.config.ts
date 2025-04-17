@@ -4,4 +4,5 @@ export default {
   moduleFileExtensions: ["ts", "js", "json"],
   testMatch: ["**/tests/**/*.test.ts"],
   setupFiles: ["dotenv/config"],
+  transformIgnorePatterns: ["/node_modules/"],
 };
