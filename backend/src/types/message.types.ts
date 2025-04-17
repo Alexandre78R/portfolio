@@ -1,10 +1,3 @@
-// export type MessageType = {
-//     label: string;
-//     message : string | unknown;
-//     status : boolean;
-// }
-
-
 import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()

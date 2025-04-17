@@ -1,16 +1,12 @@
 import {
     Arg,
-    Authorized,
     Ctx,
-    Float,
     Mutation,
-    Query,
     Resolver,
 } from "type-graphql";
 
 import {
-    ContactFrom,
-    ContactResponse   
+    ContactFrom,  
 } from "../types/contact.types"
 
 import { sendEmail } from "../mail/mail.service";
