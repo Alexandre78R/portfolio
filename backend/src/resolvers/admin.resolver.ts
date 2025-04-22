@@ -90,6 +90,55 @@ export class AdminResolver {
     }
   }
 
+    /**
+    * Récupère des statistiques globales sur le contenu de la base de données.
+    * Seuls les administrateurs peuvent y accéder.
+    */
+  @Authorized([UserRole.admin])
+  @Query(() => GlobalStatsResponse)
+  async getGlobalStats(): Promise<GlobalStatsResponse> {
+    try {
+
+      const totalUsers = await this.db.user.count();
+      const totalProjects = await this.db.project.count();
+      const totalSkills = await this.db.skill.count();
+      const totalEducations = await this.db.education.count();
+      const totalExperiences = await this.db.experience.count();
+
+      const usersByRole = await this.db.user.groupBy({
+        by: ['role'],
+        _count: {
+          id: true,
+        },
+      });
+
+      const usersByRoleMap = usersByRole.reduce((acc, item) => {
+        acc[item.role] = item._count.id;
+        return acc;
+      }, {} as Record<UserRole, number>); 
+
+      const stats: GlobalStats = {
+        totalUsers,
+        totalProjects,
+        totalSkills,
+        totalEducations,
+        totalExperiences,
+        usersByRoleAdmin: usersByRoleMap[UserRole.admin] || 0,
+        usersByRoleEditor: usersByRoleMap[UserRole.editor] || 0,
+        usersByRoleView: usersByRoleMap[UserRole.view] || 0,
+      };
+
+      return {
+        code: 200,
+        message: "Global statistics fetched successfully.",
+        stats,
+      };
+    } catch (error) {
+      console.error("Error fetching global stats:", error);
+      return { code: 500, message: "Failed to fetch global statistics." };
+    }
+  }
+
   /**
  * Liste les fichiers de sauvegarde présents dans le dossier 'data'.
  * Seuls les administrateurs peuvent y accéder.
