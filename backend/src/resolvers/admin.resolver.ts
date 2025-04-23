@@ -6,6 +6,7 @@ import * as fs from "fs";
 import * as util from "util";
 import { BackupFileInfo, BackupFilesResponse, BackupResponse, GlobalStats, GlobalStatsResponse, Response } from "../entities/response.types";
 import { PrismaClient } from "@prisma/client";
+import { promises as fsPromises } from 'fs';
 
 const execPromise = util.promisify(exec);
 
@@ -13,6 +14,9 @@ const execPromise = util.promisify(exec);
 export class AdminResolver {
 
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
+  
+  private backupDir = path.resolve(__dirname, '../data')
+  
   /**
    * Génère une sauvegarde de la base de données MySQL en utilisant mysqldump.
    * La sauvegarde est enregistrée dans le dossier 'data' à la racine du projet
@@ -147,52 +151,49 @@ export class AdminResolver {
 
   @Authorized([UserRole.admin])
   @Query(() => BackupFilesResponse)
-  async listBackupFiles(): Promise<BackupFilesResponse> {
-    const dataFolderPath = path.join(__dirname, "../data"); 
-
+  async listBackupFiles() {
     try {
-      if (!fs.existsSync(dataFolderPath)) {
-        return {
-          code: 200,
-          message: "Data folder does not exist. No backup files found.",
-          files : [],
-        };
-      }
+      const files = await fsPromises.readdir(this.backupDir);
+      const backupFiles = [];
 
-      const fileNames = await fs.promises.readdir(dataFolderPath);
-      const filesInfo: BackupFileInfo[] = [];
-
-      for (const fileName of fileNames) {
-        const filePath = path.join(dataFolderPath, fileName);
+      for (const file of files) {
+        // console.log(files)
         try {
-          const stats = await fs.promises.stat(filePath);
+          const filePath = path.join(this.backupDir, file);
+          const stats = await fsPromises.stat(filePath);
 
           if (stats.isFile()) {
-            filesInfo.push({
-              fileName: fileName,
-              sizeBytes: stats.size,
-              createdAt: stats.birthtime, 
-              modifiedAt: stats.mtime,
+            backupFiles.push({
+              fileName: file,
+              sizeBytes: stats.size,        
+              modifiedAt: stats.mtime,        
+              createdAt: stats.ctime,
             });
           }
-        } catch (fileStatError) {
-          console.warn(`Could not get stats for file ${fileName}:`, fileStatError);
-
+        } catch (err) {
+          console.warn(`Could not get stats for file ${file}:`, err);
+          // Continue malgré l'erreur
         }
       }
 
       return {
         code: 200,
-        message: "Backup files listed successfully.",
-        files : filesInfo,
+        message: `Backup files listed successfully (${backupFiles.length} files)`,
+        files: backupFiles,
       };
-
-    } catch (error) {
-      console.error("Error listing backup files:", error);
+    } catch (err: any) {
+      if (err.code === 'ENOENT') {
+        // Dossier introuvable : renvoyer succès avec liste vide
+        return {
+          code: 200,
+          message: 'Backup folder does not exist, no files found',
+          files: [],
+        };
+      }
+      console.error('Error listing backup files:', err);
       return {
         code: 500,
-        message: `Failed to list backup files: ${error instanceof Error ? error.message : "Unknown error"}`,
-        files : [],
+        message: `Failed to list backup files: ${err.message}`,
       };
     }
   }

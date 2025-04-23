@@ -30,6 +30,13 @@ export type BackupFilesResponse = {
   message: Scalars['String']['output'];
 };
 
+export type BackupResponse = {
+  __typename?: 'BackupResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+};
+
 export type CaptchaImage = {
   __typename?: 'CaptchaImage';
   id: Scalars['String']['output'];
@@ -243,7 +250,7 @@ export type Mutation = {
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
-  generateDatabaseBackup: Response;
+  generateDatabaseBackup: BackupResponse;
   login: LoginResponse;
   logout: Response;
   registerUser: UserResponse;
