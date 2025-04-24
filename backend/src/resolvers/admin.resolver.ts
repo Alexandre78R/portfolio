@@ -9,6 +9,7 @@ import { PrismaClient } from "@prisma/client";
 import { promises as fsPromises } from 'fs';
 
 const execPromise = util.promisify(exec);
+export const dataFolderPath = path.join(__dirname, "../data");
 
 @Resolver()
 export class AdminResolver {
@@ -205,20 +206,19 @@ export class AdminResolver {
    * @returns Un message indiquant le succès ou l'échec de l'opération.
    */
   @Authorized([UserRole.admin])
-  @Mutation(() => Response) 
+  @Mutation(() => Response)
   async deleteBackupFile(
     @Arg("fileName") fileName: string
   ): Promise<Response> {
-    const dataFolderPath = path.join(__dirname, "../data");
     const filePathToDelete = path.join(dataFolderPath, fileName);
 
     try {
       const normalizedFilePath = path.normalize(filePathToDelete);
       if (!normalizedFilePath.startsWith(dataFolderPath + path.sep)) {
-        // console.warn(`Attempted path traversal detected: ${fileName}`);
         return {
           code: 400,
-          message: "Invalid file path. Cannot delete files outside the backup directory.",}
+          message: "Invalid file path. Cannot delete files outside the backup directory.",
+        };
       }
 
       if (!fs.existsSync(filePathToDelete)) {
