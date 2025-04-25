@@ -78,7 +78,7 @@ describe('generateSecurePassword', () => {
         const password = generateSecurePassword();
         expect(/\s/.test(password)).toBe(false);
     });
-    
+
     it('should not have a single character repeated excessively', () => {
         const password = generateSecurePassword();
         const counts = password.split('').reduce((acc, char) => {
@@ -86,7 +86,7 @@ describe('generateSecurePassword', () => {
             return acc;
         }, {} as Record<string, number>);
 
-        const maxAllowedRepeat = 4; // seuil arbitraire
+        const maxAllowedRepeat = 4;
         for (const count of Object.values(counts)) {
             expect(count).toBeLessThanOrEqual(maxAllowedRepeat);
         }
