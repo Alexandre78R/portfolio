@@ -17,8 +17,8 @@ export function generateBadgeSvg(
   message: string,
   messageColor: string,
   labelColor: string = '555',
-  logoData?: { base64: string; mimeType: string }, // <-- CHANGEMENT ICI
-  logoColor: string = 'white', // Garde pour compatibilité ou si on gère des SVG avec fill
+  logoData?: { base64: string; mimeType: string },
+  logoColor: string = 'white', 
   logoPosition: 'left' | 'right' = 'left'
 ): string {
   // Fonction utilitaire pour échapper le texte SVG

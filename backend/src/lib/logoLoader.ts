@@ -4,16 +4,16 @@ import * as path from 'path';
 export const loadedLogos = new Map<string, { base64: string; mimeType: string }>();
 
 const LOGOS_DIR = path.join(__dirname, '../images/logos'); 
-function getMimeType(filePath: string): string {
+export function getMimeType(filePath: string): string {
+  if (!filePath) {
+    return 'application/octet-stream';
+  }
   const ext = path.extname(filePath).toLowerCase();
-  console.log(`[getMimeType] Fichier: ${path.basename(filePath)}, Extension détectée: '${ext}'`);
   switch (ext) {
     case '.png': return 'image/png';
+    case '.svg': return 'image/svg+xml';
     case '.jpg':
     case '.jpeg': return 'image/jpeg';
-    case '.gif': return 'image/gif';
-    case '.svg': return 'image/svg+xml';
-    case '.webp': return 'image/webp';
     default: return 'application/octet-stream';
   }
 }
