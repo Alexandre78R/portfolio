@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { educationsData } from "@/Data/educationsData";
 
 export type EducationType = {
   id: number;
@@ -18,7 +17,7 @@ export type EducationType = {
   endDateEN: string;
   endDateFR: string;
   endDate?: string;
-  month: number | null;
+  month: number | null | undefined;
   typeEN: string;
   typeFR: string;
   type?: string;
@@ -29,7 +28,7 @@ type EducationsState = {
 };
 
 const initialState: EducationsState = {
-  dataEducations: educationsData,
+  dataEducations: [],
 };
 
 const educationsSlice = createSlice({
@@ -41,7 +40,7 @@ const educationsSlice = createSlice({
     },
     updateEducationsTitle(state, action: PayloadAction<string>) {
       const lang = action.payload;
-      state.dataEducations = educationsData.map((education) => ({
+      state.dataEducations = state.dataEducations.map((education) => ({
         ...education,
         title: lang === "fr" ? education.titleFR : education.titleEN,
         diplomaLevel:

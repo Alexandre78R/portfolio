@@ -19,23 +19,16 @@ import {
   ValidationResponse,
   ChallengeTypeTranslation,
 } from '../types/captcha.types';
-import { checkApiKey } from '../lib/checkApiKey';
-
 
 @Resolver()
 export class CaptchaResolver {
 
   @Query(() => CaptchaResponse)
   async generateCaptcha(@Ctx() context: MyContext): Promise<CaptchaResponse> {
-
-    if (!context.apiKey)
-      throw new Error('Unauthorized TOKEN API');
-
-    await checkApiKey(context.apiKey);
     
     const id = uuidv4();
 
-    const imagesDir = path.join(__dirname, '..', 'images');
+    const imagesDir = path.join(__dirname, '..', 'images/captcha');
 
     const files = fs.readdirSync(imagesDir);
 
@@ -110,11 +103,6 @@ export class CaptchaResolver {
     @Ctx() context: MyContext
   ): Promise<ValidationResponse> {
 
-    if (!context.apiKey)
-      throw new Error('Unauthorized TOKEN API');
-
-    await checkApiKey(context.apiKey);
-
     checkExpiredCaptcha(idCaptcha);
 
     if (!captchaMap[idCaptcha])
@@ -148,11 +136,6 @@ export class CaptchaResolver {
 
   @Mutation(() => Boolean)
   async clearCaptcha(@Arg('idCaptcha') idCaptcha: string, @Ctx() context: MyContext): Promise<boolean> {
-    
-    if (!context.apiKey)
-      throw new Error('Unauthorized TOKEN API');
-
-    await checkApiKey(context.apiKey);
     
     if (!captchaMap[idCaptcha]) {
       return true;

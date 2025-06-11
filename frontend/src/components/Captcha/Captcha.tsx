@@ -97,6 +97,7 @@ const CaptchaModal: React.FC<Props> = ({
             const imageUrls = response.data.generateCaptcha.images.map(
               (img) => img.url
             );
+            console.log("imageUrls", imageUrls)
             preloadImages(imageUrls).then(() => {
               setImages(response.data.generateCaptcha.images);
               setChallengeType(response.data.generateCaptcha.challengeType);
@@ -108,6 +109,7 @@ const CaptchaModal: React.FC<Props> = ({
           }
         })
         .catch((error) => {
+          console.log("error", error);
           showAlert("error", getErrorMessage(error));
           setLoading(false);
           setCheckRefresh(false);
@@ -127,6 +129,7 @@ const CaptchaModal: React.FC<Props> = ({
         generateCaptcha
           .refetch()
           .then((response) => {
+            console.log(response)
             if (response.data) {
               const imageUrls = response.data.generateCaptcha.images.map(
                 (img) => img.url

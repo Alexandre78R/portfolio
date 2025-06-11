@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "generate": "graphql-codegen --watch",
+    "generate": "dotenv -e .env -- graphql-codegen --config codegen.yml --watch",
+    "generatesave": "graphql-codegen --watch",
     "lint": "next lint"
   },
   "dependencies": {
@@ -47,6 +48,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-redux": "^7.1.33",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",

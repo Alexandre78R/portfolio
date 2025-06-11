@@ -10,31 +10,17 @@ services:
       - WDS_SOCKET_HOST=127.0.0.1
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true 
-    depends_on:
-      db:
-        condition: service_healthy
+
     env_file:
       - ./backend/.env
-  db:
-    image: postgres:15
-    ports:
-      - 5432:5432
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    env_file:
-      - ./.env
-    volumes:
-      - portfolio-data:/var/lib/postgresql/data
+
   frontend:
-    build: ./frontend
+    # build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_TOKEN: ${NEXT_PUBLIC_API_TOKEN}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     ports:
       - 3000:3000
     volumes:
@@ -45,6 +31,7 @@ services:
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
       - NEXT_PUBLIC_API_TOKEN=${NEXT_PUBLIC_API_TOKEN}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
       - API_URL=${API_URL}
       - NODE_ENV=development
     env_file:
