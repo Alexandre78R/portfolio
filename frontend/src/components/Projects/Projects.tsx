@@ -23,6 +23,7 @@ const Projects: React.FC<ProjectComponent> = ({
   const { translations } = useLang();
 
   useEffect(() => {
+    console.log("process.env.NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL)
     if (project) {
       setIsClient(true);
     }
