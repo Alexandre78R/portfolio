@@ -638,11 +638,6 @@ export const projectsData = [
         image: "https://img.shields.io/badge/-Karma-3A3A3A?style=flat-square&logo=karma&logoColor=white"
       },
       {
-        name: "Jest",
-        image:
-          "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
-      },
-      {
         name: "Postman",
         image:
           "https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white",
