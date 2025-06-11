@@ -118,65 +118,31 @@ export const skillsData = [
     ],
   },
   {
-    id: 5,
-    categoryEN: "Frontend Development",
-    categoryFR: "Développement Frontend",
-    skills: [
-      {
-        name: "React",
-        image:
-          "https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white",
-      },
-      {
-        name: "Next.js",
-        image:
-          "https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white",
-      },
-      {
-        name: "Redux",
-        image:
-          "https://img.shields.io/badge/-Redux-8C1EB2?style=flat-square&logo=redux&logoColor=white",
-      },
-      {
-        name: "Tailwind CSS",
-        image:
-          "https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white",
-      },
-      {
-        name: "MUI",
-        image:
-          "https://img.shields.io/badge/-MUI-167FDC?style=flat-square&logo=mui&logoColor=white",
-      },
-      {
-        name: "Chakra UI",
-        image:
-          "https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white",
-      },
-      {
-        name: "Bootstrap",
-        image:
-          "https://img.shields.io/badge/-Bootstrap-a259ff?style=flat-square&logo=bootstrap&logoColor=white",
-      },
-      {
-        name: "SASS",
-        image:
-          "https://img.shields.io/badge/-SASS-CC69BF?style=flat-square&logo=sass&logoColor=white",
-      },
-      {
-        name: "HTML5",
-        image:
-          "https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white",
-      },
-      {
-        name: "CSS3",
-        image:
-          "https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white",
-      },
-    ],
-    color: "bg-yellow-500",
+    "id": 5,
+    "categoryEN": "Frontend Frameworks & Libraries",
+    "categoryFR": "Frameworks & Bibliothèques Frontend",
+    "skills": [
+      { "name": "React", "image": "https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white" },
+      { "name": "Next.js", "image": "https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white" },
+      { "name": "Redux", "image": "https://img.shields.io/badge/-Redux-8C1EB2?style=flat-square&logo=redux&logoColor=white" },
+      { "name": "Angular", "image": "https://img.shields.io/badge/-Angular-DD0031?style=flat-square&logo=angular&logoColor=white" },
+      { "name": "RxJS", "image": "https://img.shields.io/badge/-RxJS-B7178C?style=flat-square&logo=reactivex&logoColor=white" }
+    ]
   },
   {
-    id: 6,
+    "id": 6,
+    "categoryEN": "UI Frameworks & Styling Tools",
+    "categoryFR": "Frameworks UI & Outils de Style",
+    "skills": [
+      { "name": "Tailwind CSS", "image": "https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white" },
+      { "name": "MUI", "image": "https://img.shields.io/badge/-MUI-167FDC?style=flat-square&logo=mui&logoColor=white" },
+      { "name": "Chakra UI", "image": "https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white" },
+      { "name": "Bootstrap", "image": "https://img.shields.io/badge/-Bootstrap-a259ff?style=flat-square&logo=bootstrap&logoColor=white" },
+      { "name": "SASS", "image": "https://img.shields.io/badge/-SASS-CC69BF?style=flat-square&logo=sass&logoColor=white" }
+    ]
+  },
+  {
+    id: 7,
     categoryEN: "Testing & Web Scraping",
     categoryFR: "Tests & Scraping Web",
     skills: [
@@ -184,6 +150,10 @@ export const skillsData = [
         name: "Jest",
         image:
           "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
+      },
+      {
+        name: "Karma",
+        image: "https://img.shields.io/badge/-Karma-3A3A3A?style=flat-square&logo=karma&logoColor=white"
       },
       {
         name: "Cypress",
@@ -198,7 +168,7 @@ export const skillsData = [
     ],
   },
   {
-    id: 7,
+    id: 8,
     categoryEN: "Mobile App Development",
     categoryFR: "Développement d'Applications Mobiles",
     skills: [
@@ -220,7 +190,7 @@ export const skillsData = [
     ],
   },
   {
-    id: 8,
+    id: 9,
     categoryEN: "Tools",
     categoryFR: "Outils",
     skills: [
@@ -241,4 +211,13 @@ export const skillsData = [
       },
     ],
   },
+  {
+    "id": 10,
+    "categoryEN": "Markup & Styling Languages",
+    "categoryFR": "Langages de Marquage & de Style",
+    "skills": [
+      { "name": "HTML5", "image": "https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" },
+      { "name": "CSS3", "image": "https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white" }
+    ]
+  }
 ];

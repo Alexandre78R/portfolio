@@ -142,7 +142,7 @@ CREATE TABLE `Project` (
   `github` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `contentDisplay` text COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +160,9 @@ INSERT INTO `Project` VALUES
 (6,'GuessWhat','GuessWhat is a quiz app that allows users to customize their player, choose their favorite themes, and set the number of questions as well as the time per question. GuessWhat offers personalized and flexible entertainment for quiz enthusiasts.','GuessWhat est une application de quiz qui permet aux utilisateurs de personnaliser leur joueur, de choisir leurs thèmes préférés, et de régler le nombre de questions ainsi que le temps par question. GuessWhat offre un divertissement personnalisé et flexible pour les passionnés de quiz.','video','https://github.com/Alexandre78R/Guess','guessWhatApp.mp4'),
 (7,'Wonder Match','Wonder Match is an app for intrepid travelers, helping you choose your destination in a few simple steps: select desired continents, scroll through suggestions, then decide: Match or Pass. Explore activities, tourist sites, and selfie spots for perfectly planned vacations.','Wonder Match est une application pour les voyageurs intrépides, vous aide à choisir votre destination en quelques étapes simples : sélectionnez les continents désirés, faites défiler les suggestions, puis décidez : Match ou Pass. Explorez les activités, sites touristiques et spots pour selfies, pour des vacances parfaitement planifiées.','video','https://github.com/Alexandre78R/WonderMatch','wonderMatch.mp4'),
 (8,'Makesense intranet','Makesense, founded in 2010, encourages sustainability and engagement through ecological and social projects. An intranet platform is needed to create, evaluate, and vote on projects. Administrators can manage users, posts, and roles, with decisions being made through a voting system based on the user\'s role.','Makesense, fondée en 2010, encourage la durabilité et l\'engagement à travers des projets écologiques et sociaux. Une plateforme intranet est nécessaire pour créer, évaluer et voter sur les projets. Les administrateurs peuvent gérer les utilisateurs, les publications et les rôles, les décisions étant prises par un système de vote basé sur le rôle de l\'utilisateur.','video','https://github.com/Alexandre78R/makesense-client','makesense.mp4'),
-(9,'WildCodeHub','WildCodeHub is an online code development platform. Users can create, test, and share their code, with an intuitive interface and backup features. Social interactions are planned, and future developments will include support for new languages and real-time collaboration.','WildCodeHub est une plateforme de développement de code en ligne. Les utilisateurs peuvent créer, tester et partager leur code, avec une interface intuitive et des fonctionnalités de sauvegarde. Des interactions sociales sont prévues, et des évolutions incluront le support de nouveaux langages et la collaboration en temps réel.','video','https://github.com/WildCodeSchool/2309-wns-jaune-wild-code-hub','wildCodeHub.mp4');
+(9,'WildCodeHub','WildCodeHub is an online code development platform. Users can create, test, and share their code, with an intuitive interface and backup features. Social interactions are planned, and future developments will include support for new languages and real-time collaboration.','WildCodeHub est une plateforme de développement de code en ligne. Les utilisateurs peuvent créer, tester et partager leur code, avec une interface intuitive et des fonctionnalités de sauvegarde. Des interactions sociales sont prévues, et des évolutions incluront le support de nouveaux langages et la collaboration en temps réel.','video','https://github.com/WildCodeSchool/2309-wns-jaune-wild-code-hub','wildCodeHub.mp4'),
+(10,'Portfolio','My Portfolio – A personal project built to showcase my background, skills, and projects. Developed with React, Next.js, and TypeScript on the frontend, and Express, GraphQL, and Prisma on the backend. Clean design with Tailwind CSS, for a site that reflects who I am: simple, clear, and efficient.','Mon Portfolio – Un projet personnel qui me permet de présenter mon parcours, mes compétences et mes projets. Conçu avec React, Next.js et TypeScript côté frontend, et un backend en Express, GraphQL et Prisma. Une interface soignée avec Tailwind, pour un site à mon image : simple, clair et efficace.','image','https://github.com/Alexandre78R/portfolio','Portfolio.png'),
+(11,'DailyLog','DailyLog is a personal journaling application that allows users to record their daily moods and view related statistics. The main goal of this project is to practice and deepen Angular skills, while building a simple backend using Express, Prisma, and MySQL to manage the data.','DailyLog est une application de journal de bord personnel permettant d’enregistrer ses humeurs quotidiennes et de visualiser des statistiques associées. Le but principal de ce projet est de pratiquer et approfondir les compétences en Angular, tout en développant un backend simple avec Express, Prisma et MySQL pour gérer les données.','video','https://github.com/Alexandre78R/Project-DailyLog-Angular','dailyLog.mp4');
 /*!40000 ALTER TABLE `Project` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,70 +199,100 @@ INSERT INTO `ProjectSkill` VALUES
 (7,1),
 (8,1),
 (9,2),
+(10,2),
+(11,2),
 (1,3),
 (4,3),
 (5,3),
 (6,3),
 (8,3),
 (9,3),
+(10,3),
+(11,3),
 (9,4),
+(10,4),
 (9,6),
+(10,6),
 (1,7),
 (4,7),
 (5,7),
 (6,7),
 (8,7),
+(10,7),
+(11,7),
 (9,8),
 (8,9),
+(10,9),
+(11,9),
+(10,12),
+(11,12),
 (9,14),
+(10,14),
 (9,15),
+(10,15),
 (9,16),
+(10,16),
 (9,17),
+(10,17),
 (4,19),
 (5,19),
 (6,19),
 (7,19),
 (8,19),
 (9,20),
+(10,20),
 (2,21),
 (4,21),
 (8,21),
-(9,24),
-(1,25),
-(2,25),
-(5,26),
-(7,26),
-(8,26),
+(10,21),
+(11,22),
+(11,23),
+(10,24),
+(11,24),
+(9,26),
 (1,27),
 (2,27),
-(3,27),
-(6,27),
-(1,28),
-(2,28),
-(3,28),
-(4,28),
-(6,28),
+(5,28),
+(7,28),
+(8,28),
 (9,29),
-(1,31),
-(2,31),
+(10,29),
+(11,29),
+(11,30),
+(1,32),
 (2,32),
 (2,33),
-(4,35),
-(6,35),
-(7,35),
-(8,35),
-(9,35),
+(2,34),
 (4,36),
 (6,36),
 (7,36),
 (8,36),
 (9,36),
+(10,36),
 (4,37),
-(5,37),
 (6,37),
 (7,37),
 (8,37),
-(9,37);
+(9,37),
+(10,37),
+(11,37),
+(4,38),
+(5,38),
+(6,38),
+(7,38),
+(8,38),
+(9,38),
+(10,38),
+(11,38),
+(1,39),
+(2,39),
+(3,39),
+(6,39),
+(1,40),
+(2,40),
+(3,40),
+(4,40),
+(6,40);
 /*!40000 ALTER TABLE `ProjectSkill` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +311,7 @@ CREATE TABLE `Skill` (
   PRIMARY KEY (`id`),
   KEY `Skill_categoryId_fkey` (`categoryId`),
   CONSTRAINT `Skill_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `SkillCategory` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,22 +342,25 @@ INSERT INTO `Skill` VALUES
 (19,'React','https://img.shields.io/badge/-React-45b8d8?style=flat-square&logo=react&logoColor=white',5),
 (20,'Next.js','https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white',5),
 (21,'Redux','https://img.shields.io/badge/-Redux-8C1EB2?style=flat-square&logo=redux&logoColor=white',5),
-(22,'Tailwind CSS','https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white',5),
-(23,'MUI','https://img.shields.io/badge/-MUI-167FDC?style=flat-square&logo=mui&logoColor=white',5),
-(24,'Chakra UI','https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white',5),
-(25,'Bootstrap','https://img.shields.io/badge/-Bootstrap-a259ff?style=flat-square&logo=bootstrap&logoColor=white',5),
-(26,'SASS','https://img.shields.io/badge/-SASS-CC69BF?style=flat-square&logo=sass&logoColor=white',5),
-(27,'HTML5','https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white',5),
-(28,'CSS3','https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white',5),
-(29,'Jest','https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white',6),
-(30,'Cypress','https://img.shields.io/badge/-Cypress-1FC824?style=flat-square&logo=cypress&logoColor=white',6),
-(31,'Puppeteer','https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white',6),
-(32,'React Native','https://img.shields.io/badge/-React%20Native-45b8d8?style=flat-square&logo=react&logoColor=white',7),
-(33,'Expo','https://img.shields.io/badge/Expo-000000?style=flat-square&logo=expo&logoColor=white',7),
-(34,'NativeWind','https://img.shields.io/badge/NativeWind-45b8d8?style=flat-square&logo=react&logoColor=white',7),
-(35,'Figma','https://img.shields.io/badge/-Figma-a259ff?style=flat-square&logo=Figma&logoColor=white',8),
-(36,'Postman','https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white',8),
-(37,'Git','https://img.shields.io/badge/-Git-F14E32?style=flat-square&logo=git&logoColor=white',8);
+(22,'Angular','https://img.shields.io/badge/-Angular-DD0031?style=flat-square&logo=angular&logoColor=white',5),
+(23,'RxJS','https://img.shields.io/badge/-RxJS-B7178C?style=flat-square&logo=reactivex&logoColor=white',5),
+(24,'Tailwind CSS','https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white',6),
+(25,'MUI','https://img.shields.io/badge/-MUI-167FDC?style=flat-square&logo=mui&logoColor=white',6),
+(26,'Chakra UI','https://img.shields.io/badge/-Chakra%20UI-36C5CA?style=flat-square&logo=chakra-ui&logoColor=white',6),
+(27,'Bootstrap','https://img.shields.io/badge/-Bootstrap-a259ff?style=flat-square&logo=bootstrap&logoColor=white',6),
+(28,'SASS','https://img.shields.io/badge/-SASS-CC69BF?style=flat-square&logo=sass&logoColor=white',6),
+(29,'Jest','https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white',7),
+(30,'Karma','https://img.shields.io/badge/-Karma-3A3A3A?style=flat-square&logo=karma&logoColor=white',7),
+(31,'Cypress','https://img.shields.io/badge/-Cypress-1FC824?style=flat-square&logo=cypress&logoColor=white',7),
+(32,'Puppeteer','https://img.shields.io/badge/-Puppeteer-1DB356?style=flat-square&logo=puppeteer&logoColor=white',7),
+(33,'React Native','https://img.shields.io/badge/-React%20Native-45b8d8?style=flat-square&logo=react&logoColor=white',8),
+(34,'Expo','https://img.shields.io/badge/Expo-000000?style=flat-square&logo=expo&logoColor=white',8),
+(35,'NativeWind','https://img.shields.io/badge/NativeWind-45b8d8?style=flat-square&logo=react&logoColor=white',8),
+(36,'Figma','https://img.shields.io/badge/-Figma-a259ff?style=flat-square&logo=Figma&logoColor=white',9),
+(37,'Postman','https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white',9),
+(38,'Git','https://img.shields.io/badge/-Git-F14E32?style=flat-square&logo=git&logoColor=white',9),
+(39,'HTML5','https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white',10),
+(40,'CSS3','https://img.shields.io/badge/-CSS3-264de4?style=flat-square&logo=css3&logoColor=white',10);
 /*!40000 ALTER TABLE `Skill` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +376,7 @@ CREATE TABLE `SkillCategory` (
   `categoryEN` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `categoryFR` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -355,10 +390,12 @@ INSERT INTO `SkillCategory` VALUES
 (2,'Backend Development','Développement Backend'),
 (3,'Database - Storage & Query','Base de données - Stockage et Requête'),
 (4,'DevOps','DevOps'),
-(5,'Frontend Development','Développement Frontend'),
-(6,'Testing & Web Scraping','Tests & Scraping Web'),
-(7,'Mobile App Development','Développement d\'Applications Mobiles'),
-(8,'Tools','Outils');
+(5,'Frontend Frameworks & Libraries','Frameworks & Bibliothèques Frontend'),
+(6,'UI Frameworks & Styling Tools','Frameworks UI & Outils de Style'),
+(7,'Testing & Web Scraping','Tests & Scraping Web'),
+(8,'Mobile App Development','Développement d\'Applications Mobiles'),
+(9,'Tools','Outils'),
+(10,'Markup & Styling Languages','Langages de Marquage & de Style');
 /*!40000 ALTER TABLE `SkillCategory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,7 +416,7 @@ CREATE TABLE `User` (
   `isPasswordChange` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_email_key` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,10 +426,7 @@ CREATE TABLE `User` (
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
 INSERT INTO `User` VALUES
-(1,'Alex','Renard','alex@example.com','$argon2id$v=19$m=65536,t=3,p=4$/D/9YSyQY7wRcDJ3eibQYA$AWfavboOaAzIStqiBCiGrpPgkVvqMTqyZiXVK2ZdjVc','admin',0),
-(2,'Jean','Dupont','jean.dupont@example.com','$argon2id$v=19$m=65536,t=3,p=4$5UWMcv7C2FpUOuyszc/r8w$KqYVbkKlDJsbTCt+PuRGjk3dz6wllDPC0VeHDIj+KEQ','admin',0),
-(3,'Alexandre','Renard','alexandre.renard98@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$D0ettbzGiF0VwzCTOZcqDw$uWQrRQFAJS3pTciG6Vib1M9Hn3pz3RnKGnEX5ljRlbw','admin',0),
-(4,'null','null','alex78200785@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$kVBY1hrNsicvqt6XKmFjug$rehCLwzHHmxeEwzyFXKzV/iUw4s2FGKBJb9DM19+vWs','admin',0);
+(1,'Renard','Alexandre','alexandre.renard98@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$bBHt7RmavfL6OFTuMCBrtA$2AZEuz27nGBCy8yo+rjUfUgd6YG9Xx7odJCpNhv3dEc','admin',0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -405,4 +439,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-11 14:51:02
+-- Dump completed on 2025-06-11 19:21:03
