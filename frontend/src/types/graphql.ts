@@ -15,6 +15,29 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTimeISO: { input: any; output: any; }
+};
+
+export type BackupFileInfo = {
+  __typename?: 'BackupFileInfo';
+  createdAt: Scalars['DateTimeISO']['output'];
+  fileName: Scalars['String']['output'];
+  modifiedAt: Scalars['DateTimeISO']['output'];
+  sizeBytes: Scalars['Int']['output'];
+};
+
+export type BackupFilesResponse = {
+  __typename?: 'BackupFilesResponse';
+  code: Scalars['Int']['output'];
+  files?: Maybe<Array<BackupFileInfo>>;
+  message: Scalars['String']['output'];
+};
+
+export type BackupResponse = {
+  __typename?: 'BackupResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  path: Scalars['String']['output'];
 };
 
 export type CaptchaImage = {
@@ -75,6 +98,21 @@ export type CreateEducationInput = {
   year: Scalars['Int']['input'];
 };
 
+export type CreateExperienceInput = {
+  business: Scalars['String']['input'];
+  employmentContractEN: Scalars['String']['input'];
+  employmentContractFR: Scalars['String']['input'];
+  endDateEN: Scalars['String']['input'];
+  endDateFR: Scalars['String']['input'];
+  jobEN: Scalars['String']['input'];
+  jobFR: Scalars['String']['input'];
+  month: Scalars['Float']['input'];
+  startDateEN: Scalars['String']['input'];
+  startDateFR: Scalars['String']['input'];
+  typeEN: Scalars['String']['input'];
+  typeFR: Scalars['String']['input'];
+};
+
 export type CreateProjectInput = {
   contentDisplay: Scalars['String']['input'];
   descriptionEN: Scalars['String']['input'];
@@ -89,6 +127,13 @@ export type CreateSkillInput = {
   categoryId: Scalars['Int']['input'];
   image: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+export type CreateUserInput = {
+  email: Scalars['String']['input'];
+  firstname: Scalars['String']['input'];
+  lastname: Scalars['String']['input'];
+  role: Scalars['String']['input'];
 };
 
 export type Education = {
@@ -127,14 +172,14 @@ export type EducationsResponse = {
 export type Experience = {
   __typename?: 'Experience';
   business: Scalars['String']['output'];
-  employmentContractEN?: Maybe<Scalars['String']['output']>;
-  employmentContractFR?: Maybe<Scalars['String']['output']>;
+  employmentContractEN: Scalars['String']['output'];
+  employmentContractFR: Scalars['String']['output'];
   endDateEN: Scalars['String']['output'];
   endDateFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   jobEN: Scalars['String']['output'];
   jobFR: Scalars['String']['output'];
-  month?: Maybe<Scalars['Int']['output']>;
+  month: Scalars['Float']['output'];
   startDateEN: Scalars['String']['output'];
   startDateFR: Scalars['String']['output'];
   typeEN: Scalars['String']['output'];
@@ -155,6 +200,37 @@ export type ExperiencesResponse = {
   message: Scalars['String']['output'];
 };
 
+export type GlobalStats = {
+  __typename?: 'GlobalStats';
+  totalEducations: Scalars['Int']['output'];
+  totalExperiences: Scalars['Int']['output'];
+  totalProjects: Scalars['Int']['output'];
+  totalSkills: Scalars['Int']['output'];
+  totalUsers: Scalars['Int']['output'];
+  usersByRoleAdmin: Scalars['Int']['output'];
+  usersByRoleEditor: Scalars['Int']['output'];
+  usersByRoleView: Scalars['Int']['output'];
+};
+
+export type GlobalStatsResponse = {
+  __typename?: 'GlobalStatsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  stats?: Maybe<GlobalStats>;
+};
+
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type LoginResponse = {
+  __typename?: 'LoginResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  token?: Maybe<Scalars['String']['output']>;
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -164,21 +240,36 @@ export type MessageType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword: Response;
   clearCaptcha: Scalars['Boolean']['output'];
   createCategory: CategoryResponse;
   createEducation: EducationResponse;
+  createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
+  deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
+  generateDatabaseBackup: BackupResponse;
+  login: LoginResponse;
+  logout: Response;
+  registerUser: UserResponse;
   sendContact: MessageType;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
+  updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
+};
+
+
+export type MutationChangePasswordArgs = {
+  email: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
 };
 
 
@@ -197,6 +288,11 @@ export type MutationCreateEducationArgs = {
 };
 
 
+export type MutationCreateExperienceArgs = {
+  data: CreateExperienceInput;
+};
+
+
 export type MutationCreateProjectArgs = {
   data: CreateProjectInput;
 };
@@ -204,6 +300,11 @@ export type MutationCreateProjectArgs = {
 
 export type MutationCreateSkillArgs = {
   data: CreateSkillInput;
+};
+
+
+export type MutationDeleteBackupFileArgs = {
+  fileName: Scalars['String']['input'];
 };
 
 
@@ -217,6 +318,11 @@ export type MutationDeleteEducationArgs = {
 };
 
 
+export type MutationDeleteExperienceArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteProjectArgs = {
   id: Scalars['Int']['input'];
 };
@@ -224,6 +330,16 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteSkillArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  data: LoginInput;
+};
+
+
+export type MutationRegisterUserArgs = {
+  data: CreateUserInput;
 };
 
 
@@ -240,6 +356,11 @@ export type MutationUpdateCategoryArgs = {
 
 export type MutationUpdateEducationArgs = {
   data: UpdateEducationInput;
+};
+
+
+export type MutationUpdateExperienceArgs = {
+  data: UpdateExperienceInput;
 };
 
 
@@ -293,9 +414,12 @@ export type Query = {
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  getGlobalStats: GlobalStatsResponse;
+  listBackupFiles: BackupFilesResponse;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
+  userList: UsersResponse;
 };
 
 
@@ -318,6 +442,13 @@ export type Response = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
 };
+
+/** User roles */
+export enum Role {
+  Admin = 'admin',
+  Editor = 'editor',
+  View = 'view'
+}
 
 export type Skill = {
   __typename?: 'Skill';
@@ -365,6 +496,22 @@ export type UpdateEducationInput = {
   year?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type UpdateExperienceInput = {
+  business?: InputMaybe<Scalars['String']['input']>;
+  employmentContractEN?: InputMaybe<Scalars['String']['input']>;
+  employmentContractFR?: InputMaybe<Scalars['String']['input']>;
+  endDateEN?: InputMaybe<Scalars['String']['input']>;
+  endDateFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  jobEN?: InputMaybe<Scalars['String']['input']>;
+  jobFR?: InputMaybe<Scalars['String']['input']>;
+  month?: InputMaybe<Scalars['Float']['input']>;
+  startDateEN?: InputMaybe<Scalars['String']['input']>;
+  startDateFR?: InputMaybe<Scalars['String']['input']>;
+  typeEN?: InputMaybe<Scalars['String']['input']>;
+  typeFR?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateProjectInput = {
   contentDisplay?: InputMaybe<Scalars['String']['input']>;
   descriptionEN?: InputMaybe<Scalars['String']['input']>;
@@ -380,6 +527,30 @@ export type UpdateSkillInput = {
   categoryId: Scalars['Int']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isPasswordChange: Scalars['Boolean']['output'];
+  lastname: Scalars['String']['output'];
+  role: Role;
+};
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  user?: Maybe<User>;
+};
+
+export type UsersResponse = {
+  __typename?: 'UsersResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  users?: Maybe<Array<User>>;
 };
 
 export type ValidationResponse = {
@@ -423,7 +594,7 @@ export type GetEducationsListQuery = { __typename?: 'Query', educationList: { __
 export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN?: string | null, business: string, employmentContractFR?: string | null, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month?: number | null, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
+export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN: string, business: string, employmentContractFR: string, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month: number, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
 
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 

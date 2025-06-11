@@ -1,4 +1,3 @@
-import request from 'supertest';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
