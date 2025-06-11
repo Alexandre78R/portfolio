@@ -481,4 +481,177 @@ export const projectsData = [
       },
     ],
   },
+  {
+    id: 10,
+    title: "Portfolio",
+    descriptionEN:
+      "My Portfolio – A personal project built to showcase my background, skills, and projects. Developed with React, Next.js, and TypeScript on the frontend, and Express, GraphQL, and Prisma on the backend. Clean design with Tailwind CSS, for a site that reflects who I am: simple, clear, and efficient.",
+    descriptionFR: 
+      "Mon Portfolio – Un projet personnel qui me permet de présenter mon parcours, mes compétences et mes projets. Conçu avec React, Next.js et TypeScript côté frontend, et un backend en Express, GraphQL et Prisma. Une interface soignée avec Tailwind, pour un site à mon image : simple, clair et efficace.",
+    typeDisplay: "image",
+    github: "https://github.com/Alexandre78R/portfolio",
+    contentDisplay: "Portfolio.png",
+    skills: [
+      {
+        name: "TypeScript",
+        image:
+          "https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white",
+      },
+      {
+        name: "Next.js",
+        image:
+          "https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=next.js&logoColor=white",
+      },
+      {
+        name: "Redux",
+        image:
+          "https://img.shields.io/badge/-Redux-8C1EB2?style=flat-square&logo=redux&logoColor=white",
+      },
+      {
+        name: "Tailwind CSS",
+        image:
+          "https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white",
+      },
+      {
+        name: "Nodejs",
+        image:
+          "https://img.shields.io/badge/-Nodejs-44883e?style=flat-square&logo=Node.js&logoColor=white",
+      },
+      {
+        name: "Express",
+        image:
+          "https://img.shields.io/badge/-Express-000000?style=flat-square&logoColor=white",
+      },
+      {
+        name: "Apollo GraphQL",
+        image:
+          "https://img.shields.io/badge/-Apollo%20GraphQL-311C87?style=flat-square&logo=apollo-graphql&logoColor=white",
+      },
+      {
+        name: "TypeGraphQL",
+        image:
+          "https://img.shields.io/badge/-TypeGraphQL-5149B8?style=flat-square&logo=graphql&logoColor=white",
+      },
+      {
+        name: "MySQL",
+        image:
+          "https://img.shields.io/badge/-MySQL-F29111?style=flat-square&logo=MySQL&logoColor=white",
+      },
+      {
+        name: "Prisma",
+        image:
+          "https://img.shields.io/badge/-Prisma-000000?style=flat-square&logo=Prisma&logoColor=white",
+      },
+      {
+        name: "Docker",
+        image:
+          "https://img.shields.io/badge/-Docker-0db7ed?style=flat-square&logo=docker&logoColor=white",
+      },
+      {
+        name: "Github Action",
+        image:
+          "https://img.shields.io/badge/-Github%20Action-000000?style=flat-square&logo=github$&logoColor=white",
+      },
+      {
+        name: "Caddy",
+        image:
+          "https://img.shields.io/badge/-Caddy-26CFA7?style=flat-square&logo=caddy&logoColor=white",
+      },
+      {
+        name: "Nginx",
+        image:
+          "https://img.shields.io/badge/-Nginx-1EA718?style=flat-square&logo=nginx&logoColor=white",
+      },
+      {
+        name: "Jest",
+        image:
+          "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
+      },
+      {
+        name: "Figma",
+        image:
+          "https://img.shields.io/badge/-Figma-a259ff?style=flat-square&logo=Figma&logoColor=white",
+      },
+      {
+        name: "Postman",
+        image:
+          "https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white",
+      },
+      {
+        name: "Git",
+        image:
+          "https://img.shields.io/badge/-Git-F14E32?style=flat-square&logo=git&logoColor=white",
+      },
+    ],
+  },
+  {
+    id: 11,
+    title: "DailyLog",
+    descriptionEN:
+      "DailyLog is a personal journaling application that allows users to record their daily moods and view related statistics. The main goal of this project is to practice and deepen Angular skills, while building a simple backend using Express, Prisma, and MySQL to manage the data.",
+    descriptionFR: 
+      "DailyLog est une application de journal de bord personnel permettant d’enregistrer ses humeurs quotidiennes et de visualiser des statistiques associées. Le but principal de ce projet est de pratiquer et approfondir les compétences en Angular, tout en développant un backend simple avec Express, Prisma et MySQL pour gérer les données.",
+    typeDisplay: "video",
+    github: "https://github.com/Alexandre78R/Project-DailyLog-Angular",
+    contentDisplay: "dailyLog.mp4",
+    skills: [
+      {
+        name: "TypeScript",
+        image:
+          "https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white",
+      },
+      {
+        name: "Angular",
+        image: "https://img.shields.io/badge/-Angular-DD0031?style=flat-square&logo=angular&logoColor=white"
+      },
+      {
+        name: "RxJS",
+        image: "https://img.shields.io/badge/-RxJS-B7178C?style=flat-square&logo=reactivex&logoColor=white"
+      },
+      {
+        name: "Tailwind CSS",
+        image:
+          "https://img.shields.io/badge/-Tailwind%20CSS-24CDCD?style=flat-square&logo=tailwindcss&logoColor=white",
+      },
+      {
+        name: "Express",
+        image:
+          "https://img.shields.io/badge/-Express-000000?style=flat-square&logoColor=white",
+      },
+      {
+        name: "Nodejs",
+        image:
+          "https://img.shields.io/badge/-Nodejs-44883e?style=flat-square&logo=Node.js&logoColor=white",
+      },
+      {
+        name: "MySQL",
+        image:
+          "https://img.shields.io/badge/-MySQL-F29111?style=flat-square&logo=MySQL&logoColor=white",
+      },
+      {
+        name: "Prisma",
+        image:
+          "https://img.shields.io/badge/-Prisma-000000?style=flat-square&logo=Prisma&logoColor=white",
+      },
+      {
+        name: "Karma",
+        image: "https://img.shields.io/badge/-Karma-3A3A3A?style=flat-square&logo=karma&logoColor=white"
+      },
+      {
+        name: "Jest",
+        image:
+          "https://img.shields.io/badge/-Jest-FC958A?style=flat-square&logo=jest&logoColor=white",
+      },
+      {
+        name: "Postman",
+        image:
+          "https://img.shields.io/badge/-Postman-F66526?style=flat-square&logo=Postman&logoColor=white",
+      },
+      {
+        name: "Git",
+        image:
+          "https://img.shields.io/badge/-Git-F14E32?style=flat-square&logo=git&logoColor=white",
+      },
+    ],
+  },
 ];
