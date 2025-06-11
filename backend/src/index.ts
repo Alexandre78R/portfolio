@@ -70,7 +70,7 @@ async function main() {
     const imageId = req.params.id;
     const filename = captchaImageMap[imageId];
     if (filename) {
-      const imagePath = path.join(__dirname, 'images', filename);
+      const imagePath = path.join(__dirname, 'images/captcha', filename);
       res.sendFile(imagePath);
     } else {
       res.status(404).send('Image not found');

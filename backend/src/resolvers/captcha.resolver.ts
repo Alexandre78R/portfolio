@@ -28,7 +28,7 @@ export class CaptchaResolver {
     
     const id = uuidv4();
 
-    const imagesDir = path.join(__dirname, '..', 'images');
+    const imagesDir = path.join(__dirname, '..', 'images/captcha');
 
     const files = fs.readdirSync(imagesDir);
 
