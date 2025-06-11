@@ -257,7 +257,6 @@ INSERT INTO `ProjectSkill` VALUES
 (8,28),
 (9,29),
 (10,29),
-(11,29),
 (11,30),
 (1,32),
 (2,32),
@@ -416,7 +415,7 @@ CREATE TABLE `User` (
   `isPasswordChange` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_email_key` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -425,8 +424,6 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES
-(1,'Renard','Alexandre','alexandre.renard98@gmail.com','$argon2id$v=19$m=65536,t=3,p=4$bBHt7RmavfL6OFTuMCBrtA$2AZEuz27nGBCy8yo+rjUfUgd6YG9Xx7odJCpNhv3dEc','admin',0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -439,4 +436,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-11 19:21:03
+-- Dump completed on 2025-06-11 19:38:43
