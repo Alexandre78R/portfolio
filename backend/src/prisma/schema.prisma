@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Project {
+  id             Int            @id @default(autoincrement())
+  title          String
+  descriptionEN  String         @db.Text
+  descriptionFR  String         @db.Text
+  typeDisplay    String
+  github         String?
+  contentDisplay String         @db.Text
+  skills         ProjectSkill[]
+}
+
+model SkillCategory {
+  id         Int     @id @default(autoincrement())
+  categoryEN String
+  categoryFR String
+  skills     Skill[]
+}
+
+model Skill {
+  id         Int            @id @default(autoincrement())
+  name       String
+  image      String
+  categoryId Int
+  category   SkillCategory  @relation(fields: [categoryId], references: [id])
+  projects   ProjectSkill[]
+}
+
+model ProjectSkill {
+  projectId Int
+  skillId   Int
+  project   Project @relation(fields: [projectId], references: [id])
+  skill     Skill   @relation(fields: [skillId], references: [id])
+
+  @@id([projectId, skillId])
+}
+
+model Education {
+  id             Int    @id @default(autoincrement())
+  titleFR        String
+  titleEN        String
+  diplomaLevelEN String
+  diplomaLevelFR String
+  school         String
+  location       String
+  year           Int
+  startDateEN    String
+  startDateFR    String
+  endDateEN      String
+  endDateFR      String
+  month          Int
+  typeEN         String
+  typeFR         String
+}
+
+model Experience {
+  id                   Int    @id @default(autoincrement())
+  jobEN                String
+  jobFR                String
+  business             String
+  employmentContractEN String
+  employmentContractFR String
+  startDateEN          String
+  startDateFR          String
+  endDateEN            String
+  endDateFR            String
+  month                Int
+  typeEN               String
+  typeFR               String
+}
+
+enum Role {
+  admin
+  editor
+  view
+}
+
+model User {
+  id               Int     @id @default(autoincrement())
+  firstname        String
+  lastname         String
+  email            String  @unique
+  password         String
+  role             Role    @default(view)
+  isPasswordChange Boolean @default(false)
+}

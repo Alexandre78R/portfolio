@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { projectsData } from "@/Data/projectsData";
 
 type SkillsProject = {
   name: string;
@@ -22,7 +21,7 @@ type ProjectsState = {
 };
 
 const initialState: ProjectsState = {
-  dataProjects: projectsData,
+  dataProjects: [],
 };
 
 const projectsSlice = createSlice({
@@ -34,14 +33,11 @@ const projectsSlice = createSlice({
     },
     updateProjectDescriptions(state, action: PayloadAction<string>) {
       const lang = action.payload;
-      state.dataProjects = projectsData
-        ?.slice()
-        .reverse()
-        .map((project) => ({
-          ...project,
-          description:
-            lang === "fr" ? project.descriptionFR : project.descriptionEN,
-        }));
+      state.dataProjects = state.dataProjects.map((project) => ({
+        ...project,
+        description:
+          lang === "fr" ? project.descriptionFR : project.descriptionEN,
+      })) as any;
     },
   },
 });

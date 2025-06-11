@@ -34,6 +34,13 @@ export type CaptchaResponse = {
   images: Array<CaptchaImage>;
 };
 
+export type CategoryResponse = {
+  __typename?: 'CategoryResponse';
+  categories?: Maybe<Array<Skill>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
 export type ChallengeTypeTranslation = {
   __typename?: 'ChallengeTypeTranslation';
   typeEN: Scalars['String']['output'];
@@ -46,6 +53,108 @@ export type ContactFrom = {
   object: Scalars['String']['input'];
 };
 
+export type CreateCategoryInput = {
+  categoryEN: Scalars['String']['input'];
+  categoryFR: Scalars['String']['input'];
+};
+
+export type CreateEducationInput = {
+  diplomaLevelEN: Scalars['String']['input'];
+  diplomaLevelFR: Scalars['String']['input'];
+  endDateEN: Scalars['String']['input'];
+  endDateFR: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  month: Scalars['Int']['input'];
+  school: Scalars['String']['input'];
+  startDateEN: Scalars['String']['input'];
+  startDateFR: Scalars['String']['input'];
+  titleEN: Scalars['String']['input'];
+  titleFR: Scalars['String']['input'];
+  typeEN: Scalars['String']['input'];
+  typeFR: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type CreateProjectInput = {
+  contentDisplay: Scalars['String']['input'];
+  descriptionEN: Scalars['String']['input'];
+  descriptionFR: Scalars['String']['input'];
+  github?: InputMaybe<Scalars['String']['input']>;
+  skillIds: Array<Scalars['Float']['input']>;
+  title: Scalars['String']['input'];
+  typeDisplay: Scalars['String']['input'];
+};
+
+export type CreateSkillInput = {
+  categoryId: Scalars['Int']['input'];
+  image: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type Education = {
+  __typename?: 'Education';
+  diplomaLevelEN: Scalars['String']['output'];
+  diplomaLevelFR: Scalars['String']['output'];
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  location: Scalars['String']['output'];
+  month?: Maybe<Scalars['Int']['output']>;
+  school: Scalars['String']['output'];
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  titleEN: Scalars['String']['output'];
+  titleFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+  year: Scalars['Int']['output'];
+};
+
+export type EducationResponse = {
+  __typename?: 'EducationResponse';
+  code: Scalars['Int']['output'];
+  education?: Maybe<Education>;
+  message: Scalars['String']['output'];
+};
+
+export type EducationsResponse = {
+  __typename?: 'EducationsResponse';
+  code: Scalars['Int']['output'];
+  educations?: Maybe<Array<Education>>;
+  message: Scalars['String']['output'];
+};
+
+export type Experience = {
+  __typename?: 'Experience';
+  business: Scalars['String']['output'];
+  employmentContractEN?: Maybe<Scalars['String']['output']>;
+  employmentContractFR?: Maybe<Scalars['String']['output']>;
+  endDateEN: Scalars['String']['output'];
+  endDateFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  jobEN: Scalars['String']['output'];
+  jobFR: Scalars['String']['output'];
+  month?: Maybe<Scalars['Int']['output']>;
+  startDateEN: Scalars['String']['output'];
+  startDateFR: Scalars['String']['output'];
+  typeEN: Scalars['String']['output'];
+  typeFR: Scalars['String']['output'];
+};
+
+export type ExperienceResponse = {
+  __typename?: 'ExperienceResponse';
+  code: Scalars['Int']['output'];
+  experience?: Maybe<Experience>;
+  message: Scalars['String']['output'];
+};
+
+export type ExperiencesResponse = {
+  __typename?: 'ExperiencesResponse';
+  code: Scalars['Int']['output'];
+  experiences?: Maybe<Array<Experience>>;
+  message: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -56,7 +165,19 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   clearCaptcha: Scalars['Boolean']['output'];
+  createCategory: CategoryResponse;
+  createEducation: EducationResponse;
+  createProject: ProjectResponse;
+  createSkill: SubItemResponse;
+  deleteCategory: CategoryResponse;
+  deleteEducation: EducationResponse;
+  deleteProject: Response;
+  deleteSkill: SubItemResponse;
   sendContact: MessageType;
+  updateCategory: CategoryResponse;
+  updateEducation: EducationResponse;
+  updateProject: ProjectResponse;
+  updateSkill: SubItemResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -66,8 +187,70 @@ export type MutationClearCaptchaArgs = {
 };
 
 
+export type MutationCreateCategoryArgs = {
+  data: CreateCategoryInput;
+};
+
+
+export type MutationCreateEducationArgs = {
+  data: CreateEducationInput;
+};
+
+
+export type MutationCreateProjectArgs = {
+  data: CreateProjectInput;
+};
+
+
+export type MutationCreateSkillArgs = {
+  data: CreateSkillInput;
+};
+
+
+export type MutationDeleteCategoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteEducationArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteProjectArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSkillArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationSendContactArgs = {
   data: ContactFrom;
+};
+
+
+export type MutationUpdateCategoryArgs = {
+  data: UpdateCategoryInput;
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateEducationArgs = {
+  data: UpdateEducationInput;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSkillArgs = {
+  data: UpdateSkillInput;
+  id: Scalars['Int']['input'];
 };
 
 
@@ -77,10 +260,126 @@ export type MutationValidateCaptchaArgs = {
   selectedIndices: Array<Scalars['Float']['input']>;
 };
 
+export type Project = {
+  __typename?: 'Project';
+  contentDisplay: Scalars['String']['output'];
+  descriptionEN: Scalars['String']['output'];
+  descriptionFR: Scalars['String']['output'];
+  github?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+  title: Scalars['String']['output'];
+  typeDisplay: Scalars['String']['output'];
+};
+
+export type ProjectResponse = {
+  __typename?: 'ProjectResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  project?: Maybe<Project>;
+};
+
+export type ProjectsResponse = {
+  __typename?: 'ProjectsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  projects?: Maybe<Array<Project>>;
+};
+
 export type Query = {
   __typename?: 'Query';
-  contact: Scalars['String']['output'];
+  educationById: EducationResponse;
+  educationList: EducationsResponse;
+  experienceById: ExperienceResponse;
+  experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  projectById: ProjectResponse;
+  projectList: ProjectsResponse;
+  skillList: CategoryResponse;
+};
+
+
+export type QueryEducationByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryExperienceByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type Response = {
+  __typename?: 'Response';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
+export type Skill = {
+  __typename?: 'Skill';
+  categoryEN: Scalars['String']['output'];
+  categoryFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  skills: Array<SkillSubItem>;
+};
+
+export type SkillSubItem = {
+  __typename?: 'SkillSubItem';
+  categoryId: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  image: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type SubItemResponse = {
+  __typename?: 'SubItemResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  subItems?: Maybe<Array<SkillSubItem>>;
+};
+
+export type UpdateCategoryInput = {
+  categoryEN?: InputMaybe<Scalars['String']['input']>;
+  categoryFR?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateEducationInput = {
+  diplomaLevelEN?: InputMaybe<Scalars['String']['input']>;
+  diplomaLevelFR?: InputMaybe<Scalars['String']['input']>;
+  endDateEN?: InputMaybe<Scalars['String']['input']>;
+  endDateFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  month?: InputMaybe<Scalars['Int']['input']>;
+  school?: InputMaybe<Scalars['String']['input']>;
+  startDateEN?: InputMaybe<Scalars['String']['input']>;
+  startDateFR?: InputMaybe<Scalars['String']['input']>;
+  titleEN?: InputMaybe<Scalars['String']['input']>;
+  titleFR?: InputMaybe<Scalars['String']['input']>;
+  typeEN?: InputMaybe<Scalars['String']['input']>;
+  typeFR?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateProjectInput = {
+  contentDisplay?: InputMaybe<Scalars['String']['input']>;
+  descriptionEN?: InputMaybe<Scalars['String']['input']>;
+  descriptionFR?: InputMaybe<Scalars['String']['input']>;
+  github?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  typeDisplay?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSkillInput = {
+  categoryId: Scalars['Int']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ValidationResponse = {
@@ -115,6 +414,26 @@ export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', typeEN: string, typeFR: string, url: string, id: string }>, challengeTypeTranslation: { __typename?: 'ChallengeTypeTranslation', typeEN: string, typeFR: string } } };
+
+export type GetEducationsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEducationsListQuery = { __typename?: 'Query', educationList: { __typename?: 'EducationsResponse', message: string, code: number, educations?: Array<{ __typename?: 'Education', diplomaLevelEN: string, diplomaLevelFR: string, endDateEN: string, endDateFR: string, id: string, location: string, month?: number | null, school: string, startDateEN: string, startDateFR: string, titleEN: string, titleFR: string, typeEN: string, typeFR: string, year: number }> | null } };
+
+export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN?: string | null, business: string, employmentContractFR?: string | null, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month?: number | null, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
+
+export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+
+export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
 
 
 export const ValidateCaptchaDocument = gql`
@@ -272,3 +591,221 @@ export type GenerateCaptchaQueryHookResult = ReturnType<typeof useGenerateCaptch
 export type GenerateCaptchaLazyQueryHookResult = ReturnType<typeof useGenerateCaptchaLazyQuery>;
 export type GenerateCaptchaSuspenseQueryHookResult = ReturnType<typeof useGenerateCaptchaSuspenseQuery>;
 export type GenerateCaptchaQueryResult = Apollo.QueryResult<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>;
+export const GetEducationsListDocument = gql`
+    query GetEducationsList {
+  educationList {
+    message
+    code
+    educations {
+      diplomaLevelEN
+      diplomaLevelFR
+      endDateEN
+      endDateFR
+      id
+      location
+      month
+      school
+      startDateEN
+      startDateFR
+      titleEN
+      titleFR
+      typeEN
+      typeFR
+      year
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEducationsListQuery__
+ *
+ * To run a query within a React component, call `useGetEducationsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEducationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEducationsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetEducationsListQuery(baseOptions?: Apollo.QueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+      }
+export function useGetEducationsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+        }
+export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
+        }
+export type GetEducationsListQueryHookResult = ReturnType<typeof useGetEducationsListQuery>;
+export type GetEducationsListLazyQueryHookResult = ReturnType<typeof useGetEducationsListLazyQuery>;
+export type GetEducationsListSuspenseQueryHookResult = ReturnType<typeof useGetEducationsListSuspenseQuery>;
+export type GetEducationsListQueryResult = Apollo.QueryResult<GetEducationsListQuery, GetEducationsListQueryVariables>;
+export const GetExperiencesListDocument = gql`
+    query GetExperiencesList {
+  experienceList {
+    message
+    code
+    experiences {
+      employmentContractEN
+      business
+      employmentContractFR
+      endDateEN
+      endDateFR
+      jobEN
+      id
+      jobFR
+      month
+      startDateEN
+      startDateFR
+      typeEN
+      typeFR
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetExperiencesListQuery__
+ *
+ * To run a query within a React component, call `useGetExperiencesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExperiencesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExperiencesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetExperiencesListQuery(baseOptions?: Apollo.QueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+      }
+export function useGetExperiencesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+        }
+export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
+        }
+export type GetExperiencesListQueryHookResult = ReturnType<typeof useGetExperiencesListQuery>;
+export type GetExperiencesListLazyQueryHookResult = ReturnType<typeof useGetExperiencesListLazyQuery>;
+export type GetExperiencesListSuspenseQueryHookResult = ReturnType<typeof useGetExperiencesListSuspenseQuery>;
+export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
+export const GetProjectsListDocument = gql`
+    query GetProjectsList {
+  projectList {
+    message
+    code
+    projects {
+      contentDisplay
+      descriptionEN
+      descriptionFR
+      github
+      id
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      title
+      typeDisplay
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectsListQuery__
+ *
+ * To run a query within a React component, call `useGetProjectsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProjectsListQuery(baseOptions?: Apollo.QueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+      }
+export function useGetProjectsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+        }
+export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
+        }
+export type GetProjectsListQueryHookResult = ReturnType<typeof useGetProjectsListQuery>;
+export type GetProjectsListLazyQueryHookResult = ReturnType<typeof useGetProjectsListLazyQuery>;
+export type GetProjectsListSuspenseQueryHookResult = ReturnType<typeof useGetProjectsListSuspenseQuery>;
+export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
+export const GetSkillsListDocument = gql`
+    query GetSkillsList {
+  skillList {
+    categories {
+      categoryFR
+      id
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      categoryEN
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useGetSkillsListQuery__
+ *
+ * To run a query within a React component, call `useGetSkillsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSkillsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSkillsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSkillsListQuery(baseOptions?: Apollo.QueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+      }
+export function useGetSkillsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+        }
+export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
+        }
+export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQuery>;
+export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
+export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
+export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;

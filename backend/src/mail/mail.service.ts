@@ -22,23 +22,32 @@ const transporter = nodemailer.createTransport({
   // },
 } as SMTPTransport.Options);
 
-export const sendEmail = async (email: string, subject: string, text: string, html: string): Promise<MessageType> => {
+export const sendEmail = async (
+  email: string,
+  subject: string,
+  text: string,
+  html: string,
+  sendToMe: boolean = false,
+): Promise<MessageType> => {
+
+  const recipient = sendToMe ? user : email;
+
   const mailOptions = {
     from: user,
-    to : user,
+    to: recipient,
     subject,
     text,
     html,
-};
+  };
 
   try {
     await transporter.sendMail(mailOptions);
-    return  { label : "emailSent", message : "Email sent", status: true }
+    return { label: "emailSent", message: "Email sent", status: true };
   } catch (error) {
-    return  { 
-      label : "emailNoSent",
+    return {
+      label: "emailNoSent",
       message: error instanceof Error ? error.message : 'Unknown error',
-      status: false 
-    }
+      status: false,
+    };
   }
 };

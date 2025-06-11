@@ -1,0 +1,14 @@
+verbose: true
+
+schema:
+  - http://localhost:4000/graphql:
+      headers:
+        x-api-key: "${API_KEY}"
+
+generates:
+  ./src/types/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      useIndexSignature: true
