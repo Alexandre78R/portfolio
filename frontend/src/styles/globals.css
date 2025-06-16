@@ -173,3 +173,7 @@ body {
 .Toastify__toast--warn .Toastify__close-button {
   color: var(--text-button-color);
 }
+
+html {
+  scroll-behavior: smooth;
+}
