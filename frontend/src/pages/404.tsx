@@ -13,15 +13,14 @@ const Custom404 = (): React.ReactElement => {
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] mt-[64px] px-4 bg-body">
         <div className="flex flex-col items-center">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
-            <circle cx="100" cy="100" r="100" fill="#f3f4f6" />
             <text
               x="100"
               y="115"
               textAnchor="middle"
               fontSize="72"
-              fill="#a3a3a3"
               fontWeight="bold"
               fontFamily="monospace"
+              style={{ fill: "var(--primary-color)" }}
             >
               404
             </text>
