@@ -6,7 +6,7 @@ const TotoPage = () => {
   }, []);
 
   return (
-    <div className="mt-[100px] px-4">
+    <div className="mt-[64px] px-4">
       <h1 className="text-primary">Page de toto</h1>
       <h1 className="text-primary">Page de toto</h1>
       <h1 className="text-primary">Page de toto</h1>
