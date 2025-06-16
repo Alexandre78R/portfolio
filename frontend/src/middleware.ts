@@ -23,9 +23,9 @@ const middleware = async (request: NextRequest): Promise<NextResponse> => {
   // Autoriser accès libre aux pages non connecté
   if (
     pathname.startsWith("/admin/auth/login") ||
-    pathname.startsWith("/admin/auth/ForgotPassword") ||
+    pathname.startsWith("/admin/auth/forgotpassword") ||
     pathname.startsWith("/admin/auth/register") ||
-    pathname.startsWith("/admin/auth/ChoicePassword")
+    pathname.startsWith("/admin/auth/choicepassword")
   ) {
     console.log("je suis là")
     return response;

@@ -4,17 +4,15 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 
-type ChoicePasswordFormState = {
-  password: string;
-  newPassword: string;
+type ForgotPasswordFormState = {
+  email: string;
 };
 
-const ChoicePasswordPage = (): React.ReactElement => {
+const ForgotPasswordPage = (): React.ReactElement => {
   const { translations } = useLang();
 
-  const [form, setForm] = useState<ChoicePasswordFormState>({
-    password: "",
-    newPassword: "",
+  const [form, setForm] = useState<ForgotPasswordFormState>({
+    email: "",
   });
 
   const handleChange = (
@@ -29,31 +27,23 @@ const ChoicePasswordPage = (): React.ReactElement => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log("Changement de mot de passe !", form);
+    console.log("Demande de réinitialisation envoyée !", form);
   };
 
   return (
-    <AuthFormLayout title={translations?.messagePageChoicePasswordTitle}>
+    <AuthFormLayout title={translations?.messagePageForgotPasswordTitle}>
       <form className="space-y-4" onSubmit={handleSubmit}>
         <InputField
-          id="choice-password"
-          name="password"
-          label={translations?.messagePageChoicePasswordOld}
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-        />
-        <InputField
-          id="choice-new-password"
-          name="newPassword"
-          label={translations?.messagePageChoicePasswordNew}
-          type="password"
-          value={form.newPassword}
+          id="forgot-email"
+          name="email"
+          label={translations?.messagePageForgotPasswordEmail}
+          type="email"
+          value={form.email}
           onChange={handleChange}
         />
         <div className="flex justify-center">
           <ButtonCustom
-            text={translations?.messagePageChoicePasswordButton}
+            text={translations?.messagePageForgotPasswordButton}
             onClick={handleSubmit}
           />
         </div>
@@ -62,4 +52,4 @@ const ChoicePasswordPage = (): React.ReactElement => {
   );
 };
 
-export default ChoicePasswordPage;
+export default ForgotPasswordPage;

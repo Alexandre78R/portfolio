@@ -94,10 +94,13 @@ const en: Lang = {
   messagePageLoginInputEmail: "E-mail",
   messagePageLoginInputPassword: "Password",
   messagePageLoginInputButtom: "Log in",
-  messagePagChoicePasswordTitle: "Choose a password",
-  messagePagChoicePasswordOld: "Current password",
-  messagePagChoicePasswordNew: "New password",
-  messagePagChoicePasswordButton: "Validate",
+  messagePageChoicePasswordTitle: "Choose a password",
+  messagePageChoicePasswordOld: "Current password",
+  messagePageChoicePasswordNew: "New password",
+  messagePageChoicePasswordButton: "Validate",
+  messagePageForgotPasswordTitle: "Forgot Password",
+  messagePageForgotPasswordEmail: "E-mail",
+  messagePageForgotPasswordButton: "Send",
 };
 
 export default en;

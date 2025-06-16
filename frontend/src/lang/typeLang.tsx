@@ -77,10 +77,13 @@ type Lang = {
   messagePageLoginInputEmail : string;
   messagePageLoginInputPassword : string;
   messagePageLoginInputButtom : string;
-  messagePagChoicePasswordTitle : string;
-  messagePagChoicePasswordOld : string;
-  messagePagChoicePasswordNew : string;
-  messagePagChoicePasswordButton : string;
+  messagePageChoicePasswordTitle : string;
+  messagePageChoicePasswordOld : string;
+  messagePageChoicePasswordNew : string;
+  messagePageChoicePasswordButton : string;
+  messagePageForgotPasswordTitle : string;
+  messagePageForgotPasswordEmail : string;
+  messagePageForgotPasswordButton : string;
 };
 
 export default Lang;
