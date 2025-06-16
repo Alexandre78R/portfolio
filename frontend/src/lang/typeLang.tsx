@@ -73,6 +73,10 @@ type Lang = {
   messagePageNotFoundH1 : string;
   messagePageNotFoundP : string;
   messagePageNotFoundButtom : string;
+  messagePageLoginTitle : string;
+  messagePageLoginInputEmail : string;
+  messagePageLoginInputPassword : string;
+  messagePageLoginInputButtom : string;
 };
 
 export default Lang;

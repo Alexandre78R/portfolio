@@ -90,6 +90,10 @@ const en: Lang = {
   messagePageNotFoundH1: "Oops, page not found!",
   messagePageNotFoundP: "The page you are looking for does not exist or has been moved.",
   messagePageNotFoundButtom: "Return to home",
+  messagePageLoginTitle: "Login",
+  messagePageLoginInputEmail: "E-mail",
+  messagePageLoginInputPassword: "Password",
+  messagePageLoginInputButtom: "Log in",
 };
 
 export default en;

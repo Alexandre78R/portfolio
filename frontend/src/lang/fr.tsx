@@ -90,6 +90,10 @@ const fr: Lang = {
   messagePageNotFoundH1: "Oups, page introuvable !",
   messagePageNotFoundP: "La page que tu cherches n’existe pas ou a été déplacée.",
   messagePageNotFoundButtom: "Retour à l’accueil",
+  messagePageLoginTitle : "Connexion",
+  messagePageLoginInputEmail : "Email",
+  messagePageLoginInputPassword : "Mot de passe",
+  messagePageLoginInputButtom : "Se connecter",
 };
 
 export default fr;
