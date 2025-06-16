@@ -9,6 +9,7 @@ interface InputFieldProps {
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   multiline?: boolean;
   rows?: number;
+  name?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   multiline = false,
   rows,
+  name
 }) => {
   return (
     <TextField
@@ -32,6 +34,7 @@ const InputField: React.FC<InputFieldProps> = ({
       onChange={onChange}
       multiline={multiline}
       rows={rows}
+      name={name}
       className="bg-white border border-gray-300 rounded-md text-text"
       sx={{
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":

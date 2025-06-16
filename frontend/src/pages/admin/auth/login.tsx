@@ -44,6 +44,7 @@ const LoginPage = (): React.ReactElement => {
           type="email"
           value={form.email}
           onChange={handleChange}
+          name="email" 
         />
         <InputField
           id="login-password"
@@ -51,6 +52,7 @@ const LoginPage = (): React.ReactElement => {
           type="password"
           value={form.password}
           onChange={handleChange}
+          name="password" 
         />
         <div className="flex justify-center">
           <ButtonCustom
