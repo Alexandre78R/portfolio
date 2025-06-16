@@ -24,27 +24,16 @@ const Navbar: React.FC = (): React.ReactElement => {
   const { toggleTheme } = useTheme();
   const { selectedView } = useChoiceView();
 
-  const [menuOpen, setMenuOpen]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>
-  ] = useState<boolean>(false);
-  const [open, setOpen]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>
-  ] = React.useState<boolean>(false);
-  const [isCheckedLang, setIsCheckedLang]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>
-  ] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [isCheckedLang, setIsCheckedLang] = useState<boolean>(false);
 
-  const handleOpen: () => void = (): void => setOpen(true);
-  const handleClose: () => void = (): void => setOpen(false);
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
 
-  const toggleMenu: () => void = (): void => setMenuOpen(!menuOpen);
+  const toggleMenu = (): void => setMenuOpen(!menuOpen);
 
-  const handleChangeColorTheme: (newTheme: string) => void = (
-    newTheme: string
-  ): void => {
+  const handleChangeColorTheme = (newTheme: string): void => {
     toggleTheme(newTheme);
     handleClose();
     setMenuOpen(false);
@@ -54,21 +43,24 @@ const Navbar: React.FC = (): React.ReactElement => {
     setIsCheckedLang(translations.file === "en");
   }, [translations]);
 
-  const toggleCheckedLang: () => void = (): void => {
+  const toggleCheckedLang = (): void => {
     setIsCheckedLang(!isCheckedLang);
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleScrollToSection: (
-    event: React.MouseEvent<HTMLElement>,
-    sectionRef: React.RefObject<HTMLDivElement>
-  ) => void = (
+  // --- CORRECTION : scroll fluide et animé ---
+  const handleScrollToSection = (
     event: React.MouseEvent<HTMLElement>,
     sectionRef: React.RefObject<HTMLDivElement>
   ): void => {
     event.preventDefault();
     if (sectionRef?.current) {
-      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+      const yOffset = -80; // Ajuste ici la hauteur de ta navbar
+      const y =
+        sectionRef.current.getBoundingClientRect().top +
+        window.pageYOffset +
+        yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" }); // SCROLL ANIMÉ
     }
     setMenuOpen(false);
   };
