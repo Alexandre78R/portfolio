@@ -1,8 +1,8 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
-import TextFieldCustom from "@/components/TextFieldCustom/TextFieldCustom";
 import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
+import InputField from "@/components/InputField/InputField";
 
 type LoginFormState = {
   email: string;
@@ -18,7 +18,9 @@ const LoginPage = (): React.ReactElement => {
     password: "",
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setForm(prev => ({
       ...prev,
@@ -36,17 +38,17 @@ const LoginPage = (): React.ReactElement => {
   return (
     <AuthFormLayout title={translations.messagePageLoginTitle}>
       <form className="space-y-4" onSubmit={handleLogin}>
-        <TextFieldCustom
+        <InputField
+          id="login-email"
           label={translations.messagePageLoginInputEmail}
           type="email"
-          name="email"
           value={form.email}
           onChange={handleChange}
         />
-        <TextFieldCustom
+        <InputField
+          id="login-password"
           label={translations.messagePageLoginInputPassword}
           type="password"
-          name="password"
           value={form.password}
           onChange={handleChange}
         />
