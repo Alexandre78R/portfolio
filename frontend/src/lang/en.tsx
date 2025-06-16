@@ -3,6 +3,7 @@ import Lang from "./typeLang";
 const en: Lang = {
   file: "en",
   titleHTML: "Alexandre Renard - Fullstack Developer | Portfolio",
+  titleHTMLNotFound: "Alexandre Renard - Fullstack Developer | 404",
   descHTML:
     "Junior developer with a lifelong passion for computer programming. Explore my portfolio to discover more about my skills!",
   welcome: "Welcome to my portfolio !",
@@ -86,6 +87,9 @@ const en: Lang = {
   messageInfoCategoryCarCaptcha: "cats",
   messageInfoFirstCaptcha: "Select all the images containing",
   messageInfoLastCaptcha: "to prove you are not a robot.",
+  messagePageNotFoundH1: "Oops, page not found!",
+  messagePageNotFoundP: "The page you are looking for does not exist or has been moved.",
+  messagePageNotFoundButtom: "Return to home",
 };
 
 export default en;

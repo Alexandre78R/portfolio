@@ -1,6 +1,7 @@
 type Lang = {
   file: string;
   titleHTML: string;
+  titleHTMLNotFound : string;
   descHTML: string;
   welcome: string;
   theme1: string;
@@ -69,6 +70,9 @@ type Lang = {
   messageInfoCategoryCarCaptcha: string;
   messageInfoFirstCaptcha: string;
   messageInfoLastCaptcha: string;
+  messagePageNotFoundH1 : string;
+  messagePageNotFoundP : string;
+  messagePageNotFoundButtom : string;
 };
 
 export default Lang;

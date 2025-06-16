@@ -3,6 +3,7 @@ import Lang from "./typeLang";
 const fr: Lang = {
   file: "fr",
   titleHTML: "Alexandre Renard - Développeur Fullstack | Portfolio",
+  titleHTMLNotFound: "Alexandre Renard - Développeur Fullstack | 404",
   descHTML:
     "Développeur junior passionné par l'informatique depuis l'enfance. Explorez mon Portfolio pour découvrir mes compétences !",
   welcome: "Bienvenue sur mon portfolio !",
@@ -86,6 +87,9 @@ const fr: Lang = {
   messageInfoCategoryCarCaptcha: "voitures",
   messageInfoFirstCaptcha: "Sélectionnez toutes les images contenant des",
   messageInfoLastCaptcha: "pour prouver que vous n'êtes pas un robot.",
+  messagePageNotFoundH1: "Oups, page introuvable !",
+  messagePageNotFoundP: "La page que tu cherches n’existe pas ou a été déplacée.",
+  messagePageNotFoundButtom: "Retour à l’accueil",
 };
 
 export default fr;
