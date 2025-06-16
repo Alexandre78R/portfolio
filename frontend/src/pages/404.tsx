@@ -1,10 +1,18 @@
 import Link from "next/link";
 import { useLang } from "@/context/Lang/LangContext";
 import Head from "next/head";
+import { useEffect } from "react";
+import { Router, useRouter } from "next/router";
 
 const Custom404 = (): React.ReactElement => {
   const { translations } = useLang();
+  
+  const router = useRouter();
 
+  useEffect(() => {
+    router.push("/404");
+  }, []);
+  
   return (
     <>
       <Head>
