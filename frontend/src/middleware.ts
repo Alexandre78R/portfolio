@@ -20,17 +20,22 @@ const middleware = async (request: NextRequest): Promise<NextResponse> => {
   const token = request.cookies.get("token")?.value;
   const response = NextResponse.next();
 
-  // Autoriser accès libre à la page de login
-  if (pathname.startsWith("/admin/auth/login")) {
+  // Autoriser accès libre aux pages non connecté
+  if (
+    pathname.startsWith("/admin/auth/login") ||
+    pathname.startsWith("/admin/auth/ForgotPassword") ||
+    pathname.startsWith("/admin/auth/register") ||
+    pathname.startsWith("/admin/auth/ChoicePassword")
+  ) {
     console.log("je suis là")
     return response;
   }
 
-  // Gestion du logout : suppression des cookies
-  if (pathname.startsWith("/admin/auth/logout")) {
-    deleteAuthCookies(response);
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // // Gestion du logout : suppression des cookies
+  // if (pathname.startsWith("/admin/auth/logout")) {
+  //   deleteAuthCookies(response);
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 
   // Pas de token : redirection vers login
   if (!token) {

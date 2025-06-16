@@ -94,6 +94,10 @@ const fr: Lang = {
   messagePageLoginInputEmail : "Email",
   messagePageLoginInputPassword : "Mot de passe",
   messagePageLoginInputButtom : "Se connecter",
+  messagePagChoicePasswordTitle : "Choisir un mot de passe",
+  messagePagChoicePasswordOld : "Mot de passe actuel",
+  messagePagChoicePasswordNew : "Nouveau mot de passe",
+  messagePagChoicePasswordButton : "Valider",
 };
 
 export default fr;
