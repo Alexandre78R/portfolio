@@ -33,6 +33,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
     const httpLink = new HttpLink({
       uri: `${API_URL}`,
+      credentials: "include",
     });
 
     const authLink = setContext((_, { headers }) => {
@@ -47,7 +48,6 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     const apolloClient = new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),
-      credentials: "include",
     });
 
     setClient(apolloClient);

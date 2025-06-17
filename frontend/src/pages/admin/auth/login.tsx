@@ -9,6 +9,7 @@ import {
   MutationMutation,
   MutationMutationVariables,
 } from "@/types/graphql";
+import CustomToast from "@/components/ToastCustom/CustomToast";
 
 type LoginFormState = {
   email: string;
@@ -16,6 +17,8 @@ type LoginFormState = {
 };
 
 const LoginPage = (): React.ReactElement => {
+  
+  const { showAlert } = CustomToast();
   const { translations } = useLang();
 
   const [form, setForm] = useState<LoginFormState>({
@@ -54,13 +57,21 @@ const LoginPage = (): React.ReactElement => {
       const response = res.data?.login;
 
       if (response?.code === 200) {
-        console.log("✅ Connexion réussie :", response.message);
-        // TODO : set auth context / redirect
+        // console.log("✅ Connexion réussie :", response.message);
+        showAlert("success", translations.messagePageLoginMessageSuccess);
+      } else if (response?.code === 401) {
+        // console.warn("❌ Identifiants invalides :", response.message);
+        showAlert("error", translations.messagePageLoginMessageErrorServer);
+      } else if (response?.code === 500) {
+        // console.error("❌ Erreur serveur :", response.message);
+        showAlert("error", translations.messagePageLoginMessageErrorUnexpected);
       } else {
-        console.warn("❌ Erreur :", response?.message);
+        // console.warn("⚠️ Autre erreur :", response?.message);
+        showAlert("error", translations.messagePageLoginMessageErrorServer);
       }
     } catch (err) {
       console.error("Erreur Apollo :", err);
+      showAlert("error", "Erreur serveur : veuillez réessayer plus tard.");
     }
   };
 
@@ -83,11 +94,6 @@ const LoginPage = (): React.ReactElement => {
           onChange={handleChange}
           name="password"
         />
-
-        {error && <p className="text-red-500 text-sm">{error.message}</p>}
-        {data?.login?.code !== 200 && (
-          <p className="text-red-500 text-sm">{data?.login?.message}</p>
-        )}
 
         <div className="flex justify-center">
           <ButtonCustom

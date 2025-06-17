@@ -2,6 +2,7 @@ type Lang = {
   file: string;
   titleHTML: string;
   titleHTMLNotFound : string;
+  titleHTMLUnauthorizedAccess : string;
   descHTML: string;
   welcome: string;
   theme1: string;
@@ -73,10 +74,17 @@ type Lang = {
   messagePageNotFoundH1 : string;
   messagePageNotFoundP : string;
   messagePageNotFoundButtom : string;
+  messagePageUnauthorizedH1 : string;
+  messagePageUnauthorizedP : string;
+  messagePageUnauthorizedButtom : string;
   messagePageLoginTitle : string;
   messagePageLoginInputEmail : string;
   messagePageLoginInputPassword : string;
   messagePageLoginInputButtom : string;
+  messagePageLoginMessageSuccess : string;
+  messagePageLoginMessageErrorEmailOrPasswordIncorrect : string;
+  messagePageLoginMessageErrorServer : string;
+  messagePageLoginMessageErrorUnexpected : string;
   messagePageChoicePasswordTitle : string;
   messagePageChoicePasswordOld : string;
   messagePageChoicePasswordNew : string;

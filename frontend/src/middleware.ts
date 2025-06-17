@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
 interface Payload {
   email: string;
   role: string;
-  id: string;
+  id: number;
+  iat?: number;
+  exp?: number;
 }
 
-const SECRET_KEY = process.env.SECRET_KEY || "dev-secret-key";
+// const SECRET_KEY = process.env.NEXT_PUBLIC_JWT_SECRET || "";
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
+// console.log("SECRET_KEY -->", SECRET_KEY);
 
 export const config = {
   matcher: ["/admin/:path*"],
@@ -17,7 +21,7 @@ export const config = {
 const middleware = async (request: NextRequest): Promise<NextResponse> => {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
-  console.log("token", token);
+  // console.log("token", token);
   const response = NextResponse.next();
 
   // Autoriser accès libre aux pages non connecté
@@ -27,7 +31,7 @@ const middleware = async (request: NextRequest): Promise<NextResponse> => {
     // pathname.startsWith("/admin/auth/register") ||
     // pathname.startsWith("/admin/auth/choicepassword")
   ) {
-    console.log("je suis là")
+    // console.log("je suis là");
     return response;
   }
 
@@ -39,15 +43,17 @@ const middleware = async (request: NextRequest): Promise<NextResponse> => {
 
   // Pas de token : redirection vers login
   if (!token) {
+    console.log("!token");
     deleteAuthCookies(response);
     return NextResponse.redirect(new URL("/admin/auth/login", request.url));
   }
 
   // Vérification du token JWT
   try {
-    const payload = verify(token);
-
-    // Vérifier si le rôle autorise l’accès
+    const payload = await verify(token);
+    
+    console.log("payload", payload)
+    
     if (pathname.startsWith("/admin") && payload.role !== "admin") {
       return NextResponse.redirect(new URL("/400", request.url));
     }
@@ -62,9 +68,22 @@ const middleware = async (request: NextRequest): Promise<NextResponse> => {
   }
 };
 
-// Vérifie et décode le token
-const verify = (token: string): Payload => {
-  return jwt.verify(token, SECRET_KEY) as Payload;
+const verify = async (token: string): Promise<Payload> => {
+  const { payload } = await jwtVerify(token, SECRET_KEY);
+
+  if (
+    typeof payload.id === "number" &&
+    typeof payload.email === "string" &&
+    typeof payload.role === "string"
+  ) {
+    return {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role,
+    };
+  }
+
+  throw new Error("Invalid JWT payload structure");
 };
 
 // Définit les cookies d'auth
