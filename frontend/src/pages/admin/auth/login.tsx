@@ -44,6 +44,8 @@ const LoginPage = (): React.ReactElement => {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
+    console.log("varible NEXT_PUBLIC_JWT_SECRET -->", process.env.NEXT_PUBLIC_JWT_SECRET);
+
     try {
       const res = await login({
         variables: {
@@ -57,16 +59,16 @@ const LoginPage = (): React.ReactElement => {
       const response = res.data?.login;
 
       if (response?.code === 200) {
-        // console.log("✅ Connexion réussie :", response.message);
+        console.log("✅ Connexion réussie :", response.message);
         showAlert("success", translations.messagePageLoginMessageSuccess);
       } else if (response?.code === 401) {
-        // console.warn("❌ Identifiants invalides :", response.message);
+        console.warn("❌ Identifiants invalides :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);
       } else if (response?.code === 500) {
-        // console.error("❌ Erreur serveur :", response.message);
+        console.error("❌ Erreur serveur :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorUnexpected);
       } else {
-        // console.warn("⚠️ Autre erreur :", response?.message);
+        console.warn("⚠️ Autre erreur :", response?.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);
       }
     } catch (err) {

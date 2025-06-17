@@ -34,8 +34,6 @@ services:
       - NEXT_PUBLIC_IMAGE_URL=http://localhost:8000
       - NEXT_PUBLIC_API_TOKEN=${NEXT_PUBLIC_API_TOKEN}
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-      - NEXT_PUBLIC_JWT_SECRET=${NEXT_PUBLIC_JWT_SECRET}
-      - JWT_SECRET=${JWT_SECRET}
       - API_URL=${API_URL}
       - NODE_ENV=development
     env_file:
