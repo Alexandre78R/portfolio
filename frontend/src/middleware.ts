@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 interface Payload {
   email: string;
   role: string;
-  pseudo: string;
   id: string;
 }
 
@@ -18,6 +17,7 @@ export const config = {
 const middleware = async (request: NextRequest): Promise<NextResponse> => {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
+  console.log("token", token);
   const response = NextResponse.next();
 
   // Autoriser accès libre aux pages non connecté
@@ -71,13 +71,12 @@ const verify = (token: string): Payload => {
 const setAuthCookies = (res: NextResponse, payload: Payload): void => {
   res.cookies.set("email", payload.email);
   res.cookies.set("role", payload.role);
-  res.cookies.set("pseudo", payload.pseudo);
   res.cookies.set("id", payload.id);
 };
 
 // Supprime les cookies d'auth
 const deleteAuthCookies = (res: NextResponse): void => {
-  ["email", "role", "pseudo", "id", "token"].forEach((cookie) =>
+  ["email", "role", "id", "token"].forEach((cookie) =>
     res.cookies.delete(cookie)
   );
 };
