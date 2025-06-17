@@ -24,7 +24,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<GetMeQuery["me"] | null>(null);
 
   useEffect(() => {
-    console.log("data", data)
+    console.log("data", data);
+    
     if (data?.me) {
       setUser(data.me);
     } else {
