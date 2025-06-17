@@ -1,32 +1,40 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
-function middleware (request: NextRequest): NextResponse  {
-    return checkPath(request);
-}
-
-const checkPath = (request: NextRequest) : NextResponse => {
-    // let response: NextResponse<unknown> = NextResponse.next();
-
-    // if (request.nextUrl.pathname.startsWith("/")) {
-    //     response = NextResponse.next();
-    // }
-
-    // if (!request.nextUrl.pathname.startsWith("/")) {
-    //     response = NextResponse.redirect(new URL("/404", request.url));
-    // }
-
-    // return response;
-
-    if (request.nextUrl.pathname.startsWith("/") || request.nextUrl.pathname.startsWith("/404")) {
-        return NextResponse.next();
-    }
-
-    return NextResponse.redirect(new URL("/404", request.url));
-}
+const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export const config = {
-    matcher: "/:path",
+  matcher: ["/admin/:path*"],
 };
 
-export default middleware;
+export default async function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+  const token = request.cookies.get("token")?.value;
+
+  if (
+    request.nextUrl.pathname.startsWith("/admin/auth/login") ||
+    request.nextUrl.pathname.startsWith("/admin/auth/forgotpassword")
+  ) {
+    return response;
+  }
+
+  if (!token) {
+    response.cookies.delete("token");
+    return NextResponse.redirect(new URL("/admin/auth/login", request.url));
+  }
+
+  try {
+    const { payload } = await jwtVerify(token, SECRET_KEY);
+
+    if (typeof payload.role !== "string" || payload.role !== "admin") {
+      return NextResponse.redirect(new URL("/400", request.url));
+    }
+
+    return response;
+  } catch (err) {
+    console.error("JWT error:", err);
+    response.cookies.delete("token");
+    return NextResponse.redirect(new URL("/admin/auth/login", request.url));
+  }
+}

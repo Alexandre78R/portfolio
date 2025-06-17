@@ -413,6 +413,7 @@ export type Query = {
   generateCaptcha: CaptchaResponse;
   getGlobalStats: GlobalStatsResponse;
   listBackupFiles: BackupFilesResponse;
+  me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;

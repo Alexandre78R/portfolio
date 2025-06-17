@@ -10,10 +10,12 @@ import argon2 from "argon2";
 import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
 import { Response } from "../entities/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
-import jwt from "jsonwebtoken";
+import { jwtVerify, SignJWT } from "jose";
+import { TextEncoder } from "util";
 import { MyContext } from "..";
 
 // const prisma = new PrismaClient();
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 @Resolver(() => User)
 export class UserResolver {
@@ -164,15 +166,21 @@ export class UserResolver {
       }
 
       const tokenPayload = {
-        userId: user.id,
+        id: user.id,
+        email: user.email,
+        role: user.role,
       };
 
       if (!process.env.JWT_SECRET) {
         return { code: 500, message: "Please check your JWT configuration !" };
       }
 
-      const token = jwt.sign(tokenPayload, process.env.JWT_SECRET , { expiresIn: "7d" }); 
-
+      const token = await new SignJWT(tokenPayload)
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("7d")
+        .sign(secret);
+      
        const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -181,7 +189,7 @@ export class UserResolver {
         path: '/',
       };
 
-      ctx.cookies.set("jwt", token, cookieOptions);
+      ctx.cookies.set("token", token, cookieOptions);
 
       return {
         code: 200,
@@ -197,6 +205,28 @@ export class UserResolver {
     }
   }
 
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req, token }: MyContext): Promise<User | null> {
+    // console.log("refresh FRONTcdodddof")
+    // console.log("req.cookies", req.cookies)
+    // console.log(cookies)
+    // const token = req.cookies.token;
+    console.log("token", token)
+    if (!token) return null;
+
+    try {
+      const payload = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+      const user = await this.db.user.findUnique({ where: { id: payload.payload.id as number } });
+      if (!user) return null;
+      return {
+        ...user,
+        role: user.role as UserRole,
+      };
+    } catch {
+      return null;
+    }
+  }
+
   @Mutation(() => Response)
   async logout(
     @Ctx() ctx: MyContext 
@@ -208,7 +238,7 @@ export class UserResolver {
         return { code: 401, message: "Authentication required." };
       }
 
-      ctx.cookies.set("jwt", "", {
+      ctx.cookies.set("token", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax' as const,

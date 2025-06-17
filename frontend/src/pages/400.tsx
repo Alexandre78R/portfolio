@@ -10,13 +10,13 @@ const Custom404 = (): React.ReactElement => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/404");
+    router.push("/400");
   }, []);
   
   return (
     <>
       <Head>
-        <title>{translations.titleHTMLNotFound}</title>
+        <title>{translations.titleHTMLUnauthorizedAccess}</title>
       </Head>
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] mt-[64px] px-4 bg-body">
         <div className="flex flex-col items-center">
@@ -30,18 +30,18 @@ const Custom404 = (): React.ReactElement => {
               fontFamily="monospace"
               style={{ fill: "var(--primary-color)" }}
             >
-              404
+              400
             </text>
           </svg>
           <h1 className="text-4xl font-bold text-primary mt-6 text-center">
-            {translations.messagePageNotFoundH1}
+            {translations.messagePageUnauthorizedH1}
           </h1>
           <p className="text-lg text-text mt-2 text-center">
-            {translations.messagePageNotFoundP}
+            {translations.messagePageUnauthorizedP}
           </p>
           <Link href="/" passHref>
             <button className="mt-6 px-6 py-3 rounded bg-primary text-white font-semibold shadow hover:bg-secondary transition">
-              {translations.messagePageNotFoundButtom}
+              {translations.messagePageUnauthorizedButtom}
             </button>
           </Link>
         </div>

@@ -1,6 +1,8 @@
 type Lang = {
   file: string;
   titleHTML: string;
+  titleHTMLNotFound : string;
+  titleHTMLUnauthorizedAccess : string;
   descHTML: string;
   welcome: string;
   theme1: string;
@@ -69,6 +71,33 @@ type Lang = {
   messageInfoCategoryCarCaptcha: string;
   messageInfoFirstCaptcha: string;
   messageInfoLastCaptcha: string;
+  messagePageNotFoundH1 : string;
+  messagePageNotFoundP : string;
+  messagePageNotFoundButtom : string;
+  messagePageUnauthorizedH1 : string;
+  messagePageUnauthorizedP : string;
+  messagePageUnauthorizedButtom : string;
+  messagePageLoginTitle : string;
+  messagePageLoginInputEmail : string;
+  messagePageLoginInputPassword : string;
+  messagePageLoginInputButtom : string;
+  messagePageLoginMessageSuccess : string;
+  messagePageLoginMessageErrorEmailOrPasswordIncorrect : string;
+  messagePageLoginMessageErrorServer : string;
+  messagePageLoginMessageErrorUnexpected : string;
+  messagePageChoicePasswordTitle : string;
+  messagePageChoicePasswordOld : string;
+  messagePageChoicePasswordNew : string;
+  messagePageChoicePasswordButton : string;
+  messagePageForgotPasswordTitle : string;
+  messagePageForgotPasswordEmail : string;
+  messagePageForgotPasswordButton : string;
+  messagePageRegisterTitle : string;
+  messagePageRegisterEmail : string;
+  messagePageRegisterFirstName : string;
+  messagePageRegisterLastName : string;
+  messagePageRegisterRole : string;
+  messagePageRegisterButtom : string;
 };
 
 export default Lang;

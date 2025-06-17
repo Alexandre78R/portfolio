@@ -18,6 +18,7 @@ import {
 import { API_URL } from "@/config";
 import { setContext } from "@apollo/client/link/context";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { UserProvider } from "@/context/UserContext/UserContext";
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const [client, setClient] = useState<ApolloClient<any> | null>(null);
@@ -33,6 +34,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
     const httpLink = new HttpLink({
       uri: `${API_URL}`,
+      credentials: "include",
     });
 
     const authLink = setContext((_, { headers }) => {
@@ -60,17 +62,19 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <ApolloProvider client={client}>
       <ReduxProvider>
-        <SectionRefsProvider>
-          <ThemeProvider>
-            <LangProvider>
-              <ChoiceViewProvider>
-                <Navbar />
-                <ToastProvider />
-                <Component {...pageProps} />
-              </ChoiceViewProvider>
-            </LangProvider>
-          </ThemeProvider>
-        </SectionRefsProvider>
+        <UserProvider>
+          <SectionRefsProvider>
+            <ThemeProvider>
+              <LangProvider>
+                <ChoiceViewProvider>
+                  <Navbar />
+                  <ToastProvider />
+                  <Component {...pageProps} />
+                </ChoiceViewProvider>
+              </LangProvider>
+            </ThemeProvider>
+          </SectionRefsProvider>
+        </UserProvider>
       </ReduxProvider>
     </ApolloProvider>
   );
