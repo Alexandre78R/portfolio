@@ -416,6 +416,7 @@ export type Query = {
   generateCaptcha: CaptchaResponse;
   getGlobalStats: GlobalStatsResponse;
   listBackupFiles: BackupFilesResponse;
+  me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
@@ -612,6 +613,11 @@ export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+
+export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', role: Role, lastname: string, isPasswordChange: boolean, id: string, firstname: string, email: string } | null };
 
 
 export const ValidateCaptchaDocument = gql`
@@ -1022,3 +1028,47 @@ export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQue
 export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
 export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
 export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
+export const GetMeDocument = gql`
+    query GetMe {
+  me {
+    role
+    lastname
+    isPasswordChange
+    id
+    firstname
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetMeQuery__
+ *
+ * To run a query within a React component, call `useGetMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMeQuery(baseOptions?: Apollo.QueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+      }
+export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+        }
+export function useGetMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
+        }
+export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;
+export type GetMeLazyQueryHookResult = ReturnType<typeof useGetMeLazyQuery>;
+export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQuery>;
+export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;

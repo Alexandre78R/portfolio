@@ -18,6 +18,7 @@ import {
 import { API_URL } from "@/config";
 import { setContext } from "@apollo/client/link/context";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { UserProvider } from "@/context/UserContext/UserContext";
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const [client, setClient] = useState<ApolloClient<any> | null>(null);
@@ -48,6 +49,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     const apolloClient = new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),
+      credentials: "include",
     });
 
     setClient(apolloClient);
@@ -60,17 +62,19 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <ApolloProvider client={client}>
       <ReduxProvider>
-        <SectionRefsProvider>
-          <ThemeProvider>
-            <LangProvider>
-              <ChoiceViewProvider>
-                <Navbar />
-                <ToastProvider />
-                <Component {...pageProps} />
-              </ChoiceViewProvider>
-            </LangProvider>
-          </ThemeProvider>
-        </SectionRefsProvider>
+        <UserProvider>
+          <SectionRefsProvider>
+            <ThemeProvider>
+              <LangProvider>
+                <ChoiceViewProvider>
+                  <Navbar />
+                  <ToastProvider />
+                  <Component {...pageProps} />
+                </ChoiceViewProvider>
+              </LangProvider>
+            </ThemeProvider>
+          </SectionRefsProvider>
+        </UserProvider>
       </ReduxProvider>
     </ApolloProvider>
   );

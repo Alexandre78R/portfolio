@@ -29,7 +29,7 @@ import { loadedLogos, loadLogos } from './lib/logoLoader';
 const prisma = new PrismaClient(); 
 
 export interface JwtPayload {
-  userId: number;
+  id: number;
 }
 
 export interface MyContext {
@@ -37,8 +37,17 @@ export interface MyContext {
   res: express.Response;
   apiKey: string | undefined;
   cookies: Cookies;
+  token : string | undefined | null;
   user: User | null;
 }
+
+// export interface JwtPayload {
+//   userId: number;
+//   email?: string;
+//   role?: string;
+//   iat?: number;
+//   exp?: number;
+// }
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -170,13 +179,13 @@ async function main() {
     expressMiddleware(server, {
       context: async ({ req, res }) => {
         const cookies = new Cookies(req, res);
-        // console.log("cookies:", cookies.get("jwt")); 
+
         let user: User | null = null;
 
-        const token = cookies.get("jwt"); 
-        // console.log("Token du cookie:", token ? "Présent" : "Absent");
+        const token = cookies.get("token"); 
 
         if (token && process.env.JWT_SECRET) {
+          // console.log("token ---->", token)
           try {
             const { payload } = await jwtVerify<JwtPayload>(
               token,
@@ -186,7 +195,7 @@ async function main() {
             // console.log("Payload du token décodé:", payload); 
 
             const prismaUser = await prisma.user.findUnique({
-                where: { id: payload.userId } 
+                where: { id: payload.id } 
             });
 
             if (prismaUser) {
@@ -202,7 +211,7 @@ async function main() {
 
           } catch (err) {
             console.error("Erreur de vérification JWT:", err); // Log l'erreur complète
-            cookies.set("jwt", "", { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const });
+            cookies.set("token", "", { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const });
           }
         }
 
@@ -219,7 +228,7 @@ async function main() {
           await checkApiKey(apiKey);
         }
 
-        return { req, res, apiKey, cookies, user };
+        return { req, res, apiKey, cookies, token, user };
       },
     })
   );

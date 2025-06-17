@@ -10,7 +10,7 @@ import argon2 from "argon2";
 import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
 import { Response } from "../entities/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
-import { SignJWT } from "jose";
+import { jwtVerify, SignJWT } from "jose";
 import { TextEncoder } from "util";
 import { MyContext } from "..";
 
@@ -202,6 +202,28 @@ export class UserResolver {
         code: 500,
         message: error instanceof Error ? error.message : "Unexpected server error during login.",
       };
+    }
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req, token }: MyContext): Promise<User | null> {
+    // console.log("refresh FRONTcdodddof")
+    // console.log("req.cookies", req.cookies)
+    // console.log(cookies)
+    // const token = req.cookies.token;
+    console.log("token", token)
+    if (!token) return null;
+
+    try {
+      const payload = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+      const user = await this.db.user.findUnique({ where: { id: payload.payload.id as number } });
+      if (!user) return null;
+      return {
+        ...user,
+        role: user.role as UserRole,
+      };
+    } catch {
+      return null;
     }
   }
 
