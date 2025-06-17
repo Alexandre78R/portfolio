@@ -101,6 +101,12 @@ const en: Lang = {
   messagePageForgotPasswordTitle: "Forgot Password",
   messagePageForgotPasswordEmail: "E-mail",
   messagePageForgotPasswordButton: "Send",
+  messagePageRegisterTitle: "Register",
+  messagePageRegisterEmail: "Email",
+  messagePageRegisterFirstName: "First Name",
+  messagePageRegisterLastName: "Last Name",
+  messagePageRegisterRole: "Role",
+  messagePageRegisterButtom: "Register",
 };
 
 export default en;

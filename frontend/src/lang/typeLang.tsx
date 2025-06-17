@@ -84,6 +84,12 @@ type Lang = {
   messagePageForgotPasswordTitle : string;
   messagePageForgotPasswordEmail : string;
   messagePageForgotPasswordButton : string;
+  messagePageRegisterTitle : string;
+  messagePageRegisterEmail : string;
+  messagePageRegisterFirstName : string;
+  messagePageRegisterLastName : string;
+  messagePageRegisterRole : string;
+  messagePageRegisterButtom : string;
 };
 
 export default Lang;
