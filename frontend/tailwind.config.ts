@@ -31,6 +31,7 @@ const config: Config = {
         warn: 'var(--warn-color)',
         info: 'var(--info-color)',
         footer: 'var(--footer-color)',
+        admin: 'var(--admin-color)',
       },
     },
   },

@@ -98,6 +98,28 @@ type Lang = {
   messagePageRegisterLastName : string;
   messagePageRegisterRole : string;
   messagePageRegisterButtom : string;
+  "sideBarAdmin-dashboard": string;
+  "sideBarAdmin-dashboard/view": string;
+  "sideBarAdmin-dashboard/create": string;
+  "sideBarAdmin-projects": string;
+  "sideBarAdmin-projects/view": string;
+  "sideBarAdmin-projects/create": string;
+  "sideBarAdmin-users": string;
+  "sideBarAdmin-users/view": string;
+  "sideBarAdmin-users/create": string;
+  "sideBarAdmin-experiences": string;
+  "sideBarAdmin-experiences/view": string;
+  "sideBarAdmin-experiences/create": string;
+  "sideBarAdmin-educations": string;
+  "sideBarAdmin-educations/view": string;
+  "sideBarAdmin-educations/create": string;
+  "sideBarAdmin-skills": string;
+  "sideBarAdmin-skills/view": string;
+  "sideBarAdmin-skills/create": string;
+  "sideBarAdmin-theme-colors": string;
+  "sideBarAdmin-theme-colors/view": string;
+  "sideBarAdmin-theme-colors/create": string;
+  "sideBarAdmin-settings": string;
 };
 
 export default Lang;
