@@ -11,6 +11,10 @@ export default function MainContent({ activeTab }: MainContentProps) {
         return <p className="text-primary">Ici tu gères tes utilisateurs.</p>
       case 'settings':
         return <p className="text-primary">Réglages de l’application.</p>
+      case 'create-project':
+        return <p className="text-primary">Création d’un nouveau projet.</p>
+      case 'view-projects':
+        return <p className="text-primary">Liste des projets existants.</p>
       default:
         return <p>Dashboard</p>
     }
