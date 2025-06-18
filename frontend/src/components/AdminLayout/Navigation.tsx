@@ -72,11 +72,11 @@ const navigation: NavItem[] = [
       { name: 'Créer une nouvelle couleur', key: 'theme-colors/create', icon: FolderPlus },
     ],
   },
-  {
-    name: 'Paramètres',
-    key: 'settings',
-    icon: Settings,
-  },
+  // {
+  //   name: 'Paramètres',
+  //   key: 'settings',
+  //   icon: Settings,
+  // },
 ];
 
 export default navigation;
