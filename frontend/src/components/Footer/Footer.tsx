@@ -13,7 +13,7 @@ const Footer: React.FC = (): React.ReactElement => {
           <p className="text-lg font-bold mb-2">{translations.footerTitle}</p>
           <ul>
             <li>
-              <a href="#" className="hover:text-secondary">
+              <a href="/admin" className="hover:text-secondary">
                 {translations.footerAdmin}
               </a>
             </li>
