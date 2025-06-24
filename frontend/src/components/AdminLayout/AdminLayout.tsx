@@ -37,16 +37,13 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) : React.ReactE
     const isAllowed = (roles?: string[]) => !roles || roles.includes(role)
 
     return navigation.map((item) => {
-      // Marque les enfants disabled selon le rôle
       const children = (item.children || []).map((child) => ({
         ...child,
         disabled: !isAllowed(child.roles),
       }))
 
-      // Le parent est disabled s’il n’est pas autorisé (rôle non dans roles)
       const disabled = !isAllowed(item.roles)
 
-      // Ne pas filtrer les éléments par access — on veut tout afficher
       return {
         ...item,
         children,
@@ -58,7 +55,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) : React.ReactE
   return (
     <div className="flex h-screen bg-body overflow-hidden">
       <Sidebar
-        navigation={filteredNavigation} // PLUS de filtre .filter(i => i.access)
+        navigation={filteredNavigation}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeTab={currentTab}
