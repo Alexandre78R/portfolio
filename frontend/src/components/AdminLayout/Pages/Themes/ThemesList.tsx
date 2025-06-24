@@ -1,4 +1,4 @@
-const ThemesList = (): React.ReactElement =>  {
+const ThemesList = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page ThemesList</p>
   )

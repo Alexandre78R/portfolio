@@ -1,4 +1,4 @@
-const ProjectCreate = (): React.ReactElement =>  {
+const ProjectCreate = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page ProjectCreate</p>
   )

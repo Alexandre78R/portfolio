@@ -1,4 +1,4 @@
-const ProjectsList = (): React.ReactElement =>  {
+const ProjectsList = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page ProjectsList</p>
   )

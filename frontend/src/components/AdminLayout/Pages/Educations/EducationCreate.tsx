@@ -1,4 +1,4 @@
-const EducationCreate = (): React.ReactElement =>  {
+const EducationCreate = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page EducationCreate</p>
   )

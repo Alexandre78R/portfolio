@@ -1,4 +1,4 @@
-const ExperiencesList = (): React.ReactElement =>  {
+const ExperiencesList = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page ExperiencesList</p>
   )

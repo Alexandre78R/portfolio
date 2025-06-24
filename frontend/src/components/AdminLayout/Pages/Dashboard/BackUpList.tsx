@@ -1,4 +1,4 @@
-const BackUpList = (): React.ReactElement =>  {
+const BackUpList = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page BackUpList</p>
   )

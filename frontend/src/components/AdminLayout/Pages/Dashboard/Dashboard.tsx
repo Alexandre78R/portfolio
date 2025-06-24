@@ -1,4 +1,4 @@
-const Dashboard = (): React.ReactElement =>  {
+const Dashboard = (): React.ReactElement => {
   return (  
     <p className="text-primary">Page Dashboard</p>
   )

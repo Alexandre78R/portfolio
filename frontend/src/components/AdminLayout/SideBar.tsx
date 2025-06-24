@@ -3,13 +3,7 @@ import clsx from 'clsx';
 import { ChevronDown, X } from 'lucide-react';
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from '@/lang/typeLang';
-
-type NavItem = {
-  name: string
-  key: string
-  icon: React.ComponentType<{ className?: string }>
-  children?: NavItem[]
-}
+import { NavItem } from './Navigation';
 
 type SidebarProps = {
   navigation: NavItem[]
@@ -21,7 +15,7 @@ type SidebarProps = {
   setOpenMenus: Dispatch<SetStateAction<string[]>>
 }
 
-export default function Sidebar({
+const SideBar = ({
   navigation,
   sidebarOpen,
   setSidebarOpen,
@@ -29,7 +23,7 @@ export default function Sidebar({
   setActiveTab,
   openMenus,
   setOpenMenus,
-}: SidebarProps) {
+}: SidebarProps): React.ReactElement => {
 
   const { translations } = useLang();
 
@@ -39,7 +33,7 @@ export default function Sidebar({
     )
   }
 
-  const getTranslation =(
+  const getTranslation = (
     translations: Lang | { [key: string]: string },
     key: string,
     fallback: string
@@ -64,27 +58,33 @@ export default function Sidebar({
         </div>
         <nav className="overflow-y-auto p-4 space-y-4">
           {navigation.map((item) => {
-            const isOpen = openMenus.includes(item.key)
-            const hasChildren = !!item.children?.length
-
+            const isOpen = openMenus.includes(item.key);
+            const hasChildren = !!item.children?.length;
+            
             return (
               <div key={item.key}>
                 <button
                   onClick={() => {
-                    if (hasChildren) toggleMenu(item.key)
+                    if (item.disabled) return;
+                    if (hasChildren) toggleMenu(item.key);
                     else {
-                      setActiveTab(item.key)
-                      setSidebarOpen(false)
+                      setActiveTab(item.key);
+                      setSidebarOpen(false);
                     }
                   }}
                   className={clsx(
-                    'flex items-center justify-between w-full px-4 py-2 rounded hover:bg-primary hover:text-secondary transition-all',
-                    activeTab === item.key ? 'text-primary font-semibold' : 'text-primary'
+                    'flex items-center justify-between w-full px-4 py-2 rounded transition-all',
+                    activeTab === item.key ? 'text-primary font-semibold' : 'text-primary',
+                    item.disabled
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-primary hover:text-secondary'
                   )}
+                  disabled={item.disabled}
                 >
                   <span className="flex items-center gap-3">
                     <item.icon className="w-5 h-5" />
                     {getTranslation(translations, `sideBarAdmin-${item.key}`, item.name)}
+                    {item.disabled && <span className="ml-2">🔒</span>}
                   </span>
                   {hasChildren && (
                     <ChevronDown
@@ -101,16 +101,22 @@ export default function Sidebar({
                       <button
                         key={child.key}
                         onClick={() => {
-                          setActiveTab(child.key)
-                          setSidebarOpen(false)
+                          if (child.disabled) return;
+                          setActiveTab(child.key);
+                          setSidebarOpen(false);
                         }}
                         className={clsx(
-                          'flex items-center gap-3 px-3 py-1 rounded hover:bg-primary hover:text-secondary w-full text-sm',
-                          activeTab === child.key ? 'text-primary font-semibold' : ''
+                          'flex items-center gap-3 px-3 py-1 rounded w-full text-sm transition-all',
+                          activeTab === child.key ? 'text-primary font-semibold' : '',
+                          child.disabled
+                            ? 'opacity-50 cursor-not-allowed'
+                            : 'hover:bg-primary hover:text-secondary'
                         )}
+                        disabled={child.disabled}
                       >
                         <child.icon className="w-4 h-4" />
-                         {getTranslation(translations, `sideBarAdmin-${child.key}`, child.name)}
+                        {getTranslation(translations, `sideBarAdmin-${child.key}`, child.name)}
+                        {child.disabled && <span className="ml-2">🔒</span>}
                       </button>
                     ))}
                   </div>
@@ -123,3 +129,5 @@ export default function Sidebar({
     </div>
   )
 }
+
+export default SideBar;
