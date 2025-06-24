@@ -38,7 +38,7 @@ const en: Lang = {
   footerAdmin: "Admin Panel",
   footerNetworks: "Networks",
   footerContact: "Contact Me",
-  footerCopyright: "© 2024 Alexandre Renard | All rights reserved",
+  footerCopyright: "Alexandre Renard | All rights reserved",
   terminalWelcomeMessage:
     "Hi 👋, my name is Alexandre and I am a Fullstack developer. I invite you to explore my portfolio!",
   terminalWelcomeMessageHelp: "For the list of commands, type",
