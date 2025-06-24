@@ -45,7 +45,7 @@ const SideBar = ({
   return (
     <div
       className={clsx(
-        'fixed top-[80px] left-0 z-40 w-64 bg-admin shadow-lg transform transition-transform duration-300 ease-in-out h-[calc(100vh-80px)]',
+        'fixed top-[80px] left-0 z-40 w-80 bg-admin shadow-lg transform transition-transform duration-300 ease-in-out h-[calc(100vh-80px)]',
         sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       )}
     >

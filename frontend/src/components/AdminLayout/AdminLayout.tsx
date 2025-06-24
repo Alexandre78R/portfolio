@@ -75,7 +75,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) : React.ReactE
 
       {sidebarOpen && <MobileOverlay setSidebarOpen={setSidebarOpen} />}
 
-      <div className={clsx('flex flex-col flex-1 pt-[80px] overflow-hidden', 'md:ml-64')}>
+      <div className={clsx('flex flex-col flex-1 pt-[80px] overflow-hidden', 'md:ml-80')}>
         <ToggleButton sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <TopbarMobile activeTab={currentTab} navigation={filteredNavigation} />
         <div className="flex-1 overflow-y-auto p-6">
