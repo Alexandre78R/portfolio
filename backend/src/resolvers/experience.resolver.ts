@@ -1,6 +1,6 @@
 import { Resolver, Query, Arg, Int, Mutation, Ctx, Authorized } from "type-graphql";
 import { Experience } from "../entities/experience.entity";
-import { ExperienceResponse, ExperiencesResponse } from "../entities/response.types";
+import { ExperienceResponse, ExperiencesResponse } from "../types/response.types";
 import { CreateExperienceInput, UpdateExperienceInput } from "../entities/inputs/experience.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";

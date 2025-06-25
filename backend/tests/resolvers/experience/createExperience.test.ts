@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateExperienceInput } from "../../../src/entities/inputs/experience.input";
-import { ExperienceResponse } from "../../../src/entities/response.types";
+import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';

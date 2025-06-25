@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateSkillInput } from "../../../src/entities/inputs/skill.input";
-import { SubItemResponse } from "../../../src/entities/response.types";
+import { SubItemResponse } from "../../../src/types/response.types";
 import { SkillSubItem } from "../../../src/entities/skillSubItem.entity"; // Vérifie ce chemin d'entité DTO
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';

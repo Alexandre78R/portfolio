@@ -3,7 +3,7 @@ import { SkillResolver } from "../../../src/resolvers/skill.resolver";
 import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
-import { SubItemResponse } from "../../../src/entities/response.types";
+import { SubItemResponse } from "../../../src/types/response.types";
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';
 

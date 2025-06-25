@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
-import { ExperienceResponse } from "../../../src/entities/response.types";
+import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 
 describe("ExperienceResolver - experienceById", () => {

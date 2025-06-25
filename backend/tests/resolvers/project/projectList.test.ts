@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { ProjectResolver } from "../../../src/resolvers/project.resolver";
 import { prismaMock } from "../../singleton";
-import { ProjectsResponse } from "../../../src/entities/response.types";
+import { ProjectsResponse } from "../../../src/types/response.types";
 import { Project as PrismaProject, Skill as PrismaSkill, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
 
 describe("ProjectResolver - projectList", () => {

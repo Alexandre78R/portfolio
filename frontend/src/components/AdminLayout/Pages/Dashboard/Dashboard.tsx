@@ -18,6 +18,7 @@ const Dashboard = (): React.ReactElement => {
   const [stats, setStats] = useState<GetGlobalStatsQuery | null>(null);
 
   useEffect(() => {
+    console.log("Dashboard data:", data);
     if (data) {
       setStats(data);
     } else {
