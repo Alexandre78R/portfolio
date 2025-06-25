@@ -589,6 +589,11 @@ export type MutationMutationVariables = Exact<{
 
 export type MutationMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token?: string | null, message: string, code: number } };
 
+export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGlobalStatsQuery = { __typename?: 'Query', getGlobalStats: { __typename?: 'GlobalStatsResponse', code: number, message: string, stats?: { __typename?: 'GlobalStats', totalUsers: number, totalProjects: number, totalSkills: number, totalEducations: number, totalExperiences: number, usersByRoleAdmin: number, usersByRoleEditor: number, usersByRoleView: number } | null } };
+
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -760,6 +765,56 @@ export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<Mut
 export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
 export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
 export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
+export const GetGlobalStatsDocument = gql`
+    query GetGlobalStats {
+  getGlobalStats {
+    code
+    message
+    stats {
+      totalUsers
+      totalProjects
+      totalSkills
+      totalEducations
+      totalExperiences
+      usersByRoleAdmin
+      usersByRoleEditor
+      usersByRoleView
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGlobalStatsQuery__
+ *
+ * To run a query within a React component, call `useGetGlobalStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGlobalStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGlobalStatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGlobalStatsQuery(baseOptions?: Apollo.QueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+      }
+export function useGetGlobalStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+        }
+export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+        }
+export type GetGlobalStatsQueryHookResult = ReturnType<typeof useGetGlobalStatsQuery>;
+export type GetGlobalStatsLazyQueryHookResult = ReturnType<typeof useGetGlobalStatsLazyQuery>;
+export type GetGlobalStatsSuspenseQueryHookResult = ReturnType<typeof useGetGlobalStatsSuspenseQuery>;
+export type GetGlobalStatsQueryResult = Apollo.QueryResult<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>;
 export const GenerateCaptchaDocument = gql`
     query generateCaptcha {
   generateCaptcha {
