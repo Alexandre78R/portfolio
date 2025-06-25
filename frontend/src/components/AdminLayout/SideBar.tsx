@@ -74,7 +74,7 @@ const SideBar = ({
                   }}
                   className={clsx(
                     'flex items-center justify-between w-full px-4 py-2 rounded transition-all',
-                    activeTab === item.key ? 'text-primary font-semibold' : 'text-primary',
+                    activeTab === item.key ? 'text-primary font-semibold' : 'text-text',
                     item.disabled
                       ? 'opacity-50 cursor-not-allowed'
                       : 'hover:bg-primary hover:text-secondary'
@@ -96,7 +96,7 @@ const SideBar = ({
                   )}
                 </button>
                 {hasChildren && isOpen && (
-                  <div className="pl-8 mt-1 space-y-1 text-primary">
+                  <div className="pl-8 mt-1 space-y-1 text-text">
                     {item.children?.map((child) => (
                       <button
                         key={child.key}
@@ -107,7 +107,7 @@ const SideBar = ({
                         }}
                         className={clsx(
                           'flex items-center gap-3 px-3 py-1 rounded w-full text-sm transition-all',
-                          activeTab === child.key ? 'text-primary font-semibold' : '',
+                          activeTab === child.key ? 'text-primary font-semibold' : 'text-text',
                           child.disabled
                             ? 'opacity-50 cursor-not-allowed'
                             : 'hover:bg-primary hover:text-secondary'

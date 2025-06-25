@@ -414,7 +414,10 @@ export type Query = {
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  getAverageSkillsPerProject: Scalars['Float']['output'];
   getGlobalStats: GlobalStatsResponse;
+  getTopUsedSkills: TopSkillsResponse;
+  getUsersRoleDistribution: UserRolePercent;
   listBackupFiles: BackupFilesResponse;
   me?: Maybe<User>;
   projectById: ProjectResponse;
@@ -472,6 +475,20 @@ export type SubItemResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   subItems?: Maybe<Array<SkillSubItem>>;
+};
+
+export type TopSkillUsage = {
+  __typename?: 'TopSkillUsage';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  usageCount: Scalars['Int']['output'];
+};
+
+export type TopSkillsResponse = {
+  __typename?: 'TopSkillsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  skills: Array<TopSkillUsage>;
 };
 
 export type UpdateCategoryInput = {
@@ -547,6 +564,15 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
+export type UserRolePercent = {
+  __typename?: 'UserRolePercent';
+  admin: Scalars['Float']['output'];
+  code: Scalars['Int']['output'];
+  editor: Scalars['Float']['output'];
+  message: Scalars['String']['output'];
+  view: Scalars['Float']['output'];
+};
+
 export type UsersResponse = {
   __typename?: 'UsersResponse';
   code: Scalars['Int']['output'];
@@ -592,7 +618,7 @@ export type MutationMutation = { __typename?: 'Mutation', login: { __typename?: 
 export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGlobalStatsQuery = { __typename?: 'Query', getGlobalStats: { __typename?: 'GlobalStatsResponse', code: number, message: string, stats?: { __typename?: 'GlobalStats', totalUsers: number, totalProjects: number, totalSkills: number, totalEducations: number, totalExperiences: number, usersByRoleAdmin: number, usersByRoleEditor: number, usersByRoleView: number } | null } };
+export type GetGlobalStatsQuery = { __typename?: 'Query', getAverageSkillsPerProject: number, getGlobalStats: { __typename?: 'GlobalStatsResponse', code: number, message: string, stats?: { __typename?: 'GlobalStats', totalUsers: number, totalProjects: number, totalSkills: number, totalEducations: number, totalExperiences: number, usersByRoleAdmin: number, usersByRoleEditor: number, usersByRoleView: number } | null }, getUsersRoleDistribution: { __typename?: 'UserRolePercent', admin: number, editor: number, view: number, message: string, code: number }, getTopUsedSkills: { __typename?: 'TopSkillsResponse', code: number, message: string, skills: Array<{ __typename?: 'TopSkillUsage', id: number, name: string, usageCount: number }> } };
 
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -779,6 +805,23 @@ export const GetGlobalStatsDocument = gql`
       usersByRoleAdmin
       usersByRoleEditor
       usersByRoleView
+    }
+  }
+  getAverageSkillsPerProject
+  getUsersRoleDistribution {
+    admin
+    editor
+    view
+    message
+    code
+  }
+  getTopUsedSkills {
+    code
+    message
+    skills {
+      id
+      name
+      usageCount
     }
   }
 }

@@ -289,7 +289,6 @@ export class AdminResolver {
       by: ['skillId'],
       _count: { skillId: true },
       orderBy: { _count: { skillId: 'desc' } },
-      take: 5,
     });
 
     const skillIds = topSkillCounts.map(s => s.skillId);

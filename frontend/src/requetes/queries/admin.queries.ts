@@ -16,5 +16,22 @@ export const GET_GLOBAL_STATS = gql`
         usersByRoleView
       }
     }
-  }
+    getAverageSkillsPerProject
+    getUsersRoleDistribution {
+        admin
+        editor
+        view
+        message
+        code
+    }
+    getTopUsedSkills {
+        code
+        message
+        skills {
+        id
+        name
+        usageCount
+        }
+    }
+}
 `;
