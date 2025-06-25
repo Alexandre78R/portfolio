@@ -141,6 +141,21 @@ const en: Lang = {
   "sideBarAdmin-cv": "Resume",
   "sideBarAdmin-cv/view": "View CV",
   "sideBarAdmin-cv/update": "Edit CV",
+  messagePageDashBoardTitle : "Dashboard",
+  messagePageDashBoardCardStatsProject : "Projects",
+  messagePageDashBoardCardStatsSkill : "Skills",
+  messagePageDashBoardCardStatsEducation : "Educations",
+  messagePageDashBoardCardStatsExperience : "experiences",
+  messagePageDashBoardCardStatsUser : "Users",
+  messagePageDashBoardTittleSection1 : "Average skills per project",
+  messagePageDashBoardTittleSection2 : "Most used skills",
+  messagePageDashBoardTittleSection3 : "Distribution of user roles",
+  messagePageDashBoardMessageAverageLeft : "Each project uses an average of",
+  messagePageDashBoardMessageAverageRight : "skills.",
+  messagePageDashBoardMessageStatsChart : "Number of uses",
+  messagePageDashBoardRoleAdmin : "Administrators",
+  messagePageDashBoardRoleEditor : "Editors",
+  messagePageDashBoardRoleViewer : "Readers",
 };
 
 export default en;

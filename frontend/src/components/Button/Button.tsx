@@ -19,7 +19,7 @@ const ButtonCustom: React.FC<Props> = ({
       variant="contained"
       disabled={disable}
       sx={{
-        fontSize: "1rem",
+        fontSize: "15px",
         px: 5,
         py: 1,
         borderRadius: "999px",

@@ -124,6 +124,21 @@ type Lang = {
   "sideBarAdmin-cv": string;
   "sideBarAdmin-cv/view": string;
   "sideBarAdmin-cv/update": string;
+  messagePageDashBoardTitle : string;
+  messagePageDashBoardCardStatsProject : string;
+  messagePageDashBoardCardStatsSkill : string;
+  messagePageDashBoardCardStatsEducation : string;
+  messagePageDashBoardCardStatsExperience : string;
+  messagePageDashBoardCardStatsUser : string;
+  messagePageDashBoardTittleSection1 : string;
+  messagePageDashBoardTittleSection2 : string;
+  messagePageDashBoardTittleSection3 : string;
+  messagePageDashBoardMessageAverageLeft : string;
+  messagePageDashBoardMessageAverageRight : string;
+  messagePageDashBoardMessageStatsChart : string;
+  messagePageDashBoardRoleAdmin : string;
+  messagePageDashBoardRoleEditor : string;
+  messagePageDashBoardRoleViewer : string;
 };
 
 export default Lang;

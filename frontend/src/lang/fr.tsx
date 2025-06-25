@@ -141,6 +141,21 @@ const fr: Lang = {
   "sideBarAdmin-cv": "CV",
   "sideBarAdmin-cv/view": "Voir le CV",
   "sideBarAdmin-cv/update": "Modifier le CV",
+  messagePageDashBoardTitle : "Tableau de bord",
+  messagePageDashBoardCardStatsProject : "Projets",
+  messagePageDashBoardCardStatsSkill : "Compétences",
+  messagePageDashBoardCardStatsEducation : "Formations",
+  messagePageDashBoardCardStatsExperience : "Expériences",
+  messagePageDashBoardCardStatsUser : "Utilisateurs",
+  messagePageDashBoardTittleSection1 : "Moyenne de compétences par projet",
+  messagePageDashBoardTittleSection2 : "Compétences les plus utilisées",
+  messagePageDashBoardTittleSection3 : "Répartition des rôles utilisateurs",
+  messagePageDashBoardMessageAverageLeft : "Chaque projet utilise en moyenne",
+  messagePageDashBoardMessageAverageRight : "compétences.",
+  messagePageDashBoardMessageStatsChart : "Nombre d'utilisations",
+  messagePageDashBoardRoleAdmin : "Administrateurs",
+  messagePageDashBoardRoleEditor : "Éditeurs",
+  messagePageDashBoardRoleViewer : "Lecteurs",
 };
 
 export default fr;
