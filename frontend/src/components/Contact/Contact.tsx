@@ -7,6 +7,7 @@ import InputField from "@/components/InputField/InputField";
 import { useSendContactMutation } from "@/types/graphql";
 import Captcha from "../Captcha/Captcha";
 import { checkRegex, emailRegex } from "@/regex";
+import TitleH3 from "../Title/TitleH3";
 
 const Contact: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
@@ -95,14 +96,7 @@ const Contact: React.FC = (): React.ReactElement => {
   return (
     <div className="flex flex-col items-center">
       <div className="bg-body p-8 shadow-lg mt-8 text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-        <Typography
-          variant="h3"
-          component="h3"
-          className="text-2xl font-bold text-text mb-6"
-        >
-          {translations.nameFormulaireContact}
-        </Typography>
-
+        <TitleH3 title={translations.nameFormulaireContact} />
         <form className="space-y-6 bg-body">
           <InputField
             id="email"
