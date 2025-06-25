@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 type Props = {
   title: string;
@@ -6,15 +6,19 @@ type Props = {
 
 const Title: React.FC<Props> = ({ title }): React.ReactElement => {
   return (
-    <div className="m-5">
+    <Box m={5}>
       <Typography
         variant="h2"
         component="h2"
-        className="text-text text-2xl font-bold"
+        sx={{
+          color: "var(--text-color)",
+          fontSize: "2rem",
+          fontWeight: "bold",
+        }}
       >
         {title}
       </Typography>
-    </div>
+    </Box>
   );
 };
 
