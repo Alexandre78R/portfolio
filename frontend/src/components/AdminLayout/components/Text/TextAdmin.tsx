@@ -19,14 +19,14 @@ const variantMap: Record<Props["type"],
 };
 
 const fontSizeMap: Record<Props["type"], string> = {
-  h1: "2.5rem",     // ~ text-4xl
-  h2: "2rem",       // ~ text-3xl
-  h3: "1.75rem",    // ~ text-2xl
-  h4: "1.5rem",     // ~ text-xl
-  h5: "1.25rem",    // ~ text-lg
-  h6: "1.125rem",   // ~ text-base
-  p: "1rem",        // ~ text-base
-  span: "0.875rem", // ~ text-sm
+  h1: "2rem",       // ~ text-4xl // réduit depuis 2.5rem
+  h2: "1.75rem",    // ~ text-3xl // réduit depuis 2rem
+  h3: "1.5rem",     // ~ text-2xl // réduit depuis 1.75rem
+  h4: "1.25rem",    // ~ text-xl // réduit depuis 1.5rem
+  h5: "1.125rem",   // ~ text-lg // réduit depuis 1.25rem
+  h6: "1rem",       // ~ text-base // réduit depuis 1.125rem
+  p: "0.875rem",    // ~ text-base // réduit depuis 1rem
+  span: "0.75rem",  // ~ text-sm // réduit depuis 0.875rem
 };
 
 const getColorForType = (type: Props["type"]): string => {

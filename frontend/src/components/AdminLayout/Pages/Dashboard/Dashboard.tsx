@@ -39,7 +39,7 @@ const Dashboard = (): React.ReactElement => {
       <TextAdmin type='h1'>
         {translations.messagePageDashBoardTitle}
       </TextAdmin>
-      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
         {mainStats.map((stat) => (
           <DashboardCard key={stat.title} {...stat} />
         ))}
