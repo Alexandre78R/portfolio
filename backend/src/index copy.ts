@@ -25,6 +25,10 @@ import { customAuthChecker } from "./lib/authChecker";
 import { AdminResolver } from './resolvers/admin.resolver';
 import { generateBadgeSvg } from './lib/badgeGenerator';
 import { loadedLogos, loadLogos } from './lib/logoLoader'; 
+import fs from "fs/promises";
+import { authenticate } from "./middlewares/authenticate";
+import { requireAdmin } from "./middlewares/requireAdmin";
+import { createReadStream } from 'fs';
 
 const prisma = new PrismaClient(); 
 
@@ -150,6 +154,98 @@ async function main() {
     }
   });
 
+  app.get(
+    "/admin/backups",
+    authenticate,
+    requireAdmin,
+    async (req, res): Promise<void> => {
+      try {
+        const backupDir = path.resolve(__dirname, ".", "data");
+        const files = await fs.readdir(backupDir);
+
+        const backups = files.filter((f) =>
+          /^bdd_\d{8}_\d{6}\.sql$/i.test(f)
+        );
+
+        res.json(backups);
+      } catch (err) {
+        console.error("Erreur lecture des sauvegardes :", err);
+        res.status(500).send("Unable to read backups");
+      }
+    }
+  );
+
+  app.get(
+    "/admin/backups/:filename",
+    authenticate,
+    requireAdmin,
+    async (req, res): Promise<void> => {
+      try {
+        const backupDir = path.resolve(__dirname, ".", "data");
+        const filename = req.params.filename;
+
+        if (!filename) {
+          res.status(400).send("Missing file name");
+          return;
+        }
+        if (!/^bdd_\d{8}_\d{6}\.sql$/i.test(filename)) {
+          res.status(400).send("Invalid file name");
+          return;
+        }
+
+        const fullPath = path.join(backupDir, filename);
+
+        try {
+          await fs.access(fullPath);
+        } catch {
+          res.status(404).send("File not found");
+          return;
+        }
+
+        const content = await fs.readFile(fullPath, "utf-8");
+        res.type("text/plain").send(content);
+      } catch (err) {
+        console.error("Erreur lecture fichier backup :", err);
+        res.status(500).send("Unable to read save file");
+      }
+    }
+  );
+
+  app.get(
+    "/admin/backups/:filename/download",
+    authenticate,
+    requireAdmin,
+    async (req, res): Promise<void> => {
+      try {
+        const backupDir = path.resolve(__dirname, ".", "data");
+        const filename = req.params.filename;
+
+        if (!/^bdd_\d{8}_\d{6}\.sql$/i.test(filename)) {
+          res.status(400).send("Invalid file name");
+          return;
+        }
+
+        const fullPath = path.join(backupDir, filename);
+
+        try {
+          await fs.access(fullPath);
+        } catch {
+          res.status(404).send("File not found");
+          return;
+        }
+
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        res.setHeader("Content-Type", "application/sql");
+
+        const fileStream = createReadStream(fullPath);
+        fileStream.pipe(res);
+      } catch (err) {
+        console.error("Erreur téléchargement fichier backup :", err);
+        res.status(500).send("Error while downloading backup file");
+      }
+    }
+  );
+
   app.get('/upload/:type/:filename', (req, res) => {
     const { type, filename } = req.params;
 
@@ -210,7 +306,7 @@ async function main() {
             }
 
           } catch (err) {
-            console.error("Erreur de vérification JWT:", err); // Log l'erreur complète
+            console.error("Erreur de vérification JWT:", err);
             cookies.set("token", "", { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const });
           }
         }

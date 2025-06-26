@@ -15,13 +15,12 @@ declare global {
 
 const prisma = new PrismaClient();
 
-/** Vérifie le cookie JWT et remplit req.user */
 export const authenticate: RequestHandler = async (req, res, next) => {
   const cookies = new Cookies(req, res);
   const token = cookies.get("token");
 
   if (!token || !process.env.JWT_SECRET) {
-    return res.status(401).send("Non authentifié");
+    return res.status(401).send("Unauthenticated");
   }
 
   try {
@@ -34,14 +33,13 @@ export const authenticate: RequestHandler = async (req, res, next) => {
       where: { id: payload.id },
     });
     if (!prismaUser) {
-      return res.status(401).send("Utilisateur introuvable");
+      return res.status(401).send("User not found");
     }
 
-    // cast léger : prismaUser.role === "ADMIN" | "USER" … -> enum UserRole
     req.user = prismaUser as unknown as User;
     next();
   } catch (err) {
     console.error("JWT invalide :", err);
-    return res.status(401).send("Token invalide ou expiré");
+    return res.status(401).send("Invalid or expired token");
   }
 };

@@ -1,36 +1,18 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 import express from "express";
 import http from "http";
-import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from "@apollo/server/express4";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import cors from "cors";
-import { buildSchema } from "type-graphql";
-import { ContactResolver } from "./resolvers/contact.resolver";
-import path from 'path';
-import { CaptchaResolver } from './resolvers/captcha.resolver';
-import { captchaImageMap, cleanUpExpiredCaptchas } from './CaptchaMap';
-import { SkillResolver } from './resolvers/skill.resolver';
-import { checkApiKey } from './lib/checkApiKey';
-import { ExperienceResolver } from './resolvers/experience.resolver';
-import { EducationResolver } from './resolvers/education.resolver';
-import { ProjectResolver } from './resolvers/project.resolver';
-import { UserResolver } from './resolvers/user.resolver';
+import path from "path";
+import dotenv from "dotenv";
+import badgeRoutes from "./routes/badge.routes";
+import backupsRoutes from "./routes/backups.routes";
+import captchaRoutes from "./routes/captcha.routes";
+import uploadRoutes from "./routes/upload.routes";
+import { mountGraphQL } from "./routes/graphql.routes";
+import { cleanUpExpiredCaptchas } from "./CaptchaMap";
+import { loadLogos } from "./lib/logoLoader";
 import Cookies from "cookies";
-import { PrismaClient } from "@prisma/client";
-import { User, UserRole } from "./entities/user.entity"; 
-import { jwtVerify } from "jose";
-import "dotenv/config";
-import { customAuthChecker } from "./lib/authChecker";
-import { AdminResolver } from './resolvers/admin.resolver';
-import { generateBadgeSvg } from './lib/badgeGenerator';
-import { loadedLogos, loadLogos } from './lib/logoLoader'; 
-import fs from "fs/promises";
-import { authenticate } from "./middlewares/authenticate";
-import { requireAdmin } from "./middlewares/requireAdmin";
-import { createReadStream } from 'fs';
-
-const prisma = new PrismaClient(); 
+import { User } from "./entities/user.entity"; 
 
 export interface JwtPayload {
   id: number;
@@ -45,297 +27,43 @@ export interface MyContext {
   user: User | null;
 }
 
-// export interface JwtPayload {
-//   userId: number;
-//   email?: string;
-//   role?: string;
-//   iat?: number;
-//   exp?: number;
-// }
+dotenv.config();
 
 const app = express();
 const httpServer = http.createServer(app);
+const PORT = process.env.PORT || 4000;
 
-async function main() {
-  const schema = await buildSchema({
-    resolvers: [
-      ContactResolver,
-      CaptchaResolver,
-      SkillResolver,
-      ProjectResolver,
-      ExperienceResolver,
-      EducationResolver,
-      UserResolver,
-      AdminResolver,
-    ],
-    validate: false,
-    authChecker: customAuthChecker, 
-  });
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL?.split(",") ?? ["http://localhost:3000"],
+    credentials: true,
+  })
+);
+app.use(express.json());
 
-  const server = new ApolloServer<MyContext>({
-    schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
+app.use("/api/badges", badgeRoutes);     // → /api/badges/…
+app.use("/api/backups", backupsRoutes);  // → /api/backups/…
+app.use("/api/dynamic-images", captchaRoutes);  // → /api/dynamic-images/:id
+app.use("/api/upload", uploadRoutes);    // → /api/upload/:type/:filename
 
-  await server.start();
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"), {
+    maxAge: "7d",
+    immutable: true,
+  })
+);
 
-  app.get('/dynamic-images/:id', (req, res) => {
-    const imageId = req.params.id;
-    const filename = captchaImageMap[imageId];
-    if (filename) {
-      const imagePath = path.join(__dirname, 'images/captcha', filename);
-      res.sendFile(imagePath);
-    } else {
-      res.status(404).send('Image not found');
-    }
-  });
+(async () => {
 
-  app.get('/badge/:label/:message/:messageColor/:labelColor/:logo', (req, res) => {
-    const { label, message, messageColor, labelColor, logo } = req.params;
-    const { logoColor, logoPosition } = req.query;
-
-    try {
-      const decodedLabel = decodeURIComponent(label);
-      const decodedMessage = decodeURIComponent(message);
-      const decodedMessageColor = decodeURIComponent(messageColor);
-      const decodedLabelColor = decodeURIComponent(labelColor);
-
-      const finalLogoPosition: 'left' | 'right' =
-        logoPosition === 'right' ? 'right' : 'left';
-
-      let logoDataForBadge: { base64: string; mimeType: string } | undefined;
-      if (logo) {
-        logoDataForBadge = loadedLogos.get(String(logo).toLowerCase());
-        if (!logoDataForBadge) {
-          console.warn(`Logo personnalisé '${logo}' non trouvé dans les logos chargés.`);
-        }
-      }
-
-      const svg = generateBadgeSvg(
-        decodedLabel,
-        decodedMessage,
-        decodedMessageColor,
-        decodedLabelColor,
-        logoDataForBadge,
-        logoColor ? String(logoColor) : undefined,
-        finalLogoPosition
-      );
-
-      res.setHeader('Content-Type', 'image/svg+xml');
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.send(svg);
-    } catch (error) {
-      console.error("Erreur lors de la génération du badge SVG:", error);
-      res.status(500).send('<svg width="120" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
-    }
-  });
-
-  app.get('/badge/stats/projects-count', async (req, res) => {
-    try {
-      const projectCount = await prisma.project.count();
-      const logoData = loadedLogos.get('github'); 
-      if (!logoData) console.warn("Logo 'github' non trouvé pour le badge projets.");
-
-      const svg = generateBadgeSvg(
-        'Projets',
-        String(projectCount),
-        '4CAF50',
-        '2F4F4F',
-        logoData,
-        'white',
-        'right'
-      );
-      res.setHeader('Content-Type', 'image/svg+xml');
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.send(svg);
-    } catch (error) {
-      console.error("Erreur lors de la génération du badge des projets:", error);
-      res.status(500).send('<svg width="120" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="20" fill="#E05D44"/><text x="5" y="14" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11px" fill="white">Error</text></svg>');
-    }
-  });
-
-  app.get(
-    "/admin/backups",
-    authenticate,
-    requireAdmin,
-    async (req, res): Promise<void> => {
-      try {
-        const backupDir = path.resolve(__dirname, ".", "data");
-        const files = await fs.readdir(backupDir);
-
-        const backups = files.filter((f) =>
-          /^bdd_\d{8}_\d{6}\.sql$/i.test(f)
-        );
-
-        res.json(backups);
-      } catch (err) {
-        console.error("Erreur lecture des sauvegardes :", err);
-        res.status(500).send("Impossible de lire les sauvegardes");
-      }
-    }
-  );
-
-  app.get(
-    "/admin/backups/:filename",
-    authenticate,
-    requireAdmin,
-    async (req, res): Promise<void> => {
-      try {
-        const backupDir = path.resolve(__dirname, ".", "data");
-        const filename = req.params.filename;
-
-        if (!filename) {
-          res.status(400).send("Nom de fichier manquant");
-          return;
-        }
-        if (!/^bdd_\d{8}_\d{6}\.sql$/i.test(filename)) {
-          res.status(400).send("Nom de fichier invalide");
-          return;
-        }
-
-        const fullPath = path.join(backupDir, filename);
-
-        try {
-          await fs.access(fullPath);
-        } catch {
-          res.status(404).send("Fichier introuvable");
-          return;
-        }
-
-        const content = await fs.readFile(fullPath, "utf-8");
-        res.type("text/plain").send(content);
-      } catch (err) {
-        console.error("Erreur lecture fichier backup :", err);
-        res.status(500).send("Impossible de lire le fichier de sauvegarde");
-      }
-    }
-  );
-
-  app.get(
-    "/admin/backups/:filename/download",
-    authenticate,
-    requireAdmin,
-    async (req, res): Promise<void> => {
-      try {
-        const backupDir = path.resolve(__dirname, ".", "data");
-        const filename = req.params.filename;
-
-        if (!/^bdd_\d{8}_\d{6}\.sql$/i.test(filename)) {
-          res.status(400).send("Nom de fichier invalide");
-          return;
-        }
-
-        const fullPath = path.join(backupDir, filename);
-
-        try {
-          await fs.access(fullPath);
-        } catch {
-          res.status(404).send("Fichier introuvable");
-          return;
-        }
-
-        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
-        res.setHeader("Content-Type", "application/sql");
-
-        const fileStream = createReadStream(fullPath);
-        fileStream.pipe(res);
-      } catch (err) {
-        console.error("Erreur téléchargement fichier backup :", err);
-        res.status(500).send("Erreur lors du téléchargement");
-      }
-    }
-  );
-
-  app.get('/upload/:type/:filename', (req, res) => {
-    const { type, filename } = req.params;
-
-    if (!['image', 'video'].includes(type)) {
-      return res.status(400).send('Invalid type. Use "image" or "video".');
-    }
-
-    const filePath = path.join(__dirname, '.', 'uploads', `${type}s`, filename);
-
-    res.sendFile(filePath, (err) => {
-      if (err) {
-        if (!res.headersSent) {
-          console.error(`Fichier non trouvé : ${filePath}`);
-          return res.status(404).send('Fichier non trouvé');
-        }
-      }
-    });
-  });
-
-  app.use(
-    "/graphql",
-    cors<cors.CorsRequest>({
-      origin: ["http://localhost:3000"],
-      credentials: true,
-    }),
-    express.json(),
-    expressMiddleware(server, {
-      context: async ({ req, res }) => {
-        const cookies = new Cookies(req, res);
-
-        let user: User | null = null;
-
-        const token = cookies.get("token"); 
-
-        if (token && process.env.JWT_SECRET) {
-          // console.log("token ---->", token)
-          try {
-            const { payload } = await jwtVerify<JwtPayload>(
-              token,
-              new TextEncoder().encode(process.env.JWT_SECRET)
-            );
-
-            // console.log("Payload du token décodé:", payload); 
-
-            const prismaUser = await prisma.user.findUnique({
-                where: { id: payload.id } 
-            });
-
-            if (prismaUser) {
-              user = {
-                id: prismaUser.id,
-                email: prismaUser.email,
-                firstname: prismaUser.firstname,
-                lastname: prismaUser.lastname,
-                role: prismaUser.role as UserRole,
-                isPasswordChange: prismaUser.isPasswordChange,
-              };
-            }
-
-          } catch (err) {
-            console.error("Erreur de vérification JWT:", err); // Log l'erreur complète
-            cookies.set("token", "", { expires: new Date(0), httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' as const });
-          }
-        }
-
-        const apiKeyHeader = req.headers['x-api-key'];
-        const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
-
-        // const operationName = req.body.operationName || (req.body.query && req.body.query.match(/(mutation|query)\s+(\w+)/)?.[2]);
-
-        if (!apiKey) {
-          throw new Error('Unauthorized: x-api-key header is missing.');
-        }
-
-        if (apiKey) {
-          await checkApiKey(apiKey);
-        }
-
-        return { req, res, apiKey, cookies, token, user };
-      },
-    })
-  );
+  await mountGraphQL(app);
 
   setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);
 
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
-  );
-  console.log(`🚀 Server lancé sur http://localhost:4000/`);
-}
+  loadLogos();
 
-main();
-loadLogos();
+  httpServer.listen(PORT, () => {
+    console.log(`✅  REST ready   → http://localhost:${PORT}`);
+    console.log(`✅  GraphQL ready→ http://localhost:${PORT}/graphql`);
+  });
+})();
