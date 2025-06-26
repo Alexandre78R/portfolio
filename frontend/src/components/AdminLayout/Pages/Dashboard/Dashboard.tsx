@@ -19,7 +19,7 @@ const Dashboard = (): React.ReactElement => {
   const { data , loading, error } = useGetGlobalStatsQuery();
   const { translations } = useLang();  
   if (loading) return <LoadingCustom />;
-  if (error || !data?.getGlobalStats) return <p className="p-4 text-primary">Erreur lors du chargement des statistiques.</p>;
+  if (error || !data?.getGlobalStats) return <p className="p-4 text-primary">{translations.messagePageDashBoardErreurData}</p>;
   
     const stats = data.getGlobalStats.stats;
     const averageSkills = data.getAverageSkillsPerProject;

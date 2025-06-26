@@ -35,3 +35,18 @@ export const GET_GLOBAL_STATS = gql`
     }
 }
 `;
+
+export const GET_BACKUPS_LIST = gql`
+  query GetBackupsList {
+    listBackupFiles {
+      files {
+        sizeBytes
+        modifiedAt
+        fileName
+        createdAt
+      }
+      message
+      code
+    }
+  }
+`;

@@ -142,6 +142,7 @@ const en: Lang = {
   "sideBarAdmin-cv/view": "View CV",
   "sideBarAdmin-cv/update": "Edit CV",
   messagePageDashBoardTitle : "Dashboard",
+  messagePageDashBoardErreurData : "Error loading statistics data.",
   messagePageDashBoardCardStatsProject : "Projects",
   messagePageDashBoardCardStatsSkill : "Skills",
   messagePageDashBoardCardStatsEducation : "Educations",
@@ -156,6 +157,12 @@ const en: Lang = {
   messagePageDashBoardRoleAdmin : "Administrators",
   messagePageDashBoardRoleEditor : "Editors",
   messagePageDashBoardRoleViewer : "Readers",
+  messagePageBackUpListTitle: "Backup List",
+  messagePageBackUpListFileName: "File Name",
+  messagePageBackUpListSize: "Size",
+  messagePageBackUpListDateCreated: "Created on",
+  messagePageBackUpListDateModified: "Modified on",
+  messagePageBackUpListAction: "Action",
 };
 
 export default en;

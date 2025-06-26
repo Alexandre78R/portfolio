@@ -26,14 +26,15 @@ const ButtonCustom: React.FC<Props> = ({
         mt: 2,
         ml: 1,
         border: "none",
-        bgcolor: disable ? "black" : "var(--primary-color)",
+        bgcolor: disable ? "red" : "var(--primary-color)",
         "&:hover": disableHover
           ? {}
           : {
               bgcolor: "var(--secondary-color)",
             },
-        pointerEvents: disable ? "none" : "auto",
+        // pointerEvents: disable ? "none" : "auto",
         outline: "none",
+        // color: disable ? "white" : "",
       }}
     >
       {text}

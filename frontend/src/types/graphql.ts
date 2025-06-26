@@ -620,6 +620,11 @@ export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetGlobalStatsQuery = { __typename?: 'Query', getAverageSkillsPerProject: number, getGlobalStats: { __typename?: 'GlobalStatsResponse', code: number, message: string, stats?: { __typename?: 'GlobalStats', totalUsers: number, totalProjects: number, totalSkills: number, totalEducations: number, totalExperiences: number, usersByRoleAdmin: number, usersByRoleEditor: number, usersByRoleView: number } | null }, getUsersRoleDistribution: { __typename?: 'UserRolePercent', admin: number, editor: number, view: number, message: string, code: number }, getTopUsedSkills: { __typename?: 'TopSkillsResponse', code: number, message: string, skills: Array<{ __typename?: 'TopSkillUsage', id: number, name: string, usageCount: number }> } };
 
+export type GetBackupsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBackupsListQuery = { __typename?: 'Query', listBackupFiles: { __typename?: 'BackupFilesResponse', message: string, code: number, files?: Array<{ __typename?: 'BackupFileInfo', sizeBytes: number, modifiedAt: any, fileName: string, createdAt: any }> | null } };
+
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -858,6 +863,52 @@ export type GetGlobalStatsQueryHookResult = ReturnType<typeof useGetGlobalStatsQ
 export type GetGlobalStatsLazyQueryHookResult = ReturnType<typeof useGetGlobalStatsLazyQuery>;
 export type GetGlobalStatsSuspenseQueryHookResult = ReturnType<typeof useGetGlobalStatsSuspenseQuery>;
 export type GetGlobalStatsQueryResult = Apollo.QueryResult<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>;
+export const GetBackupsListDocument = gql`
+    query GetBackupsList {
+  listBackupFiles {
+    files {
+      sizeBytes
+      modifiedAt
+      fileName
+      createdAt
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetBackupsListQuery__
+ *
+ * To run a query within a React component, call `useGetBackupsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBackupsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBackupsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetBackupsListQuery(baseOptions?: Apollo.QueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+      }
+export function useGetBackupsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+        }
+export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+        }
+export type GetBackupsListQueryHookResult = ReturnType<typeof useGetBackupsListQuery>;
+export type GetBackupsListLazyQueryHookResult = ReturnType<typeof useGetBackupsListLazyQuery>;
+export type GetBackupsListSuspenseQueryHookResult = ReturnType<typeof useGetBackupsListSuspenseQuery>;
+export type GetBackupsListQueryResult = Apollo.QueryResult<GetBackupsListQuery, GetBackupsListQueryVariables>;
 export const GenerateCaptchaDocument = gql`
     query generateCaptcha {
   generateCaptcha {

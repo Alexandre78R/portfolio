@@ -125,6 +125,7 @@ type Lang = {
   "sideBarAdmin-cv/view": string;
   "sideBarAdmin-cv/update": string;
   messagePageDashBoardTitle : string;
+  messagePageDashBoardErreurData : string;
   messagePageDashBoardCardStatsProject : string;
   messagePageDashBoardCardStatsSkill : string;
   messagePageDashBoardCardStatsEducation : string;
@@ -139,6 +140,12 @@ type Lang = {
   messagePageDashBoardRoleAdmin : string;
   messagePageDashBoardRoleEditor : string;
   messagePageDashBoardRoleViewer : string;
+  messagePageBackUpListTitle : string;
+  messagePageBackUpListFileName : string;
+  messagePageBackUpListSize : string;
+  messagePageBackUpListDateCreated : string;
+  messagePageBackUpListDateModified : string;
+  messagePageBackUpListAction : string;
 };
 
 export default Lang;

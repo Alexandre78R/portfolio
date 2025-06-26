@@ -122,7 +122,7 @@ const ProjectsCommand: React.FC = () => {
                   <div className="video-container">
                     {isClient && (
                       <ReactPlayer
-                        url={`${process.env.NEXT_PUBLIC_API_URL}/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                        url={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
                         width="310px"
                         height="170px"
                         controls
@@ -131,7 +131,7 @@ const ProjectsCommand: React.FC = () => {
                   </div>
                 ) : (
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
                     alt="Card Image"
                     className="w-[350px] h-[170px] pb-2 overflow-hidden"
                   />
