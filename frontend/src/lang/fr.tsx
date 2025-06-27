@@ -172,6 +172,13 @@ const fr: Lang = {
   messagePageBackUpDescConfirmCreated : "Voulez-vous vraiment créer une nouvelle sauvegarde de la base de données ?",
   messagePageBackUpMessageButtonValideCreated : "Oui, créer",
   messagePageBackUpMessageButtonCancelCreated : "Annuler",
+  messagePageBackUpTitleConfirmDeleted: "Confirmer la suppression",
+  messagePageBackUpDescConfirmDeleted: "Voulez-vous vraiment supprimer cette sauvegarde ?",
+  messagePageBackUpMessageButtonValideDeleted: "Supprimer",
+  messagePageBackUpMessageButtonCancelDeleted: "Annuler",
+  messagePageBackUpDeletedSuccess: "Sauvegarde supprimée avec succès.",
+  messagePageBackUpDeletedError1: "Une erreur est survenue lors de la suppression.",
+  messagePageBackUpDeletedError2: "Échec de la suppression de la sauvegarde.",
 };
 
 export default fr;

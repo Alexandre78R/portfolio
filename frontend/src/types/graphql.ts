@@ -590,6 +590,13 @@ export type GenerateDatabaseBackupMutationVariables = Exact<{ [key: string]: nev
 
 export type GenerateDatabaseBackupMutation = { __typename?: 'Mutation', generateDatabaseBackup: { __typename?: 'BackupResponse', code: number, message: string, path: string } };
 
+export type DeleteBackupFileMutationVariables = Exact<{
+  fileName: Scalars['String']['input'];
+}>;
+
+
+export type DeleteBackupFileMutation = { __typename?: 'Mutation', deleteBackupFile: { __typename?: 'Response', code: number, message: string } };
+
 export type ValidateCaptchaMutationVariables = Exact<{
   challengeType: Scalars['String']['input'];
   selectedIndices: Array<Scalars['Float']['input']> | Scalars['Float']['input'];
@@ -695,6 +702,40 @@ export function useGenerateDatabaseBackupMutation(baseOptions?: Apollo.MutationH
 export type GenerateDatabaseBackupMutationHookResult = ReturnType<typeof useGenerateDatabaseBackupMutation>;
 export type GenerateDatabaseBackupMutationResult = Apollo.MutationResult<GenerateDatabaseBackupMutation>;
 export type GenerateDatabaseBackupMutationOptions = Apollo.BaseMutationOptions<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>;
+export const DeleteBackupFileDocument = gql`
+    mutation DeleteBackupFile($fileName: String!) {
+  deleteBackupFile(fileName: $fileName) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteBackupFileMutationFn = Apollo.MutationFunction<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>;
+
+/**
+ * __useDeleteBackupFileMutation__
+ *
+ * To run a mutation, you first call `useDeleteBackupFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBackupFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBackupFileMutation, { data, loading, error }] = useDeleteBackupFileMutation({
+ *   variables: {
+ *      fileName: // value for 'fileName'
+ *   },
+ * });
+ */
+export function useDeleteBackupFileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>(DeleteBackupFileDocument, options);
+      }
+export type DeleteBackupFileMutationHookResult = ReturnType<typeof useDeleteBackupFileMutation>;
+export type DeleteBackupFileMutationResult = Apollo.MutationResult<DeleteBackupFileMutation>;
+export type DeleteBackupFileMutationOptions = Apollo.BaseMutationOptions<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>;
 export const ValidateCaptchaDocument = gql`
     mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
   validateCaptcha(

@@ -172,6 +172,13 @@ const en: Lang = {
   messagePageBackUpDescConfirmCreated : "Are you sure you want to create a new database backup?",
   messagePageBackUpMessageButtonValideCreated : "Yes, create",
   messagePageBackUpMessageButtonCancelCreated : "Cancel",
+  messagePageBackUpTitleConfirmDeleted: "Confirm deletion",
+  messagePageBackUpDescConfirmDeleted: "Are you sure you want to delete this backup?",
+  messagePageBackUpMessageButtonValideDeleted: "Delete",
+  messagePageBackUpMessageButtonCancelDeleted: "Cancel",
+  messagePageBackUpDeletedSuccess: "Backup deleted successfully.",
+  messagePageBackUpDeletedError1: "An error occurred while deleting.",
+  messagePageBackUpDeletedError2: "Failed to delete backup.",
 };
 
 export default en;

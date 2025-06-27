@@ -155,6 +155,13 @@ type Lang = {
   messagePageBackUpDescConfirmCreated : string;
   messagePageBackUpMessageButtonValideCreated : string;
   messagePageBackUpMessageButtonCancelCreated : string;
+  messagePageBackUpTitleConfirmDeleted: string;
+  messagePageBackUpDescConfirmDeleted: string;
+  messagePageBackUpMessageButtonValideDeleted: string;
+  messagePageBackUpMessageButtonCancelDeleted: string;
+  messagePageBackUpDeletedSuccess: string;
+  messagePageBackUpDeletedError1: string;
+  messagePageBackUpDeletedError2: string;
 };
 
 export default Lang;

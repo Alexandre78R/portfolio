@@ -9,3 +9,12 @@ export const GENERATE_BACKUP  = gql`
     }
 }
 `;
+
+export const DELETE_BACKUP  = gql`  
+  mutation DeleteBackupFile($fileName: String!) {
+    deleteBackupFile(fileName: $fileName) {
+      code
+      message
+    }
+}
+`;
