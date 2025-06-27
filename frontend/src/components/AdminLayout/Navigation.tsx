@@ -89,14 +89,20 @@ const navigation: NavItem[] = [
   },
   {
     name: 'Sauvegarde',
-    key: 'backup',
+    key: 'backup/list',
     icon: DatabaseBackup,
     roles: ['admin', 'editor', 'view'],
-    children: [
-      { name: 'Voir les backup', key: 'backup/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'backup' },
-      { name: 'Nouvelle backup', key: 'backup/create', icon: FolderPlus, roles: ['admin'], parentKey: 'backup' },
-    ],
   },
+  // {
+  //   name: 'Sauvegarde',
+  //   key: 'backup',
+  //   icon: DatabaseBackup,
+  //   roles: ['admin', 'editor', 'view'],
+  //   children: [
+  //     { name: 'Voir les backup', key: 'backup/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'backup' },
+  //     { name: 'Nouvelle backup', key: 'backup/create', icon: FolderPlus, roles: ['admin'], parentKey: 'backup' },
+  //   ],
+  // },
   {
     name: 'CV',
     key: 'cv',

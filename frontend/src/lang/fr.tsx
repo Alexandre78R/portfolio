@@ -137,7 +137,6 @@ const fr: Lang = {
   "sideBarAdmin-settings": "Paramètres",
   "sideBarAdmin-backup": "Sauvegarde",
   "sideBarAdmin-backup/list": "Voir les sauvegardes",
-  "sideBarAdmin-backup/create": "Nouvelle sauvegarde",
   "sideBarAdmin-cv": "CV",
   "sideBarAdmin-cv/view": "Voir le CV",
   "sideBarAdmin-cv/update": "Modifier le CV",

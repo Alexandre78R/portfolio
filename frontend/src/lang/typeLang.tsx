@@ -120,7 +120,6 @@ type Lang = {
   "sideBarAdmin-settings": string;
   "sideBarAdmin-backup": string;
   "sideBarAdmin-backup/list": string;
-  "sideBarAdmin-backup/create": string;
   "sideBarAdmin-cv": string;
   "sideBarAdmin-cv/view": string;
   "sideBarAdmin-cv/update": string;
