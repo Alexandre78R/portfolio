@@ -1,10 +1,16 @@
-import React from "react";
-import { useGetBackupsListQuery } from "@/types/graphql";
+import React, { useState } from "react";
+import { 
+  useGetBackupsListQuery,
+  useGenerateDatabaseBackupMutation,
+} from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Table, { ColumnDef } from "../../components/Table/Table";
 import { Download, Eye } from "lucide-react";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
+import ButtonCustom from "@/components/Button/Button";
 
 const formatBytes = (bytes: number): string => {
   if (!bytes) return "0 B";
@@ -31,14 +37,39 @@ interface BackupFileInfo {
 }
 
 const BackUpList = (): React.ReactElement => {
-  const { data, loading, error } = useGetBackupsListQuery();
+  
+  const { data, loading, error, refetch } = useGetBackupsListQuery();
+  const [generateBackup] = useGenerateDatabaseBackupMutation();
   const { translations } = useLang();
+
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+  const handleOpenDialog: () => void = () => setOpenDialog(true);
+  const handleCloseDialog: () => void = () => setOpenDialog(false);
+
+  const { showAlert } = CustomToast();
+
+  const handleGenerateBackup: () => Promise<void> = async () => {
+    try {
+      const { data } = await generateBackup();
+      if (data?.generateDatabaseBackup.code === 200) {
+        showAlert("success", translations.messagePageBackUpCreatedSuccess);
+        await refetch();
+      } else {
+        showAlert("error", translations.messagePageBackUpCreatedError1);
+      }
+    } catch (error) {
+      showAlert("error", translations.messagePageBackUpCreatedError2);
+    } finally {
+      setOpenDialog(false);
+    }
+  };
 
   if (loading) return <LoadingCustom />;
   if (error || !data?.listBackupFiles?.files)
     return (
       <p className="p-4 text-primary">
-        {"Erreur lors du chargement des fichiers de sauvegarde."}
+        {translations.messagePageBackUpListNotFound}
       </p>
     );
 
@@ -92,7 +123,22 @@ const BackUpList = (): React.ReactElement => {
   return (
     <div className="space-y-10">
       <TextAdmin type="h1">{translations.messagePageBackUpListTitle}</TextAdmin>
+      <ButtonCustom
+        text={translations.messagePageBackUpButtomCreated}
+        onClick={handleOpenDialog}
+        disable={false} 
+        disableHover={false}
+      />
       <Table columns={columns} data={backups} />
+      <ConfirmDialog
+        open={openDialog}
+        title={translations.messagePageBackUpTitleConfirmCreated}
+        description={translations.messagePageBackUpDescConfirmCreated}
+        confirmLabel= {translations.messagePageBackUpMessageButtonValideCreated}
+        cancelLabel= {translations.messagePageBackUpMessageButtonCancelCreated}
+        onConfirm={handleGenerateBackup}
+        onCancel={handleCloseDialog}
+      />
     </div>
   );
 };

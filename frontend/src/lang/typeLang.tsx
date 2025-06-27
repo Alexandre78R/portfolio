@@ -146,6 +146,15 @@ type Lang = {
   messagePageBackUpListDateCreated : string;
   messagePageBackUpListDateModified : string;
   messagePageBackUpListAction : string;
+  messagePageBackUpCreatedSuccess : string;
+  messagePageBackUpCreatedError1 : string;
+  messagePageBackUpCreatedError2 : string;
+  messagePageBackUpListNotFound : string;
+  messagePageBackUpButtomCreated : string;
+  messagePageBackUpTitleConfirmCreated : string;
+  messagePageBackUpDescConfirmCreated : string;
+  messagePageBackUpMessageButtonValideCreated : string;
+  messagePageBackUpMessageButtonCancelCreated : string;
 };
 
 export default Lang;

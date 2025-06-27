@@ -163,6 +163,15 @@ const en: Lang = {
   messagePageBackUpListDateCreated: "Created on",
   messagePageBackUpListDateModified: "Modified on",
   messagePageBackUpListAction: "Action",
+  messagePageBackUpCreatedSuccess : "Backup successfully generated!",
+  messagePageBackUpCreatedError1 : "An error occurred.",
+  messagePageBackUpCreatedError2 : "An error occurred while generating the backup.",
+  messagePageBackUpListNotFound : "Error loading backup files.",
+  messagePageBackUpButtomCreated : "New backup",
+  messagePageBackUpTitleConfirmCreated : "Creation confirmation",
+  messagePageBackUpDescConfirmCreated : "Are you sure you want to create a new database backup?",
+  messagePageBackUpMessageButtonValideCreated : "Yes, create",
+  messagePageBackUpMessageButtonCancelCreated : "Cancel",
 };
 
 export default en;

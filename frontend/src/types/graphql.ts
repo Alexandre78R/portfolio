@@ -585,6 +585,11 @@ export type ValidationResponse = {
   isValid: Scalars['Boolean']['output'];
 };
 
+export type GenerateDatabaseBackupMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateDatabaseBackupMutation = { __typename?: 'Mutation', generateDatabaseBackup: { __typename?: 'BackupResponse', code: number, message: string, path: string } };
+
 export type ValidateCaptchaMutationVariables = Exact<{
   challengeType: Scalars['String']['input'];
   selectedIndices: Array<Scalars['Float']['input']> | Scalars['Float']['input'];
@@ -656,6 +661,40 @@ export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', role: Role, lastname: string, isPasswordChange: boolean, id: string, firstname: string, email: string } | null };
 
 
+export const GenerateDatabaseBackupDocument = gql`
+    mutation generateDatabaseBackup {
+  generateDatabaseBackup {
+    code
+    message
+    path
+  }
+}
+    `;
+export type GenerateDatabaseBackupMutationFn = Apollo.MutationFunction<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>;
+
+/**
+ * __useGenerateDatabaseBackupMutation__
+ *
+ * To run a mutation, you first call `useGenerateDatabaseBackupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateDatabaseBackupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateDatabaseBackupMutation, { data, loading, error }] = useGenerateDatabaseBackupMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateDatabaseBackupMutation(baseOptions?: Apollo.MutationHookOptions<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>(GenerateDatabaseBackupDocument, options);
+      }
+export type GenerateDatabaseBackupMutationHookResult = ReturnType<typeof useGenerateDatabaseBackupMutation>;
+export type GenerateDatabaseBackupMutationResult = Apollo.MutationResult<GenerateDatabaseBackupMutation>;
+export type GenerateDatabaseBackupMutationOptions = Apollo.BaseMutationOptions<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>;
 export const ValidateCaptchaDocument = gql`
     mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
   validateCaptcha(

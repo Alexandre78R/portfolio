@@ -163,6 +163,15 @@ const fr: Lang = {
   messagePageBackUpListDateCreated : "Créé le",
   messagePageBackUpListDateModified : "Modifié le",
   messagePageBackUpListAction : "Action",
+  messagePageBackUpCreatedSuccess : "Sauvegarde générée avec succès !",
+  messagePageBackUpCreatedError1 : "Une erreur est survenue.",
+  messagePageBackUpCreatedError2 : "Une erreur est survenue lors de la génération de la sauvegarde.",
+  messagePageBackUpListNotFound : "Erreur lors du chargement des fichiers de sauvegarde.",
+  messagePageBackUpButtomCreated : "Nouvelle sauvegarde",
+  messagePageBackUpTitleConfirmCreated : "Confirmation de la création",
+  messagePageBackUpDescConfirmCreated : "Voulez-vous vraiment créer une nouvelle sauvegarde de la base de données ?",
+  messagePageBackUpMessageButtonValideCreated : "Oui, créer",
+  messagePageBackUpMessageButtonCancelCreated : "Annuler",
 };
 
 export default fr;
