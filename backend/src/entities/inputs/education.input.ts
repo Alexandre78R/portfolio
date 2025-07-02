@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from "type-graphql";
+import { InputType, Field, Int, ArgsType } from "type-graphql";
 
 @InputType()
 export class CreateEducationInput {
@@ -91,4 +91,16 @@ export class UpdateEducationInput {
 
   @Field({ nullable: true })
   typeFR?: string;
+}
+
+@ArgsType()
+export class PaginationArgs {
+  @Field(() => Int, { defaultValue: 1 })
+  page: number;
+
+  @Field(() => Int, { defaultValue: 10 })
+  limit: number;
+
+  @Field(() => String, { nullable: true })
+  searchTerm?: string;
 }

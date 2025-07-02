@@ -55,6 +55,7 @@ export class SubItemResponse extends Response {
 export class EducationsResponse extends Response {
   @Field(() => [Education], { nullable: true })
   educations?: Education[];
+  total?: number;
 }
 
 @ObjectType()

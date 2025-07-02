@@ -128,26 +128,26 @@ const BackUpList = (): React.ReactElement => {
             href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="h-4 w-4 text-text" />
           </a>
           <a
             href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4 text-text" />
           </a>
           <button
             onClick={() => {
               setSelectedFileName(row.fileName);
               setOpenDeleteDialog(true);
             }}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Trash className="h-4 w-4" />
+            <Trash className="h-4 w-4 text-text" />
           </button>
         </>
       ),

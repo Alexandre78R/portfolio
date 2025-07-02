@@ -408,6 +408,7 @@ export type Query = {
   __typename?: 'Query';
   educationById: EducationResponse;
   educationList: EducationsResponse;
+  educationListPagination: EducationsResponse;
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
@@ -426,6 +427,13 @@ export type Query = {
 
 export type QueryEducationByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryEducationListPaginationArgs = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 

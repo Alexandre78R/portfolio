@@ -1,8 +1,8 @@
-import { Resolver, Query, Int, Arg, Mutation, Authorized, Ctx } from "type-graphql";
+import { Resolver, Query, Int, Arg, Mutation, Authorized, Ctx, Args } from "type-graphql";
 import { Education } from "../entities/education.entity";
 import { PrismaClient } from "@prisma/client";
 import { EducationResponse, EducationsResponse } from "../types/response.types";
-import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/education.input";
+import { CreateEducationInput, PaginationArgs, UpdateEducationInput } from "../entities/inputs/education.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 
@@ -16,6 +16,40 @@ export class EducationResolver {
     try {
       const list = await this.db.education.findMany();
       return { code: 200, message: "Educations fetched", educations: list };
+    } catch (error) {
+      console.error(error);
+      return { code: 500, message: "Error fetching educations" };
+    }
+  }
+
+  @Query(() => EducationsResponse)
+  async educationListPagination(@Args() { page, limit, searchTerm }: PaginationArgs): Promise<EducationsResponse> {
+    try {
+      const skip = (page - 1) * limit;
+      const whereClause = searchTerm
+        ? {
+            OR: [
+              { titleFR: { contains: searchTerm, mode: 'insensitive' } },
+              { school: { contains: searchTerm, mode: 'insensitive' } },
+            ],
+          }
+        : {};
+
+      const educations = await this.db.education.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { year: "desc" },
+      });
+
+      const total = await this.db.education.count({ where: whereClause });
+
+      return {
+        code: 200,
+        message: "Educations fetched",
+        educations,
+        total,
+      };
     } catch (error) {
       console.error(error);
       return { code: 500, message: "Error fetching educations" };

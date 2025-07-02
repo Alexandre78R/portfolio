@@ -136,7 +136,7 @@ const fr: Lang = {
   "sideBarAdmin-theme-colors/create": "Créer une nouvelle couleur",
   "sideBarAdmin-settings": "Paramètres",
   "sideBarAdmin-backup": "Sauvegarde",
-  "sideBarAdmin-backup/list": "Voir les sauvegardes",
+  "sideBarAdmin-backup/list": "Sauvegardes",
   "sideBarAdmin-cv": "CV",
   "sideBarAdmin-cv/view": "Voir le CV",
   "sideBarAdmin-cv/update": "Modifier le CV",
