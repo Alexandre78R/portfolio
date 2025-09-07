@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { mockDeep } from "jest-mock-extended"; // <-- Utilise jest-mock-extended
-// import { vi } from "vitest"; // <-- Supprime ou commente cette ligne si tu n'utilises pas vi
+import { mockDeep } from "jest-mock-extended"; 
 
 export const prismaMock = mockDeep<PrismaClient>();

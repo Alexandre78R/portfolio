@@ -1,10 +1,10 @@
-import { ObjectType, Field, Int } from "type-graphql";
-import { Project } from "./project.entity";
-import { Skill } from "./skill.entity";
-import { SkillSubItem } from "./skillSubItem.entity";
-import { Education } from "./education.entity";
-import { Experience } from "./experience.entity";
-import { User } from "./user.entity";
+import { ObjectType, Field, Int, Float } from "type-graphql";
+import { Project } from "../entities/project.entity";
+import { Skill } from "../entities/skill.entity";
+import { SkillSubItem } from "../entities/skillSubItem.entity";
+import { Education } from "../entities/education.entity";
+import { Experience } from "../entities/experience.entity";
+import { User } from "../entities/user.entity";
 
 @ObjectType()
 export class Response {
@@ -150,4 +150,34 @@ export class BackupFilesResponse extends Response {
 export class BackupResponse extends Response {
   @Field()
   path: string;
+}
+
+@ObjectType()
+export class UserRolePercent extends Response {
+  @Field(() => Float)
+  admin: number;
+
+  @Field(() => Float)
+  editor: number;
+
+  @Field(() => Float)
+  view: number;
+}
+
+@ObjectType()
+export class TopSkillUsage {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field(() => Int)
+  usageCount: number;
+}
+
+@ObjectType()
+export class TopSkillsResponse extends Response {
+  @Field(() => [TopSkillUsage])
+  skills: TopSkillUsage[];
 }

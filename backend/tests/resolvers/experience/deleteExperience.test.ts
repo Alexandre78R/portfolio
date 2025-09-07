@@ -3,7 +3,7 @@ import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
-import { ExperienceResponse } from "../../../src/entities/response.types";
+import { ExperienceResponse } from "../../../src/types/response.types";
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';
 

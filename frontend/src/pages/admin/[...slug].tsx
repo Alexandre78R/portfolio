@@ -21,7 +21,6 @@ const pagesMap: Record<string, () => Promise<any>> = {
   'theme-colors/list': () => import('@/components/AdminLayout/Pages/Themes/ThemesList'),
   'theme-colors/create': () => import('@/components/AdminLayout/Pages/Themes/ThemeCreate'),
   'backup/list': () => import('@/components/AdminLayout/Pages/BackUp/BackUpList'),
-  'backup/create': () => import('@/components/AdminLayout/Pages/BackUp/BackUpCreate'),
   'cv/view': () => import('@/components/AdminLayout/Pages/CV/CVView'),
   'cv/update': () => import('@/components/AdminLayout/Pages/CV/CVUpdate'),
 }

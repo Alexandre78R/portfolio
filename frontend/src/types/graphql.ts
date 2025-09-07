@@ -414,7 +414,10 @@ export type Query = {
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  getAverageSkillsPerProject: Scalars['Float']['output'];
   getGlobalStats: GlobalStatsResponse;
+  getTopUsedSkills: TopSkillsResponse;
+  getUsersRoleDistribution: UserRolePercent;
   listBackupFiles: BackupFilesResponse;
   me?: Maybe<User>;
   projectById: ProjectResponse;
@@ -472,6 +475,20 @@ export type SubItemResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   subItems?: Maybe<Array<SkillSubItem>>;
+};
+
+export type TopSkillUsage = {
+  __typename?: 'TopSkillUsage';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  usageCount: Scalars['Int']['output'];
+};
+
+export type TopSkillsResponse = {
+  __typename?: 'TopSkillsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  skills: Array<TopSkillUsage>;
 };
 
 export type UpdateCategoryInput = {
@@ -547,6 +564,15 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
+export type UserRolePercent = {
+  __typename?: 'UserRolePercent';
+  admin: Scalars['Float']['output'];
+  code: Scalars['Int']['output'];
+  editor: Scalars['Float']['output'];
+  message: Scalars['String']['output'];
+  view: Scalars['Float']['output'];
+};
+
 export type UsersResponse = {
   __typename?: 'UsersResponse';
   code: Scalars['Int']['output'];
@@ -558,6 +584,18 @@ export type ValidationResponse = {
   __typename?: 'ValidationResponse';
   isValid: Scalars['Boolean']['output'];
 };
+
+export type GenerateDatabaseBackupMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenerateDatabaseBackupMutation = { __typename?: 'Mutation', generateDatabaseBackup: { __typename?: 'BackupResponse', code: number, message: string, path: string } };
+
+export type DeleteBackupFileMutationVariables = Exact<{
+  fileName: Scalars['String']['input'];
+}>;
+
+
+export type DeleteBackupFileMutation = { __typename?: 'Mutation', deleteBackupFile: { __typename?: 'Response', code: number, message: string } };
 
 export type ValidateCaptchaMutationVariables = Exact<{
   challengeType: Scalars['String']['input'];
@@ -588,6 +626,16 @@ export type MutationMutationVariables = Exact<{
 
 
 export type MutationMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token?: string | null, message: string, code: number } };
+
+export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGlobalStatsQuery = { __typename?: 'Query', getAverageSkillsPerProject: number, getGlobalStats: { __typename?: 'GlobalStatsResponse', code: number, message: string, stats?: { __typename?: 'GlobalStats', totalUsers: number, totalProjects: number, totalSkills: number, totalEducations: number, totalExperiences: number, usersByRoleAdmin: number, usersByRoleEditor: number, usersByRoleView: number } | null }, getUsersRoleDistribution: { __typename?: 'UserRolePercent', admin: number, editor: number, view: number, message: string, code: number }, getTopUsedSkills: { __typename?: 'TopSkillsResponse', code: number, message: string, skills: Array<{ __typename?: 'TopSkillUsage', id: number, name: string, usageCount: number }> } };
+
+export type GetBackupsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBackupsListQuery = { __typename?: 'Query', listBackupFiles: { __typename?: 'BackupFilesResponse', message: string, code: number, files?: Array<{ __typename?: 'BackupFileInfo', sizeBytes: number, modifiedAt: any, fileName: string, createdAt: any }> | null } };
 
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -620,6 +668,74 @@ export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', role: Role, lastname: string, isPasswordChange: boolean, id: string, firstname: string, email: string } | null };
 
 
+export const GenerateDatabaseBackupDocument = gql`
+    mutation generateDatabaseBackup {
+  generateDatabaseBackup {
+    code
+    message
+    path
+  }
+}
+    `;
+export type GenerateDatabaseBackupMutationFn = Apollo.MutationFunction<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>;
+
+/**
+ * __useGenerateDatabaseBackupMutation__
+ *
+ * To run a mutation, you first call `useGenerateDatabaseBackupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateDatabaseBackupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateDatabaseBackupMutation, { data, loading, error }] = useGenerateDatabaseBackupMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGenerateDatabaseBackupMutation(baseOptions?: Apollo.MutationHookOptions<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>(GenerateDatabaseBackupDocument, options);
+      }
+export type GenerateDatabaseBackupMutationHookResult = ReturnType<typeof useGenerateDatabaseBackupMutation>;
+export type GenerateDatabaseBackupMutationResult = Apollo.MutationResult<GenerateDatabaseBackupMutation>;
+export type GenerateDatabaseBackupMutationOptions = Apollo.BaseMutationOptions<GenerateDatabaseBackupMutation, GenerateDatabaseBackupMutationVariables>;
+export const DeleteBackupFileDocument = gql`
+    mutation DeleteBackupFile($fileName: String!) {
+  deleteBackupFile(fileName: $fileName) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteBackupFileMutationFn = Apollo.MutationFunction<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>;
+
+/**
+ * __useDeleteBackupFileMutation__
+ *
+ * To run a mutation, you first call `useDeleteBackupFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBackupFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBackupFileMutation, { data, loading, error }] = useDeleteBackupFileMutation({
+ *   variables: {
+ *      fileName: // value for 'fileName'
+ *   },
+ * });
+ */
+export function useDeleteBackupFileMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>(DeleteBackupFileDocument, options);
+      }
+export type DeleteBackupFileMutationHookResult = ReturnType<typeof useDeleteBackupFileMutation>;
+export type DeleteBackupFileMutationResult = Apollo.MutationResult<DeleteBackupFileMutation>;
+export type DeleteBackupFileMutationOptions = Apollo.BaseMutationOptions<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>;
 export const ValidateCaptchaDocument = gql`
     mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
   validateCaptcha(
@@ -760,6 +876,119 @@ export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<Mut
 export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
 export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
 export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
+export const GetGlobalStatsDocument = gql`
+    query GetGlobalStats {
+  getGlobalStats {
+    code
+    message
+    stats {
+      totalUsers
+      totalProjects
+      totalSkills
+      totalEducations
+      totalExperiences
+      usersByRoleAdmin
+      usersByRoleEditor
+      usersByRoleView
+    }
+  }
+  getAverageSkillsPerProject
+  getUsersRoleDistribution {
+    admin
+    editor
+    view
+    message
+    code
+  }
+  getTopUsedSkills {
+    code
+    message
+    skills {
+      id
+      name
+      usageCount
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGlobalStatsQuery__
+ *
+ * To run a query within a React component, call `useGetGlobalStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGlobalStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGlobalStatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGlobalStatsQuery(baseOptions?: Apollo.QueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+      }
+export function useGetGlobalStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+        }
+export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
+        }
+export type GetGlobalStatsQueryHookResult = ReturnType<typeof useGetGlobalStatsQuery>;
+export type GetGlobalStatsLazyQueryHookResult = ReturnType<typeof useGetGlobalStatsLazyQuery>;
+export type GetGlobalStatsSuspenseQueryHookResult = ReturnType<typeof useGetGlobalStatsSuspenseQuery>;
+export type GetGlobalStatsQueryResult = Apollo.QueryResult<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>;
+export const GetBackupsListDocument = gql`
+    query GetBackupsList {
+  listBackupFiles {
+    files {
+      sizeBytes
+      modifiedAt
+      fileName
+      createdAt
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetBackupsListQuery__
+ *
+ * To run a query within a React component, call `useGetBackupsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBackupsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBackupsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetBackupsListQuery(baseOptions?: Apollo.QueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+      }
+export function useGetBackupsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+        }
+export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
+        }
+export type GetBackupsListQueryHookResult = ReturnType<typeof useGetBackupsListQuery>;
+export type GetBackupsListLazyQueryHookResult = ReturnType<typeof useGetBackupsListLazyQuery>;
+export type GetBackupsListSuspenseQueryHookResult = ReturnType<typeof useGetBackupsListSuspenseQuery>;
+export type GetBackupsListQueryResult = Apollo.QueryResult<GetBackupsListQuery, GetBackupsListQueryVariables>;
 export const GenerateCaptchaDocument = gql`
     query generateCaptcha {
   generateCaptcha {

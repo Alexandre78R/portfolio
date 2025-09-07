@@ -260,9 +260,18 @@ const CaptchaModal: React.FC<Props> = ({
                         height: 24,
                         color: "green",
                         backgroundColor: "white",
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        boxShadow: 2,
+                        zIndex: 2,
+                        p: 0,
+                        "&:hover": {
+                          backgroundColor: "white",
+                        },
                       }}
                     >
-                      <CheckCircleIcon />
+                      <CheckCircleIcon sx={{ width: 24, height: 24 }} />
                     </IconButton>
                   )}
                 </div>
@@ -272,13 +281,29 @@ const CaptchaModal: React.FC<Props> = ({
               <ButtonCustom onClick={handleSubmit} text="vérification" />
               <IconButton
                 onClick={regenerateCaptcha}
+                disabled={refreshing}
+                sx={{
+                  color: 'var(--primary-color)',
+                  cursor: refreshing ? 'not-allowed' : 'pointer',
+                  m: 2,
+                  opacity: refreshing ? 0.5 : 1,
+                  '&:hover': {
+                    color: 'var(--secondary-color)',
+                  },
+                  pointerEvents: refreshing ? 'none' : 'auto',
+                }}
+              >
+                <RefreshIcon />
+              </IconButton>
+              {/* <IconButton
+                onClick={regenerateCaptcha}
                 className={`text-text cursor-pointer m-2 hover:text-secondary ${
                   refreshing ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 sx={{ pointerEvents: refreshing ? "none" : "auto" }}
               >
                 <RefreshIcon />
-              </IconButton>
+              </IconButton> */}
             </div>
           </>
         )}

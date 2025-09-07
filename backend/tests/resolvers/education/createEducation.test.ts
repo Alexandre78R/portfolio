@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateEducationInput } from "../../../src/entities/inputs/education.input";
-import { EducationResponse } from "../../../src/entities/response.types";
+import { EducationResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';

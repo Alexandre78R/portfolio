@@ -1,14 +1,14 @@
 import { Resolver, Query, Arg, Mutation, Ctx, Authorized } from "type-graphql";
 import { PrismaClient } from "@prisma/client";
 import { User } from "../entities/user.entity";
-import { UsersResponse, UserResponse, LoginResponse } from "../entities/response.types";
+import { UsersResponse, UserResponse, LoginResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { generateSecurePassword } from "../lib/generateSecurePassword";
 import { sendEmail } from "../mail/mail.service";
 import { CreateUserInput, LoginInput } from "../entities/inputs/user.input";
 import argon2 from "argon2";
 import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
-import { Response } from "../entities/response.types";
+import { Response } from "../types/response.types";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
 import { jwtVerify, SignJWT } from "jose";
 import { TextEncoder } from "util";

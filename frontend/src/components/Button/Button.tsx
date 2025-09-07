@@ -1,7 +1,7 @@
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 
 type Props = {
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>)  => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   text: string;
   disable?: boolean;
   disableHover?: boolean;
@@ -12,15 +12,30 @@ const ButtonCustom: React.FC<Props> = ({
   text,
   disable,
   disableHover,
-}): React.ReactElement => {
+}) => {
   return (
     <Button
       onClick={onClick}
-      className={`text-m text-textButton px-5 py-1 rounded-full ${
-        disable ? "bg-black" : "bg-primary"
-      } ${disableHover ? "none" : "hover:bg-secondary"} border-none mt-2 ml-1`}
       variant="contained"
-      style={{ pointerEvents: disableHover ? "none" : "auto", outline: "none" }}
+      disabled={disable}
+      sx={{
+        fontSize: "12px",
+        px: 5,
+        py: 1,
+        borderRadius: "999px",
+        mt: 2,
+        ml: 1,
+        border: "none",
+        bgcolor: disable ? "red" : "var(--primary-color)",
+        "&:hover": disableHover
+          ? {}
+          : {
+              bgcolor: "var(--secondary-color)",
+            },
+        // pointerEvents: disable ? "none" : "auto",
+        outline: "none",
+        // color: disable ? "white" : "",
+      }}
     >
       {text}
     </Button>

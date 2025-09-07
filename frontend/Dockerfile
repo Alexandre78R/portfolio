@@ -23,10 +23,10 @@ ENV NEXT_PUBLIC_JWT_SECRET=${NEXT_PUBLIC_JWT_SECRET}
 ARG JWT_SECRET
 ENV JWT_SECRET=${JWT_SECRET}
 
-# CMD npm run dev
+CMD npm run dev
 
-RUN npm run build
-CMD npm run start
+# RUN npm run build
+# CMD npm run start
 
 # RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
 # CMD if [ "$NODE_ENV" = "production" ]; then npm run start; else npm run dev; fi

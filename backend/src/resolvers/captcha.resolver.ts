@@ -59,7 +59,7 @@ export class CaptchaResolver {
 
     const captchaImages = selectedImages.map(image => {
       const imageId = uuidv4();
-      const imageUrl = `${BASE_URL}/dynamic-images/${imageId}`;
+      const imageUrl = `${BASE_URL}/api/dynamic-images/${imageId}`;
       
       captchaImageMap[imageId] = image.src;
 

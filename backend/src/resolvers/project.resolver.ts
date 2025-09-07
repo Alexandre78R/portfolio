@@ -1,7 +1,7 @@
 import { Resolver, Query, Arg, Int, Mutation, Authorized, Ctx } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import { CreateProjectInput, UpdateProjectInput } from "../entities/inputs/project.input";
-import { Response, ProjectResponse, ProjectsResponse } from "../entities/response.types";
+import { Response, ProjectResponse, ProjectsResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 import { PrismaClient } from "@prisma/client";

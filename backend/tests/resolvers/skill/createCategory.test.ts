@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateCategoryInput } from "../../../src/entities/inputs/skill.input"; // Ajuste le chemin vers ton input type
-import { CategoryResponse } from "../../../src/entities/response.types"; // Ajuste le chemin vers ton response type
+import { CategoryResponse } from "../../../src/types/response.types"; // Ajuste le chemin vers ton response type
 import { Skill } from "../../../src/entities/skill.entity"; // Assumant que c'est ton DTO Skill pour les catégories
 import Cookies from 'cookies';
 import { mockDeep } from 'jest-mock-extended';

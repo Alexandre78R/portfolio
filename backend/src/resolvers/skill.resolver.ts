@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Arg, Int, Authorized, Ctx } from "type-graph
 import { Skill } from "../entities/skill.entity";
 import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
-import { CategoryResponse, SubItemResponse } from "../entities/response.types";
+import { CategoryResponse, SubItemResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 import { PrismaClient } from "@prisma/client";

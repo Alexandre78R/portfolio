@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateProjectInput } from "../../../src/entities/inputs/project.input";
-import { ProjectResponse } from "../../../src/entities/response.types";
+import { ProjectResponse } from "../../../src/types/response.types";
 import Cookies from 'cookies';
 import { Project as PrismaProject, Skill as PrismaSkill, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
 
