@@ -411,8 +411,12 @@ export type Query = {
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
+  getAverageSkillsPerProject: Scalars['Float']['output'];
   getGlobalStats: GlobalStatsResponse;
+  getTopUsedSkills: TopSkillsResponse;
+  getUsersRoleDistribution: UserRolePercent;
   listBackupFiles: BackupFilesResponse;
+  me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
@@ -468,6 +472,20 @@ export type SubItemResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   subItems?: Maybe<Array<SkillSubItem>>;
+};
+
+export type TopSkillUsage = {
+  __typename?: 'TopSkillUsage';
+  id: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  usageCount: Scalars['Int']['output'];
+};
+
+export type TopSkillsResponse = {
+  __typename?: 'TopSkillsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  skills: Array<TopSkillUsage>;
 };
 
 export type UpdateCategoryInput = {
@@ -541,6 +559,15 @@ export type UserResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   user?: Maybe<User>;
+};
+
+export type UserRolePercent = {
+  __typename?: 'UserRolePercent';
+  admin: Scalars['Float']['output'];
+  code: Scalars['Int']['output'];
+  editor: Scalars['Float']['output'];
+  message: Scalars['String']['output'];
+  view: Scalars['Float']['output'];
 };
 
 export type UsersResponse = {

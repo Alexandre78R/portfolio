@@ -14,6 +14,7 @@ export interface Theme {
     grey: string;
     placeholder: string;
     footer: string;
+    admin: string;
     text: {
       default: string;
       100: string;
@@ -36,6 +37,7 @@ export interface ThemeColors {
   error: string;
   warn: string;
   info: string;
+  admin: string;
 }
 
 export interface ThemeColorsText {
@@ -63,6 +65,7 @@ const themes: { [key: string]: Theme } = {
       grey: "#7F7F7F",
       placeholder: "#A0AEC0",
       footer: "#050F1A",
+      admin: "#080b2a",
       text: {
         default: "#F8F8FD",
         100: "#cbd5e1",
@@ -88,6 +91,7 @@ const themes: { [key: string]: Theme } = {
       grey: "#7F7F7F",
       placeholder: "#A0AEC0",
       footer: "#34393E",
+      admin: "#34393E",
       text: {
         default: "#7BA5A4",
         100: "#334155",
@@ -113,6 +117,7 @@ const themes: { [key: string]: Theme } = {
       grey: "#7F7F7F",
       placeholder: "#A0AEC0",
       footer: "#180512",
+      admin: "#180512",
       text: {
         default: "#F8F8FD",
         100: "#FFFFFF",

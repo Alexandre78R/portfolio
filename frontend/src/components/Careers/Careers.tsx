@@ -64,17 +64,15 @@ const Careers: React.FC = (): React.ReactElement => {
   }, [dataEducations, dataExperiences]);
 
   return (
-    <div className="m-[3%]">
-    <ol className="border-s border-secondary md:flex md:justify-center md:gap-6 md:border-s-0 md:border-t md:space-y-10">
+  <div className="m-[3%]">
+    <ol className="relative border-l-2 border-secondary space-y-10 md:flex md:justify-center md:gap-6 md:border-l-0 md:border-t md:space-y-0">
       {combinedData?.map((item, index) => (
-        <li key={index} className="md:w-1/2">
-          <div className="flex-start flex items-center pt-2 md:block md:pt-0">
-            <div className="-ms-[5px] me-3 h-[9px] w-[9px] rounded-full bg-primary md:-mt-[5px] md:me-0 md:ms-0"></div>
-            <p className="mt-2 text-sm text-text">
+        <li key={index} className="relative pl-8 md:pl-0 md:pt-8 md:w-1/2">
+          <span className="absolute left-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-primary md:left-auto md:top-0 md:-translate-y-1/2 md:translate-x-0 md:mx-auto"></span>
+          <div className="flex flex-col">
+            <p className="text-sm text-text">
               {item.startDate} - {item.endDate}
             </p>
-          </div>
-          <div className="ms-4 mt-2 pb-5 md:ms-0">
             <p className="text-sm text-text">{item.type}</p>
             <p className="max-w-[210px] hover:text-secondary text-primary mt-2 font-semibold">
               {(item as EducationType)?.title} {(item as ExperienceType)?.job}
@@ -90,7 +88,7 @@ const Careers: React.FC = (): React.ReactElement => {
         </li>
       ))}
     </ol>
-    </div>
+  </div>
   );
 };
 

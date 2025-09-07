@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { SkillResolver } from "../../../src/resolvers/skill.resolver";
 import { prismaMock } from "../../singleton";
-import { CategoryResponse } from "../../../src/entities/response.types";
+import { CategoryResponse } from "../../../src/types/response.types";
 import { SkillCategory as PrismaSkillCategory, Skill as PrismaSkill } from "@prisma/client"; 
 
 describe("SkillResolver - skillList", () => {

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { EducationResolver } from "../../../src/resolvers/education.resolver";
 import { prismaMock } from "../../singleton";
-import { EducationResponse } from "../../../src/entities/response.types";
+import { EducationResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
 
 describe("EducationResolver - educationById", () => {

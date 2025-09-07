@@ -1,10 +1,19 @@
-import { Resolver, Mutation, Authorized, Query, Arg } from "type-graphql";
+import { Resolver, Mutation, Authorized, Query, Arg, Float } from "type-graphql";
 import { UserRole } from "../entities/user.entity";
 import { exec } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import * as util from "util";
-import { BackupFileInfo, BackupFilesResponse, BackupResponse, GlobalStats, GlobalStatsResponse, Response } from "../entities/response.types";
+import { 
+  BackupFilesResponse,
+  BackupResponse,
+  GlobalStats,
+  GlobalStatsResponse,
+  Response,
+  UserRolePercent,
+  TopSkillsResponse,
+  TopSkillUsage,
+} from "../types/response.types";
 import { PrismaClient } from "@prisma/client";
 import { promises as fsPromises } from 'fs';
 
@@ -99,7 +108,6 @@ export class AdminResolver {
     * Récupère des statistiques globales sur le contenu de la base de données.
     * Seuls les administrateurs peuvent y accéder.
     */
-  @Authorized([UserRole.admin])
   @Query(() => GlobalStatsResponse)
   async getGlobalStats(): Promise<GlobalStatsResponse> {
     try {
@@ -242,5 +250,66 @@ export class AdminResolver {
         message: `Failed to delete backup file '${fileName}': ${error instanceof Error ? error.message : "Unknown error"}`,
       };
     }
+  }
+
+  @Query(() => Float)
+  async getAverageSkillsPerProject(): Promise<number> {
+    const totalProjects = await this.db.project.count();
+    const totalProjectSkills = await this.db.projectSkill.count();
+
+    return totalProjects > 0 ? totalProjectSkills / totalProjects : 0;
+  }
+
+  @Query(() => UserRolePercent)
+  async getUsersRoleDistribution(): Promise<UserRolePercent> {
+    const totalUsers = await this.db.user.count();
+
+    const usersByRole = await this.db.user.groupBy({
+      by: ['role'],
+      _count: { id: true },
+    });
+
+    const map = usersByRole.reduce((acc, item) => {
+      acc[item.role] = item._count.id;
+      return acc;
+    }, {} as Record<UserRole, number>);
+
+    return {
+      code: 200,
+      message: "User role distribution fetched successfully.",
+      admin: totalUsers > 0 ? (100 * (map[UserRole.admin] || 0)) / totalUsers : 0,
+      editor: totalUsers > 0 ? (100 * (map[UserRole.editor] || 0)) / totalUsers : 0,
+      view: totalUsers > 0 ? (100 * (map[UserRole.view] || 0)) / totalUsers : 0,
+    };
+  }
+
+  @Query(() => TopSkillsResponse)
+  async getTopUsedSkills(): Promise<TopSkillsResponse> {
+    const topSkillCounts = await this.db.projectSkill.groupBy({
+      by: ['skillId'],
+      _count: { skillId: true },
+      orderBy: { _count: { skillId: 'desc' } },
+    });
+
+    const skillIds = topSkillCounts.map(s => s.skillId);
+
+    const skills = await this.db.skill.findMany({
+      where: { id: { in: skillIds } },
+    });
+
+    const result: TopSkillUsage[] = topSkillCounts.map(item => {
+      const skill = skills.find(s => s.id === item.skillId);
+      return {
+        id: item.skillId,
+        name: skill?.name || "Unknown",
+        usageCount: item._count.skillId,
+      };
+    });
+
+    return {
+      code: 200,
+      message: "Top used skills fetched successfully.",
+      skills: result,
+    };
   }
 }

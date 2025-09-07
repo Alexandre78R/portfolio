@@ -4,6 +4,7 @@ import { useLang } from "@/context/Lang/LangContext";
 
 const Footer: React.FC = (): React.ReactElement => {
   const { translations } = useLang();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="mt-10 bg-footer text-text py-4">
@@ -12,7 +13,7 @@ const Footer: React.FC = (): React.ReactElement => {
           <p className="text-lg font-bold mb-2">{translations.footerTitle}</p>
           <ul>
             <li>
-              <a href="#" className="hover:text-secondary">
+              <a href="/admin" className="hover:text-secondary">
                 {translations.footerAdmin}
               </a>
             </li>
@@ -43,7 +44,7 @@ const Footer: React.FC = (): React.ReactElement => {
         </div>
       </div>
       <div className="text-center mt-5">
-        <p className="text-sm">{translations.footerCopyright}</p>
+        <p className="text-sm">© 2024 - {currentYear} {translations.footerCopyright}</p>
       </div>
     </footer>
   );

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
-import Title from "@/components/Title/Title";
+import TitleH2 from "@/components/Title/TitleH2";
 import Header from "@/components/Header/Header";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
@@ -148,7 +148,7 @@ const Home: React.FC = (): React.ReactElement => {
       <main className="bg-body">
         {selectedView === "terminal" ? (
           <section ref={terminalRef}>
-            <Title title="Terminal" />
+            <TitleH2 title="Terminal" />
             <div className="flex flex-col items-center">
               <Terminal />
             </div>
@@ -156,12 +156,12 @@ const Home: React.FC = (): React.ReactElement => {
         ) : (
           <>
             <section ref={aboutMeRef} id="aboutme">
-              <Title title={translations.nameCategoryAboutMe} />
+              <TitleH2 title={translations.nameCategoryAboutMe} />
               <AboutMe />
             </section>
             <section ref={skillRef} id="skill">
               <div>
-                <Title title={translations.nameCategorySkills} />
+                <TitleH2 title={translations.nameCategorySkills} />
               </div>
               <div>
                 <HorizontalScroll data={dataSkills} category="skills" />
@@ -169,19 +169,19 @@ const Home: React.FC = (): React.ReactElement => {
             </section>
             <section ref={projectRef} id="project">
               <div>
-                <Title title={translations.nameCategoryProjects} />
+                <TitleH2 title={translations.nameCategoryProjects} />
               </div>
               <HorizontalScroll data={dataProjects} category="projects" />
             </section>
             <section ref={educationRef} id="project">
               <div>
-                <Title title={translations.nameCategoryCareer} />
+                <TitleH2 title={translations.nameCategoryCareer} />
               </div>
               <Educations />
             </section>
             <section ref={contactRef} id="contact">
               <div>
-                <Title title={translations.nameCategoryContact} />
+                <TitleH2 title={translations.nameCategoryContact} />
               </div>
               <Contact />
             </section>
