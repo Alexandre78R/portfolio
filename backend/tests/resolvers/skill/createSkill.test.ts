@@ -39,6 +39,7 @@ describe("SkillResolver - createSkill", () => {
     cookies: mockCookies,
     user: null, 
     apiKey: undefined,
+    token: undefined,
   };
 
   const createSkillInput: CreateSkillInput = {

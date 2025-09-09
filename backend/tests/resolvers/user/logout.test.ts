@@ -26,6 +26,7 @@ describe("UserResolver - logout", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   beforeEach(() => {

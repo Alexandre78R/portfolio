@@ -46,6 +46,7 @@ describe("SkillResolver - updateSkill", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingSkill = {

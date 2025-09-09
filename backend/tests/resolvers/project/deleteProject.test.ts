@@ -36,6 +36,7 @@ describe("ProjectResolver - deleteProject", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingProject = {

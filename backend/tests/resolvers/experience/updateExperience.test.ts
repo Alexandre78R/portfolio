@@ -47,6 +47,7 @@ describe("ExperienceResolver - updateExperience", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingExperience: PrismaExperience = {

@@ -38,6 +38,7 @@ describe("ExperienceResolver - createExperience", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockCreateExperienceInput: CreateExperienceInput = {

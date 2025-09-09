@@ -37,6 +37,7 @@ describe("ProjectResolver - createProject", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingSkills: PrismaSkill[] = [

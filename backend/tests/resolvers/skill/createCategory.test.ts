@@ -39,6 +39,7 @@ describe("SkillResolver - createCategory", () => {
     cookies: mockCookies,
     user: null, 
     apiKey: undefined,
+    token: undefined,
   };
 
 

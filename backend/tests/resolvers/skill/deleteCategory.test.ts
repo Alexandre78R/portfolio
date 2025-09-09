@@ -35,6 +35,7 @@ describe("SkillResolver - deleteCategory", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingCategory = {

@@ -36,7 +36,8 @@ describe("UserResolver - userList", () => {
     res: {} as any, 
     cookies: mockCookies,
     user: null, 
-    apiKey: undefined, 
+    apiKey: undefined,
+    token: undefined,
   };
 
   // Les utilisateurs mockés retournés par Prisma's findMany.

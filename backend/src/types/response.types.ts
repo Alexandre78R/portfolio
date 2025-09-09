@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int, Float } from "type-graphql";
+import { ObjectType, Field, Int, Float, ArgsType } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import { Skill } from "../entities/skill.entity";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
@@ -181,4 +181,16 @@ export class TopSkillUsage {
 export class TopSkillsResponse extends Response {
   @Field(() => [TopSkillUsage])
   skills: TopSkillUsage[];
+}
+
+@ArgsType()
+export class PaginationArgs {
+  @Field(() => Int, { defaultValue: 1 })
+  page: number;
+
+  @Field(() => Int, { defaultValue: 10 })
+  limit: number;
+
+  @Field(() => String, { nullable: true })
+  searchTerm?: string;
 }

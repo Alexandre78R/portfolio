@@ -38,6 +38,7 @@ describe("EducationResolver - createEducation", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockCreateEducationInput: CreateEducationInput = {

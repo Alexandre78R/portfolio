@@ -36,6 +36,7 @@ describe("SkillResolver - deleteSkill", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingSkill = {

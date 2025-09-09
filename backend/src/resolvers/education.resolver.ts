@@ -1,8 +1,8 @@
 import { Resolver, Query, Int, Arg, Mutation, Authorized, Ctx, Args } from "type-graphql";
 import { Education } from "../entities/education.entity";
 import { PrismaClient } from "@prisma/client";
-import { EducationResponse, EducationsResponse } from "../types/response.types";
-import { CreateEducationInput, PaginationArgs, UpdateEducationInput } from "../entities/inputs/education.input";
+import { EducationResponse, EducationsResponse, PaginationArgs } from "../types/response.types";
+import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/education.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 

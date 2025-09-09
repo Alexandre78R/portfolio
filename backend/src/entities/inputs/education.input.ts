@@ -92,15 +92,3 @@ export class UpdateEducationInput {
   @Field({ nullable: true })
   typeFR?: string;
 }
-
-@ArgsType()
-export class PaginationArgs {
-  @Field(() => Int, { defaultValue: 1 })
-  page: number;
-
-  @Field(() => Int, { defaultValue: 10 })
-  limit: number;
-
-  @Field(() => String, { nullable: true })
-  searchTerm?: string;
-}

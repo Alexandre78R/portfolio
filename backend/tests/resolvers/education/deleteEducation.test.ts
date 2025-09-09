@@ -36,6 +36,7 @@ describe("EducationResolver - deleteEducation", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingEducation = {

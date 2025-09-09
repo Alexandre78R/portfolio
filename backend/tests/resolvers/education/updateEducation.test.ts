@@ -47,6 +47,7 @@ describe("EducationResolver - updateEducation", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingEducation: PrismaEducation = {

@@ -36,6 +36,7 @@ describe("ExperienceResolver - deleteExperience", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingExperience = {

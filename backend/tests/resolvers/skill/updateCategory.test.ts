@@ -46,6 +46,7 @@ describe("SkillResolver - updateCategory", () => {
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingCategory = {
