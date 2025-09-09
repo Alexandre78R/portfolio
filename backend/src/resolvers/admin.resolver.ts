@@ -1,10 +1,17 @@
-import { Resolver, Mutation, Authorized, Query, Arg, Float } from "type-graphql";
+import {
+  Resolver,
+  Mutation,
+  Authorized,
+  Query,
+  Arg,
+  Float,
+} from "type-graphql";
 import { UserRole } from "../entities/user.entity";
 import { exec } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import * as util from "util";
-import { 
+import {
   BackupFilesResponse,
   BackupResponse,
   GlobalStats,
@@ -13,105 +20,181 @@ import {
   UserRolePercent,
   TopSkillsResponse,
   TopSkillUsage,
+  BackupFileInfo,
 } from "../types/response.types";
 import { PrismaClient } from "@prisma/client";
-import { promises as fsPromises } from 'fs';
 
 const execPromise = util.promisify(exec);
-export const dataFolderPath = path.join(__dirname, "../data");
+
+/**
+ * 📁 Dossier UNIQUE pour les sauvegardes
+ * ⚠️ Hors de src pour éviter tout redémarrage du watcher
+ */
+const BACKUP_DIR = path.join(process.cwd(), "backups");
 
 @Resolver()
 export class AdminResolver {
-
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
-  
-  private backupDir = path.resolve(__dirname, '../data')
-  
-  /**
-   * Génère une sauvegarde de la base de données MySQL en utilisant mysqldump.
-   * La sauvegarde est enregistrée dans le dossier 'data' à la racine du projet
-   * avec un nom de fichier incluant un horodatage pour éviter d'écraser les précédentes.
-   * @returns Un message indiquant le succès ou l'échec de l'opération.
-   */
+
+  /* -------------------------------------------------------------------------- */
+  /*                               BACKUP BDD                                   */
+  /* -------------------------------------------------------------------------- */
+
   @Authorized([UserRole.admin])
   @Mutation(() => BackupResponse)
   async generateDatabaseBackup(): Promise<BackupResponse> {
-    const dataFolderPath = path.join(__dirname, "../data"); 
-
     try {
-      if (!fs.existsSync(dataFolderPath)) {
-        fs.mkdirSync(dataFolderPath, { recursive: true });
-        console.log(`Dossier 'data' créé à: ${dataFolderPath}`);
+      if (!fs.existsSync(BACKUP_DIR)) {
+        fs.mkdirSync(BACKUP_DIR, { recursive: true });
+        console.log(`📁 Backup directory created: ${BACKUP_DIR}`);
       }
 
       const now = new Date();
+      const timestamp = `${now.getFullYear()}${String(
+        now.getMonth() + 1
+      ).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(
+        now.getHours()
+      ).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(
+        now.getSeconds()
+      ).padStart(2, "0")}`;
 
-      // Format timestamp simple : YYYYMMDD_HHmmss
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0'); 
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-
-      const formattedTimestamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
-      const backupFileName = `bdd_${formattedTimestamp}.sql`;
-      const backupFilePath = path.join(dataFolderPath, backupFileName);
+      const fileName = `bdd_${timestamp}.sql`;
+      const filePath = path.join(BACKUP_DIR, fileName);
 
       const dbUrl = process.env.DATABASE_URL;
       if (!dbUrl) {
-        throw new Error("DATABASE_URL non défini dans les variables d'environnement.");
+        throw new Error("DATABASE_URL non défini");
       }
 
-      const urlParts = new URL(dbUrl);
-      const user = urlParts.username;
-      const password = urlParts.password;
-      const host = urlParts.hostname;
-      const port = urlParts.port || "3306";
-      const database = urlParts.pathname.substring(1);
+      const url = new URL(dbUrl);
 
-      const command = `mysqldump -h ${host} -P ${port} -u ${user} -p"${password}" ${database} > ${backupFilePath}`;
+      const command = `
+        mysqldump
+          -h ${url.hostname}
+          -P ${url.port || "3306"}
+          -u ${url.username}
+          -p"${url.password}"
+          ${url.pathname.slice(1)}
+          > "${filePath}"
+      `.replace(/\s+/g, " ");
 
-      console.log(`Début de la sauvegarde de la base de données vers: ${backupFilePath}`);
+      console.log(`🗄️ Starting database backup → ${filePath}`);
 
-      const { stdout, stderr } = await execPromise(command);
-
-      if (stderr) {
-        console.error(`Erreur mysqldump (stderr): ${stderr}`);
-        return {
-          code: 500,
-          message: `Sauvegarde terminée avec des erreurs: ${stderr}`,
-          path: backupFilePath,
-        };
-      }
-      if (stdout) {
-        console.log(`mysqldump (stdout): ${stdout}`);
-      }
+      await execPromise(command);
 
       return {
         code: 200,
-        message: `Database backup generated successfully at ${backupFilePath}`,
-        path: backupFilePath,
+        message: "Database backup generated successfully",
+        path: fileName,
       };
-
     } catch (error) {
-      console.error("Erreur lors de la génération de la sauvegarde de la base de données:", error);
+      console.error("❌ Backup generation error:", error);
       return {
         code: 500,
-        message: `Erreur lors de la génération de la sauvegarde de la base de données: ${error instanceof Error ? error.message : "Erreur inconnue"}`,
+        message:
+          error instanceof Error ? error.message : "Unknown backup error",
         path: "",
       };
     }
   }
 
-    /**
-    * Récupère des statistiques globales sur le contenu de la base de données.
-    * Seuls les administrateurs peuvent y accéder.
-    */
+  /* -------------------------------------------------------------------------- */
+  /*                           LISTE DES BACKUPS                                 */
+  /* -------------------------------------------------------------------------- */
+
+@Authorized([UserRole.admin])
+@Query(() => BackupFilesResponse)
+async listBackupFiles(): Promise<BackupFilesResponse> {
+  try {
+    if (!fs.existsSync(BACKUP_DIR)) {
+      return {
+        code: 200,
+        message: "No backup directory found",
+        files: [],
+      };
+    }
+
+    const files = await fs.promises.readdir(BACKUP_DIR);
+
+    const backupFiles: BackupFileInfo[] = [];
+
+    for (const file of files) {
+      const filePath = path.join(BACKUP_DIR, file);
+      const stats = await fs.promises.stat(filePath);
+
+      if (!stats.isFile()) continue;
+
+      backupFiles.push({
+        fileName: file,
+        sizeBytes: stats.size,
+        modifiedAt: stats.mtime,
+        createdAt: stats.ctime,
+      });
+    }
+
+    return {
+      code: 200,
+      message: `Backup files listed successfully (${backupFiles.length})`,
+      files: backupFiles,
+    };
+  } catch (error: any) {
+    console.error("❌ Error listing backups:", error);
+    return {
+      code: 500,
+      message: error.message,
+      files: [],
+    };
+  }
+}
+
+  /* -------------------------------------------------------------------------- */
+  /*                           SUPPRESSION BACKUP                                */
+  /* -------------------------------------------------------------------------- */
+
+  @Authorized([UserRole.admin])
+  @Mutation(() => Response)
+  async deleteBackupFile(
+    @Arg("fileName") fileName: string
+  ): Promise<Response> {
+    try {
+      const targetPath = path.normalize(path.join(BACKUP_DIR, fileName));
+
+      if (!targetPath.startsWith(BACKUP_DIR + path.sep)) {
+        return {
+          code: 400,
+          message: "Invalid file path",
+        };
+      }
+
+      if (!fs.existsSync(targetPath)) {
+        return {
+          code: 404,
+          message: "Backup file not found",
+        };
+      }
+
+      await fs.promises.unlink(targetPath);
+
+      return {
+        code: 200,
+        message: `Backup file '${fileName}' deleted successfully`,
+      };
+    } catch (error: any) {
+      console.error("❌ Error deleting backup:", error);
+      return {
+        code: 500,
+        message: error.message,
+      };
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                              AUTRES QUERIES                                 */
+  /* -------------------------------------------------------------------------- */
+
   @Query(() => GlobalStatsResponse)
   async getGlobalStats(): Promise<GlobalStatsResponse> {
     try {
-
       const totalUsers = await this.db.user.count();
       const totalProjects = await this.db.project.count();
       const totalSkills = await this.db.skill.count();
@@ -119,16 +202,14 @@ export class AdminResolver {
       const totalExperiences = await this.db.experience.count();
 
       const usersByRole = await this.db.user.groupBy({
-        by: ['role'],
-        _count: {
-          id: true,
-        },
+        by: ["role"],
+        _count: { id: true },
       });
 
-      const usersByRoleMap = usersByRole.reduce((acc, item) => {
+      const map = usersByRole.reduce((acc, item) => {
         acc[item.role] = item._count.id;
         return acc;
-      }, {} as Record<UserRole, number>); 
+      }, {} as Record<UserRole, number>);
 
       const stats: GlobalStats = {
         totalUsers,
@@ -136,119 +217,19 @@ export class AdminResolver {
         totalSkills,
         totalEducations,
         totalExperiences,
-        usersByRoleAdmin: usersByRoleMap[UserRole.admin] || 0,
-        usersByRoleEditor: usersByRoleMap[UserRole.editor] || 0,
-        usersByRoleView: usersByRoleMap[UserRole.view] || 0,
+        usersByRoleAdmin: map[UserRole.admin] || 0,
+        usersByRoleEditor: map[UserRole.editor] || 0,
+        usersByRoleView: map[UserRole.view] || 0,
       };
 
       return {
         code: 200,
-        message: "Global statistics fetched successfully.",
+        message: "Global statistics fetched successfully",
         stats,
       };
     } catch (error) {
-      console.error("Error fetching global stats:", error);
-      return { code: 500, message: "Failed to fetch global statistics." };
-    }
-  }
-
-  /**
- * Liste les fichiers de sauvegarde présents dans le dossier 'data'.
- * Seuls les administrateurs peuvent y accéder.
- * @return Un objet contenant le code de réponse, un message et la liste des fichiers de sauvegarde.
- * */
-
-  @Authorized([UserRole.admin])
-  @Query(() => BackupFilesResponse)
-  async listBackupFiles() {
-    try {
-      const files = await fsPromises.readdir(this.backupDir);
-      const backupFiles = [];
-
-      for (const file of files) {
-        // console.log(files)
-        try {
-          const filePath = path.join(this.backupDir, file);
-          const stats = await fsPromises.stat(filePath);
-
-          if (stats.isFile()) {
-            backupFiles.push({
-              fileName: file,
-              sizeBytes: stats.size,        
-              modifiedAt: stats.mtime,        
-              createdAt: stats.ctime,
-            });
-          }
-        } catch (err) {
-          console.warn(`Could not get stats for file ${file}:`, err);
-          // Continue malgré l'erreur
-        }
-      }
-
-      return {
-        code: 200,
-        message: `Backup files listed successfully (${backupFiles.length} files)`,
-        files: backupFiles,
-      };
-    } catch (err: any) {
-      if (err.code === 'ENOENT') {
-        // Dossier introuvable : renvoyer succès avec liste vide
-        return {
-          code: 200,
-          message: 'Backup folder does not exist, no files found',
-          files: [],
-        };
-      }
-      console.error('Error listing backup files:', err);
-      return {
-        code: 500,
-        message: `Failed to list backup files: ${err.message}`,
-      };
-    }
-  }
-
-    /**
-   * Supprime un fichier de sauvegarde spécifique du dossier 'data'.
-   * Seuls les administrateurs peuvent effectuer cette action.
-   * @param fileName Le nom du fichier de sauvegarde à supprimer.
-   * @returns Un message indiquant le succès ou l'échec de l'opération.
-   */
-  @Authorized([UserRole.admin])
-  @Mutation(() => Response)
-  async deleteBackupFile(
-    @Arg("fileName") fileName: string
-  ): Promise<Response> {
-    const filePathToDelete = path.join(dataFolderPath, fileName);
-
-    try {
-      const normalizedFilePath = path.normalize(filePathToDelete);
-      if (!normalizedFilePath.startsWith(dataFolderPath + path.sep)) {
-        return {
-          code: 400,
-          message: "Invalid file path. Cannot delete files outside the backup directory.",
-        };
-      }
-
-      if (!fs.existsSync(filePathToDelete)) {
-        return {
-          code: 404,
-          message: `Backup file '${fileName}' not found.`,
-        };
-      }
-
-      await fs.promises.unlink(filePathToDelete);
-
-      return {
-        code: 200,
-        message: `Backup file '${fileName}' deleted successfully.`,
-      };
-
-    } catch (error) {
-      console.error(`Error deleting backup file '${fileName}':`, error);
-      return {
-        code: 500,
-        message: `Failed to delete backup file '${fileName}': ${error instanceof Error ? error.message : "Unknown error"}`,
-      };
+      console.error("❌ Global stats error:", error);
+      return { code: 500, message: "Failed to fetch global statistics" };
     }
   }
 
@@ -256,7 +237,6 @@ export class AdminResolver {
   async getAverageSkillsPerProject(): Promise<number> {
     const totalProjects = await this.db.project.count();
     const totalProjectSkills = await this.db.projectSkill.count();
-
     return totalProjects > 0 ? totalProjectSkills / totalProjects : 0;
   }
 
@@ -265,7 +245,7 @@ export class AdminResolver {
     const totalUsers = await this.db.user.count();
 
     const usersByRole = await this.db.user.groupBy({
-      by: ['role'],
+      by: ["role"],
       _count: { id: true },
     });
 
@@ -276,40 +256,33 @@ export class AdminResolver {
 
     return {
       code: 200,
-      message: "User role distribution fetched successfully.",
-      admin: totalUsers > 0 ? (100 * (map[UserRole.admin] || 0)) / totalUsers : 0,
-      editor: totalUsers > 0 ? (100 * (map[UserRole.editor] || 0)) / totalUsers : 0,
-      view: totalUsers > 0 ? (100 * (map[UserRole.view] || 0)) / totalUsers : 0,
+      message: "User role distribution fetched successfully",
+      admin: totalUsers ? (100 * (map[UserRole.admin] || 0)) / totalUsers : 0,
+      editor: totalUsers ? (100 * (map[UserRole.editor] || 0)) / totalUsers : 0,
+      view: totalUsers ? (100 * (map[UserRole.view] || 0)) / totalUsers : 0,
     };
   }
 
   @Query(() => TopSkillsResponse)
   async getTopUsedSkills(): Promise<TopSkillsResponse> {
-    const topSkillCounts = await this.db.projectSkill.groupBy({
-      by: ['skillId'],
+    const counts = await this.db.projectSkill.groupBy({
+      by: ["skillId"],
       _count: { skillId: true },
-      orderBy: { _count: { skillId: 'desc' } },
+      orderBy: { _count: { skillId: "desc" } },
     });
-
-    const skillIds = topSkillCounts.map(s => s.skillId);
 
     const skills = await this.db.skill.findMany({
-      where: { id: { in: skillIds } },
-    });
-
-    const result: TopSkillUsage[] = topSkillCounts.map(item => {
-      const skill = skills.find(s => s.id === item.skillId);
-      return {
-        id: item.skillId,
-        name: skill?.name || "Unknown",
-        usageCount: item._count.skillId,
-      };
+      where: { id: { in: counts.map((c) => c.skillId) } },
     });
 
     return {
       code: 200,
-      message: "Top used skills fetched successfully.",
-      skills: result,
+      message: "Top used skills fetched successfully",
+      skills: counts.map((c) => ({
+        id: c.skillId,
+        name: skills.find((s) => s.id === c.skillId)?.name || "Unknown",
+        usageCount: c._count.skillId,
+      })),
     };
   }
 }

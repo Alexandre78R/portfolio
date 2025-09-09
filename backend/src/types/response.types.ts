@@ -142,8 +142,8 @@ export class BackupFileInfo {
 
 @ObjectType()
 export class BackupFilesResponse extends Response {
-
-  @Field(() => [BackupFileInfo], { nullable: true })
+  // @Field(() => [BackupFileInfo], { nullable: true })
+  @Field(() => [BackupFileInfo])
   files?: BackupFileInfo[];
 }
 
