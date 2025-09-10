@@ -4,7 +4,7 @@ describe('generateSecurePassword', () => {
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const lowercase = 'abcdefghijklmnopqrstuvwxyz';
     const numbers = '0123456789';
-    const symbols = '!@#$%^&*()_+[]{}|;:,.<>?';
+    const symbols = '!@#$%^*-_=+';
     const all = uppercase + lowercase + numbers + symbols;
 
     const hasCharFrom = (str: string, charSet: string) =>

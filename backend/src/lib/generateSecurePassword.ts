@@ -9,7 +9,7 @@ export function generateSecurePassword(): string {
 
   const getRandom = (str: string) => str[Math.floor(Math.random() * str.length)];
 
-  let password = [
+  const password: string[] = [
     getRandom(uppercase),
     getRandom(lowercase),
     getRandom(numbers),
@@ -20,7 +20,13 @@ export function generateSecurePassword(): string {
     password.push(getRandom(all));
   }
 
-  return password.sort(() => Math.random() - 0.5).join("");
+  for (let i = password.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [password[i], password[j]] = [password[j], password[i]];
+  }
+
+  // return password.sort(() => Math.random() - 0.5).join("");
+  return password.join("");
 }
 
 // const passwordCreated = generateSecurePassword();
