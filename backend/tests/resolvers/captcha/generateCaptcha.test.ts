@@ -31,7 +31,6 @@ describe("CaptchaResolver - generateCaptcha", () => {
   const originalProcessEnv = process.env;
 
   beforeAll(() => {
-    // Store original process.env and set mock BASE_URL
     process.env = { ...originalProcessEnv, BASE_URL: 'http://test-server:4000' };
   });
 
@@ -46,12 +45,8 @@ describe("CaptchaResolver - generateCaptcha", () => {
     mockPathBasename = path.basename as jest.Mock;
     mockPathExtname = path.extname as jest.Mock;
 
-    for (const key in captchaImageMap) {
-      delete captchaImageMap[key];
-    }
-    for (const key in captchaMap) {
-      delete captchaMap[key];
-    }
+    for (const key in captchaImageMap) delete captchaImageMap[key];
+    for (const key in captchaMap) delete captchaMap[key];
 
     resolver = new CaptchaResolver();
 
@@ -67,7 +62,6 @@ describe("CaptchaResolver - generateCaptcha", () => {
     const mockCaptchaId = "captcha-id-123";
     const mockImageIds = ["img-id-1", "img-id-2", "img-id-3", "img-id-4", "img-id-5", "img-id-6"];
 
-    // Mock uuidv4 calls
     mockUuidV4
       .mockReturnValueOnce(mockCaptchaId)
       .mockReturnValueOnce(mockImageIds[0])
@@ -77,7 +71,6 @@ describe("CaptchaResolver - generateCaptcha", () => {
       .mockReturnValueOnce(mockImageIds[4])
       .mockReturnValueOnce(mockImageIds[5]);
 
-    // Mock fs.readdirSync to return a set of image files
     mockReaddirSync.mockReturnValueOnce([
       "car-voiture-1.png", "car-voiture-2.jpeg", "car-voiture-3.jpg",
       "tree-arbre-1.png", "tree-arbre-2.jpeg", "tree-arbre-3.jpg",
@@ -90,11 +83,11 @@ describe("CaptchaResolver - generateCaptcha", () => {
 
     expect(result).toBeDefined();
     expect(result.id).toBe(mockCaptchaId);
-    expect(result.images).toHaveLength(6); // 3 categories * 2 images each
+    expect(result.images).toHaveLength(6);
 
     result.images.forEach((img, index) => {
       expect(img.id).toBe(mockImageIds[index]);
-      expect(img.url).toMatch(`http://test-server:4000/dynamic-images/${mockImageIds[index]}`);
+      expect(img.url).toMatch(`http://test-server:4000/api/dynamic-images/${mockImageIds[index]}`);
       expect(img.typeEN).toBeDefined();
       expect(img.typeFR).toBeDefined();
       expect(captchaImageMap[img.id]).toBeDefined();
@@ -115,7 +108,11 @@ describe("CaptchaResolver - generateCaptcha", () => {
       })
     );
 
-    expect(mockPathJoin).toHaveBeenCalledWith(expect.any(String), '..', 'images');
+    expect(mockPathJoin).toHaveBeenCalledWith(
+      expect.any(String),
+      '..',
+      expect.stringContaining('images/captcha')
+    );
     expect(mockReaddirSync).toHaveBeenCalledWith(expect.any(String));
   });
 
