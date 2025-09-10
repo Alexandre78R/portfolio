@@ -28,7 +28,6 @@ const execPromise = util.promisify(exec);
 
 /**
  * 📁 Dossier UNIQUE pour les sauvegardes
- * ⚠️ Hors de src pour éviter tout redémarrage du watcher
  */
 const BACKUP_DIR = path.join(process.cwd(), "backups");
 

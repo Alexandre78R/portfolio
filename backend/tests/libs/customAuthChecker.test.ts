@@ -14,6 +14,7 @@ describe("customAuthChecker", () => {
       cookies: {} as any,
       apiKey: 'test-api-key',
       user: null,
+      token : null, 
     };
   });
 
