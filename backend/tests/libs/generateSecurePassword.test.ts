@@ -56,7 +56,6 @@ describe('generateSecurePassword', () => {
             expect(hasCharFrom(password, numbers)).toBe(true);
             expect(hasCharFrom(password, symbols)).toBe(true);
 
-            // Vérifie seulement que tous les caractères sont imprimables et dans les sets connus
             for (const char of password) {
                 const isValidChar = uppercase.includes(char) || lowercase.includes(char) || numbers.includes(char) || symbols.includes(char);
                 expect(isValidChar).toBe(true);
