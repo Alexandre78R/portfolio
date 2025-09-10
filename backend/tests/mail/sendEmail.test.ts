@@ -94,7 +94,8 @@ describe('sendEmail', () => {
   });
 
   it('should send email even if AUTH_USER_MAIL env is missing', async () => {
-    process.env.AUTH_USER_MAIL = '';
+    // process.env.AUTH_USER_MAIL = '';
+    delete process.env.AUTH_USER_MAIL;
     mockSendMail.mockResolvedValue(true);
 
     const result = await sendEmail(
@@ -105,7 +106,11 @@ describe('sendEmail', () => {
     );
 
     expect(mockSendMail).toHaveBeenCalledWith(
-      expect.objectContaining({ from: '', to: 'someone@example.com' })
+      expect.objectContaining({
+        to: 'someone@example.com',
+        text: 'Text content',
+        html: '<p>HTML content</p>',
+      })
     );
     expect(result.status).toBe(true);
   });
