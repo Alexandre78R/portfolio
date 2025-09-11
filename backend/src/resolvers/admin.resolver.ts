@@ -19,17 +19,19 @@ import {
   Response,
   UserRolePercent,
   TopSkillsResponse,
-  TopSkillUsage,
   BackupFileInfo,
+  TopSkillUsage,
 } from "../types/response.types";
 import { PrismaClient } from "@prisma/client";
 
-const execPromise = util.promisify(exec);
+const execPromise: (
+  command: string
+) => Promise<{ stdout: string; stderr: string }> = util.promisify(exec);
 
 /**
  * 📁 Dossier UNIQUE pour les sauvegardes
  */
-const BACKUP_DIR = path.join(process.cwd(), "backups");
+const BACKUP_DIR: string = path.join(process.cwd(), "backups");
 
 @Resolver()
 export class AdminResolver {
@@ -48,8 +50,9 @@ export class AdminResolver {
         console.log(`📁 Backup directory created: ${BACKUP_DIR}`);
       }
 
-      const now = new Date();
-      const timestamp = `${now.getFullYear()}${String(
+      const now: Date = new Date();
+
+      const timestamp: string = `${now.getFullYear()}${String(
         now.getMonth() + 1
       ).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(
         now.getHours()
@@ -57,17 +60,17 @@ export class AdminResolver {
         now.getSeconds()
       ).padStart(2, "0")}`;
 
-      const fileName = `bdd_${timestamp}.sql`;
-      const filePath = path.join(BACKUP_DIR, fileName);
+      const fileName: string = `bdd_${timestamp}.sql`;
+      const filePath: string = path.join(BACKUP_DIR, fileName);
 
-      const dbUrl = process.env.DATABASE_URL;
+      const dbUrl: string | undefined = process.env.DATABASE_URL;
       if (!dbUrl) {
         throw new Error("DATABASE_URL non défini");
       }
 
-      const url = new URL(dbUrl);
+      const url: URL = new URL(dbUrl);
 
-      const command = `
+      const command: string = `
         mysqldump
           -h ${url.hostname}
           -P ${url.port || "3306"}
@@ -86,12 +89,15 @@ export class AdminResolver {
         message: "Database backup generated successfully",
         path: fileName,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("❌ Backup generation error:", error);
+
+      const err: Error =
+        error instanceof Error ? error : new Error("Unknown backup error");
+
       return {
         code: 500,
-        message:
-          error instanceof Error ? error.message : "Unknown backup error",
+        message: err.message,
         path: "",
       };
     }
@@ -109,11 +115,13 @@ export class AdminResolver {
 
       try {
         files = await fs.promises.readdir(BACKUP_DIR);
-      } catch (err: any) {
-        if (err.code === 'ENOENT') {
+      } catch (error: unknown) {
+        const err = error as NodeJS.ErrnoException;
+
+        if (err.code === "ENOENT") {
           return {
             code: 200,
-            message: 'No backup directory found',
+            message: "No backup directory found",
             files: [],
           };
         }
@@ -124,10 +132,10 @@ export class AdminResolver {
       const backupFiles: BackupFileInfo[] = [];
 
       for (const file of files) {
-        const filePath = path.join(BACKUP_DIR, file);
+        const filePath: string = path.join(BACKUP_DIR, file);
 
         try {
-          const stats = await fs.promises.stat(filePath);
+          const stats: fs.Stats = await fs.promises.stat(filePath);
 
           if (!stats.isFile()) continue;
 
@@ -137,8 +145,8 @@ export class AdminResolver {
             modifiedAt: stats.mtime,
             createdAt: stats.ctime,
           });
-        } catch (err) {
-          console.warn(`Could not get stats for file ${file}:`, err);
+        } catch (error: unknown) {
+          console.warn(`Could not get stats for file ${file}:`, error);
         }
       }
 
@@ -147,13 +155,16 @@ export class AdminResolver {
         message: `Backup files listed successfully (${backupFiles.length})`,
         files: backupFiles,
       };
-    } catch (error: any) {
-      // ✅ message EXACT attendu par les tests
-      console.error('Error listing backup files:', error);
+    } catch (error: unknown) {
+      // ⚠️ message EXACT attendu par les tests
+      console.error("Error listing backup files:", error);
+
+      const err: Error =
+        error instanceof Error ? error : new Error("Unknown error");
 
       return {
         code: 500,
-        message: error.message,
+        message: err.message,
         files: [],
       };
     }
@@ -169,7 +180,9 @@ export class AdminResolver {
     @Arg("fileName") fileName: string
   ): Promise<Response> {
     try {
-      const targetPath = path.normalize(path.join(BACKUP_DIR, fileName));
+      const targetPath: string = path.normalize(
+        path.join(BACKUP_DIR, fileName)
+      );
 
       if (!targetPath.startsWith(BACKUP_DIR + path.sep)) {
         return {
@@ -191,11 +204,15 @@ export class AdminResolver {
         code: 200,
         message: `Backup file '${fileName}' deleted successfully`,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Error deleting backup:", error);
+
+      const err: Error =
+        error instanceof Error ? error : new Error("Unknown delete error");
+
       return {
         code: 500,
-        message: error.message,
+        message: err.message,
       };
     }
   }
@@ -207,21 +224,24 @@ export class AdminResolver {
   @Query(() => GlobalStatsResponse)
   async getGlobalStats(): Promise<GlobalStatsResponse> {
     try {
-      const totalUsers = await this.db.user.count();
-      const totalProjects = await this.db.project.count();
-      const totalSkills = await this.db.skill.count();
-      const totalEducations = await this.db.education.count();
-      const totalExperiences = await this.db.experience.count();
+      const totalUsers: number = await this.db.user.count();
+      const totalProjects: number = await this.db.project.count();
+      const totalSkills: number = await this.db.skill.count();
+      const totalEducations: number = await this.db.education.count();
+      const totalExperiences: number = await this.db.experience.count();
 
       const usersByRole = await this.db.user.groupBy({
         by: ["role"],
         _count: { id: true },
       });
 
-      const map = usersByRole.reduce((acc, item) => {
-        acc[item.role] = item._count.id;
-        return acc;
-      }, {} as Record<UserRole, number>);
+      const map: Record<UserRole, number> = usersByRole.reduce(
+        (acc: Record<UserRole, number>, item) => {
+          acc[item.role] = item._count.id;
+          return acc;
+        },
+        {} as Record<UserRole, number>
+      );
 
       const stats: GlobalStats = {
         totalUsers,
@@ -239,39 +259,55 @@ export class AdminResolver {
         message: "Global statistics fetched successfully",
         stats,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("❌ Global stats error:", error);
-      return { code: 500, message: "Failed to fetch global statistics" };
+      return {
+        code: 500,
+        message: "Failed to fetch global statistics",
+      };
     }
   }
 
   @Query(() => Float)
   async getAverageSkillsPerProject(): Promise<number> {
-    const totalProjects = await this.db.project.count();
-    const totalProjectSkills = await this.db.projectSkill.count();
-    return totalProjects > 0 ? totalProjectSkills / totalProjects : 0;
+    const totalProjects: number = await this.db.project.count();
+    const totalProjectSkills: number =
+      await this.db.projectSkill.count();
+
+    return totalProjects > 0
+      ? totalProjectSkills / totalProjects
+      : 0;
   }
 
   @Query(() => UserRolePercent)
   async getUsersRoleDistribution(): Promise<UserRolePercent> {
-    const totalUsers = await this.db.user.count();
+    const totalUsers: number = await this.db.user.count();
 
     const usersByRole = await this.db.user.groupBy({
       by: ["role"],
       _count: { id: true },
     });
 
-    const map = usersByRole.reduce((acc, item) => {
-      acc[item.role] = item._count.id;
-      return acc;
-    }, {} as Record<UserRole, number>);
+    const map: Record<UserRole, number> = usersByRole.reduce(
+      (acc: Record<UserRole, number>, item) => {
+        acc[item.role] = item._count.id;
+        return acc;
+      },
+      {} as Record<UserRole, number>
+    );
 
     return {
       code: 200,
       message: "User role distribution fetched successfully",
-      admin: totalUsers ? (100 * (map[UserRole.admin] || 0)) / totalUsers : 0,
-      editor: totalUsers ? (100 * (map[UserRole.editor] || 0)) / totalUsers : 0,
-      view: totalUsers ? (100 * (map[UserRole.view] || 0)) / totalUsers : 0,
+      admin: totalUsers
+        ? (100 * (map[UserRole.admin] || 0)) / totalUsers
+        : 0,
+      editor: totalUsers
+        ? (100 * (map[UserRole.editor] || 0)) / totalUsers
+        : 0,
+      view: totalUsers
+        ? (100 * (map[UserRole.view] || 0)) / totalUsers
+        : 0,
     };
   }
 
@@ -290,9 +326,10 @@ export class AdminResolver {
     return {
       code: 200,
       message: "Top used skills fetched successfully",
-      skills: counts.map((c) => ({
+      skills: counts.map((c): TopSkillUsage => ({
         id: c.skillId,
-        name: skills.find((s) => s.id === c.skillId)?.name || "Unknown",
+        name:
+          skills.find((s) => s.id === c.skillId)?.name ?? "Unknown",
         usageCount: c._count.skillId,
       })),
     };
