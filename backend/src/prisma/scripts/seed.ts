@@ -28,7 +28,6 @@ async function seed() {
   await prisma.experience.deleteMany();
   await prisma.user.deleteMany();
 
-  // 1) Seed des catégories et des skills déclarés
   for (const cat of skillsData) {
     const catRec = await prisma.skillCategory.create({
       data: { categoryEN: cat.categoryEN, categoryFR: cat.categoryFR }
@@ -44,7 +43,6 @@ async function seed() {
     }
   }
 
-  // 2) Seed des projects et création des liens project–skill
   for (const proj of projectsData) {
     const projRec = await prisma.project.create({
       data: {
