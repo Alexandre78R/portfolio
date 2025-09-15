@@ -10,7 +10,7 @@ jest.mock('nodemailer', () => {
     createTransport: jest.fn(() => ({
       sendMail: sendMailMock,
     })),
-    __sendMailMock: sendMailMock, // Optionnel, mais accessible si besoin
+    __sendMailMock: sendMailMock,
   };
 });
 
@@ -21,7 +21,6 @@ describe('sendEmail', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv, AUTH_USER_MAIL: 'contact@alexandre-renard.dev' };
-    // Récupère le mock depuis nodemailer
     const nodemailerMocked = nodemailer as unknown as { __sendMailMock: jest.Mock<Promise<any>, [SendMailOptions]> };
     mockSendMail = nodemailerMocked.__sendMailMock;
   });
