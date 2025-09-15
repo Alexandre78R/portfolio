@@ -1,24 +1,64 @@
 import "reflect-metadata";
-import { AdminResolver } from '../../../src/resolvers/admin.resolver';
-import { UserRole } from '../../../src/entities/user.entity';
+import { AdminResolver } from "../../../src/resolvers/admin.resolver";
+import { UserRole } from "../../../src/entities/user.entity";
+import { PrismaClient, Prisma } from "@prisma/client";
+
+type MockCountFn = jest.Mock<Promise<number>, []>;
+type MockGroupByUserFn = jest.Mock<
+  Promise<
+    Array<{
+      role: UserRole | string;
+      _count: { id: number };
+    }>
+  >,
+  []
+>;
+
+type MockModelWithCount = {
+  count: MockCountFn;
+};
+
+type MockUserModel = {
+  count: MockCountFn;
+  groupBy: MockGroupByUserFn;
+};
+
+type MockPrismaClient = Pick<
+  PrismaClient,
+  "user" | "project" | "skill" | "education" | "experience"
+> & {
+  user: MockUserModel;
+  project: MockModelWithCount;
+  skill: MockModelWithCount;
+  education: MockModelWithCount;
+  experience: MockModelWithCount;
+};
 
 describe("AdminResolver.getGlobalStats", () => {
-  let mockDb: any;
+  let mockDb: MockPrismaClient;
   let resolver: AdminResolver;
 
   beforeEach(() => {
     mockDb = {
       user: {
-        count: jest.fn(),
-        groupBy: jest.fn(),
+        count: jest.fn<Promise<number>, []>(),
+        groupBy: jest.fn<
+          Promise<
+            Array<{
+              role: UserRole | string;
+              _count: { id: number };
+            }>
+          >,
+          []
+        >(),
       },
-      project: { count: jest.fn() },
-      skill: { count: jest.fn() },
-      education: { count: jest.fn() },
-      experience: { count: jest.fn() },
-    };
+      project: { count: jest.fn<Promise<number>, []>() },
+      skill: { count: jest.fn<Promise<number>, []>() },
+      education: { count: jest.fn<Promise<number>, []>() },
+      experience: { count: jest.fn<Promise<number>, []>() },
+    } as MockPrismaClient;
 
-    resolver = new AdminResolver(mockDb);
+    resolver = new AdminResolver(mockDb as unknown as PrismaClient);
   });
 
   it("should return correct global stats", async () => {
@@ -116,7 +156,7 @@ describe("AdminResolver.getGlobalStats", () => {
   it("should ignore unknown user roles in groupBy", async () => {
     mockDb.user.count.mockResolvedValue(5);
     mockDb.user.groupBy.mockResolvedValue([
-      { role: "superadmin" as any, _count: { id: 5 } },  // rôle inconnu
+      { role: "superadmin" as string, _count: { id: 5 } }, // rôle inconnu
     ]);
 
     const result = await resolver.getGlobalStats();
@@ -144,7 +184,7 @@ describe("AdminResolver.getGlobalStats", () => {
     expect(result.stats).toBeDefined();
 
     if (result.stats) {
-      const sumRoles = 
+      const sumRoles =
         (result.stats.usersByRoleAdmin || 0) +
         (result.stats.usersByRoleEditor || 0) +
         (result.stats.usersByRoleView || 0);
