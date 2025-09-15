@@ -1,24 +1,29 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { SendMailOptions } from 'nodemailer';
 import { sendEmail } from '../../src/mail/mail.service';
+import { MessageType } from '../../src/types/message.types';
 
 jest.mock('nodemailer', () => {
-  const sendMailMock = jest.fn();
+  // Création du mock à l'intérieur du mock pour éviter le hoisting
+  const sendMailMock = jest.fn<Promise<any>, [SendMailOptions]>();
+
   return {
     createTransport: jest.fn(() => ({
       sendMail: sendMailMock,
     })),
-    __sendMailMock: sendMailMock,
+    __sendMailMock: sendMailMock, // Optionnel, mais accessible si besoin
   };
 });
 
 describe('sendEmail', () => {
-  let mockSendMail: jest.Mock;
-  const originalEnv = process.env;
+  let mockSendMail: jest.Mock<Promise<any>, [SendMailOptions]>;
+  const originalEnv: NodeJS.ProcessEnv = process.env;
 
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv, AUTH_USER_MAIL: 'contact@alexandre-renard.dev' };
-    mockSendMail = (nodemailer as any).__sendMailMock;
+    // Récupère le mock depuis nodemailer
+    const nodemailerMocked = nodemailer as unknown as { __sendMailMock: jest.Mock<Promise<any>, [SendMailOptions]> };
+    mockSendMail = nodemailerMocked.__sendMailMock;
   });
 
   afterAll(() => {
@@ -28,7 +33,7 @@ describe('sendEmail', () => {
   it('should send email to the provided email address when sendToMe is false', async () => {
     mockSendMail.mockResolvedValue(true);
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'test@example.com',
       'Subject',
       'Text content',
@@ -49,7 +54,7 @@ describe('sendEmail', () => {
   it('should send email to the user email when sendToMe is true', async () => {
     mockSendMail.mockResolvedValue(true);
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'ignored@example.com',
       'Subject',
       'Text content',
@@ -66,7 +71,7 @@ describe('sendEmail', () => {
   it('should return error message if sendMail throws an error', async () => {
     mockSendMail.mockRejectedValue(new Error('Failed to send email'));
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'test@example.com',
       'Subject',
       'Text content',
@@ -81,7 +86,7 @@ describe('sendEmail', () => {
   it('should handle unknown errors gracefully', async () => {
     mockSendMail.mockRejectedValue('Unexpected failure');
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'test@example.com',
       'Subject',
       'Text content',
@@ -94,11 +99,10 @@ describe('sendEmail', () => {
   });
 
   it('should send email even if AUTH_USER_MAIL env is missing', async () => {
-    // process.env.AUTH_USER_MAIL = '';
     delete process.env.AUTH_USER_MAIL;
     mockSendMail.mockResolvedValue(true);
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'someone@example.com',
       'Subject',
       'Text content',
@@ -118,7 +122,7 @@ describe('sendEmail', () => {
   it('should send email with empty html or text without error', async () => {
     mockSendMail.mockResolvedValue(true);
 
-    const result = await sendEmail(
+    const result: MessageType = await sendEmail(
       'test@example.com',
       'Subject',
       '',
