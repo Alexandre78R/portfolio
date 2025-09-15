@@ -8,7 +8,6 @@ import {
 import type { ContactFrom } from '../../src/types/contact.types';
 
 describe('structureMail.service', () => {
-  // Variable réutilisable pour les tests
   const contactData: ContactFrom = {
     email: 'test@example.com',
     message: 'Bonjour, ceci est un message test.',

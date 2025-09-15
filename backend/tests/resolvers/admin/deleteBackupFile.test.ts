@@ -2,23 +2,39 @@ import "reflect-metadata";
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Mock fs dès le départ
-jest.mock('fs', () => ({
-  existsSync: jest.fn(),
-  promises: {
-    unlink: jest.fn(),
-  },
-}));
+interface DeleteBackupResult {
+  code: number;
+  message: string;
+}
+
+jest.mock('fs', () => {
+  const existsSyncMock: jest.Mock<boolean, [fs.PathLike]> = jest.fn();
+  const unlinkMock: jest.Mock<Promise<void>, [fs.PathLike]> = jest.fn();
+
+  return {
+    existsSync: existsSyncMock,
+    promises: {
+      unlink: unlinkMock,
+    },
+    __existsSyncMock: existsSyncMock,
+    __unlinkMock: unlinkMock,
+  };
+});
+
+const { __existsSyncMock: existsSyncMock, __unlinkMock: unlinkMock } = fs as unknown as {
+  __existsSyncMock: jest.Mock<boolean, [fs.PathLike]>;
+  __unlinkMock: jest.Mock<Promise<void>, [fs.PathLike]>;
+};
 
 class AdminResolverMock {
-  private dataFolderPath = path.join(__dirname, '../../../backups'); // mock path
+  private dataFolderPath: string = path.join(__dirname, '../../../backups');
 
-  async deleteBackupFile(fileName: string) {
+  async deleteBackupFile(fileName: string): Promise<DeleteBackupResult> {
     if (!fileName || fileName.includes('..') || path.isAbsolute(fileName)) {
       return { code: 400, message: 'Invalid file path' };
     }
 
-    const filePath = path.join(this.dataFolderPath, fileName);
+    const filePath: string = path.join(this.dataFolderPath, fileName);
 
     if (!fs.existsSync(filePath)) {
       return { code: 404, message: `Backup file '${fileName}' not found.` };
@@ -27,16 +43,17 @@ class AdminResolverMock {
     try {
       await fs.promises.unlink(filePath);
       return { code: 200, message: `Backup file '${fileName}' deleted successfully.` };
-    } catch (err: any) {
-      console.error(`Error deleting backup file '${fileName}':`, err);
-      return { code: 500, message: `Failed to delete backup file '${fileName}': ${err.message}` };
+    } catch (err: unknown) {
+      const error: Error = err instanceof Error ? err : new Error(String(err));
+      console.error(`Error deleting backup file '${fileName}':`, error);
+      return { code: 500, message: `Failed to delete backup file '${fileName}': ${error.message}` };
     }
   }
 }
 
 describe('AdminResolver - deleteBackupFile', () => {
   let resolver: AdminResolverMock;
-  let consoleErrorSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]]>;
 
   beforeEach(() => {
     resolver = new AdminResolverMock();
@@ -49,66 +66,65 @@ describe('AdminResolver - deleteBackupFile', () => {
   });
 
   it('should delete file successfully', async () => {
-    const fileName = 'backup.sql';
-    (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.promises.unlink as jest.Mock).mockResolvedValue(undefined);
+    const fileName: string = 'backup.sql';
+    existsSyncMock.mockReturnValue(true);
+    unlinkMock.mockResolvedValue();
 
-    const result = await resolver.deleteBackupFile(fileName);
+    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
 
-    expect(fs.existsSync).toHaveBeenCalled();
-    expect(fs.promises.unlink).toHaveBeenCalled();
+    expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
+    expect(unlinkMock).toHaveBeenCalledWith(expect.any(String));
     expect(result.code).toBe(200);
     expect(result.message).toMatch(/deleted successfully/);
   });
 
   it('should reject deletion if path traversal detected', async () => {
-    const fileName = '../evil.sql';
+    const fileName: string = '../evil.sql';
 
-    const result = await resolver.deleteBackupFile(fileName);
+    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
 
     expect(result.code).toBe(400);
     expect(result.message).toMatch(/Invalid file path/);
-    expect(fs.existsSync).not.toHaveBeenCalled();
-    expect(fs.promises.unlink).not.toHaveBeenCalled();
+    expect(existsSyncMock).not.toHaveBeenCalled();
+    expect(unlinkMock).not.toHaveBeenCalled();
   });
 
   it('should return 404 if file does not exist', async () => {
-    const fileName = 'missing.sql';
-    (fs.existsSync as jest.Mock).mockReturnValue(false);
+    const fileName: string = 'missing.sql';
+    existsSyncMock.mockReturnValue(false);
 
-    const result = await resolver.deleteBackupFile(fileName);
+    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
 
-    expect(fs.existsSync).toHaveBeenCalled();
-    expect(fs.promises.unlink).not.toHaveBeenCalled();
+    expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
+    expect(unlinkMock).not.toHaveBeenCalled();
     expect(result.code).toBe(404);
     expect(result.message).toMatch(/not found/);
   });
 
   it('should return 500 and log error on unlink failure', async () => {
-    const fileName = 'fileToDelete.sql';
-    const error = new Error('unlink failed');
+    const fileName: string = 'fileToDelete.sql';
+    const error: Error = new Error('unlink failed');
 
-    (fs.existsSync as jest.Mock).mockReturnValue(true);
-    (fs.promises.unlink as jest.Mock).mockRejectedValue(error);
+    existsSyncMock.mockReturnValue(true);
+    unlinkMock.mockRejectedValue(error);
 
-    const result = await resolver.deleteBackupFile(fileName);
+    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
 
-    expect(fs.existsSync).toHaveBeenCalled();
-    expect(fs.promises.unlink).toHaveBeenCalled();
+    expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
+    expect(unlinkMock).toHaveBeenCalledWith(expect.any(String));
     expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringMatching(/Error deleting backup file/), error);
-
     expect(result.code).toBe(500);
     expect(result.message).toMatch(/Failed to delete backup file/);
   });
 
   it('should reject deletion if fileName is empty', async () => {
-    const fileName = '';
+    const fileName: string = '';
 
-    const result = await resolver.deleteBackupFile(fileName);
+    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
 
     expect(result.code).toBe(400);
     expect(result.message).toMatch(/Invalid file path/);
-    expect(fs.existsSync).not.toHaveBeenCalled();
-    expect(fs.promises.unlink).not.toHaveBeenCalled();
+    expect(existsSyncMock).not.toHaveBeenCalled();
+    expect(unlinkMock).not.toHaveBeenCalled();
   });
 });
