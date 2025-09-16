@@ -6,13 +6,12 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { UpdateEducationInput } from "../../../src/entities/inputs/education.input";
 import { EducationResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("EducationResolver - updateEducation", () => {
   let resolver: EducationResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let mockCookies: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -44,7 +43,7 @@ describe("EducationResolver - updateEducation", () => {
   const baseMockContext: MyContext = {
     req: {} as any,
     res: {} as any,
-    cookies: mockCookies,
+    cookies: mockDeep<Cookies>(),
     user: null,
     apiKey: undefined,
     token: undefined,
@@ -68,16 +67,17 @@ describe("EducationResolver - updateEducation", () => {
     typeFR: "Ancien Type FR",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.education.findUnique.mockReset();
     prismaMock.education.update.mockReset();
     resolver = new EducationResolver(prismaMock);
+    mockCookies = mockDeep<Cookies>();
     mockCookies.set.mockClear();
     mockCookies.get.mockClear();
   });
 
-  it("should successfully update an education record by an admin user", async () => {
+  it("should successfully update an education record by an admin user", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const updateInput: UpdateEducationInput = {
       id: mockExistingEducation.id,
@@ -105,24 +105,24 @@ describe("EducationResolver - updateEducation", () => {
       where: { id: updateInput.id },
       data: {
         titleFR: mockExistingEducation.titleFR,
-        titleEN: updateInput.titleEN,
-        diplomaLevelEN: mockExistingEducation.diplomaLevelEN,
+        titleEN: updateInput.titleEN ?? mockExistingEducation.titleEN,
         diplomaLevelFR: mockExistingEducation.diplomaLevelFR,
-        school: updateInput.school,
+        diplomaLevelEN: mockExistingEducation.diplomaLevelEN,
+        school: updateInput.school ?? mockExistingEducation.school,
         location: mockExistingEducation.location,
         year: mockExistingEducation.year,
-        startDateEN: mockExistingEducation.startDateEN,
         startDateFR: mockExistingEducation.startDateFR,
-        endDateEN: mockExistingEducation.endDateEN,
+        startDateEN: mockExistingEducation.startDateEN,
         endDateFR: mockExistingEducation.endDateFR,
+        endDateEN: mockExistingEducation.endDateEN,
         month: mockExistingEducation.month,
-        typeEN: mockExistingEducation.typeEN,
         typeFR: mockExistingEducation.typeFR,
+        typeEN: mockExistingEducation.typeEN,
       },
     });
   });
 
-  it("should successfully update an education record by an editor user", async () => {
+  it("should successfully update an education record by an editor user", async (): Promise<void> => {
     const editorContext: MyContext = { ...baseMockContext, user: mockEditorUser };
     const updateInput: UpdateEducationInput = {
       id: mockExistingEducation.id,
@@ -147,7 +147,7 @@ describe("EducationResolver - updateEducation", () => {
     expect(prismaMock.education.update).toHaveBeenCalledTimes(1);
   });
 
-  it("should return 401 if no user is authenticated", async () => {
+  it("should return 401 if no user is authenticated", async (): Promise<void> => {
     const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
     const updateInput: UpdateEducationInput = { id: 1, titleEN: "Test" };
 
@@ -161,7 +161,7 @@ describe("EducationResolver - updateEducation", () => {
     expect(prismaMock.education.update).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin or editor", async () => {
+  it("should return 403 if authenticated user is not an admin or editor", async (): Promise<void> => {
     const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
     const updateInput: UpdateEducationInput = { id: 1, titleEN: "Test" };
 
@@ -175,7 +175,7 @@ describe("EducationResolver - updateEducation", () => {
     expect(prismaMock.education.update).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the education record is not found", async () => {
+  it("should return 404 if the education record is not found", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const updateInput: UpdateEducationInput = { id: 999, titleEN: "Non Existent" };
 
@@ -192,10 +192,10 @@ describe("EducationResolver - updateEducation", () => {
     expect(prismaMock.education.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during finding the education record", async () => {
+  it("should return 500 for a database error during finding the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const updateInput: UpdateEducationInput = { id: mockExistingEducation.id, titleEN: "Test" };
-    const errorMessage = "DB error during findUnique";
+    const errorMessage: string = "DB error during findUnique";
 
     prismaMock.education.findUnique.mockRejectedValueOnce(new Error(errorMessage));
 
@@ -209,10 +209,10 @@ describe("EducationResolver - updateEducation", () => {
     expect(prismaMock.education.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during updating the education record", async () => {
+  it("should return 500 for a database error during updating the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const updateInput: UpdateEducationInput = { id: mockExistingEducation.id, titleEN: "Test" };
-    const errorMessage = "DB error during update";
+    const errorMessage: string = "DB error during update";
 
     prismaMock.education.findUnique.mockResolvedValueOnce(mockExistingEducation);
     prismaMock.education.update.mockRejectedValueOnce(new Error(errorMessage));
