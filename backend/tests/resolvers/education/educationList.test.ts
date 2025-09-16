@@ -44,13 +44,13 @@ describe("EducationResolver - educationList", () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.education.findMany.mockReset();
     resolver = new EducationResolver(prismaMock);
   });
 
-  it("should return a list of educations successfully", async () => {
+  it("should return a list of educations successfully", async (): Promise<void> => {
     prismaMock.education.findMany.mockResolvedValueOnce(mockEducations);
 
     const result: EducationsResponse = await resolver.educationList();
@@ -63,7 +63,7 @@ describe("EducationResolver - educationList", () => {
     expect(prismaMock.education.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return an empty list if no educations are found", async () => {
+  it("should return an empty list if no educations are found", async (): Promise<void> => {
     prismaMock.education.findMany.mockResolvedValueOnce([]);
 
     const result: EducationsResponse = await resolver.educationList();
@@ -76,8 +76,8 @@ describe("EducationResolver - educationList", () => {
     expect(prismaMock.education.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return 500 if there is a database error", async () => {
-    const errorMessage = "Database connection error";
+  it("should return 500 if there is a database error", async (): Promise<void> => {
+    const errorMessage: string = "Database connection error";
     prismaMock.education.findMany.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: EducationsResponse = await resolver.educationList();
