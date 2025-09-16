@@ -40,13 +40,13 @@ describe("ExperienceResolver - experienceList", () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.experience.findMany.mockReset();
     resolver = new ExperienceResolver(prismaMock);
   });
 
-  it("should return a list of experiences successfully", async () => {
+  it("should return a list of experiences successfully", async (): Promise<void> => {
     prismaMock.experience.findMany.mockResolvedValueOnce(mockExperiences);
 
     const result: ExperiencesResponse = await resolver.experienceList();
@@ -59,7 +59,7 @@ describe("ExperienceResolver - experienceList", () => {
     expect(prismaMock.experience.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return an empty list if no experiences are found", async () => {
+  it("should return an empty list if no experiences are found", async (): Promise<void> => {
     prismaMock.experience.findMany.mockResolvedValueOnce([]);
 
     const result: ExperiencesResponse = await resolver.experienceList();
@@ -72,8 +72,8 @@ describe("ExperienceResolver - experienceList", () => {
     expect(prismaMock.experience.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return 500 if there is a database error", async () => {
-    const errorMessage = "Database connection error during fetch";
+  it("should return 500 if there is a database error", async (): Promise<void> => {
+    const errorMessage: string = "Database connection error during fetch";
     prismaMock.experience.findMany.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: ExperiencesResponse = await resolver.experienceList();
