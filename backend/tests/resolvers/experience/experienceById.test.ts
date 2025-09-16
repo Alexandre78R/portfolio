@@ -23,13 +23,13 @@ describe("ExperienceResolver - experienceById", () => {
     typeEN: "Full-time",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.experience.findUnique.mockReset();
     resolver = new ExperienceResolver(prismaMock);
   });
 
-  it("should return an experience record by ID successfully", async () => {
+  it("should return an experience record by ID successfully", async (): Promise<void> => {
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExperience);
 
     const result: ExperienceResponse = await resolver.experienceById(mockExperience.id);
@@ -42,21 +42,22 @@ describe("ExperienceResolver - experienceById", () => {
     expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: mockExperience.id } });
   });
 
-  it("should return 404 if the experience record is not found", async () => {
+  it("should return 404 if the experience record is not found", async (): Promise<void> => {
     prismaMock.experience.findUnique.mockResolvedValueOnce(null);
 
-    const result: ExperienceResponse = await resolver.experienceById(999);
+    const nonExistentId: number = 999;
+    const result: ExperienceResponse = await resolver.experienceById(nonExistentId);
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Experience not found");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: 999 } });
+    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: nonExistentId } });
   });
 
-  it("should return 500 for an internal server error", async () => {
-    const errorMessage = "Database query failed unexpectedly";
+  it("should return 500 for an internal server error", async (): Promise<void> => {
+    const errorMessage: string = "Database query failed unexpectedly";
     prismaMock.experience.findUnique.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: ExperienceResponse = await resolver.experienceById(mockExperience.id);
