@@ -25,13 +25,13 @@ describe("EducationResolver - educationById", () => {
     typeFR: "École d'Ingénieurs",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.education.findUnique.mockReset();
     resolver = new EducationResolver(prismaMock);
   });
 
-  it("should return an education record by ID successfully", async () => {
+  it("should return an education record by ID successfully", async (): Promise<void> => {
     prismaMock.education.findUnique.mockResolvedValueOnce(mockEducation);
 
     const result: EducationResponse = await resolver.educationById(mockEducation.id);
@@ -44,7 +44,7 @@ describe("EducationResolver - educationById", () => {
     expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: mockEducation.id } });
   });
 
-  it("should return 404 if the education record is not found", async () => {
+  it("should return 404 if the education record is not found", async (): Promise<void> => {
     prismaMock.education.findUnique.mockResolvedValueOnce(null);
 
     const result: EducationResponse = await resolver.educationById(999);
@@ -57,8 +57,8 @@ describe("EducationResolver - educationById", () => {
     expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: 999 } });
   });
 
-  it("should return 500 for an internal server error", async () => {
-    const errorMessage = "Database query failed";
+  it("should return 500 for an internal server error", async (): Promise<void> => {
+    const errorMessage: string = "Database query failed";
     prismaMock.education.findUnique.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: EducationResponse = await resolver.educationById(mockEducation.id);

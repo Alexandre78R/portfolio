@@ -83,7 +83,7 @@ describe("EducationResolver - deleteEducation", () => {
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Education deleted");
-    expect(result.education).toBeUndefined(); // delete does not return the entity in response
+    expect(result.education).toBeUndefined();
 
     expect(prismaMock.education.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.education.findUnique).toHaveBeenCalledWith({
