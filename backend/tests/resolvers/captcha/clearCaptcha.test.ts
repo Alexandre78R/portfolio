@@ -3,9 +3,6 @@ import { CaptchaResolver } from "../../../src/resolvers/captcha.resolver";
 import { MyContext } from "../../../src";
 import { captchaMap } from "../../../src/CaptchaMap";
 
-/**
- * Typage strict du contenu d'un captcha
- */
 interface CaptchaTranslation {
   typeEN: string;
   typeFR: string;
@@ -22,9 +19,6 @@ interface CaptchaData {
 describe("CaptchaResolver - clearCaptcha", () => {
   let resolver: CaptchaResolver;
 
-  /**
-   * Contexte GraphQL mocké (aucune propriété requise ici)
-   */
   const context: MyContext = {} as MyContext;
 
   const MOCK_CAPTCHA_ID_EXISTS: string = "test-captcha-to-clear-123";
@@ -42,9 +36,6 @@ describe("CaptchaResolver - clearCaptcha", () => {
   };
 
   beforeEach((): void => {
-    /**
-     * Nettoyage strict du captchaMap
-     */
     Object.keys(captchaMap).forEach((key: string): void => {
       delete captchaMap[key];
     });
