@@ -4,13 +4,13 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { ExperienceResponse } from "../../../src/types/response.types";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import { Experience as PrismaExperience } from "@prisma/client";
+import Cookies from "cookies";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("ExperienceResolver - deleteExperience", () => {
   let resolver: ExperienceResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let mockCookies: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -33,13 +33,13 @@ describe("ExperienceResolver - deleteExperience", () => {
   const baseMockContext: MyContext = {
     req: {} as any,
     res: {} as any,
-    cookies: mockCookies,
+    cookies: mockDeep<Cookies>(),
     user: null,
     apiKey: undefined,
     token: undefined,
   };
 
-  const mockExistingExperience = {
+  const mockExistingExperience: PrismaExperience = {
     id: 1,
     jobFR: "Poste à Supprimer",
     jobEN: "Job to Delete",
@@ -55,16 +55,17 @@ describe("ExperienceResolver - deleteExperience", () => {
     typeEN: "Full-time",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.experience.findUnique.mockReset();
     prismaMock.experience.delete.mockReset();
     resolver = new ExperienceResolver(prismaMock);
+    mockCookies = mockDeep<Cookies>();
     mockCookies.set.mockClear();
     mockCookies.get.mockClear();
   });
 
-  it("should successfully delete an experience record by an admin user", async () => {
+  it("should successfully delete an experience record by an admin user", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExistingExperience);
@@ -82,7 +83,7 @@ describe("ExperienceResolver - deleteExperience", () => {
     expect(prismaMock.experience.delete).toHaveBeenCalledWith({ where: { id: mockExistingExperience.id } });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
+  it("should return 401 if no user is authenticated", async (): Promise<void> => {
     const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
 
     const result: ExperienceResponse = await resolver.deleteExperience(mockExistingExperience.id, unauthenticatedContext);
@@ -95,7 +96,7 @@ describe("ExperienceResolver - deleteExperience", () => {
     expect(prismaMock.experience.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
+  it("should return 403 if authenticated user is not an admin", async (): Promise<void> => {
     const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
 
     const result: ExperienceResponse = await resolver.deleteExperience(mockExistingExperience.id, regularUserContext);
@@ -108,7 +109,7 @@ describe("ExperienceResolver - deleteExperience", () => {
     expect(prismaMock.experience.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the experience record to delete is not found", async () => {
+  it("should return 404 if the experience record to delete is not found", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     prismaMock.experience.findUnique.mockResolvedValueOnce(null);
 
@@ -123,9 +124,9 @@ describe("ExperienceResolver - deleteExperience", () => {
     expect(prismaMock.experience.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during finding the experience record", async () => {
+  it("should return 500 for a database error during finding the experience record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "DB error during findUnique";
+    const errorMessage: string = "DB error during findUnique";
     prismaMock.experience.findUnique.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: ExperienceResponse = await resolver.deleteExperience(mockExistingExperience.id, adminContext);
@@ -138,9 +139,9 @@ describe("ExperienceResolver - deleteExperience", () => {
     expect(prismaMock.experience.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during deleting the experience record", async () => {
+  it("should return 500 for a database error during deleting the experience record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "DB error during delete";
+    const errorMessage: string = "DB error during delete";
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExistingExperience);
     prismaMock.experience.delete.mockRejectedValueOnce(new Error(errorMessage));
