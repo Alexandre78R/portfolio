@@ -6,13 +6,12 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateExperienceInput } from "../../../src/entities/inputs/experience.input";
 import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("ExperienceResolver - createExperience", () => {
   let resolver: ExperienceResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let mockCookies: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -35,7 +34,7 @@ describe("ExperienceResolver - createExperience", () => {
   const baseMockContext: MyContext = {
     req: {} as any,
     res: {} as any,
-    cookies: mockCookies,
+    cookies: mockDeep<Cookies>(),
     user: null,
     apiKey: undefined,
     token: undefined,
@@ -61,15 +60,16 @@ describe("ExperienceResolver - createExperience", () => {
     ...mockCreateExperienceInput,
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.experience.create.mockReset();
     resolver = new ExperienceResolver(prismaMock);
+    mockCookies = mockDeep<Cookies>();
     mockCookies.set.mockClear();
     mockCookies.get.mockClear();
   });
 
-  it("should successfully create a new experience record by an admin user", async () => {
+  it("should successfully create a new experience record by an admin user", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
 
     prismaMock.experience.create.mockResolvedValueOnce(mockCreatedExperience);
@@ -84,7 +84,7 @@ describe("ExperienceResolver - createExperience", () => {
     expect(prismaMock.experience.create).toHaveBeenCalledWith({ data: mockCreateExperienceInput });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
+  it("should return 401 if no user is authenticated", async (): Promise<void> => {
     const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
 
     const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, unauthenticatedContext);
@@ -96,7 +96,7 @@ describe("ExperienceResolver - createExperience", () => {
     expect(prismaMock.experience.create).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
+  it("should return 403 if authenticated user is not an admin", async (): Promise<void> => {
     const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
 
     const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, regularUserContext);
@@ -108,9 +108,10 @@ describe("ExperienceResolver - createExperience", () => {
     expect(prismaMock.experience.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during experience creation", async () => {
+  it("should return 500 for a database error during experience creation", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during experience creation";
+    const errorMessage: string = "Database error during experience creation";
+
     prismaMock.experience.create.mockRejectedValueOnce(new Error(errorMessage));
 
     const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, adminContext);
