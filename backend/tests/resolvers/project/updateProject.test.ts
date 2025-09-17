@@ -61,11 +61,7 @@ describe("ProjectResolver - updateProject", () => {
     apiKey: undefined,
     token: undefined,
   };
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   MOCKS                                    */
-  /* -------------------------------------------------------------------------- */
-
+  
   const mockExistingProject: ProjectWithSkills = {
     id: 100,
     title: "Old Project Title",

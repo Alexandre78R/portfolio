@@ -5,15 +5,15 @@ import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateCategoryInput } from "../../../src/entities/inputs/skill.input";
 import { CategoryResponse } from "../../../src/types/response.types";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { mockDeep } from "jest-mock-extended";
 
 describe("SkillResolver - createCategory", () => {
-  let resolver: SkillResolver;
+  let skillResolver: SkillResolver;
 
-  const mockCookies = mockDeep<Cookies>();
+  const cookiesMock = mockDeep<Cookies>();
 
-  const mockAdminUser: User = {
+  const adminUser: User = {
     id: 1,
     firstname: "Admin",
     lastname: "User",
@@ -22,7 +22,7 @@ describe("SkillResolver - createCategory", () => {
     isPasswordChange: true,
   };
 
-  const mockRegularUser: User = {
+  const regularUser: User = {
     id: 2,
     firstname: "Regular",
     lastname: "User",
@@ -31,97 +31,100 @@ describe("SkillResolver - createCategory", () => {
     isPasswordChange: true,
   };
 
-  const baseMockContext: MyContext = {
+  const baseContext: MyContext = {
+    // req: {} as Request,
+    // res: {} as Response,
     req: {} as any,
     res: {} as any,
-    cookies: mockCookies,
+    cookies: cookiesMock,
     user: null,
     apiKey: undefined,
     token: undefined,
   };
 
-  const createCategoryInput: CreateCategoryInput = {
+  const newCategoryInput: CreateCategoryInput = {
     categoryEN: "New English Category",
     categoryFR: "Nouvelle Catégorie Française",
   };
 
-  const mockCreatedCategory = {
+  const createdCategoryMock = {
     id: 100,
-    categoryEN: createCategoryInput.categoryEN,
-    categoryFR: createCategoryInput.categoryFR,
+    categoryEN: newCategoryInput.categoryEN,
+    categoryFR: newCategoryInput.categoryFR,
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.skillCategory.create.mockReset();
-    resolver = new SkillResolver(prismaMock);
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
+    skillResolver = new SkillResolver(prismaMock);
+
+    cookiesMock.set.mockClear();
+    cookiesMock.get.mockClear();
   });
 
-  it("should successfully create a new category for an authenticated admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should create a new category successfully for admin user", async () => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
 
-    prismaMock.skillCategory.create.mockResolvedValueOnce(mockCreatedCategory);
+    prismaMock.skillCategory.create.mockResolvedValueOnce(createdCategoryMock);
 
-    const result: CategoryResponse = await resolver.createCategory(createCategoryInput, adminContext);
+    const response: CategoryResponse = await skillResolver.createCategory(newCategoryInput, adminContext);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Category created successfully");
-    expect(result.categories).toBeDefined();
-    expect(result.categories?.length).toBe(1);
-    expect(result.categories?.[0]).toEqual({
-      id: mockCreatedCategory.id,
-      categoryEN: mockCreatedCategory.categoryEN,
-      categoryFR: mockCreatedCategory.categoryFR,
+    expect(response.code).toBe(200);
+    expect(response.message).toBe("Category created successfully");
+    expect(response.categories).toBeDefined();
+    expect(response.categories?.length).toBe(1);
+    expect(response.categories?.[0]).toEqual({
+      id: createdCategoryMock.id,
+      categoryEN: createdCategoryMock.categoryEN,
+      categoryFR: createdCategoryMock.categoryFR,
       skills: [],
     });
 
     expect(prismaMock.skillCategory.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.create).toHaveBeenCalledWith({
       data: {
-        categoryEN: createCategoryInput.categoryEN,
-        categoryFR: createCategoryInput.categoryFR,
+        categoryEN: newCategoryInput.categoryEN,
+        categoryFR: newCategoryInput.categoryFR,
       },
     });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
-    const result = await resolver.createCategory(createCategoryInput, unauthenticatedContext);
+  it("should return 401 if user is not authenticated", async () => {
+    const context: MyContext = { ...baseContext, user: null };
 
-    expect(result.code).toBe(401);
-    expect(result.message).toBe("Authentication required.");
-    expect(result.categories).toBeUndefined();
+    const response: CategoryResponse = await skillResolver.createCategory(newCategoryInput, context);
+
+    expect(response.code).toBe(401);
+    expect(response.message).toBe("Authentication required.");
+    expect(response.categories).toBeUndefined();
     expect(prismaMock.skillCategory.create).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
-    const result = await resolver.createCategory(createCategoryInput, regularUserContext);
+  it("should return 403 if user is not admin", async () => {
+    const context: MyContext = { ...baseContext, user: regularUser };
 
-    expect(result.code).toBe(403);
-    expect(result.message).toBe("Access denied. Admin role required.");
-    expect(result.categories).toBeUndefined();
+    const response: CategoryResponse = await skillResolver.createCategory(newCategoryInput, context);
+
+    expect(response.code).toBe(403);
+    expect(response.message).toBe("Access denied. Admin role required.");
+    expect(response.categories).toBeUndefined();
     expect(prismaMock.skillCategory.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during category creation", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during category creation";
+  it("should return 500 if database throws an error during category creation", async () => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
+    prismaMock.skillCategory.create.mockRejectedValueOnce(new Error("Database error"));
 
-    prismaMock.skillCategory.create.mockRejectedValueOnce(new Error(errorMessage));
+    const response: CategoryResponse = await skillResolver.createCategory(newCategoryInput, adminContext);
 
-    const result: CategoryResponse = await resolver.createCategory(createCategoryInput, adminContext);
-
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Failed to create category");
+    expect(response.code).toBe(500);
+    expect(response.message).toBe("Failed to create category");
 
     expect(prismaMock.skillCategory.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.create).toHaveBeenCalledWith({
       data: {
-        categoryEN: createCategoryInput.categoryEN,
-        categoryFR: createCategoryInput.categoryFR,
+        categoryEN: newCategoryInput.categoryEN,
+        categoryFR: newCategoryInput.categoryFR,
       },
     });
   });
