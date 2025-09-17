@@ -7,7 +7,7 @@ import { Project as PrismaProject, Skill as PrismaSkill, ProjectSkill as PrismaP
 describe("ProjectResolver - projectById", () => {
   let resolver: ProjectResolver;
 
-  const mockExistingProjectWithSkills: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } = {
+  const mockProject: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } = {
     id: 1,
     title: "My Awesome Project",
     descriptionEN: "A project to showcase skills.",
@@ -29,18 +29,20 @@ describe("ProjectResolver - projectById", () => {
     ],
   };
 
-  const expectedMappedProject = {
-    id: mockExistingProjectWithSkills.id,
-    title: mockExistingProjectWithSkills.title,
-    descriptionEN: mockExistingProjectWithSkills.descriptionEN,
-    descriptionFR: mockExistingProjectWithSkills.descriptionFR,
-    typeDisplay: mockExistingProjectWithSkills.typeDisplay,
-    github: mockExistingProjectWithSkills.github,
-    contentDisplay: mockExistingProjectWithSkills.contentDisplay,
-    skills: [
-      { id: 101, name: "React", image: "react.png", categoryId: 1 },
-      { id: 102, name: "TypeScript", image: "typescript.png", categoryId: 1 },
-    ],
+  const expectedProjectResponse = {
+    id: mockProject.id,
+    title: mockProject.title,
+    descriptionEN: mockProject.descriptionEN,
+    descriptionFR: mockProject.descriptionFR,
+    typeDisplay: mockProject.typeDisplay,
+    github: mockProject.github,
+    contentDisplay: mockProject.contentDisplay,
+    skills: mockProject.skills.map(s => ({
+      id: s.skill.id,
+      name: s.skill.name,
+      image: s.skill.image,
+      categoryId: s.skill.categoryId,
+    })),
   };
 
   beforeEach(() => {
@@ -50,18 +52,19 @@ describe("ProjectResolver - projectById", () => {
   });
 
   it("should return a project by ID with its associated skills successfully", async () => {
-    prismaMock.project.findUnique.mockResolvedValueOnce(mockExistingProjectWithSkills);
+    prismaMock.project.findUnique.mockResolvedValueOnce(mockProject);
 
-    const result: ProjectResponse = await resolver.projectById(mockExistingProjectWithSkills.id);
+    const result: ProjectResponse = await resolver.projectById(mockProject.id);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Project found");
-    expect(result.project).toBeDefined();
-    expect(result.project).toEqual(expectedMappedProject);
+    expect(result).toEqual({
+      code: 200,
+      message: "Project found",
+      project: expectedProjectResponse,
+    });
 
     expect(prismaMock.project.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findUnique).toHaveBeenCalledWith({
-      where: { id: mockExistingProjectWithSkills.id },
+      where: { id: mockProject.id },
       include: { skills: { include: { skill: true } } },
     });
   });
@@ -71,9 +74,11 @@ describe("ProjectResolver - projectById", () => {
 
     const result: ProjectResponse = await resolver.projectById(999);
 
-    expect(result.code).toBe(404);
-    expect(result.message).toBe("Project not found");
-    expect(result.project).toBeUndefined();
+    expect(result).toEqual({
+      code: 404,
+      message: "Project not found",
+      project: undefined,
+    });
 
     expect(prismaMock.project.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findUnique).toHaveBeenCalledWith({
@@ -83,18 +88,19 @@ describe("ProjectResolver - projectById", () => {
   });
 
   it("should return 500 for an internal server error", async () => {
-    const errorMessage = "Database query failed";
-    prismaMock.project.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.project.findUnique.mockRejectedValueOnce(new Error("Database query failed"));
 
-    const result: ProjectResponse = await resolver.projectById(mockExistingProjectWithSkills.id);
+    const result: ProjectResponse = await resolver.projectById(mockProject.id);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Internal server error");
-    expect(result.project).toBeUndefined();
+    expect(result).toEqual({
+      code: 500,
+      message: "Internal server error",
+      project: undefined,
+    });
 
     expect(prismaMock.project.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findUnique).toHaveBeenCalledWith({
-      where: { id: mockExistingProjectWithSkills.id },
+      where: { id: mockProject.id },
       include: { skills: { include: { skill: true } } },
     });
   });
