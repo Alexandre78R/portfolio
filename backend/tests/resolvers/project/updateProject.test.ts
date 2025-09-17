@@ -13,10 +13,6 @@ import {
 } from "@prisma/client";
 import { mockDeep } from "jest-mock-extended";
 
-/* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
-/* -------------------------------------------------------------------------- */
-
 type ProjectWithSkills = PrismaProject & {
   skills: PrismaProjectSkill[];
 };
@@ -24,10 +20,6 @@ type ProjectWithSkills = PrismaProject & {
 type ProjectWithSkillsAndSkill = PrismaProject & {
   skills: (PrismaProjectSkill & { skill: PrismaSkill })[];
 };
-
-/* -------------------------------------------------------------------------- */
-/*                                   TESTS                                    */
-/* -------------------------------------------------------------------------- */
 
 describe("ProjectResolver - updateProject", () => {
   let resolver: ProjectResolver;
@@ -110,10 +102,6 @@ describe("ProjectResolver - updateProject", () => {
 
     resolver = new ProjectResolver(prismaMock);
   });
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   TESTS                                    */
-  /* -------------------------------------------------------------------------- */
 
   it("should successfully update a project with all fields (including skillIds) by an admin user", async () => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
