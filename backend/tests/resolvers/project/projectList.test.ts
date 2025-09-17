@@ -35,7 +35,7 @@ describe("ProjectResolver - projectList", () => {
     },
   ];
 
-  const expectedMappedProjects = [
+  const expectedMappedProjects: (Omit<PrismaProject, "skills"> & { skills: PrismaSkill[] })[] = [
     {
       id: 2,
       title: "Project Alpha",
@@ -81,11 +81,7 @@ describe("ProjectResolver - projectList", () => {
 
     expect(prismaMock.project.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findMany).toHaveBeenCalledWith({
-      include: {
-        skills: {
-          include: { skill: true },
-        },
-      },
+      include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
     });
   });
@@ -102,18 +98,13 @@ describe("ProjectResolver - projectList", () => {
 
     expect(prismaMock.project.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findMany).toHaveBeenCalledWith({
-      include: {
-        skills: {
-          include: { skill: true },
-        },
-      },
+      include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
     });
   });
 
   it("should return a 500 error if fetching projects fails", async () => {
-    const errorMessage = "Database connection error";
-    prismaMock.project.findMany.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.project.findMany.mockRejectedValueOnce(new Error("Database connection error"));
 
     const result: ProjectsResponse = await resolver.projectList();
 
@@ -123,11 +114,7 @@ describe("ProjectResolver - projectList", () => {
 
     expect(prismaMock.project.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.findMany).toHaveBeenCalledWith({
-      include: {
-        skills: {
-          include: { skill: true },
-        },
-      },
+      include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
     });
   });
