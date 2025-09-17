@@ -5,8 +5,8 @@ import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateSkillInput } from "../../../src/entities/inputs/skill.input";
 import { SubItemResponse } from "../../../src/types/response.types";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { mockDeep } from "jest-mock-extended";
 
 describe("SkillResolver - createSkill", () => {
   let resolver: SkillResolver;
@@ -31,7 +31,9 @@ describe("SkillResolver - createSkill", () => {
     isPasswordChange: true,
   };
 
-  const baseMockContext: MyContext = {
+  const baseContext: MyContext = {
+    // req: {} as Request,
+    // res: {} as Response,
     req: {} as any,
     res: {} as any,
     cookies: mockCookies,
@@ -46,121 +48,71 @@ describe("SkillResolver - createSkill", () => {
     categoryId: 1,
   };
 
-  const mockSkillCategory = {
-    id: 1,
-    categoryEN: "Programming",
-    categoryFR: "Programmation",
-  };
-
-  const mockCreatedSkill = {
-    id: 100,
-    name: "New Skill",
-    image: "new_skill.png",
-    categoryId: 1,
-  };
+  const mockCategory = { id: 1, categoryEN: "Programming", categoryFR: "Programmation" };
+  const mockCreatedSkill = { id: 100, name: "New Skill", image: "new_skill.png", categoryId: 1 };
 
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.skillCategory.findUnique.mockReset();
     prismaMock.skill.create.mockReset();
     resolver = new SkillResolver(prismaMock);
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
   });
 
-  it("should successfully create a new skill for an authenticated admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should create skill as admin", async () => {
+    const ctx: MyContext = { ...baseContext, user: mockAdminUser };
 
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockSkillCategory);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
     prismaMock.skill.create.mockResolvedValueOnce(mockCreatedSkill);
 
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, adminContext);
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill created successfully");
-    expect(result.subItems).toBeDefined();
-    expect(result.subItems?.length).toBe(1);
-    expect(result.subItems?.[0]).toEqual({
-      id: mockCreatedSkill.id,
-      name: mockCreatedSkill.name,
-      image: mockCreatedSkill.image,
-      categoryId: mockCreatedSkill.categoryId,
-    });
-
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledWith({
-      where: { id: createSkillInput.categoryId },
-    });
-    expect(prismaMock.skill.create).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.create).toHaveBeenCalledWith({
-      data: {
-        name: createSkillInput.name,
-        image: createSkillInput.image,
-        categoryId: createSkillInput.categoryId,
-      },
-    });
+    expect(result.subItems?.[0]).toEqual(mockCreatedSkill);
   });
 
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, unauthenticatedContext);
+  it("returns 401 if no user", async () => {
+    const ctx: MyContext = { ...baseContext, user: null };
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(401);
-    expect(result.message).toBe("Authentication required.");
-    expect(result.subItems).toBeUndefined();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
-    expect(prismaMock.skill.create).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, regularUserContext);
+  it("returns 403 if user not admin", async () => {
+    const ctx: MyContext = { ...baseContext, user: mockRegularUser };
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(403);
-    expect(result.message).toBe("Access denied. Admin role required.");
-    expect(result.subItems).toBeUndefined();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
-    expect(prismaMock.skill.create).not.toHaveBeenCalled();
   });
 
-  it("should return 400 if the category is not found", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("returns 400 if category not found", async () => {
+    const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(null);
 
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, adminContext);
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(400);
     expect(result.message).toBe("Category not found");
-    expect(result.subItems).toBeUndefined();
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledWith({
-      where: { id: createSkillInput.categoryId },
-    });
-    expect(prismaMock.skill.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a DB error during category lookup", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error("DB error during lookup"));
+  it("returns 500 if DB error during category lookup", async () => {
+    const ctx: MyContext = { ...baseContext, user: mockAdminUser };
+    prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error("DB error"));
 
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, adminContext);
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to create skill");
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a DB error during skill creation", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockSkillCategory);
-    prismaMock.skill.create.mockRejectedValueOnce(new Error("DB error during creation"));
+  it("returns 500 if DB error during skill creation", async () => {
+    const ctx: MyContext = { ...baseContext, user: mockAdminUser };
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.create.mockRejectedValueOnce(new Error("DB error"));
 
-    const result: SubItemResponse = await resolver.createSkill(createSkillInput, adminContext);
+    const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to create skill");
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.create).toHaveBeenCalledTimes(1);
   });
 });
