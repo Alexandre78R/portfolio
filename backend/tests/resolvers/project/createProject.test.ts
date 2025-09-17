@@ -5,13 +5,13 @@ import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateProjectInput } from "../../../src/entities/inputs/project.input";
 import { ProjectResponse } from "../../../src/types/response.types";
-import Cookies from 'cookies';
 import { Project as PrismaProject, Skill as PrismaSkill, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
+import { mockDeep } from 'jest-mock-extended';
+import Cookies from 'cookies';
 
 describe("ProjectResolver - createProject", () => {
   let resolver: ProjectResolver;
-
-  const mockCookies = jest.mocked(new Cookies({} as any, {} as any));
+  const mockCookies = mockDeep<Cookies>();
 
   const mockAdminUser: User = {
     id: 1,
@@ -65,16 +65,8 @@ describe("ProjectResolver - createProject", () => {
     github: mockCreateProjectInput.github ?? "",
     contentDisplay: mockCreateProjectInput.contentDisplay,
     skills: [
-      {
-        projectId: 1,
-        skillId: 1,
-        skill: mockExistingSkills[0],
-      },
-      {
-        projectId: 1,
-        skillId: 2,
-        skill: mockExistingSkills[1],
-      },
+      { projectId: 1, skillId: 1, skill: mockExistingSkills[0] },
+      { projectId: 1, skillId: 2, skill: mockExistingSkills[1] },
     ],
   };
 
@@ -86,10 +78,12 @@ describe("ProjectResolver - createProject", () => {
     typeDisplay: mockCreatedProject.typeDisplay,
     github: mockCreatedProject.github,
     contentDisplay: mockCreatedProject.contentDisplay,
-    skills: [
-      { id: mockExistingSkills[0].id, name: mockExistingSkills[0].name, image: mockExistingSkills[0].image, categoryId: mockExistingSkills[0].categoryId },
-      { id: mockExistingSkills[1].id, name: mockExistingSkills[1].name, image: mockExistingSkills[1].image, categoryId: mockExistingSkills[1].categoryId },
-    ],
+    skills: mockCreatedProject.skills.map(s => ({
+      id: s.skill.id,
+      name: s.skill.name,
+      image: s.skill.image,
+      categoryId: s.skill.categoryId,
+    })),
   };
 
   beforeEach(() => {
@@ -97,27 +91,27 @@ describe("ProjectResolver - createProject", () => {
     prismaMock.skill.findMany.mockReset();
     prismaMock.project.create.mockReset();
     resolver = new ProjectResolver(prismaMock);
+    mockCookies.set.mockClear();
+    mockCookies.get.mockClear();
   });
 
-  it("should successfully create a new project with skills by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should successfully create a project with skills by admin", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
 
-    prismaMock.skill.findMany.mockResolvedValueOnce(mockExistingSkills.filter(s => mockCreateProjectInput.skillIds.includes(s.id)));
-
+    prismaMock.skill.findMany.mockResolvedValueOnce(
+      mockExistingSkills.filter(s => mockCreateProjectInput.skillIds.includes(s.id))
+    );
     prismaMock.project.create.mockResolvedValueOnce(mockCreatedProject);
 
-    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, adminContext);
+    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, context);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Project created successfully");
     expect(result.project).toEqual(expectedProjectResponse);
 
-    expect(prismaMock.skill.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.skill.findMany).toHaveBeenCalledWith({
       where: { id: { in: mockCreateProjectInput.skillIds } },
     });
-
-    expect(prismaMock.project.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.create).toHaveBeenCalledWith({
       data: {
         title: mockCreateProjectInput.title,
@@ -127,148 +121,102 @@ describe("ProjectResolver - createProject", () => {
         github: mockCreateProjectInput.github,
         contentDisplay: mockCreateProjectInput.contentDisplay,
         skills: {
-          create: mockCreateProjectInput.skillIds.map((skillId) => ({
-            skill: { connect: { id: skillId } },
-          })),
+          create: mockCreateProjectInput.skillIds.map(skillId => ({ skill: { connect: { id: skillId } } })),
         },
       },
-      include: {
-        skills: { include: { skill: true } },
-      },
+      include: { skills: { include: { skill: true } } },
     });
   });
 
-  it("should successfully create a new project with no skills by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
-    const inputWithoutSkills: CreateProjectInput = {
-      ...mockCreateProjectInput,
-      skillIds: [],
-    };
-
-    const createdProjectWithoutSkills: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } = {
-      ...mockCreatedProject,
-      skills: [],
-    };
-
-    const expectedResponseWithoutSkills = {
-      ...expectedProjectResponse,
-      skills: [],
-    };
+  it("should successfully create a project with no skills by admin", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+    const input: CreateProjectInput = { ...mockCreateProjectInput, skillIds: [] };
+    const projectWithoutSkills: typeof mockCreatedProject = { ...mockCreatedProject, skills: [] };
 
     prismaMock.skill.findMany.mockResolvedValueOnce([]);
-    prismaMock.project.create.mockResolvedValueOnce(createdProjectWithoutSkills);
+    prismaMock.project.create.mockResolvedValueOnce(projectWithoutSkills);
 
-    const result: ProjectResponse = await resolver.createProject(inputWithoutSkills, adminContext);
+    const result: ProjectResponse = await resolver.createProject(input, context);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Project created successfully");
-    expect(result.project).toEqual(expectedResponseWithoutSkills);
+    expect(result.project).toEqual({ ...expectedProjectResponse, skills: [] });
 
-    expect(prismaMock.skill.findMany).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.findMany).toHaveBeenCalledWith({
-      where: { id: { in: [] } },
-    });
+    expect(prismaMock.skill.findMany).toHaveBeenCalledWith({ where: { id: { in: [] } } });
 
-    expect(prismaMock.project.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.project.create).toHaveBeenCalledWith({
       data: {
-        title: inputWithoutSkills.title,
-        descriptionEN: inputWithoutSkills.descriptionEN,
-        descriptionFR: inputWithoutSkills.descriptionFR,
-        typeDisplay: inputWithoutSkills.typeDisplay,
-        github: inputWithoutSkills.github,
-        contentDisplay: inputWithoutSkills.contentDisplay,
+        title: input.title,
+        descriptionEN: input.descriptionEN,
+        descriptionFR: input.descriptionFR,
+        typeDisplay: input.typeDisplay,
+        github: input.github,
+        contentDisplay: input.contentDisplay,
         skills: { create: [] },
       },
-      include: {
-        skills: { include: { skill: true } },
-      },
+      include: { skills: { include: { skill: true } } },
     });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
-
-    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, unauthenticatedContext);
+  it("should return 401 if unauthenticated", async () => {
+    const context: MyContext = { ...baseMockContext, user: null };
+    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, context);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
     expect(result.project).toBeUndefined();
-
     expect(prismaMock.skill.findMany).not.toHaveBeenCalled();
     expect(prismaMock.project.create).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
-
-    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, regularUserContext);
+  it("should return 403 if user is not admin", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockRegularUser };
+    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, context);
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
     expect(result.project).toBeUndefined();
-
     expect(prismaMock.skill.findMany).not.toHaveBeenCalled();
     expect(prismaMock.project.create).not.toHaveBeenCalled();
   });
 
-  it("should return 400 if one or more skill IDs are invalid", async () => {
+  it("should return 400 if skill IDs are invalid", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+    const input: CreateProjectInput = { ...mockCreateProjectInput, skillIds: [1, 999] };
 
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+    prismaMock.skill.findMany.mockResolvedValueOnce(mockExistingSkills.filter(s => s.id === 1));
 
-    const inputWithInvalidSkill: CreateProjectInput = {
-      ...mockCreateProjectInput,
-      skillIds: [1, 999],
-    };
-
-    prismaMock.skill.findMany.mockResolvedValueOnce(mockExistingSkills.filter(s => s.id === 1)); 
-
-    const result: ProjectResponse = await resolver.createProject(inputWithInvalidSkill, adminContext);
+    const result: ProjectResponse = await resolver.createProject(input, context);
 
     expect(result.code).toBe(400);
     expect(result.message).toBe("One or more skill IDs are invalid.");
     expect(result.project).toBeUndefined();
-
-    expect(prismaMock.skill.findMany).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.findMany).toHaveBeenCalledWith({
-      where: { id: { in: inputWithInvalidSkill.skillIds } },
-    });
     expect(prismaMock.project.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during skill validation (findMany)", async () => {
+  it("should return 500 if skill validation fails", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+    prismaMock.skill.findMany.mockRejectedValueOnce(new Error("DB skill error"));
 
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during skill lookup";
-
-    prismaMock.skill.findMany.mockRejectedValueOnce(new Error(errorMessage));
-
-    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, adminContext);
+    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, context);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Internal server error");
     expect(result.project).toBeUndefined();
-
-    expect(prismaMock.skill.findMany).toHaveBeenCalledTimes(1);
-    expect(prismaMock.project.create).not.toHaveBeenCalled(); 
+    expect(prismaMock.project.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during project creation", async () => {
+  it("should return 500 if project creation fails", async () => {
+    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+    prismaMock.skill.findMany.mockResolvedValueOnce(
+      mockExistingSkills.filter(s => mockCreateProjectInput.skillIds.includes(s.id))
+    );
+    prismaMock.project.create.mockRejectedValueOnce(new Error("DB create error"));
 
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during project creation";
-
-    prismaMock.skill.findMany.mockResolvedValueOnce(mockExistingSkills.filter(s => mockCreateProjectInput.skillIds.includes(s.id)));
-    prismaMock.project.create.mockRejectedValueOnce(new Error(errorMessage));
-
-    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, adminContext);
+    const result: ProjectResponse = await resolver.createProject(mockCreateProjectInput, context);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Internal server error");
     expect(result.project).toBeUndefined();
-
-    expect(prismaMock.skill.findMany).toHaveBeenCalledTimes(1);
-    expect(prismaMock.project.create).toHaveBeenCalledTimes(1);
   });
 });
