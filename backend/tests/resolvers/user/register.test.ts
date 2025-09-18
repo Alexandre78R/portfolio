@@ -27,7 +27,6 @@ describe("UserResolver - registerUser", () => {
 
     resolver = new UserResolver(prismaMock);
 
-    // Mocks
     (passwordUtils.generateSecurePassword as jest.Mock).mockReturnValue("Secure123!");
     (argon2.hash as jest.Mock).mockResolvedValue("hashed-password");
     (mailService.sendEmail as jest.Mock).mockResolvedValue(undefined);
@@ -94,7 +93,6 @@ describe("UserResolver - registerUser", () => {
     expect(result.user).toBeDefined();
     expect(result.user?.email).toBe(input.email);
 
-    // Vérifie que le mail a été envoyé
     expect(mailService.sendEmail).toHaveBeenCalledTimes(1);
     expect(mailService.sendEmail).toHaveBeenCalledWith(
       input.email,
@@ -103,11 +101,9 @@ describe("UserResolver - registerUser", () => {
       expect.any(String)
     );
 
-    // Vérifie que le mot de passe a été généré et hashé
     expect(passwordUtils.generateSecurePassword).toHaveBeenCalledTimes(1);
     expect(argon2.hash).toHaveBeenCalledWith("Secure123!");
 
-    // Vérifie la création utilisateur en base
     expect(prismaMock.user.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.create).toHaveBeenCalledWith({
       data: {
