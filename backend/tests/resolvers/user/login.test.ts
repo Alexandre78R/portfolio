@@ -89,7 +89,7 @@ describe("UserResolver - login", () => {
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Login successful.");
-    expect(result.token).toBe("fake-jwt-token"); // ✅ correct type
+    expect(result.token).toBe("fake-jwt-token");
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { email: loginInput.email },

@@ -6,6 +6,8 @@ import { User as GraphQLUser, UserRole } from "../../../src/entities/user.entity
 import Cookies from "cookies";
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 import * as argon2 from "argon2";
+import { LoginResponse, Response } from "../../../src/types/response.types";
+import { LoginInput } from "../../../src/types/graphql";
 
 jest.mock("argon2");
 jest.mock("jose", () => {
@@ -53,7 +55,7 @@ describe("UserResolver - login & logout", () => {
     isPasswordChange: false,
   };
 
-  const loginInput = {
+  const loginInput: LoginInput = {
     email: prismaUserMock.email,
     password: "plain_password",
   };
@@ -62,7 +64,6 @@ describe("UserResolver - login & logout", () => {
     jest.clearAllMocks();
 
     resolver = new UserResolver(prismaMock);
-
     mockCookies = mockDeep<Cookies>();
 
     baseMockContext = {
@@ -77,13 +78,10 @@ describe("UserResolver - login & logout", () => {
     (argon2.verify as jest.Mock).mockResolvedValue(true);
   });
 
-  // ------------------------
-  // LOGIN
-  // ------------------------
   it("should log in successfully and set cookie", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(prismaUserMock);
 
-    const result = await resolver.login(loginInput, baseMockContext);
+    const result: LoginResponse = await resolver.login(loginInput, baseMockContext);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Login successful.");
@@ -108,16 +106,13 @@ describe("UserResolver - login & logout", () => {
     );
   });
 
-  // ------------------------
-  // LOGOUT
-  // ------------------------
   it("should log out successfully and clear cookie", async () => {
     const context: MyContext = {
       ...baseMockContext,
       user: gqlUserMock,
     };
 
-    const result = await resolver.logout(context);
+    const result: Response = await resolver.logout(context);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Logged out successfully.");
@@ -143,7 +138,7 @@ describe("UserResolver - login & logout", () => {
   it("should return 401 if no user authenticated", async () => {
     const context: MyContext = { ...baseMockContext, user: null };
 
-    const result = await resolver.logout(context);
+    const result: Response = await resolver.logout(context);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
