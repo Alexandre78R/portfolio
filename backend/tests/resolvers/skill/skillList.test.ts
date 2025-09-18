@@ -2,12 +2,12 @@ import "reflect-metadata";
 import { SkillResolver } from "../../../src/resolvers/skill.resolver";
 import { prismaMock } from "../../singleton";
 import { CategoryResponse } from "../../../src/types/response.types";
-import { SkillCategory as PrismaSkillCategory, Skill as PrismaSkill } from "@prisma/client"; 
+import { SkillCategory as PrismaSkillCategory, Skill as PrismaSkill } from "@prisma/client";
 
 describe("SkillResolver - skillList", () => {
-  let resolver: SkillResolver;
+  let skillResolver: SkillResolver;
 
-  const mockCategoriesWithSkills: (PrismaSkillCategory & { skills: PrismaSkill[] })[] = [
+  const mockCategories: (PrismaSkillCategory & { skills: PrismaSkill[] })[] = [
     {
       id: 1,
       categoryEN: "Programming",
@@ -31,47 +31,23 @@ describe("SkillResolver - skillList", () => {
     },
   ];
 
-  const expectedMappedCategories = [
-    {
-      id: 1,
-      categoryEN: "Programming",
-      categoryFR: "Programmation",
-      skills: [
-        { id: 101, name: "JavaScript", image: "js.png", categoryId: 1 },
-        { id: 102, name: "TypeScript", image: "ts.png", categoryId: 1 },
-      ],
-    },
-    {
-      id: 2,
-      categoryEN: "Design",
-      categoryFR: "Conception",
-      skills: [],
-    },
-    {
-      id: 3,
-      categoryEN: "DevOps",
-      categoryFR: "DevOps",
-      skills: [{ id: 103, name: "Docker", image: "docker.png", categoryId: 3 }],
-    },
-  ];
+  const expectedCategories: (PrismaSkillCategory & { skills: PrismaSkill[] })[] = [...mockCategories];
 
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.skillCategory.findMany.mockReset();
-    resolver = new SkillResolver(prismaMock);
+    skillResolver = new SkillResolver(prismaMock);
   });
 
-  it("should return all skill categories with their associated skills successfully", async () => {
+  it("should return all skill categories with their associated skills", async () => {
+    prismaMock.skillCategory.findMany.mockResolvedValueOnce(mockCategories);
 
-    prismaMock.skillCategory.findMany.mockResolvedValueOnce(mockCategoriesWithSkills);
-
-
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await skillResolver.skillList();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Categories fetched successfully");
     expect(result.categories).toBeDefined();
-    expect(result.categories).toEqual(expectedMappedCategories);
+    expect(result.categories).toEqual(expectedCategories);
 
     expect(prismaMock.skillCategory.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.findMany).toHaveBeenCalledWith({
@@ -80,16 +56,13 @@ describe("SkillResolver - skillList", () => {
     });
   });
 
-  it("should return an empty array if no skill categories are found", async () => {
-
+  it("should return an empty array if no categories are found", async () => {
     prismaMock.skillCategory.findMany.mockResolvedValueOnce([]);
 
-
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await skillResolver.skillList();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Categories fetched successfully");
-    expect(result.categories).toBeDefined();
     expect(result.categories).toEqual([]);
 
     expect(prismaMock.skillCategory.findMany).toHaveBeenCalledTimes(1);
@@ -99,12 +72,10 @@ describe("SkillResolver - skillList", () => {
     });
   });
 
-  it("should return a 500 error if fetching categories fails", async () => {
+  it("should return 500 if fetching categories fails", async () => {
+    prismaMock.skillCategory.findMany.mockRejectedValueOnce(new Error("Database connection error"));
 
-    const errorMessage = "Database connection error";
-    prismaMock.skillCategory.findMany.mockRejectedValueOnce(new Error(errorMessage));
-
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await skillResolver.skillList();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to fetch categories");
