@@ -6,6 +6,7 @@ import { MyContext } from "../../../src";
 import Cookies from "cookies";
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 import { UserRole } from "../../../src/entities/user.entity";
+import { LoginResponse } from "../../../src/types/response.types";
 
 jest.mock("jose", () => ({
   SignJWT: jest.fn().mockImplementation(() => ({
@@ -46,7 +47,7 @@ describe("UserResolver - login", () => {
     lastname: "User",
     email: "test@example.com",
     password: "hashed_password_from_db",
-    role: UserRole.admin, // ✅ type exact
+    role: UserRole.admin,
     isPasswordChange: false,
     pseudo: null,
     ban: false,
@@ -57,7 +58,7 @@ describe("UserResolver - login", () => {
     password: "plain_password",
   };
 
-  beforeEach((): void => {
+  beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.user.findUnique.mockReset();
 
@@ -77,18 +78,18 @@ describe("UserResolver - login", () => {
     process.env.JWT_SECRET = "test_secret";
   });
 
-  afterEach((): void => {
+  afterEach(() => {
     delete process.env.JWT_SECRET;
   });
 
-  it("should successfully log in a user and set a cookie", async (): Promise<void> => {
+  it("should successfully log in a user and set a cookie", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
 
-    const result = await resolver.login(loginInput, mockContext);
+    const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Login successful.");
-    expect(result.token).toBe("fake-jwt-token");
+    expect(result.token).toBe("fake-jwt-token"); // ✅ correct type
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { email: loginInput.email },
@@ -109,46 +110,45 @@ describe("UserResolver - login", () => {
     );
   });
 
-  it("should return 401 if user not found", async (): Promise<void> => {
+  it("should return 401 if user not found", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-    const result = await resolver.login(loginInput, mockContext);
+    const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
   });
 
-  it("should return 401 if password invalid", async (): Promise<void> => {
+  it("should return 401 if password invalid", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     (argon2.verify as jest.MockedFunction<typeof argon2.verify>).mockResolvedValueOnce(false);
 
-    const result = await resolver.login(loginInput, mockContext);
+    const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
   });
 
-  it("should return 500 if JWT_SECRET not set", async (): Promise<void> => {
+  it("should return 500 if JWT_SECRET not set", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     delete process.env.JWT_SECRET;
 
-    const result = await resolver.login(loginInput, mockContext);
+    const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Please check your JWT configuration !");
     expect(result.token).toBeUndefined();
   });
 
-  it("should return 500 for unexpected errors", async (): Promise<void> => {
-    const errorMessage: string = "Database connection failed";
-    prismaMock.user.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 for unexpected errors", async () => {
+    prismaMock.user.findUnique.mockRejectedValueOnce(new Error("Database connection failed"));
 
-    const result = await resolver.login(loginInput, mockContext);
+    const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
     expect(result.code).toBe(500);
-    expect(result.message).toBe(errorMessage);
+    expect(result.message).toBe("Database connection failed");
     expect(result.token).toBeUndefined();
   });
 });
