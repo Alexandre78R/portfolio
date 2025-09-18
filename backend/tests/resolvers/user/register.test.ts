@@ -7,6 +7,7 @@ import * as mailService from "../../../src/mail/mail.service";
 import * as passwordUtils from "../../../src/lib/generateSecurePassword";
 import { emailRegex, checkRegex } from "../../../src/regex";
 import * as argon2 from "argon2";
+import { UserResponse } from "../../../src/types/response.types";
 
 jest.mock("../../../src/mail/mail.service");
 jest.mock("../../../src/lib/generateSecurePassword");
@@ -21,19 +22,19 @@ describe("UserResolver - registerUser", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
     prismaMock.user.findUnique.mockReset();
     prismaMock.user.create.mockReset();
 
     resolver = new UserResolver(prismaMock);
 
+    // Mocks
     (passwordUtils.generateSecurePassword as jest.Mock).mockReturnValue("Secure123!");
     (argon2.hash as jest.Mock).mockResolvedValue("hashed-password");
     (mailService.sendEmail as jest.Mock).mockResolvedValue(undefined);
     (checkRegex as jest.Mock).mockReturnValue(true);
   });
 
-  it("should return error if email already exists", async () => {
+  it("should return 409 if email already exists", async () => {
     const input: CreateUserInput = {
       firstname: "Alex",
       lastname: "Renard",
@@ -55,10 +56,11 @@ describe("UserResolver - registerUser", () => {
 
     prismaMock.user.findUnique.mockResolvedValueOnce(existingUser);
 
-    const result = await resolver.registerUser(input);
+    const result: UserResponse = await resolver.registerUser(input);
 
     expect(result.code).toBe(409);
     expect(result.message).toBe("Email already exists");
+    expect(result.user).toBeUndefined();
   });
 
   it("should create a new user and send email", async () => {
@@ -85,12 +87,14 @@ describe("UserResolver - registerUser", () => {
 
     prismaMock.user.create.mockResolvedValueOnce(createdUser);
 
-    const result = await resolver.registerUser(input);
+    const result: UserResponse = await resolver.registerUser(input);
 
     expect(result.code).toBe(201);
     expect(result.message).toBe("User registered and email sent");
+    expect(result.user).toBeDefined();
     expect(result.user?.email).toBe(input.email);
 
+    // Vérifie que le mail a été envoyé
     expect(mailService.sendEmail).toHaveBeenCalledTimes(1);
     expect(mailService.sendEmail).toHaveBeenCalledWith(
       input.email,
@@ -99,9 +103,11 @@ describe("UserResolver - registerUser", () => {
       expect.any(String)
     );
 
+    // Vérifie que le mot de passe a été généré et hashé
     expect(passwordUtils.generateSecurePassword).toHaveBeenCalledTimes(1);
     expect(argon2.hash).toHaveBeenCalledWith("Secure123!");
 
+    // Vérifie la création utilisateur en base
     expect(prismaMock.user.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.create).toHaveBeenCalledWith({
       data: {
