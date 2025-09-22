@@ -1,9 +1,9 @@
 export function generateSecurePassword(): string {
-  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const lowercase = "abcdefghijklmnopqrstuvwxyz";
-  const numbers = "0123456789";
+  const uppercase : string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase : string = "abcdefghijklmnopqrstuvwxyz";
+  const numbers : string = "0123456789";
   // const symbols = "!@#$%^&*()_+[]{}|;:,.<>?";
-  const symbols = "!@#$%^*-_=+";
+  const symbols : string = "!@#$%^*-_=+";
 
   const all = uppercase + lowercase + numbers + symbols;
 
