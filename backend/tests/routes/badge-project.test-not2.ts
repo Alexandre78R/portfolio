@@ -4,16 +4,10 @@ import badgeRouter from "../../src/routes/badge.routes";
 import { generateBadgeSvg } from "../../src/lib/badgeGenerator";
 import { loadedLogos } from "../../src/lib/logoLoader";
 
-// ---------------------------
-// Crée d'abord le mock Prisma
-// ---------------------------
 const projectCountMock = {
   count: jest.fn(),
 };
 
-// ---------------------------
-// Mock PrismaClient correctement
-// ---------------------------
 jest.mock("@prisma/client", () => {
   return {
     PrismaClient: jest.fn().mockImplementation(() => ({
@@ -22,21 +16,12 @@ jest.mock("@prisma/client", () => {
   };
 });
 
-// ---------------------------
-// Mock badgeGenerator
-// ---------------------------
 jest.mock("../../src/lib/badgeGenerator", () => ({
   generateBadgeSvg: jest.fn(),
 }));
 
-// ---------------------------
-// Mock logos
-// ---------------------------
 loadedLogos.set("github", { base64: "fakebase64", mimeType: "image/svg+xml" });
 
-// ---------------------------
-// Setup Express App
-// ---------------------------
 const app = express();
 app.use("/badge", badgeRouter);
 
@@ -58,10 +43,8 @@ describe("Badge Routes - GET /stats/projects-count", () => {
     expect(res.headers["content-type"]).toMatch(/image\/svg\+xml/);
     expect(res.text).toBe("<svg>mocked badge</svg>");
 
-    // Vérifie que Prisma a bien été appelé
     expect(projectCountMock.count).toHaveBeenCalledTimes(1);
 
-    // Vérifie que generateBadgeSvg a bien été appelé
     expect(generateBadgeSvg).toHaveBeenCalledWith(
       "Projets",
       "42",
