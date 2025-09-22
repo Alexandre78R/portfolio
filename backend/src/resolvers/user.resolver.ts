@@ -85,6 +85,7 @@ export class UserResolver {
 
       const messageFinalCreatedAccountTEXT = await structureMessageCreatedAccountTEXT(data.firstname, plainPassword);
       const messageFinalCreatedAccountHTML = await structureMessageCreatedAccountHTML(data.firstname, plainPassword);
+      console.log('messageFinalCreatedAccountHTML', messageFinalCreatedAccountHTML);
       await sendEmail(data.email, subject, messageFinalCreatedAccountTEXT, messageFinalCreatedAccountHTML);
 
       return {
