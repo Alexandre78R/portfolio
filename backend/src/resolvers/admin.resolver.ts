@@ -14,7 +14,6 @@ import * as util from "util";
 import {
   BackupFilesResponse,
   BackupResponse,
-  GlobalStats,
   GlobalStatsResponse,
   Response,
   UserRolePercent,
