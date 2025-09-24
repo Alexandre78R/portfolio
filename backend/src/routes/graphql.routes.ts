@@ -4,15 +4,14 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { buildSchema } from "type-graphql";
 import cors from "cors";
 import Cookies from "cookies";
-import { jwtVerify } from "jose";
-import { PrismaClient } from "@prisma/client";
-import express from "express";
+import { jwtVerify, JWTPayload } from "jose";
+import { PrismaClient, User as PrismaUser } from "@prisma/client";
+import express, { Request, Response } from "express";
 
 import { customAuthChecker } from "../lib/authChecker";
 import { checkApiKey } from "../lib/checkApiKey";
 import { User, UserRole } from "../entities/user.entity";
 
-import type { Request, Response } from "express";
 import { ContactResolver } from "../resolvers/contact.resolver";
 import { CaptchaResolver } from "../resolvers/captcha.resolver";
 import { SkillResolver } from "../resolvers/skill.resolver";
@@ -22,9 +21,12 @@ import { EducationResolver } from "../resolvers/education.resolver";
 import { UserResolver } from "../resolvers/user.resolver";
 import { AdminResolver } from "../resolvers/admin.resolver";
 
-/* Types context GraphQL */
-export interface JwtPayload {
+/* --- Types context GraphQL --- */
+
+export interface JwtPayloadExtended extends JWTPayload {
   id: number;
+  email?: string;
+  role?: UserRole;
 }
 
 export interface GraphQLContext {
@@ -36,9 +38,10 @@ export interface GraphQLContext {
   user: User | null;
 }
 
+/* --- Prisma Client --- */
 const prisma = new PrismaClient();
 
-/* Fonction appelée depuis app.ts */
+/* --- Fonction appelée depuis app.ts --- */
 export async function mountGraphQL(app: Express) {
   /* 1. Build schema avec TypeGraphQL */
   const schema = await buildSchema({
@@ -71,19 +74,20 @@ export async function mountGraphQL(app: Express) {
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
         /* ▸ Cookies */
-        const cookies = new Cookies(req, res);
+        const cookies: Cookies = new Cookies(req, res);
 
         /* ▸ Auth utilisateur via JWT */
         let user: User | null = null;
-        const token = cookies.get("token");
+        const token: string | undefined = cookies.get("token") ?? undefined;
+
         if (token && process.env.JWT_SECRET) {
           try {
-            const { payload } = await jwtVerify<JwtPayload>(
+            const { payload }: { payload: JwtPayloadExtended } = await jwtVerify(
               token,
               new TextEncoder().encode(process.env.JWT_SECRET)
             );
 
-            const prismaUser = await prisma.user.findUnique({
+            const prismaUser: PrismaUser | null = await prisma.user.findUnique({
               where: { id: payload.id },
             });
 
@@ -97,7 +101,7 @@ export async function mountGraphQL(app: Express) {
                 isPasswordChange: prismaUser.isPasswordChange,
               };
             }
-          } catch (err) {
+          } catch (err: unknown) {
             console.error("JWT invalide :", err);
             cookies.set("token", "", {
               expires: new Date(0),
@@ -109,8 +113,10 @@ export async function mountGraphQL(app: Express) {
         }
 
         /* ▸ Vérification de la clé API */
-        const apiKeyHeader = req.headers["x-api-key"];
-        const apiKey = Array.isArray(apiKeyHeader) ? apiKeyHeader[0] : apiKeyHeader;
+        const apiKeyHeader: string | string[] | undefined = req.headers["x-api-key"];
+        const apiKey: string | undefined = Array.isArray(apiKeyHeader)
+          ? apiKeyHeader[0]
+          : apiKeyHeader;
         if (!apiKey) throw new Error("Unauthorized: x-api-key header is missing.");
         await checkApiKey(apiKey);
 
