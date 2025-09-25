@@ -11,15 +11,7 @@ import { LangProvider, useLang } from "@/context/Lang/LangContext";
 import fr from "@/lang/fr";
 import en from "@/lang/en";
 
-/* -------------------------------------------------------------------------- */
-/*                                Types helpers                                */
-/* -------------------------------------------------------------------------- */
-
 type TestComponentProps = Record<string, never>;
-
-/* -------------------------------------------------------------------------- */
-/*                              Test component                                 */
-/* -------------------------------------------------------------------------- */
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const { lang, translations, listLang, setLang } = useLang();
@@ -42,10 +34,6 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
     </div>
   );
 };
-
-/* -------------------------------------------------------------------------- */
-/*                              localStorage mock                              */
-/* -------------------------------------------------------------------------- */
 
 type LocalStorageMock = {
   getItem: jest.Mock<string | null, [string]>;
@@ -79,10 +67,6 @@ beforeEach((): void => {
 afterEach((): void => {
   jest.clearAllMocks();
 });
-
-/* -------------------------------------------------------------------------- */
-/*                                   Tests                                     */
-/* -------------------------------------------------------------------------- */
 
 describe("LangContext", () => {
   it("provides default values", (): void => {
