@@ -65,7 +65,7 @@ describe("SectionRefsContext", () => {
   });
 
   it("throws an error when useSectionRefs is used outside provider", (): void => {
-    const renderOutsideProvider = (): void => {
+    const renderOutsideProvider: () => void = (): void => {
       render(<TestComponent />);
     };
 

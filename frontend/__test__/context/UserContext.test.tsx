@@ -4,10 +4,10 @@ import "@testing-library/jest-dom";
 import { UserProvider, useUser } from "@/context/UserContext/UserContext";
 import { GetMeQuery } from "@/types/graphql";
 
-const mockRefetch = jest.fn();
+const mockRefetch: jest.Mock = jest.fn();
 
 jest.mock("@/types/graphql", () => {
-  const originalModule = jest.requireActual("@/types/graphql");
+  const originalModule: Record<string, unknown> = jest.requireActual("@/types/graphql");
   return {
     ...originalModule,
     useGetMeQuery: jest.fn(),
@@ -63,7 +63,7 @@ describe("UserContext", () => {
   });
 
   it("sets user when data is available", () => {
-    const fakeUser = { id: "1", email: "test@example.com" };
+    const fakeUser: { id: string; email: string } = { id: "1", email: "test@example.com" };
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: { me: fakeUser },
       loading: false,
@@ -83,7 +83,7 @@ describe("UserContext", () => {
   });
 
   it("handles errors", () => {
-    const fakeError = new Error("Network error");
+    const fakeError: Error = new Error("Network error");
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: undefined,
       loading: false,
@@ -124,7 +124,7 @@ describe("UserContext", () => {
   });
 
   it("throws error when used outside provider", () => {
-    const renderOutsideProvider = () => render(<TestComponent />);
+    const renderOutsideProvider: () => void = () => render(<TestComponent />);
     expect(renderOutsideProvider).toThrow(
       "useUser must be used within a UserProvider"
     );

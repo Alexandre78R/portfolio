@@ -10,10 +10,6 @@ import "@testing-library/jest-dom";
 import { ThemeProvider, useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
 
-/* -------------------------------------------------------------------------- */
-/*                                   Types                                    */
-/* -------------------------------------------------------------------------- */
-
 type TestComponentProps = Record<string, never>;
 
 type LocalStorageMock = {
@@ -22,10 +18,6 @@ type LocalStorageMock = {
   removeItem: jest.Mock<void, [string]>;
   clear: jest.Mock<void, []>;
 };
-
-/* -------------------------------------------------------------------------- */
-/*                              Test component                                 */
-/* -------------------------------------------------------------------------- */
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const { theme, toggleTheme } = useTheme();
@@ -53,10 +45,6 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   );
 };
 
-/* -------------------------------------------------------------------------- */
-/*                              localStorage mock                              */
-/* -------------------------------------------------------------------------- */
-
 const localStorageStore: Record<string, string> = {};
 
 beforeEach((): void => {
@@ -78,7 +66,6 @@ beforeEach((): void => {
     writable: true,
   });
 
-  // Reset CSS variables between tests
   document.documentElement.style.cssText = "";
 });
 
@@ -86,9 +73,7 @@ afterEach((): void => {
   jest.clearAllMocks();
 });
 
-/* -------------------------------------------------------------------------- */
-/*                                   Tests                                     */
-/* -------------------------------------------------------------------------- */
+
 
 describe("ThemeContext", () => {
   it("provides default theme and writes it to localStorage", async (): Promise<void> => {
@@ -122,8 +107,7 @@ describe("ThemeContext", () => {
 
     expect(window.localStorage.setItem).toHaveBeenCalledWith("theme", "light");
 
-    // Vérifie qu'au moins une variable CSS a été définie
-    const firstColorKey = Object.keys(themes.light.colors).find(
+    const firstColorKey: string | undefined = Object.keys(themes.light.colors).find(
       (key) => key !== "text"
     );
 
@@ -167,7 +151,7 @@ describe("ThemeContext", () => {
   });
 
   it("throws error when useTheme is used outside ThemeProvider", (): void => {
-    const renderOutsideProvider = (): void => {
+    const renderOutsideProvider: () => void = (): void => {
       render(<TestComponent />);
     };
 

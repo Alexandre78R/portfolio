@@ -22,7 +22,7 @@ type LocalStorageMock = {
 };
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
-  const { selectedView, setSelectedView } = useChoiceView();
+  const { selectedView, setSelectedView }: { selectedView: string; setSelectedView: (view: string) => void; } = useChoiceView();
 
   return (
     <div>

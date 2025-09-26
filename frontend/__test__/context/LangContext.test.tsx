@@ -14,7 +14,7 @@ import en from "@/lang/en";
 type TestComponentProps = Record<string, never>;
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
-  const { lang, translations, listLang, setLang } = useLang();
+  const { lang, translations, listLang, setLang }: { lang: string; translations: Record<string, string>; listLang: string[]; setLang: (lang: string) => void; } = useLang();
 
   return (
     <div>
