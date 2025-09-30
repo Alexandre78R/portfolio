@@ -4,45 +4,45 @@ import Navbar from "@/components/NavBar/NavBar";
 import { usePathname } from "next/navigation";
 
 const translationsMock: Record<string, string> = {
-  navbarTitle: "Mon Portfolio",
-  navbarButtonAbout: "À propos",
-  navbarButtonSkill: "Compétences",
-  navbarButtonProject: "Projets",
-  navbarButtonCareer: "Formation",
-  navbarButtonContact: "Contact",
-  navbarButtonTerminal: "Terminal",
-  theme1: "Dark",
-  theme2: "Light",
-  theme3: "Ubuntu",
+  navbarTitle: "Mon Portfolio" as string,
+  navbarButtonAbout: "À propos" as string,
+  navbarButtonSkill: "Compétences" as string,
+  navbarButtonProject: "Projets" as string,
+  navbarButtonCareer: "Formation" as string,
+  navbarButtonContact: "Contact" as string,
+  navbarButtonTerminal: "Terminal" as string,
+  theme1: "Dark" as string,
+  theme2: "Light" as string,
+  theme3: "Ubuntu" as string,
 };
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: () => ({
-    lang: "fr",
-    setLang: jest.fn(),
-    translations: translationsMock,
+    lang: "fr" as string,
+    setLang: jest.fn() as jest.Mock,
+    translations: translationsMock as Record<string, string>,
   }),
 }));
 
 jest.mock("@/context/Theme/ThemeContext", () => ({
   useTheme: () => ({
-    toggleTheme: jest.fn(),
-    theme: "dark",
+    toggleTheme: jest.fn() as jest.Mock,
+    theme: "dark" as string,
   }),
 }));
 
 const sectionRefsMock: Record<string, React.RefObject<HTMLDivElement>> = {
-  headerRef: { current: document.createElement("div") },
-  aboutMeRef: { current: document.createElement("div") },
-  projectRef: { current: document.createElement("div") },
-  skillRef: { current: document.createElement("div") },
-  terminalRef: { current: document.createElement("div") },
-  educationRef: { current: document.createElement("div") },
-  contactRef: { current: document.createElement("div") },
+  headerRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  aboutMeRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  projectRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  skillRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  terminalRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  educationRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
+  contactRef: { current: document.createElement("div") } as React.RefObject<HTMLDivElement>,
 };
 
 jest.mock("@/context/SectionRefs/SectionRefsContext", () => ({
-  useSectionRefs: () => sectionRefsMock,
+  useSectionRefs: () => sectionRefsMock as Record<string, React.RefObject<HTMLDivElement>>,
 }));
 
 jest.mock("@/context/ChoiceView/ChoiceViewContext", () => ({
@@ -87,7 +87,7 @@ jest.mock("@/components/ModalCustom/ModalCustom", () => ({
 }));
 
 jest.mock("next/navigation", () => ({
-  usePathname: jest.fn(),
+  usePathname: jest.fn() as jest.Mock<string>,
 }));
 
 jest.mock("@mui/icons-material/ColorLens", () => ({

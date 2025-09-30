@@ -5,13 +5,13 @@ import { useUser } from '@/context/UserContext/UserContext'
 
 // --- Mock Next.js navigation hooks ---
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-  usePathname: jest.fn(),
+  useRouter: jest.fn() as jest.Mock,
+  usePathname: jest.fn() as jest.Mock,
 }))
 
 // --- Mock UserContext ---
 jest.mock('@/context/UserContext/UserContext', () => ({
-  useUser: jest.fn(),
+  useUser: jest.fn() as jest.Mock,
 }))
 
 // --- Mock subcomponents ---
@@ -42,7 +42,7 @@ jest.mock('@/components/AdminLayout/MobileOverlay', () => {
 })
 
 jest.mock('@/components/AdminLayout/ToggleButton', () => {
-  const MockToggleButton = ({ sidebarOpen, setSidebarOpen }: any) => (
+  const MockToggleButton: React.FC<any> = ({ sidebarOpen, setSidebarOpen }: any) => (
     <button
       data-testid="toggle-button"
       onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -63,21 +63,18 @@ jest.mock('@/components/AdminLayout/TopbarMobile', () => {
 })
 
 describe('AdminLayout', () => {
-  const pushMock = jest.fn()
+  const pushMock: jest.Mock = jest.fn()
 
   beforeEach(() => {
     pushMock.mockClear()
 
-    // Mock correct pour useRouter
     ;(useRouter as jest.Mock).mockReturnValue({
       push: pushMock,
       prefetch: jest.fn(),
     })
 
-    // Mock correct pour usePathname
     ;(usePathname as jest.Mock).mockReturnValue('/admin/dashboard')
-
-    // Mock UserContext
+    
     ;(useUser as jest.Mock).mockReturnValue({ user: { role: 'admin' } })
   })
 

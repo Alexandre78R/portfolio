@@ -8,16 +8,16 @@ const translationsMock: Record<string, string> = {
 } as const;
 
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: () => ({ translations: translationsMock }),
+  useLang: () => ({ translations: translationsMock as Record<string, string> }),
 }));
 
 jest.mock("@/context/Theme/ThemeContext", () => ({
-  useTheme: () => ({ theme: "dark" as const }),
+  useTheme: () => ({ theme: "dark" as string }),
 }));
 
 const headerRefMock: React.RefObject<HTMLElement> = { current: null };
 jest.mock("@/context/SectionRefs/SectionRefsContext", () => ({
-  useSectionRefs: () => ({ headerRef: headerRefMock }),
+  useSectionRefs: () => ({ headerRef: headerRefMock as React.RefObject<HTMLElement> }),
 }));
 
 jest.mock("@/components/ui/SparklesCore", () => ({
@@ -36,7 +36,7 @@ describe("Header component", () => {
     const sparkles: HTMLElement = screen.getByTestId("sparkles");
     expect(sparkles).toHaveAttribute(
       "particleColor",
-      themes["dark"].colors.primary
+      themes["dark"].colors.primary as string
     );
   });
 

@@ -3,14 +3,14 @@ import { render, screen } from "@testing-library/react";
 import Footer from "@/components/Footer/Footer";
 
 const translationsMock: Record<string, string> = {
-  footerTitle: "Footer Test",
-  footerAdmin: "Admin",
-  footerNetworks: "Réseaux",
-  footerCopyright: "Alexandre Renard",
+  footerTitle: "Footer Test" as string,
+  footerAdmin: "Admin" as string,
+  footerNetworks: "Réseaux" as string,
+  footerCopyright: "Alexandre Renard" as string,
 };
 
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: () => ({ translations: translationsMock }),
+  useLang: () => ({ translations: translationsMock as Record<string, string> }),
 }));
 
 jest.mock("@mui/icons-material/GitHub", () => ({
