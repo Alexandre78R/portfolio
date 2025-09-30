@@ -25,7 +25,7 @@ describe('MobileOverlay', () => {
     const mockSetSidebarOpen: jest.Mock = jest.fn()
     render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />)
 
-    const overlay = screen.getByTestId('overlay')
+    const overlay: HTMLElement = screen.getByTestId('overlay')
     fireEvent.click(overlay)
 
     expect(mockSetSidebarOpen).toHaveBeenCalledTimes(1)
