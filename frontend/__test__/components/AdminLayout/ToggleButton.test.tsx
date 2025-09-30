@@ -30,7 +30,7 @@ describe('ToggleButton', () => {
   })
 
   it('renders the Menu icon', () => {
-    const { container } = render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />)
+    const { container }: { container: HTMLElement } = render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />)
     const icon: SVGSVGElement | null = container.querySelector('svg')
     expect(icon).toBeInTheDocument()
   })
