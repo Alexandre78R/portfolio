@@ -11,7 +11,8 @@
     "build:css": "tailwindcss -i ./src/styles/globals.css -o ./src/styles/output.css --minify",
     "lint": "next lint",
     "test": "jest --watchAll",
-    "test:ci": "jest --coverage --passWithNoTests"
+    "test:ci": "jest --coverage --passWithNoTests",
+    "test:clear" : "npx jest --clearCache"
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",

@@ -58,38 +58,6 @@ const Dashboard = (): React.ReactElement => {
         </TextAdmin>
       </section>
 
-
-      {/* <section className="bg-muted p-6 rounded-xl shadow-sm mb-20">
-        <h2 className="text-xl font-semibold text-primary mb-4">
-          Les compétences les plus utilisées
-        </h2>
-        <ul className="divide-y divide-border">
-          {topSkills.map((skill) => (
-            <li
-              key={skill.id}
-              className="flex justify-between items-center py-3"
-            >
-              <span className="text-muted-foreground text-text">{skill.name}</span>
-              <span className="font-semibold text-primary">
-                {skill.usageCount} projets
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section> */}
-
-      {/* <section className="bg-muted p-6 rounded-xl shadow-sm">
-        <h2 className="text-xl font-semibold text-primary mb-4">
-          Compétences les plus utilisées (Top 5)
-        </h2>
-
-        <DoughnutChart
-          title="Répartition par usage"
-          labels={topSkills.map(skill => skill.name)}
-          data={topSkills.map(skill => skill.usageCount)}
-        />
-      </section> */}
-
       <section className="bg-muted p-6 rounded-xl shadow-sm">
         <TextAdmin type='h2'>
           {translations.messagePageDashBoardTittleSection2}
