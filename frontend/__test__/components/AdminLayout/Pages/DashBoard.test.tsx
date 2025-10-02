@@ -5,67 +5,67 @@ import { useGetGlobalStatsQuery } from "../../../../src/types/graphql";
 import { useLang } from "../../../../src/context/Lang/LangContext";
 
 jest.mock("../../../../src/types/graphql", () => ({
-  useGetGlobalStatsQuery: jest.fn(),
+  useGetGlobalStatsQuery: jest.fn() as jest.Mock,
 }));
 
 jest.mock("../../../../src/context/Lang/LangContext", () => ({
-  useLang: jest.fn(),
+  useLang: jest.fn() as jest.Mock,
 }));
 
 jest.mock(
   "../../../../src/components/Charts/HorizontalBarChart",
   () => {
-    const Mock = (props: any) => (
+    const Mock: React.FC<{ labels: string[] }> = (props) => (
       <div data-testid="horizontal-bar-chart">
         {props.labels.join(",")}
       </div>
     );
-    Mock.displayName = "HorizontalBarChart";
+    Mock.displayName = "HorizontalBarChart" as string;
     return Mock;
   }
 );
 
 describe("Dashboard Page", () => {
-  const translations = {
-    messagePageDashBoardErreurData: "Erreur data",
-    messagePageDashBoardTitle: "Dashboard",
-    messagePageDashBoardCardStatsProject: "Projects",
-    messagePageDashBoardCardStatsSkill: "Skills",
-    messagePageDashBoardCardStatsEducation: "Educations",
-    messagePageDashBoardCardStatsExperience: "Experiences",
-    messagePageDashBoardCardStatsUser: "Users",
-    messagePageDashBoardTittleSection1: "Average Skills",
-    messagePageDashBoardMessageAverageLeft: "Average is",
-    messagePageDashBoardMessageAverageRight: "per project",
-    messagePageDashBoardTittleSection2: "Top Skills",
-    messagePageDashBoardTittleSection3: "Role Distribution",
-    messagePageDashBoardRoleAdmin: "Admin",
-    messagePageDashBoardRoleEditor: "Editor",
-    messagePageDashBoardRoleViewer: "Viewer",
+  const translations: Record<string, string> = {
+    messagePageDashBoardErreurData: "Erreur data" as string,
+    messagePageDashBoardTitle: "Dashboard" as string,
+    messagePageDashBoardCardStatsProject: "Projects" as string,
+    messagePageDashBoardCardStatsSkill: "Skills" as string,
+    messagePageDashBoardCardStatsEducation: "Educations" as string,
+    messagePageDashBoardCardStatsExperience: "Experiences" as string,
+    messagePageDashBoardCardStatsUser: "Users" as string,
+    messagePageDashBoardTittleSection1: "Average Skills" as string,
+    messagePageDashBoardMessageAverageLeft: "Average is" as string,
+    messagePageDashBoardMessageAverageRight: "per project" as string,
+    messagePageDashBoardTittleSection2: "Top Skills" as string,
+    messagePageDashBoardTittleSection3: "Role Distribution" as string,
+    messagePageDashBoardRoleAdmin: "Admin" as string,
+    messagePageDashBoardRoleEditor: "Editor" as string,
+    messagePageDashBoardRoleViewer: "Viewer" as string,
   };
 
-  const mockData = {
+  const mockData: Record<string, any> = {
     getGlobalStats: {
       stats: {
-        totalProjects: 5,
-        totalSkills: 10,
-        totalEducations: 3,
-        totalExperiences: 7,
-        totalUsers: 4,
-      },
-    },
-    getAverageSkillsPerProject: 2.5,
+        totalProjects: 5 as number,
+        totalSkills: 10 as number,
+        totalEducations: 3 as number,
+        totalExperiences: 7 as number,
+        totalUsers: 4 as number,
+      } as { [key: string]: number },
+    } as { stats: { [key: string]: number } } ,
+    getAverageSkillsPerProject: 2.5 as number,
     getUsersRoleDistribution: {
-      admin: 20,
-      editor: 50,
-      view: 30,
-    },
+      admin: 20 as number,
+      editor: 50 as number,
+      view: 30 as number  ,
+    } as { [key: string]: number },
     getTopUsedSkills: {
       skills: [
         { name: "React", usageCount: 10 },
         { name: "TypeScript", usageCount: 5 },
-      ],
-    },
+      ] as { name: string; usageCount: number }[],
+    } as { skills: { name: string; usageCount: number }[] },
   };
 
   beforeEach(() => {
