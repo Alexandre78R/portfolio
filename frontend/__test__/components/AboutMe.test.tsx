@@ -3,37 +3,30 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import { useLang } from "@/context/Lang/LangContext";
 
-/* =========================
-   MOCKS
-========================= */
-
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: jest.fn(),
+  useLang: jest.fn() as jest.Mock,
 }));
 
 jest.mock("@/components/Button/Button", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: ({ text, onClick }: { text: string; onClick: () => void }) => (
     <button onClick={onClick}>{text}</button>
   ),
 }));
 
 jest.mock("@/components/Title/TitleH3", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: ({ title }: { title: string }) => <h3>{title}</h3>,
 }));
 
-/* =========================
-   TESTS
-========================= */
 
 describe("AboutMe component", () => {
-  const translations = {
-    titleAboutMe: "About Me",
-    descriptionAboutMe1: "Description 1",
-    descriptionAboutMe2: "Description 2",
-    descriptionAboutMe3: "Description 3",
-    buttonCV: "Download CV",
+  const translations: Record<string, string> = {
+    titleAboutMe: "About Me" as const,
+    descriptionAboutMe1: "Description 1" as const,
+    descriptionAboutMe2: "Description 2" as const,
+    descriptionAboutMe3: "Description 3" as const,
+    buttonCV: "Download CV" as const,
   };
 
   beforeEach(() => {
