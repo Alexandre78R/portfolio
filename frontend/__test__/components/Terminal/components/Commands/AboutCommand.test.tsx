@@ -20,7 +20,7 @@ jest.mock("../../../../../src/components/Terminal/components/Message", () => ({
   Message: ({ children }: any) => <div data-testid="message">{children}</div>,
 }));
 
-describe("About component", () => {
+describe("About command component", () => {
   it("renders correctly with translations", () => {
     render(<About />);
 

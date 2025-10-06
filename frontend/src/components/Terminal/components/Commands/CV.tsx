@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { termContext } from "../../Terminal";
-import { checkRedirect, getCurrentCmdArry } from "../../util";
+import { getCurrentCmdArry } from "../../util";
 
 const CV: React.FC = (): React.ReactNode => {
   const { history, rerender } = useContext(termContext);

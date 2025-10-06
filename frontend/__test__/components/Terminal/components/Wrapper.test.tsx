@@ -10,19 +10,19 @@ describe("Wrapper component", () => {
       </Wrapper>
     );
 
-    const child = screen.getByTestId("child");
+    const child: HTMLElement = screen.getByTestId("child");
     expect(child).toBeInTheDocument();
     expect(child).toHaveTextContent("Hello World");
   });
 
   test("applies correct Tailwind classes", () => {
-    const { container } = render(
+    const { container }: { container: HTMLElement } = render(
       <Wrapper>
         <div />
       </Wrapper>
     );
 
-    const wrapperDiv = container.firstChild as HTMLElement;
+    const wrapperDiv: HTMLElement = container.firstChild as HTMLElement;
     expect(wrapperDiv).toHaveClass(
       "flex",
       "flex-col-reverse",
