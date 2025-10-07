@@ -28,27 +28,27 @@ describe("Usage component", () => {
 
   commands.forEach((cmd) => {
     test(`renders correct usage for cmd="${cmd}"`, () => {
-      render(<Usage cmd={cmd as "socials" | "themes" | "whoami" | "lang"} />);
+      render(<Usage cmd={cmd as "socials" | "themes" | "whoami" | "lang"} /> as React.ReactElement);
 
-      const action = expectedActions[cmd];
-      const example = expectedExamples[cmd];
+      const action: string = expectedActions[cmd] as string;
+      const example: string = expectedExamples[cmd] as string;
 
       expect(
         screen.getByText((content) =>
-          content.includes(`Usage: ${cmd}`) &&
-          content.includes(`<${arg[cmd].placeholder}>`)
+          content.includes(`Usage: ${cmd}` as string) &&
+          content.includes(`<${arg[cmd].placeholder}>` as string)
         )
       ).toBeInTheDocument();
 
       expect(
         screen.getByText((content) =>
-          content.includes(`Ex: ${cmd}`) && content.includes(example)
+          content.includes(`Ex: ${cmd}` as string) && content.includes(example as string)
         )
       ).toBeInTheDocument();
 
       expect(
         screen.getByText((content) =>
-          content.includes(`Ex: ${cmd}`) && content.includes(action)
+          content.includes(`Ex: ${cmd}` as string) && content.includes(action as string)
         )
       ).toBeInTheDocument();
     });

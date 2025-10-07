@@ -11,15 +11,15 @@ describe("Message component", () => {
       </Message>
     );
 
-    const child: HTMLElement = screen.getByTestId("child");
-    expect(child).toBeInTheDocument();
-    expect(child).toHaveTextContent("Hello World");
+    const child: HTMLElement = screen.getByTestId("child" as string);
+    expect(child as HTMLElement).toBeInTheDocument();
+    expect(child as HTMLElement).toHaveTextContent("Hello World" as string);
   });
 
   it("applies the correct CSS class", () => {
-    render(<Message>Test</Message>);
+    render(<Message>Test</Message> as React.ReactElement);
 
-    const div: HTMLElement = screen.getByText("Test");
-    expect(div).toHaveClass("mb-[0.25rem]");
+    const div: HTMLElement = screen.getByText("Test" as string);
+    expect(div as HTMLElement).toHaveClass("mb-[0.25rem]" as string);
   });
 });

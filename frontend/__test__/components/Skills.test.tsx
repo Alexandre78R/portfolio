@@ -18,22 +18,22 @@ describe("Skills Component", () => {
   });
 
   it("renders all skill images with correct alt and src", () => {
-    render(<Skills category={mockCategory} skills={mockSkills} />);
+    render(<Skills category={mockCategory} skills={mockSkills} /> as React.ReactElement);
 
-    const images: Array<HTMLImageElement> = screen.getAllByRole("img");
-    expect(images.length).toBe(mockSkills.length);
+    const images: Array<HTMLImageElement> = screen.getAllByRole("img" as string) as Array<HTMLImageElement>;
+    expect(images.length as number).toBe(mockSkills.length as number);
 
     mockSkills.forEach((skill) => {
-      const img: HTMLImageElement = screen.getByAltText(skill.name) as HTMLImageElement;
-      expect(img).toBeInTheDocument();
-      expect(img.src).toContain(skill.image);
+      const img: HTMLImageElement = screen.getByAltText(skill.name as string) as HTMLImageElement;
+      expect(img as HTMLElement).toBeInTheDocument();
+      expect(img.src as string).toContain(skill.image as string);
     });
   });
 
   it("renders skills in pairs (flex layout)", () => {
-    render(<Skills category={mockCategory} skills={mockSkills} />);
+    render(<Skills category={mockCategory} skills={mockSkills} /> as React.ReactElement);
 
-    const pairDivs: HTMLElement[] = screen.getAllByRole("img").filter((img, index) => index % 2 === 0);
-    expect(pairDivs.length).toBe(Math.ceil(mockSkills.length / 2));
+    const pairDivs: HTMLElement[] = screen.getAllByRole("img" as string).filter((img, index) => index % 2 === 0);
+    expect(pairDivs.length as number).toBe(Math.ceil(mockSkills.length / 2));
   });
 });

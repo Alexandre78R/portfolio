@@ -10,7 +10,7 @@ describe("AuthFormLayout", () => {
       </AuthFormLayout>
     );
 
-    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByText("Login" as string)).toBeInTheDocument();
   });
 
   it("renders children correctly", () => {
@@ -20,7 +20,7 @@ describe("AuthFormLayout", () => {
       </AuthFormLayout>
     );
 
-    expect(screen.getByText("Submit")).toBeInTheDocument();
+    expect(screen.getByText("Submit" as string)).toBeInTheDocument();
   });
 
   it("renders layout structure", () => {
@@ -31,10 +31,10 @@ describe("AuthFormLayout", () => {
     );
 
     expect(container.firstChild).toHaveClass(
-      "min-h-screen",
-      "flex",
-      "items-center",
-      "justify-center"
+      "min-h-screen" as string,
+      "flex" as string,
+      "items-center" as string,
+      "justify-center" as string
     );
   });
 });

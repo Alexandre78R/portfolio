@@ -107,10 +107,10 @@ describe("BackUpList Page", () => {
 
   it("renders loading state", () => {
     const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({ loading: true });
+    useGetBackupsListQuery.mockReturnValue({ loading: true } as const);
 
-    render(<BackUpList />);
-    expect(screen.getByTestId("loading")).toBeInTheDocument();
+    render(<BackUpList /> as React.ReactElement);
+    expect(screen.getByTestId("loading" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders error state", () => {
@@ -120,8 +120,8 @@ describe("BackUpList Page", () => {
       error: true as boolean,
     });
 
-    render(<BackUpList />);
-    expect(screen.getByText("No backups")).toBeInTheDocument();
+    render(<BackUpList /> as React.ReactElement);
+    expect(screen.getByText("No backups" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders backups list", () => {
@@ -129,12 +129,12 @@ describe("BackUpList Page", () => {
     useGetBackupsListQuery.mockReturnValue({
       loading: false as boolean,
       error: false as boolean,
-      data: { listBackupFiles: { files: mockBackups } } as const,
+      data: { listBackupFiles: { files: mockBackups } as { files: typeof mockBackups } } as const,
       refetch: refetchMock as jest.Mock,
     });
 
-    render(<BackUpList />);
-    expect(screen.getByText("backup-1.sql")).toBeInTheDocument();
+    render(<BackUpList /> as React.ReactElement);
+    expect(screen.getByText("backup-1.sql" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("opens confirm dialog when clicking create backup", () => {
@@ -147,8 +147,8 @@ describe("BackUpList Page", () => {
     });
 
     render(<BackUpList />);
-    fireEvent.click(screen.getByText("Create backup"));
-    expect(screen.getByTestId("confirm-dialog")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Create backup" as string) as HTMLElement);
+    expect(screen.getByTestId("confirm-dialog" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("calls generate backup mutation on confirm", async () => {
@@ -165,8 +165,8 @@ describe("BackUpList Page", () => {
     });
 
     render(<BackUpList />);
-    fireEvent.click(screen.getByText("Create backup"));
-    fireEvent.click(screen.getByText("confirm"));
+    fireEvent.click(screen.getByText("Create backup" as string) as HTMLElement);
+    fireEvent.click(screen.getByText("confirm" as string) as HTMLElement);
 
     await waitFor(() => {
       expect(generateBackupMock).toHaveBeenCalled();

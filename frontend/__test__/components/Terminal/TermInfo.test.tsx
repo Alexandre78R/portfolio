@@ -10,12 +10,12 @@ jest.mock("../../../src/components/Terminal/HomeTerminal", () => ({
 
 describe("TermInfo component", () => {
   it("renders correctly and includes HomeTerminal", () => {
-    render(<TermInfo />);
+    render(<TermInfo /> as React.ReactElement);
 
     const wrapper: HTMLElement | null = screen.getByText("HomeTerminal").parentElement;
-    expect(wrapper).toBeInTheDocument();
-    expect(wrapper).toHaveClass("inline-block mr-2");
+    expect(wrapper as HTMLElement).toBeInTheDocument();
+    expect(wrapper as HTMLElement).toHaveClass("inline-block mr-2" as string);
 
-    expect(screen.getByTestId("home-terminal-mock")).toHaveTextContent("HomeTerminal");
+    expect(screen.getByTestId("home-terminal-mock" as string) as HTMLElement).toHaveTextContent("HomeTerminal" as string);
   });
 });

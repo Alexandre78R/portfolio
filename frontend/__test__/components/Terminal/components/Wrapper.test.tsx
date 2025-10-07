@@ -11,8 +11,8 @@ describe("Wrapper component", () => {
     );
 
     const child: HTMLElement = screen.getByTestId("child");
-    expect(child).toBeInTheDocument();
-    expect(child).toHaveTextContent("Hello World");
+    expect(child as HTMLElement).toBeInTheDocument();
+    expect(child as HTMLElement).toHaveTextContent("Hello World" as string);
   });
 
   test("applies correct Tailwind classes", () => {
@@ -23,15 +23,15 @@ describe("Wrapper component", () => {
     );
 
     const wrapperDiv: HTMLElement = container.firstChild as HTMLElement;
-    expect(wrapperDiv).toHaveClass(
-      "flex",
-      "flex-col-reverse",
-      "w-[100%]",
-      "md:w-[70%]",
-      "lg:w-[70%]",
-      "h-[460px]",
-      "overflow-y-auto",
-      "text-text"
+    expect(wrapperDiv as HTMLElement).toHaveClass(
+      "flex" as string,
+      "flex-col-reverse" as string,
+      "w-[100%]" as string,
+      "md:w-[70%]" as string,
+      "lg:w-[70%]" as string,
+      "h-[460px]" as string,
+      "overflow-y-auto" as string,
+      "text-text" as string
     );
   });
 });

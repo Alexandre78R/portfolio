@@ -15,19 +15,19 @@ const renderWithContext: (contextValue: any) => ReturnType<typeof render> = (con
 describe("Clear command component", () => {
   test("calls clearHistory if arg is empty", () => {
     const clearHistoryMock: jest.Mock = jest.fn();
-    renderWithContext({ arg: [], clearHistory: clearHistoryMock } as any);
+    renderWithContext({ arg: [], clearHistory: clearHistoryMock } as { arg: string[]; clearHistory: () => void });
 
-    expect(clearHistoryMock).toHaveBeenCalledTimes(1);
+    expect(clearHistoryMock as jest.Mock).toHaveBeenCalledTimes(1 as const);
 
     expect(screen.queryByText("Usage: clear" as string)).toBeNull();
   });
 
   test("renders usage message if arg is not empty", () => {
     const clearHistoryMock: jest.Mock = jest.fn();
-    renderWithContext({ arg: ["something"], clearHistory: clearHistoryMock } as any);
+    renderWithContext({ arg: ["something"], clearHistory: clearHistoryMock } as { arg: string[]; clearHistory: () => void });
 
-    expect(screen.getByText("Usage: clear" as string)).toBeInTheDocument();
+    expect(screen.getByText("Usage: clear" as const)).toBeInTheDocument();
 
-    expect(clearHistoryMock).not.toHaveBeenCalled();
+    expect(clearHistoryMock as jest.Mock).not.toHaveBeenCalled();
   });
 });

@@ -26,9 +26,9 @@ jest.mock('@/components/AdminLayout/SideBar', () => {
         Call setActiveTab
       </button>
     </div>
-  )
-  MockSideBar.displayName = 'SideBar'
-  return MockSideBar
+  );
+  MockSideBar.displayName = 'SideBar' as const;
+  return MockSideBar as React.FC<any>;
 })
 
 jest.mock('@/components/AdminLayout/MobileOverlay', () => {
@@ -36,9 +36,9 @@ jest.mock('@/components/AdminLayout/MobileOverlay', () => {
     <div data-testid="mobile-overlay" onClick={() => setSidebarOpen(false)}>
       Overlay
     </div>
-  )
-  MockMobileOverlay.displayName = 'MobileOverlay'
-  return MockMobileOverlay
+  );
+  MockMobileOverlay.displayName = 'MobileOverlay' as const;
+  return MockMobileOverlay as React.FC<any>;
 })
 
 jest.mock('@/components/AdminLayout/ToggleButton', () => {
@@ -49,17 +49,17 @@ jest.mock('@/components/AdminLayout/ToggleButton', () => {
     >
       Toggle
     </button>
-  )
-  MockToggleButton.displayName = 'ToggleButton'
-  return MockToggleButton
+  );
+  MockToggleButton.displayName = 'ToggleButton';
+  return MockToggleButton;
 })
 
 jest.mock('@/components/AdminLayout/TopbarMobile', () => {
   const MockTopbarMobile: React.FC<any> = ({ activeTab }: any) => (
     <div data-testid="topbar">{activeTab}</div>
   )
-  MockTopbarMobile.displayName = 'TopbarMobile'
-  return MockTopbarMobile
+  MockTopbarMobile.displayName = 'TopbarMobile' as const
+  return MockTopbarMobile as React.FC<any>;
 })
 
 describe('AdminLayout', () => {
@@ -84,8 +84,8 @@ describe('AdminLayout', () => {
         <div data-testid="child">Hello Admin</div>
       </AdminLayout>
     )
-    expect(screen.getByTestId('child')).toHaveTextContent('Hello Admin')
-  })
+    expect(screen.getByTestId('child' as string)).toHaveTextContent('Hello Admin' as string)
+  }) as void
 
   it('renders sidebar and topbar', () => {
     render(
@@ -93,8 +93,8 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    expect(screen.getByTestId('sidebar')).toBeInTheDocument()
-    expect(screen.getByTestId('topbar')).toHaveTextContent('dashboard')
+    expect(screen.getByTestId('sidebar' as string) as HTMLElement).toBeInTheDocument()
+    expect(screen.getByTestId('topbar' as string) as HTMLElement).toHaveTextContent('dashboard' as string)
   })
 
   it('toggles sidebar when toggle button clicked', () => {
@@ -103,12 +103,12 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button')
-    fireEvent.click(toggleBtn)
-    const sidebar: HTMLElement = screen.getByTestId('sidebar')
-    expect(sidebar.getAttribute('data-sidebar-open')).toBe('true')
-    fireEvent.click(toggleBtn)
-    expect(sidebar.getAttribute('data-sidebar-open')).toBe('false')
+    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button' as string)
+    fireEvent.click(toggleBtn as HTMLElement)
+    const sidebar: HTMLElement = screen.getByTestId('sidebar' as string)
+    expect(sidebar.getAttribute('data-sidebar-open') as string).toBe('true' as string)
+    fireEvent.click(toggleBtn as HTMLElement)
+    expect(sidebar.getAttribute('data-sidebar-open') as string).toBe('false' as string)
   })
 
   it('shows MobileOverlay when sidebar is open', () => {
@@ -117,9 +117,9 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button')
-    fireEvent.click(toggleBtn)
-    expect(screen.getByTestId('mobile-overlay')).toBeInTheDocument()
+    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button' as string)
+    fireEvent.click(toggleBtn as HTMLElement)
+    expect(screen.getByTestId('mobile-overlay' as string)).toBeInTheDocument()
   })
 
   it('filters navigation based on role', () => {
@@ -128,9 +128,9 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const sidebar: HTMLElement = screen.getByTestId('sidebar')
-    const navigationProps: any[] = JSON.parse(sidebar.getAttribute('data-navigation') || '[]')
-    expect(navigationProps.every((item: any) => item.disabled === false)).toBe(true)
+    const sidebar: HTMLElement = screen.getByTestId('sidebar' as string)
+    const navigationProps: any[] = JSON.parse(sidebar.getAttribute('data-navigation') as string || '[]' as string) as any[]
+    expect(navigationProps.every((item: any) => item.disabled === false as boolean)).toBe(true as boolean)
   })
 
   it('calls router.push on setActiveTab', () => {
@@ -139,7 +139,7 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    fireEvent.click(screen.getByTestId('call-setActiveTab'))
-    expect(pushMock).toHaveBeenCalledWith('/admin/projects')
+    fireEvent.click(screen.getByTestId('call-setActiveTab' as string))
+    expect(pushMock).toHaveBeenCalledWith('/admin/projects' as string)
   })
 })

@@ -61,7 +61,7 @@ const mockEducations: Array<{
 
 describe("Careers component", () => {
   beforeEach(() => {
-    (useSelector as unknown as jest.Mock).mockImplementation((selectorFn) =>
+    (useSelector as unknown as jest.Mock).mockImplementation((selectorFn: any) =>
       selectorFn({
         educations: { dataEducations: mockEducations } as { dataEducations: typeof mockEducations },
         experiences: { dataExperiences: mockExperiences } as { dataExperiences: typeof mockExperiences },
@@ -74,41 +74,41 @@ describe("Careers component", () => {
   });
 
   it("renders experiences and educations", () => {
-    render(<Careers />);
+    render(<Careers /> as React.ReactElement);
 
-    expect(screen.getByText("Frontend Developer")).toBeInTheDocument();
-    expect(screen.getByText("Master Informatique")).toBeInTheDocument();
+    expect(screen.getByText("Frontend Developer" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("Master Informatique" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("prioritizes Experience over Education when same year", () => {
-    render(<Careers />);
+    render(<Careers /> as React.ReactElement);
 
     const titles: HTMLElement[] = screen.getAllByText(
-      /Frontend Developer|Master Informatique/
-    );
+      /Frontend Developer|Master Informatique/ as RegExp
+    )as HTMLElement[];
 
-    expect(titles[0]).toHaveTextContent("Frontend Developer");
-    expect(titles[1]).toHaveTextContent("Master Informatique");
+    expect(titles[0] as HTMLElement).toHaveTextContent("Frontend Developer" as string);
+    expect(titles[1] as HTMLElement).toHaveTextContent("Master Informatique" as string);
   });
 
   it("renders dates correctly", () => {
-    render(<Careers />);
+    render(<Careers /> as React.ReactElement);
 
     expect(
-      screen.getByText("Janvier 2023 - Décembre 2023")
+      screen.getByText("Janvier 2023 - Décembre 2023" as string)
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("Septembre 2023 - Juin 2024")
+      screen.getByText("Septembre 2023 - Juin 2024" as string)
     ).toBeInTheDocument();
   });
 
   it("renders additional information fields", () => {
-    render(<Careers />);
+    render(<Careers /> as React.ReactElement);
 
-    expect(screen.getByText("CDI")).toBeInTheDocument();
-    expect(screen.getByText("Tech Corp")).toBeInTheDocument();
-    expect(screen.getByText("Master")).toBeInTheDocument();
-    expect(screen.getByText("Université Paris")).toBeInTheDocument();
+    expect(screen.getByText("CDI" as string)).toBeInTheDocument();
+    expect(screen.getByText("Tech Corp" as string)).toBeInTheDocument();
+    expect(screen.getByText("Master" as string)).toBeInTheDocument();
+    expect(screen.getByText("Université Paris" as string)).toBeInTheDocument();
   });
 });

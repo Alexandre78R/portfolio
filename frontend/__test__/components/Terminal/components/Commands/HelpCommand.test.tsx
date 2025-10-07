@@ -22,32 +22,32 @@ jest.mock("@/components/Terminal/util", () => ({
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
     translations: {
-      file: "en",
-      terminalHelpTabAction: "Tab",
-      terminalHelpTabDesc: "autocomplete",
-      terminalHelpArrowUpAction: "↑",
-      terminalHelpArrowUpTabDesc: "previous command",
-      terminalHelpArrowDownAction: "↓",
-      terminalHelpArrowDownTabDesc: "next command",
-      terminalHelpCtrlAction: "Ctrl+C",
-      terminalHelpCtrlTabDesc: "cancel",
+      file: "en" as const,
+      terminalHelpTabAction: "Tab" as const,
+      terminalHelpTabDesc: "autocomplete" as const,
+      terminalHelpArrowUpAction: "↑" as const,
+      terminalHelpArrowUpTabDesc: "previous command" as const,
+      terminalHelpArrowDownAction: "↓" as const,
+      terminalHelpArrowDownTabDesc: "next command" as const,
+      terminalHelpCtrlAction: "Ctrl+C" as const,
+      terminalHelpCtrlTabDesc: "cancel" as const,
     }as const,
   } as any)),
 }as const));
 
-describe("Help component", () => {
+describe("Help command component", () => {
   test("renders without crashing and container exists", () => {
     const { container }: { container: HTMLElement } = render(<Help />);
     const helpContainer: HTMLElement = container.firstChild as HTMLElement;
-    expect(helpContainer).toBeInTheDocument();
+    expect(helpContainer as HTMLElement).toBeInTheDocument();
   });
 
   test("renders all commands with cmd and description in English", () => {
     const { container }: { container: HTMLElement } = render(<Help />);
     commands.forEach(({ cmd, descEN, tab }) => {
-      expect(container.textContent).toContain(cmd);
-      expect(container.textContent).toContain(descEN);
-      expect(generateTabs).toHaveBeenCalledWith(tab);
+      expect(container.textContent as string).toContain(cmd as string);
+      expect(container.textContent as string).toContain(descEN as string);
+      expect(generateTabs as jest.Mock).toHaveBeenCalledWith(tab as number);
     });
   });
 
@@ -55,34 +55,34 @@ describe("Help component", () => {
     // @ts-ignore
     require("@/context/Lang/LangContext").useLang.mockReturnValue({
       translations: {
-        file: "fr",
-        terminalHelpTabAction: "Tab",
-        terminalHelpTabDesc: "autocomplete",
-        terminalHelpArrowUpAction: "↑",
-        terminalHelpArrowUpTabDesc: "previous command",
-        terminalHelpArrowDownAction: "↓",
-        terminalHelpArrowDownTabDesc: "next command",
-        terminalHelpCtrlAction: "Ctrl+C",
-        terminalHelpCtrlTabDesc: "cancel",
-      },
-    });
+        file: "fr" as const,
+        terminalHelpTabAction: "Tab" as const,
+        terminalHelpTabDesc: "autocomplete" as const,
+        terminalHelpArrowUpAction: "↑" as const,
+        terminalHelpArrowUpTabDesc: "previous command" as const,
+        terminalHelpArrowDownAction: "↓" as const,
+        terminalHelpArrowDownTabDesc: "next command" as const,
+        terminalHelpCtrlAction: "Ctrl+C" as const,
+        terminalHelpCtrlTabDesc: "cancel" as const,
+      } as const,
+    } as any);
 
-    const { container } = render(<Help />);
+    const { container }: { container: HTMLElement } = render(<Help />);
     commands.forEach(({ descFR, tab }) => {
-      expect(container.textContent).toContain(descFR);
-      expect(generateTabs).toHaveBeenCalledWith(tab);
+      expect(container.textContent as string).toContain(descFR as string);
+      expect(generateTabs as jest.Mock).toHaveBeenCalledWith(tab as number);
     });
   });
 
   test("renders additional terminal help instructions", () => {
-    const { container } = render(<Help />);
-    expect(container.textContent).toContain("Tab");
-    expect(container.textContent).toContain("autocomplete");
-    expect(container.textContent).toContain("↑");
-    expect(container.textContent).toContain("previous command");
-    expect(container.textContent).toContain("↓");
-    expect(container.textContent).toContain("next command");
-    expect(container.textContent).toContain("Ctrl+C");
-    expect(container.textContent).toContain("cancel");
+    const { container }: { container: HTMLElement } = render(<Help />);
+    expect(container.textContent as string).toContain("Tab" as string);
+    expect(container.textContent as string).toContain("autocomplete" as string);
+    expect(container.textContent as string).toContain("↑" as string);
+    expect(container.textContent as string).toContain("previous command" as string);
+    expect(container.textContent as string).toContain("↓" as string);
+    expect(container.textContent as string).toContain("next command" as string);
+    expect(container.textContent as string).toContain("Ctrl+C" as string);
+    expect(container.textContent as string).toContain("cancel" as string);
   });
 });

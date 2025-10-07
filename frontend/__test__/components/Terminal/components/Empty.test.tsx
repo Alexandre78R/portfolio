@@ -8,8 +8,7 @@ describe("Empty component", () => {
     const { container }: { container: HTMLElement } = render(<Empty />);
 
     const div: HTMLElement = container.firstChild as HTMLElement;
-    expect(div).toBeInTheDocument();
-
-    expect(div).toHaveClass("mb-1");
+    expect(div as HTMLElement).toBeInTheDocument();
+    expect(div as HTMLElement).toHaveClass("mb-1");
   });
 });

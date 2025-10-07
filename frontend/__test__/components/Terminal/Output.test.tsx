@@ -5,57 +5,57 @@ import { termContext } from "../../../src/components/Terminal/Terminal";
 import "@testing-library/jest-dom";
 
 jest.mock("../../../src/components/Terminal/components/Commands/Welcome", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="welcome">Welcome</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Help", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="help">Help</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Clear", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="clear">Clear</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Socials", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="socials">Socials</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Echo", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="echo">Echo</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Whoami", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="whoami">Whoami</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Themes", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="themes">Themes</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/About", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="about">About</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/Lang", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="lang">Lang</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/CV", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="cv">CV</div>,
 }));
 
 jest.mock("../../../src/components/Terminal/components/Commands/ProjectsCommand", () => ({
-  __esModule: true,
+  __esModule: true as const,
   default: () => <div data-testid="projects">Projects</div>,
 }));
 
@@ -73,60 +73,60 @@ describe("Output component", () => {
   };
 
   it("renders Help component for 'help' command", () => {
-    renderWithContext("help");
-    expect(screen.getByTestId("help")).toBeInTheDocument();
-    expect(screen.getByTestId("latest-output")).toBeInTheDocument();
+    renderWithContext("help" as string);
+    expect(screen.getByTestId("help" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByTestId("latest-output" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Welcome component for 'welcome'", () => {
-    renderWithContext("welcome");
-    expect(screen.getByTestId("welcome")).toBeInTheDocument();
+    renderWithContext("welcome" as string);
+    expect(screen.getByTestId("welcome" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Message usage for non-special cmd with args", () => {
-    renderWithContext("about", ["someArg"]);
-    const usage: HTMLElement = screen.getByTestId("usage-output");
-    expect(usage).toHaveTextContent("Usage: about");
+    renderWithContext("about", ["someArg"] as string[]);
+    const usage: HTMLElement = screen.getByTestId("usage-output" as string);
+    expect(usage as HTMLElement).toHaveTextContent("Usage: about" as string);
   });
 
   it("renders Socials for 'socials'", () => {
-    renderWithContext("socials");
-    expect(screen.getByTestId("socials")).toBeInTheDocument();
+    renderWithContext("socials" as string);
+    expect(screen.getByTestId("socials" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Echo for 'echo'", () => {
-    renderWithContext("echo");
-    expect(screen.getByTestId("echo")).toBeInTheDocument();
+    renderWithContext("echo" as string);
+    expect(screen.getByTestId("echo" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Whoami for 'whoami'", () => {
-    renderWithContext("whoami");
-    expect(screen.getByTestId("whoami")).toBeInTheDocument();
+    renderWithContext("whoami" as string);
+    expect(screen.getByTestId("whoami" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Themes for 'themes'", () => {
-    renderWithContext("themes");
-    expect(screen.getByTestId("themes")).toBeInTheDocument();
+    renderWithContext("themes" as string);
+    expect(screen.getByTestId("themes" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Lang for 'lang'", () => {
-    renderWithContext("lang");
-    expect(screen.getByTestId("lang")).toBeInTheDocument();
+    renderWithContext("lang" as string);
+    expect(screen.getByTestId("lang" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders CV for 'cv'", () => {
-    renderWithContext("cv");
-    expect(screen.getByTestId("cv")).toBeInTheDocument();
+    renderWithContext("cv" as string);
+    expect(screen.getByTestId("cv" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders Projects for 'projects'", () => {
-    renderWithContext("projects");
-    expect(screen.getByTestId("projects")).toBeInTheDocument();
+    renderWithContext("projects" as string);
+    expect(screen.getByTestId("projects" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("does not crash for unknown command", () => {
-    renderWithContext("foobar");
-    expect(screen.queryByTestId("latest-output")).toBeInTheDocument();
-    expect(screen.queryByTestId("usage-output")).not.toBeInTheDocument();
+    renderWithContext("foobar" as string);
+    expect(screen.queryByTestId("latest-output" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.queryByTestId("usage-output" as string) as HTMLElement).not.toBeInTheDocument();
   });
 });

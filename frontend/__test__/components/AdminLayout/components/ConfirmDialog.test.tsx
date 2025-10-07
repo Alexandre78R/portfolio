@@ -11,7 +11,7 @@ jest.mock('@/components/ModalCustom/ModalCustom', () => {
     )
   }
   ModalCustom.displayName = 'ModalCustom' as string
-  return ModalCustom
+  return ModalCustom as React.FC<{ open: boolean; onClose: () => void }>
 })
 
 jest.mock('@/components/Button/Button', () => {
@@ -28,12 +28,12 @@ jest.mock('@/components/Button/Button', () => {
     </button>
   )
   Button.displayName = 'Button' as string
-  return Button
+  return Button as React.FC<{ text: string; onClick: () => void; disable?: boolean; disabled?: boolean }>
 })
 
 describe('ConfirmDialog', () => {
   const onConfirmMock: jest.Mock = jest.fn()
-  const onCancelMock = jest.fn()
+  const onCancelMock: jest.Mock = jest.fn()
 
   beforeEach(() => {
     onConfirmMock.mockClear()
@@ -48,12 +48,12 @@ describe('ConfirmDialog', () => {
         description="Êtes-vous sûr ?"
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
-      />
+      /> as React.ReactElement
     )
 
-    expect(screen.getByTestId('modal')).toBeInTheDocument()
-    expect(screen.getByText('Supprimer l’élément')).toBeInTheDocument()
-    expect(screen.getByText('Êtes-vous sûr ?')).toBeInTheDocument()
+    expect(screen.getByTestId('modal' as string)as HTMLElement).toBeInTheDocument()
+    expect(screen.getByText('Supprimer l’élément' as string) as HTMLElement).toBeInTheDocument()
+    expect(screen.getByText('Êtes-vous sûr ?' as string) as HTMLElement).toBeInTheDocument()
   })
 
   it('renders default title if none is provided', () => {
@@ -63,11 +63,11 @@ describe('ConfirmDialog', () => {
         description="Test description"
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
-      />
+      /> as React.ReactElement
     )
 
-    expect(screen.getByText('Confirmation')).toBeInTheDocument()
-    expect(screen.getByText('Test description')).toBeInTheDocument()
+    expect(screen.getByText('Confirmation' as string) as HTMLElement).toBeInTheDocument()
+    expect(screen.getByText('Test description' as string) as HTMLElement).toBeInTheDocument()
   })
 
   it('renders custom button labels', () => {
@@ -79,7 +79,7 @@ describe('ConfirmDialog', () => {
         cancelLabel="Non"
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
-      />
+      /> as React.ReactElement
     )
 
     expect(screen.getByTestId('button-Oui')).toBeInTheDocument()
@@ -93,14 +93,14 @@ describe('ConfirmDialog', () => {
         description="Test"
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
-      />
+      /> as React.ReactElement
     )
 
-    fireEvent.click(screen.getByTestId('button-Annuler'))
-    fireEvent.click(screen.getByTestId('button-Confirmer'))
+    fireEvent.click(screen.getByTestId('button-Annuler' as string) as HTMLElement)
+    fireEvent.click(screen.getByTestId('button-Confirmer' as string) as HTMLElement)
 
-    expect(onCancelMock).toHaveBeenCalledTimes(1)
-    expect(onConfirmMock).toHaveBeenCalledTimes(1)
+    expect(onCancelMock as jest.Mock).toHaveBeenCalledTimes(1 as number)
+    expect(onConfirmMock as jest.Mock).toHaveBeenCalledTimes(1 as number)
   })
 
   it('disables buttons when disabled props are true', () => {
@@ -111,10 +111,10 @@ describe('ConfirmDialog', () => {
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
         cancelDisabled={true}
-        />
+        /> as React.ReactElement
     )
 
-    expect(screen.getByTestId('button-Annuler')).toBeDisabled()
+    expect(screen.getByTestId('button-Annuler' as string) as HTMLElement).toBeDisabled()
   })
 
   it('passes open prop to ModalCustom', () => {
@@ -124,9 +124,9 @@ describe('ConfirmDialog', () => {
         description="Test"
         onConfirm={onConfirmMock}
         onCancel={onCancelMock}
-      />
+      /> as React.ReactElement
     )
 
-    expect(screen.getByTestId('modal').getAttribute('data-open')).toBe('false')
+    expect(screen.getByTestId('modal' as string).getAttribute('data-open' as string) as string).toBe('false' as string)
   })
 })

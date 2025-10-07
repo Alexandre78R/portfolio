@@ -21,7 +21,7 @@ jest.mock(
       </div>
     );
     Mock.displayName = "HorizontalBarChart" as string;
-    return Mock;
+    return Mock as React.FC<{ labels: string[] }>;
   }
 );
 
@@ -69,38 +69,38 @@ describe("Dashboard Page", () => {
   };
 
   beforeEach(() => {
-    (useLang as jest.Mock).mockReturnValue({ translations });
+    (useLang as jest.Mock).mockReturnValue({ translations } as { translations: Record<string, string> });
   });
 
   it("renders loading state", () => {
-    (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({ loading: true });
-    render(<Dashboard />);
-    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({ loading: true } as { loading: boolean });
+    render(<Dashboard /> as React.ReactElement);
+    expect(screen.getByRole("progressbar" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders error state", () => {
     (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({
-      loading: false,
-      error: true,
+      loading: false as boolean,
+      error: true as boolean,
     });
-    render(<Dashboard />);
+    render(<Dashboard /> as React.ReactElement);
     expect(
-      screen.getByText(translations.messagePageDashBoardErreurData)
+      screen.getByText(translations.messagePageDashBoardErreurData as string)
     ).toBeInTheDocument();
   });
 
   it("renders dashboard stats", () => {
     (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({
-      loading: false,
-      error: false,
-      data: mockData,
+      loading: false as boolean,
+      error: false as boolean,
+      data: mockData as Record<string, any>,
     });
 
-    render(<Dashboard />);
+    render(<Dashboard /> as React.ReactElement);
 
-    expect(screen.getByText("Projects")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-    expect(screen.getByText("Admin")).toBeInTheDocument();
-    expect(screen.getByText("20%")).toBeInTheDocument();
+    expect(screen.getByText("Projects" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("5" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("Admin" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("20%" as string) as HTMLElement).toBeInTheDocument();
   });
 });

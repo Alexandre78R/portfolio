@@ -32,7 +32,7 @@ describe("AboutMe component", () => {
   beforeEach(() => {
     (useLang as jest.Mock).mockReturnValue({ translations });
 
-    jest.spyOn(window, "open").mockImplementation(() => null);
+    jest.spyOn(window as Window, "open").mockImplementation(() => null);
   });
 
   afterEach(() => {
@@ -40,32 +40,32 @@ describe("AboutMe component", () => {
   });
 
   it("renders title and descriptions", () => {
-    render(<AboutMe />);
+    render(<AboutMe /> as React.ReactElement);
 
-    expect(screen.getByText("About Me")).toBeInTheDocument();
-    expect(screen.getByText("Description 1")).toBeInTheDocument();
-    expect(screen.getByText("Description 2")).toBeInTheDocument();
-    expect(screen.getByText("Description 3")).toBeInTheDocument();
+    expect(screen.getByText("About Me" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("Description 1" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("Description 2" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("Description 3" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("renders CV button", () => {
-    render(<AboutMe />);
+    render(<AboutMe /> as React.ReactElement);
 
     expect(
-      screen.getByRole("button", { name: "Download CV" })
+      screen.getByRole("button" as keyof HTMLElementTagNameMap, { name: "Download CV" as string } as Partial<HTMLElement>)
     ).toBeInTheDocument();
   });
 
   it("opens CV PDF in new tab when button is clicked", () => {
-    render(<AboutMe />);
+    render(<AboutMe /> as React.ReactElement);
 
     fireEvent.click(
-      screen.getByRole("button", { name: "Download CV" })
+      screen.getByRole("button" as keyof HTMLElementTagNameMap, { name: "Download CV" as string } as Partial<HTMLElement>)
     );
 
     expect(window.open).toHaveBeenCalledWith(
-      "/Alexandre-Renard-CV.pdf",
-      "_blank"
+      "/Alexandre-Renard-CV.pdf" as string,
+      "_blank" as string
     );
   });
 });

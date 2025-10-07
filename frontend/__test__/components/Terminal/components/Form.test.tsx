@@ -11,9 +11,9 @@ describe("Form component", () => {
       </Form>
     );
 
-    const child: HTMLElement = screen.getByTestId("child");
-    expect(child).toBeInTheDocument();
-    expect(child).toHaveTextContent("Child Content");
+    const child: HTMLElement = screen.getByTestId("child" as string);
+    expect(child as HTMLElement).toBeInTheDocument();
+    expect(child as HTMLElement).toHaveTextContent("Child Content" as string);
   });
 
   it("applies the correct CSS class", () => {
@@ -24,8 +24,8 @@ describe("Form component", () => {
     );
 
     const formEl: HTMLElement | null = container.querySelector("form");
-    expect(formEl).toBeInTheDocument();
-    expect(formEl).toHaveClass("md:flex");
+    expect(formEl as HTMLElement).toBeInTheDocument();
+    expect(formEl as HTMLElement).toHaveClass("md:flex" as string);
   });
 
   it("calls onSubmit when form is submitted", () => {
@@ -37,8 +37,8 @@ describe("Form component", () => {
     );
 
     const formEl: HTMLElement | null = container.querySelector("form");
-    fireEvent.submit(formEl!);
+    fireEvent.submit(formEl! as HTMLElement);
 
-    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleSubmit as jest.Mock).toHaveBeenCalledTimes(1 as const);
   });
 });

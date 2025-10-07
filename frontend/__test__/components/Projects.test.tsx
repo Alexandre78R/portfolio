@@ -49,8 +49,8 @@ const mockProject: Project = {
   contentDisplay: "image.png" as unknown as string,
   github: "https://github.com/test/project" as unknown as string,
   skills: [
-    { name: "React", image: "/react.png" },
-    { name: "TypeScript", image: "/ts.png" },
+    { name: "React", image: "/react.png" } as { name: string; image: string },
+    { name: "TypeScript", image: "/ts.png" } as { name: string; image: string },
   ] as any[],
 } as Project;
 
@@ -64,7 +64,7 @@ describe("Projects component", () => {
       } as Record<string, string>,
     }as any);
 
-    process.env.NEXT_PUBLIC_API_URL = "http://localhost:3000";
+    process.env.NEXT_PUBLIC_API_URL = "http://localhost:3000" as string;
   });
 
   it("renders project title", () => {
@@ -76,34 +76,34 @@ describe("Projects component", () => {
   it("renders shortened description with see more button", () => {
     render(<Projects project={mockProject as any} />);
 
-    expect(screen.getByText(/A{150}\.\.\./)).toBeInTheDocument();
-    expect(screen.getByText("See more")).toBeInTheDocument();
+    expect(screen.getByText(/A{150}\.\.\./ as RegExp) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByText("See more" as string) as HTMLElement).toBeInTheDocument();
   });
 
   it("expands and collapses description text", () => {
     render(<Projects project={mockProject as any} />);
 
-    fireEvent.click(screen.getByText("See more"));
-    expect(screen.getByText(mockProject.description)).toBeInTheDocument();
+    fireEvent.click(screen.getByText("See more" as string));
+    expect(screen.getByText(mockProject.description as string)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("See less"));
-    expect(screen.getByText(/A{150}\.\.\./)).toBeInTheDocument();
+    fireEvent.click(screen.getByText("See less" as string));
+    expect(screen.getByText(/A{150}\.\.\./ as RegExp)).toBeInTheDocument();
   });
 
   it("renders github link when provided", () => {
-    render(<Projects project={mockProject as any} />);
+    render(<Projects project={mockProject as any} /> as React.ReactElement);
 
-    const link: HTMLAnchorElement = screen.getByTitle("Test Project - Github");
-    expect(link).toHaveAttribute("href", mockProject.github);
+    const link: HTMLAnchorElement = screen.getByTitle("Test Project - Github" as string) as HTMLAnchorElement;
+    expect(link).toHaveAttribute("href", mockProject.github as string);
   });
 
   it("toggles skills section when expand icon is clicked", () => {
-    render(<Projects project={mockProject as any} />);
+    render(<Projects project={mockProject as any} /> as React.ReactElement);
 
-    fireEvent.click(screen.getByTestId("expand-icon"));
+    fireEvent.click(screen.getByTestId("expand-icon" as string) as HTMLElement);
 
-    expect(screen.getByAltText("React")).toBeInTheDocument();
-    expect(screen.getByAltText("TypeScript")).toBeInTheDocument();
+    expect(screen.getByAltText("React" as string)).toBeInTheDocument();
+    expect(screen.getByAltText("TypeScript" as string)).toBeInTheDocument();
   });
 
   it("renders ReactPlayer when project type is video", () => {
@@ -116,6 +116,6 @@ describe("Projects component", () => {
       />
     );
 
-    expect(screen.getByTestId("react-player")).toBeInTheDocument();
+    expect(screen.getByTestId("react-player") as HTMLElement).toBeInTheDocument();
   });
 });

@@ -14,7 +14,7 @@ describe("CV command component", () => {
   let openSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    openSpy = jest.spyOn(window, "open").mockImplementation(() => null);
+    openSpy = jest.spyOn(window, "open" as const).mockImplementation(() => null as null);
   });
 
   afterAll(() => {
@@ -26,50 +26,50 @@ describe("CV command component", () => {
   });
 
   test("opens CV PDF when rerender is true and command is 'cv'", () => {
-    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
+    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"] as string[]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 }as any}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as { history: string[]; rerender: boolean; arg: string[]; index: number }}>
         <CV />
       </termContext.Provider>
     );
 
-    expect(openSpy).toHaveBeenCalledWith("/Alexandre-Renard-CV.pdf", "_blank");
+    expect(openSpy as jest.SpyInstance).toHaveBeenCalledWith("/Alexandre-Renard-CV.pdf" as string, "_blank" as string);
   });
 
   test("does not open PDF if rerender is false", () => {
-    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
+    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"] as string[]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: false, arg: [], index: 0 } as any}>
+      <termContext.Provider value={{ history: [], rerender: false, arg: [], index: 0 } as { history: string[]; rerender: boolean; arg: string[]; index: number }}>
         <CV />
       </termContext.Provider>
     );
 
-    expect(openSpy).not.toHaveBeenCalled();
+    expect(openSpy as jest.SpyInstance).not.toHaveBeenCalled();
   });
 
   test("does not open PDF if command is not 'cv'", () => {
-    (getCurrentCmdArry as jest.Mock).mockReturnValue(["ls"]);
+    (getCurrentCmdArry as jest.Mock).mockReturnValue(["ls"] as string[]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as any}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as { history: string[]; rerender: boolean; arg: string[]; index: number }}>
         <CV />
       </termContext.Provider>
     );
 
-    expect(openSpy).not.toHaveBeenCalled();
+    expect(openSpy as jest.SpyInstance).not.toHaveBeenCalled();
   });
 
   test("renders without crashing", () => {
-    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
+    (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"] as string[]);
 
     const { container }: { container: HTMLElement } = render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as any}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as { history: string[]; rerender: boolean; arg: string[]; index: number }}>
         <CV />
       </termContext.Provider>
     );
 
-    expect(container.firstChild).toBeNull();
+    expect(container.firstChild as HTMLElement).toBeNull();
   });
 });

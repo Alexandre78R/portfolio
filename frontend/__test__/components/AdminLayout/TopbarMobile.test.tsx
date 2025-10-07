@@ -9,21 +9,21 @@ describe('TopbarMobile', () => {
   ]
 
   it('renders correctly', () => {
-    render(<TopbarMobile activeTab="dashboard" navigation={navigationMock} />)
-    const container: HTMLElement = screen.getByText('Dashboard')
-    expect(container).toBeInTheDocument()
+    render(<TopbarMobile activeTab="dashboard" navigation={navigationMock} /> as React.ReactElement)
+    const container: HTMLElement = screen.getByText('Dashboard' as string)
+    expect(container as HTMLElement).toBeInTheDocument()
   })
 
   it('displays the correct name based on activeTab', () => {
-    render(<TopbarMobile activeTab="projects" navigation={navigationMock} />)
-    const span: HTMLElement = screen.getByText('Projects')
-    expect(span).toBeInTheDocument()
-    expect(span).toHaveClass('font-semibold text-lg capitaliz text-primary')
+    render(<TopbarMobile activeTab="projects" navigation={navigationMock} /> as React.ReactElement)
+    const span: HTMLElement = screen.getByText('Projects' as string)
+    expect(span as HTMLElement).toBeInTheDocument()
+    expect(span as HTMLElement).toHaveClass('font-semibold text-lg capitaliz text-primary')
   })
 
   it('renders nothing if activeTab does not match any navigation item', () => {
-    render(<TopbarMobile activeTab="nonexistent" navigation={navigationMock} />)
+    render(<TopbarMobile activeTab="nonexistent" navigation={navigationMock} /> as React.ReactElement)
     const span: HTMLElement | null = screen.queryByText(/./)
-    expect(span).toBeNull()
+    expect(span as HTMLElement | null).toBeNull()
   })
 })

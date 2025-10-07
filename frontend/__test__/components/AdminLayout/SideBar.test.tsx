@@ -58,44 +58,44 @@ describe('SideBar', () => {
   })
 
   it('renders all top-level items', () => {
-    render(<SideBar {...defaultProps} />)
-    expect(screen.getByText('Dashboard')).toBeInTheDocument()
-    expect(screen.getByText('Projets')).toBeInTheDocument()
+    render(<SideBar {...defaultProps} /> as React.ReactElement)
+    expect(screen.getByText('Dashboard') as RTCAnswerOptions).toBeInTheDocument()
+    expect(screen.getByText('Projets') as RTCAnswerOptions).toBeInTheDocument()
   })
 
   it('renders children only if menu is open', () => {
     const props = { ...defaultProps, openMenus: ['projects'] }
-    render(<SideBar {...props} />)
-    expect(screen.getByText('Voir projets')).toBeInTheDocument()
-    expect(screen.getByText('Créer projet')).toBeInTheDocument()
+    render(<SideBar {...props} /> as  React.ReactElement)
+    expect(screen.getByText('Voir projets') as RTCAnswerOptions).toBeInTheDocument()
+    expect(screen.getByText('Créer projet') as RTCAnswerOptions).toBeInTheDocument()
   })
 
   it('calls setActiveTab and setSidebarOpen when clicking on top-level item without children', () => {
-    render(<SideBar {...defaultProps} />)
-    fireEvent.click(screen.getByText('Dashboard'))
-    expect(setActiveTab).toHaveBeenCalledWith('dashboard')
-    expect(setSidebarOpen).toHaveBeenCalledWith(false)
+    render(<SideBar {...defaultProps} /> as React.ReactElement)
+    fireEvent.click(screen.getByText('Dashboard' as string) as HTMLElement)
+    expect(setActiveTab as jest.Mock).toHaveBeenCalledWith('dashboard' as string)
+    expect(setSidebarOpen as jest.Mock).toHaveBeenCalledWith(false as boolean)
   })
 
   it('toggles menu open when clicking on top-level item with children', () => {
     const props = { ...defaultProps, openMenus: [] }
-    render(<SideBar {...props} />)
-    fireEvent.click(screen.getByText('Projets'))
-    expect(setOpenMenus).toHaveBeenCalledWith(expect.any(Function))
+    render(<SideBar {...props} /> as React.ReactElement)
+    fireEvent.click(screen.getByText('Projets' as string) as HTMLElement)
+    expect(setOpenMenus as jest.Mock).toHaveBeenCalledWith(expect.any(Function))
   })
 
   it('does not allow clicking disabled child items', () => {
     const props = { ...defaultProps, openMenus: ['projects'] }
-    render(<SideBar {...props} />)
+    render(<SideBar {...props} /> as React.ReactElement)
     const disabledButton: HTMLElement = screen.getByText('Créer projet')
     fireEvent.click(disabledButton)
-    expect(setActiveTab).not.toHaveBeenCalled()
-    expect(setSidebarOpen).not.toHaveBeenCalled()
+    expect(setActiveTab as jest.Mock).not.toHaveBeenCalled()
+    expect(setSidebarOpen as jest.Mock).not.toHaveBeenCalled()
   })
 
   it('renders icon for each item', () => {
-    render(<SideBar {...defaultProps} />)
+    render(<SideBar {...defaultProps} /> as React.ReactElement)
     const icons: HTMLElement[] = screen.getAllByTestId('icon')
-    expect(icons.length).toBeGreaterThan(0)
+    expect(icons.length as number).toBeGreaterThan(0)
   })
 })

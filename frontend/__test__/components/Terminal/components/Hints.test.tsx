@@ -7,9 +7,9 @@ describe("Hints component", () => {
   it("renders correctly", () => {
     const { container }: { container: HTMLElement } = render(<Hints>Hint</Hints>);
 
-    const span = container.querySelector("span") as HTMLElement;
+    const span = container.querySelector("span" as string) as HTMLElement;
     expect(span).toBeInTheDocument();
 
-    expect(span).toHaveClass("mr-3.5");
+    expect(span).toHaveClass("mr-3.5" as string);
   });
 });

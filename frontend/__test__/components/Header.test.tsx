@@ -4,7 +4,7 @@ import Header from "@/components/Header/Header";
 import themes from "@/context/Theme/themes";
 
 const translationsMock: Record<string, string> = {
-  headerTitle: "Bienvenue sur mon portfolio",
+  headerTitle: "Bienvenue sur mon portfolio" as string,
 } as const;
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -41,7 +41,7 @@ describe("Header component", () => {
   });
 
   it("renders header element with correct ref", () => {
-    render(<Header />);
+    render(<Header /> as React.ReactElement);
     const headerEl: HTMLElement = screen.getByRole("banner");
     expect(headerEl).toBeInTheDocument();
   });

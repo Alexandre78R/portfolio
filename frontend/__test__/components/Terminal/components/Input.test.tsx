@@ -14,27 +14,27 @@ describe("Input component", () => {
   it("renders HomeTerminal and input", () => {
     render(<Input placeholder="Type here" />);
 
-    expect(screen.getByTestId("home-terminal")).toBeInTheDocument();
+    expect(screen.getByTestId("home-terminal" as string) as HTMLElement).toBeInTheDocument();
 
     const input: HTMLInputElement = screen.getByPlaceholderText("Type here") as HTMLInputElement;
-    expect(input).toBeInTheDocument();
+    expect(input as HTMLElement).toBeInTheDocument();
 
-    expect(input).toHaveClass("flex-grow", "inputTerminal");
+    expect(input as HTMLInputElement).toHaveClass("flex-grow", "inputTerminal");
   });
 
   it("supports ref forwarding", () => {
     const ref: React.RefObject<HTMLInputElement> = createRef<HTMLInputElement>();
-    render(<Input ref={ref} />);
+    render(<Input ref={ref} /> as React.ReactElement);
 
     expect(ref.current).toBeInstanceOf(HTMLInputElement);
   });
 
   it("passes additional props to input", () => {
-    render(<Input type="text" placeholder="Test input" />);
+    render(<Input type="text" placeholder="Test input" /> as React.ReactElement);
 
     const input: HTMLInputElement = screen.getByPlaceholderText("Test input") as HTMLInputElement;
 
     // Vérifie le type texte
-    expect(input).toHaveAttribute("type", "text");
+    expect(input as HTMLInputElement).toHaveAttribute("type", "text");
   });
 });

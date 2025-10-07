@@ -13,8 +13,8 @@ describe("CmdNotFound component", () => {
     render(<CmdNotFound cmdH={cmdH} />);
 
     const messageWrapper: HTMLElement = screen.getByTestId("message");
-    expect(messageWrapper).toBeInTheDocument();
+    expect(messageWrapper as HTMLElement).toBeInTheDocument();
 
-    expect(messageWrapper).toHaveTextContent(`Command not found: ${cmdH}`);
+    expect(messageWrapper as HTMLElement).toHaveTextContent(`Command not found: ${cmdH}`);
   });
 });

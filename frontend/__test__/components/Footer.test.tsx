@@ -26,19 +26,19 @@ jest.mock("@mui/icons-material/LinkedIn", () => ({
 // ----- Tests -----
 describe("Footer component", () => {
   it("renders the footer title", () => {
-    render(<Footer />);
+    render(<Footer /> as React.ReactElement);
     expect(screen.getByText(translationsMock.footerTitle)).toBeInTheDocument();
   });
 
   it("renders the admin link with correct text", () => {
-    render(<Footer />);
+    render(<Footer /> as React.ReactElement);
     const adminLink: HTMLElement = screen.getByText(translationsMock.footerAdmin);
     expect(adminLink).toBeInTheDocument();
     expect(adminLink).toHaveAttribute("href", "/admin");
   });
 
   it("renders the networks section with GitHub and LinkedIn icons", () => {
-    render(<Footer />);
+    render(<Footer /> as React.ReactElement);
     expect(screen.getByText(translationsMock.footerNetworks)).toBeInTheDocument();
     expect(screen.getByTestId("github-icon")).toBeInTheDocument();
     expect(screen.getByTestId("linkedin-icon")).toBeInTheDocument();
@@ -46,14 +46,14 @@ describe("Footer component", () => {
 
   it("renders the copyright with current year", () => {
     const currentYear: number = new Date().getFullYear();
-    render(<Footer />);
+    render(<Footer /> as React.ReactElement);
     expect(
       screen.getByText(`© 2024 - ${currentYear} ${translationsMock.footerCopyright}`)
     ).toBeInTheDocument();
   });
 
   it("has correct links for GitHub and LinkedIn", () => {
-    render(<Footer />);
+    render(<Footer /> as React.ReactElement);
     const githubLink: HTMLElement = screen.getByTitle("Github");
     const linkedinLink: HTMLElement = screen.getByTitle("Linkedin");
 

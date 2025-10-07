@@ -13,37 +13,37 @@ describe("HomeTerminal component", () => {
   it("renders correctly with wide screen", () => {
     Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 500 });
 
-    render(<HomeTerminal />);
+    render(<HomeTerminal /> as React.ReactElement);
 
     const visitorSpan: HTMLElement = screen.getByText("visitor");
     const domainSpan: HTMLElement = screen.getByText("alexandre-renard.dev");
 
-    expect(visitorSpan).toBeInTheDocument();
-    expect(visitorSpan).toHaveClass("text-secondary");
+    expect(visitorSpan as HTMLElement).toBeInTheDocument();
+    expect(visitorSpan as HTMLElement).toHaveClass("text-secondary");
 
-    expect(domainSpan).toBeInTheDocument();
-    expect(domainSpan).toHaveClass("text-primary");
+    expect(domainSpan as HTMLElement).toBeInTheDocument();
+    expect(domainSpan as HTMLElement).toHaveClass("text-primary");
   });
 
   it("renders correctly with narrow screen", () => {
     Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 300 });
 
-    render(<HomeTerminal />);
+    render(<HomeTerminal /> as React.ReactElement);
 
     const visitorSpan: HTMLElement = screen.getByText("vis.");
     const domainSpan: HTMLElement = screen.getByText("a-renard.dev");
 
-    expect(visitorSpan).toBeInTheDocument();
-    expect(visitorSpan).toHaveClass("text-secondary");
+    expect(visitorSpan as HTMLElement).toBeInTheDocument();
+    expect(visitorSpan as HTMLElement).toHaveClass("text-secondary");
 
-    expect(domainSpan).toBeInTheDocument();
-    expect(domainSpan).toHaveClass("text-primary");
+    expect(domainSpan as HTMLElement).toBeInTheDocument();
+    expect(domainSpan as HTMLElement).toHaveClass("text-primary");
   });
 
   it("renders all text content in proper order", () => {
     Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 500 });
 
     const { container }: { container: HTMLElement } = render(<HomeTerminal />);
-    expect(container.textContent).toBe("visitor@alexandre-renard.dev :~$");
+    expect(container.textContent as string).toBe("visitor@alexandre-renard.dev :~$");
   });
 });

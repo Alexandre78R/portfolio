@@ -46,73 +46,73 @@ jest.mock("@/components/Terminal/components/Empty", () => ({
 
 describe("Terminal component", () => {
   it("renders correctly with initial command", () => {
-    render(<Terminal />);
-    expect(screen.getByTestId("wrapper")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("")).toBeInTheDocument();
+    render(<Terminal /> as React.ReactElement);
+    expect(screen.getByTestId("wrapper" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByDisplayValue("" as string) as HTMLElement).toBeInTheDocument();
     // Commande initiale "welcome" est dans l'historique
-    expect(screen.getByTestId("input-command")).toHaveTextContent("welcome");
+    expect(screen.getByTestId("input-command" as string) as HTMLElement).toHaveTextContent("welcome");
   });
 
   it("updates input value on change", () => {
-    render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "help" } });
-    expect(input.value).toBe("help");
+    render(<Terminal /> as React.ReactElement);
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "help" } as HTMLInputElement } as { target: HTMLInputElement } );
+    expect(input.value as string).toBe("help" as string);
   });
 
   it("submits command and clears input", () => {
-    render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "help" } });
+    render(<Terminal /> as React.ReactElement);
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "help" } as HTMLInputElement } as { target: HTMLInputElement } );
     fireEvent.submit(input.closest("form")!);
-    expect(screen.getByDisplayValue("")).toBeInTheDocument();
-    expect(screen.getByTestId("output-0")).toHaveTextContent("Output: help");
+    expect(screen.getByDisplayValue("" as string) as HTMLElement).toBeInTheDocument();
+    expect(screen.getByTestId("output-0" as string) as HTMLElement).toHaveTextContent("Output: help");
   });
 
   it("shows CmdNotFound for invalid command", () => {
-    render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "foobar" } });
-    fireEvent.submit(input.closest("form")!);
+    render(<Terminal /> as React.ReactElement);
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "foobar" } } as { target: HTMLInputElement } );
+    fireEvent.submit(input.closest("form" as string)!) ;
     // expect(screen.getByTestId("not-found-1")).toHaveTextContent("foobar");
-    expect(screen.getByTestId("not-found-foobar")).toHaveTextContent("foobar");
+    expect(screen.getByTestId("not-found-foobar" as string) as HTMLElement).toHaveTextContent("foobar");
   });
 
   it("handles arrow up and down for history navigation", () => {
     render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
 
-    fireEvent.change(input, { target: { value: "help" as const } as HTMLInputElement } as any);
-    fireEvent.submit(input.closest("form")!);
+    fireEvent.change(input, { target: { value: "help" as const } as HTMLInputElement } as { target: HTMLInputElement });
+    fireEvent.submit(input.closest("form" as string)!);
 
     // ArrowUp should show last command
-    fireEvent.keyDown(input, { key: "ArrowUp", code: "ArrowUp" } as any);
-    expect(input.value).toBe("help");
+    fireEvent.keyDown(input, { key: "ArrowUp", code: "ArrowUp" } as { key: string, code: string });
+    expect(input.value).toBe("help" as string);
 
     // ArrowDown should clear input when at newest
     fireEvent.keyDown(input, { key: "ArrowDown" as const, code: "ArrowDown" as const });
-    expect(input.value).toBe("");
+    expect(input.value).toBe("" as string);
   });
 
   it("clears history on Ctrl+L", () => {
-    render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
+    render(<Terminal /> as React.ReactElement);
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
 
-    fireEvent.change(input, { target: { value: "help" } as HTMLInputElement } as any);
-    fireEvent.submit(input.closest("form")!);
+    fireEvent.change(input, { target: { value: "help" } as HTMLInputElement } as { target: HTMLInputElement });
+    fireEvent.submit(input.closest("form" as string)!);
 
     // Ctrl+L
-    fireEvent.keyDown(input, { key: "l", ctrlKey: true } as any);
-    expect(screen.getByTestId("input-command")).toHaveTextContent("welcome");
+    fireEvent.keyDown(input, { key: "l", ctrlKey: true } as { key: string, ctrlKey: boolean });
+    expect(screen.getByTestId("input-command" as string)).toHaveTextContent("welcome");
   });
 
   it("autocompletes command on Tab", () => {
-    render(<Terminal />);
-    const input: HTMLInputElement = screen.getByTitle("terminal-input") as HTMLInputElement;
+    render(<Terminal /> as React.ReactElement);
+    const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
 
-    fireEvent.change(input, { target: { value: "he" } as HTMLInputElement } as any);
-    fireEvent.keyDown(input, { key: "Tab" } as any);
+    fireEvent.change(input, { target: { value: "he" } as HTMLInputElement } as { target: HTMLInputElement });
+    fireEvent.keyDown(input, { key: "Tab" } as { key: string });
 
-    expect(input.value).toBe("help");
+    expect(input.value).toBe("help" as string);
   });
 });
