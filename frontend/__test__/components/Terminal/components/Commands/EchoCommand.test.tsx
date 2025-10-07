@@ -18,7 +18,7 @@ const renderWithContext : (args: string[]) => ReturnType<typeof render> = (args:
   );
 };
 
-describe("Echo component", () => {
+describe("Echo command component", () => {
   test("renders a single argument correctly", () => {
     renderWithContext(["hello"] as string[]);
     const message: HTMLElement = screen.getByText("hello");
