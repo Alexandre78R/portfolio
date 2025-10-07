@@ -12,21 +12,21 @@ const renderWithContext: (contextValue: any) => ReturnType<typeof render> = (con
   );
 };
 
-describe("Clear component", () => {
+describe("Clear command component", () => {
   test("calls clearHistory if arg is empty", () => {
     const clearHistoryMock: jest.Mock = jest.fn();
     renderWithContext({ arg: [], clearHistory: clearHistoryMock } as any);
 
     expect(clearHistoryMock).toHaveBeenCalledTimes(1);
 
-    expect(screen.queryByText("Usage: clear")).toBeNull();
+    expect(screen.queryByText("Usage: clear" as string)).toBeNull();
   });
 
   test("renders usage message if arg is not empty", () => {
     const clearHistoryMock: jest.Mock = jest.fn();
     renderWithContext({ arg: ["something"], clearHistory: clearHistoryMock } as any);
 
-    expect(screen.getByText("Usage: clear")).toBeInTheDocument();
+    expect(screen.getByText("Usage: clear" as string)).toBeInTheDocument();
 
     expect(clearHistoryMock).not.toHaveBeenCalled();
   });

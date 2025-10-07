@@ -10,7 +10,7 @@ jest.mock("@/components/Terminal/util", () => ({
 
 import { getCurrentCmdArry } from "@/components/Terminal/util";
 
-describe("CV component", () => {
+describe("CV command component", () => {
   let openSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -29,7 +29,7 @@ describe("CV component", () => {
     (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 }}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 }as any}>
         <CV />
       </termContext.Provider>
     );
@@ -41,7 +41,7 @@ describe("CV component", () => {
     (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: false, arg: [], index: 0 }}>
+      <termContext.Provider value={{ history: [], rerender: false, arg: [], index: 0 } as any}>
         <CV />
       </termContext.Provider>
     );
@@ -53,7 +53,7 @@ describe("CV component", () => {
     (getCurrentCmdArry as jest.Mock).mockReturnValue(["ls"]);
 
     render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 }}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as any}>
         <CV />
       </termContext.Provider>
     );
@@ -65,7 +65,7 @@ describe("CV component", () => {
     (getCurrentCmdArry as jest.Mock).mockReturnValue(["cv"]);
 
     const { container }: { container: HTMLElement } = render(
-      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 }}>
+      <termContext.Provider value={{ history: [], rerender: true, arg: [], index: 0 } as any}>
         <CV />
       </termContext.Provider>
     );
