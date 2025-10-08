@@ -30,20 +30,20 @@ const Themes: React.FC = (): React.ReactNode => {
   const checkArg = () =>
     isArgInvalid(arg, "set", tabThemesName()) ? <Usage cmd="themes" /> : null;
 
-  return arg.length > 2
-    ? checkArg()
-    : checkArg() && (
-        <Message data-testid="themes">
-          <div className="flex flex-wrap">
-            {tabThemes().map((theme) => (
-              <span className="mr-3.5 mb-1 whitespace-nowrap" key={theme.id}>
-                {theme.name}
-              </span>
-            ))}
-          </div>
-          <Usage cmd="themes" />
-        </Message>
-      );
+    return arg.length > 2 ? (
+      checkArg()
+    ) : (
+      <Message data-testid="themes">
+        <div className="flex flex-wrap">
+          {tabThemes().map((theme) => (
+            <span className="mr-3.5 mb-1 whitespace-nowrap" key={theme.id}>
+              {theme.name}
+            </span>
+          ))}
+        </div>
+        <Usage cmd="themes" />
+      </Message>
+    );
 };
 
 export default Themes;
