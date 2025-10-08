@@ -71,7 +71,7 @@ export const commands: Command = [
   },
 ];
 
-type Term = {
+export type Term = {
   arg: string[];
   history: string[];
   rerender: boolean;
