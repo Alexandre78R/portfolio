@@ -13,25 +13,25 @@ describe("WhoamiEducation Component", () => {
   
   const mockEducations: EducationType[] = [
     {
-        id: 1,
-        typeFR: "Éducation",
-        typeEN: "Education",
-        titleFR: "Master Informatique",
-        titleEN: "Master Computer Science",
-        title: "Master Informatique",
-        diplomaLevelFR: "Master",
-        diplomaLevelEN: "Master",
-        diplomaLevel: "Master",
-        school: "Université Paris",
-        location: "Paris, France",
-        year: 2024,
-        startDateFR: "Septembre 2023",
-        startDateEN: "September 2023",
-        startDate: "Septembre 2023",
-        endDateFR: "Juin 2024",
-        endDateEN: "June 2024",
-        endDate: "Juin 2024",
-        month: 9,
+      id: 1,
+      typeFR: "Éducation",
+      typeEN: "Education",
+      titleFR: "Master Informatique",
+      titleEN: "Master Computer Science",
+      title: "Master Informatique",
+      diplomaLevelFR: "Master",
+      diplomaLevelEN: "Master",
+      diplomaLevel: "Master",
+      school: "Université Paris",
+      location: "Paris, France",
+      year: 2024,
+      startDateFR: "Septembre 2023",
+      startDateEN: "September 2023",
+      startDate: "Septembre 2023",
+      endDateFR: "Juin 2024",
+      endDateEN: "June 2024",
+      endDate: "Juin 2024",
+      month: 9,
     },
   ];
 
@@ -46,7 +46,6 @@ describe("WhoamiEducation Component", () => {
       </Provider>
     );
 
-    // Vérifie qu'il n'y a pas d'éléments d'éducation
     expect(screen.queryByText("Bachelor of Science")).not.toBeInTheDocument();
   });
 
@@ -61,12 +60,10 @@ describe("WhoamiEducation Component", () => {
       </Provider>
     );
 
-    // Vérifie que chaque titre, année, école et lieu sont présents
     mockEducations.forEach((edu) => {
-      expect(screen.getByText(edu.year)).toBeInTheDocument();
-      expect(screen.getByText(edu.title)).toBeInTheDocument();
-      expect(screen.getByText(edu.school)).toBeInTheDocument();
-      expect(screen.getByText(`- ${edu.location}`)).toBeInTheDocument();
+      expect(screen.getByText(edu.year as number) as HTMLElement).toBeInTheDocument();
+      expect(screen.getByText(edu.school as string) as HTMLElement).toBeInTheDocument();
+      expect(screen.getByText(`- ${edu.location}` as string) as HTMLElement).toBeInTheDocument();
     });
   });
 });
