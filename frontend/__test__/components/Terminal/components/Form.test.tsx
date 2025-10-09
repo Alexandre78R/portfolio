@@ -37,8 +37,8 @@ describe("Form component", () => {
     );
 
     const formEl: HTMLElement | null = container.querySelector("form");
-    fireEvent.submit(formEl! as HTMLElement);
+    fireEvent.submit(formEl! as HTMLElement) as unknown;
 
-    expect(handleSubmit as jest.Mock).toHaveBeenCalledTimes(1 as const);
+    expect(handleSubmit as jest.Mock).toHaveBeenCalledTimes(1 as const) as unknown;
   });
 });

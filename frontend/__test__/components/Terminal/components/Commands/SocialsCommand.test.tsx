@@ -3,13 +3,14 @@ import { render, screen } from "@testing-library/react";
 import Socials from "@/components/Terminal/components/Commands/Socials";
 import { termContext } from "@/components/Terminal/Terminal";
 import * as util from "@/components/Terminal/util";
+import { Term } from "@/components/Terminal/Terminal";
 
 // ---------- mocks ----------
 jest.mock("@/components/Terminal/util", () => ({
-  getCurrentCmdArry: jest.fn(),
-  checkRedirect: jest.fn(),
-  isArgInvalid: jest.fn(),
-  generateTabs: jest.fn(() => "   "),
+  getCurrentCmdArry: jest.fn() as typeof util.getCurrentCmdArry,
+  checkRedirect: jest.fn() as typeof util.checkRedirect,
+  isArgInvalid: jest.fn() as typeof util.isArgInvalid,
+  generateTabs: jest.fn(() => "   ") as typeof util.generateTabs,
 }));
 
 jest.mock("@/components/Terminal/components/Usage", () => {
@@ -29,7 +30,7 @@ jest.mock("@/components/Terminal/components/Message", () => {
 
   return {
     __esModule: true as boolean,
-    Message: MessageMock, // export nommé
+    Message: MessageMock as React.FC<unknown>,
   };
 });
 
@@ -58,7 +59,7 @@ describe("Socials command", () => {
       arg: [] as string[],
       history: [] as string[],
       rerender: false as boolean,
-    });
+    } as Term);
 
     expect(screen.getByTestId("socials" as string) as HTMLElement).toBeInTheDocument();
     expect(screen.getByText("1. GitHub" as string) as HTMLElement).toBeInTheDocument();

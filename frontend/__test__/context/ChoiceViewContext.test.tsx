@@ -11,15 +11,7 @@ import {
   ChoiceViewProvider,
   useChoiceView,
 } from "@/context/ChoiceView/ChoiceViewContext";
-
-type TestComponentProps = Record<string, never>;
-
-type LocalStorageMock = {
-  getItem: jest.Mock<string | null, [string]>;
-  setItem: jest.Mock<void, [string, string]>;
-  removeItem: jest.Mock<void, [string]>;
-  clear: jest.Mock<void, []>;
-};
+import { TestComponentProps, LocalStorageMock } from "./context.types";
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const { selectedView, setSelectedView }: { selectedView: string; setSelectedView: (view: string) => void; } = useChoiceView();

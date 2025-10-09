@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { UserProvider, useUser } from "@/context/UserContext/UserContext";
-import { GetMeQuery } from "@/types/graphql";
+import { UseGetMeQueryMock } from "./context.types";
 
 const mockRefetch: jest.Mock = jest.fn();
 
@@ -15,13 +15,6 @@ jest.mock("@/types/graphql", () => {
 });
 
 import { useGetMeQuery } from "@/types/graphql";
-
-type UseGetMeQueryMock = {
-  data?: GetMeQuery;
-  loading: boolean;
-  error: Error | null;
-  refetch: jest.Mock;
-};
 
 const TestComponent: React.FC<{ children?: ReactNode }> = () => {
   const { user, loading, error, refetch } = useUser();

@@ -2,13 +2,12 @@ import React from "react";
 import { render } from "@testing-library/react";
 import CV from "@/components/Terminal/components/Commands/CV";
 import { termContext } from "@/components/Terminal/Terminal";
+import { getCurrentCmdArry } from "@/components/Terminal/util";
 
 jest.mock("@/components/Terminal/util", () => ({
   getCurrentCmdArry: jest.fn() as jest.Mock,
   checkRedirect: jest.fn() as jest.Mock,
 }));
-
-import { getCurrentCmdArry } from "@/components/Terminal/util";
 
 describe("CV command component", () => {
   let openSpy: jest.SpyInstance;

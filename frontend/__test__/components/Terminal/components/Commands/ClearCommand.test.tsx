@@ -26,7 +26,7 @@ describe("Clear command component", () => {
     const clearHistoryMock: jest.Mock = jest.fn();
     renderWithContext({ arg: ["something"], clearHistory: clearHistoryMock } as { arg: string[]; clearHistory: () => void });
 
-    expect(screen.getByText("Usage: clear" as const)).toBeInTheDocument();
+    expect(screen.getByText("Usage: clear" as const) as HTMLElement).toBeInTheDocument();
 
     expect(clearHistoryMock as jest.Mock).not.toHaveBeenCalled();
   });

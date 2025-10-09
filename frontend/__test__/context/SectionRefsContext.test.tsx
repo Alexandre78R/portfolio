@@ -1,13 +1,11 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
 import {
   SectionRefsProvider,
   useSectionRefs,
 } from "@/context/SectionRefs/SectionRefsContext";
-
-type TestComponentProps = Record<string, never>;
+import { TestComponentProps } from "./context.types";
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const {

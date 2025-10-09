@@ -1,17 +1,18 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Help from "@/components/Terminal/components/Commands/Help";
-
 import { commands } from "@/components/Terminal/Terminal";
 import { generateTabs } from "@/components/Terminal/util";
+import Lang from "@/lang/typeLang";
+import { Command } from "@/components/Terminal/Terminal";
 
 // Mock module Terminal
 jest.mock("@/components/Terminal/Terminal", () => ({
   commands: [
     { cmd: "echo", descEN: "Echo text", descFR: "Affiche texte", tab: 2 },
     { cmd: "clear", descEN: "Clear screen", descFR: "Efface écran", tab: 3 },
-  ] as any[],
-} as const));
+  ] as Command,
+}));
 
 // Mock module util
 jest.mock("@/components/Terminal/util", () => ({
@@ -22,17 +23,17 @@ jest.mock("@/components/Terminal/util", () => ({
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
     translations: {
-      file: "en" as const,
-      terminalHelpTabAction: "Tab" as const,
-      terminalHelpTabDesc: "autocomplete" as const,
-      terminalHelpArrowUpAction: "↑" as const,
-      terminalHelpArrowUpTabDesc: "previous command" as const,
-      terminalHelpArrowDownAction: "↓" as const,
-      terminalHelpArrowDownTabDesc: "next command" as const,
-      terminalHelpCtrlAction: "Ctrl+C" as const,
-      terminalHelpCtrlTabDesc: "cancel" as const,
-    }as const,
-  } as any)),
+      file: "en" as string,
+      terminalHelpTabAction: "Tab" as string,
+      terminalHelpTabDesc: "autocomplete" as string,
+      terminalHelpArrowUpAction: "↑" as string,
+      terminalHelpArrowUpTabDesc: "previous command" as string,
+      terminalHelpArrowDownAction: "↓" as string,
+      terminalHelpArrowDownTabDesc: "next command" as string,
+      terminalHelpCtrlAction: "Ctrl+C" as string,
+      terminalHelpCtrlTabDesc: "cancel" as string,
+    }as Lang,
+  } as  const)),
 }as const));
 
 describe("Help command component", () => {
@@ -55,16 +56,16 @@ describe("Help command component", () => {
     // @ts-ignore
     require("@/context/Lang/LangContext").useLang.mockReturnValue({
       translations: {
-        file: "fr" as const,
-        terminalHelpTabAction: "Tab" as const,
-        terminalHelpTabDesc: "autocomplete" as const,
-        terminalHelpArrowUpAction: "↑" as const,
-        terminalHelpArrowUpTabDesc: "previous command" as const,
-        terminalHelpArrowDownAction: "↓" as const,
-        terminalHelpArrowDownTabDesc: "next command" as const,
-        terminalHelpCtrlAction: "Ctrl+C" as const,
-        terminalHelpCtrlTabDesc: "cancel" as const,
-      } as const,
+        file: "fr" as string,
+        terminalHelpTabAction: "Tab" as string,
+        terminalHelpTabDesc: "autocomplete" as string,
+        terminalHelpArrowUpAction: "↑" as string,
+        terminalHelpArrowUpTabDesc: "previous command" as string,
+        terminalHelpArrowDownAction: "↓" as string,
+        terminalHelpArrowDownTabDesc: "next command" as string,
+        terminalHelpCtrlAction: "Ctrl+C" as string,
+        terminalHelpCtrlTabDesc: "cancel" as string,
+      } as Lang,
     } as any);
 
     const { container }: { container: HTMLElement } = render(<Help />);

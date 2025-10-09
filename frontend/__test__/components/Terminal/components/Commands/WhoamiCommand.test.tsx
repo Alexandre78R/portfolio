@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import Whoami from "@/components/Terminal/components/Commands/Whoami";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 jest.mock(
   "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiError",
@@ -45,11 +46,11 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 // ===================== Test =====================
 describe("Whoami Component", () => {
-  const translationsMock = {
+  const translationsMock : Lang = {
     terminalWhoamiNotArg: "Aucun argument fourni" as string,
     terminalWhoamiMaxOneArg: "Maximum un argument" as string,
     terminalWhoamiChoiceNotExiste: "Choix inexistant"as string,
-  };
+  }  as Lang;
 
   beforeEach(() => {
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });

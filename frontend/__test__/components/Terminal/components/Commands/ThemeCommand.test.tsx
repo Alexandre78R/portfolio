@@ -70,6 +70,6 @@ describe("Themes commandes Component", () => {
     const contextValue = { arg: ["themes", "set", "Dark"], history: [], rerender: 1 };
     renderWithContext(contextValue as { arg : string[], history : [], rerender : number });
 
-    expect(toggleThemeMock).toHaveBeenCalledWith("Dark");
+    expect(toggleThemeMock as jest.Mock).toHaveBeenCalledWith("Dark" as string);
   });
 });

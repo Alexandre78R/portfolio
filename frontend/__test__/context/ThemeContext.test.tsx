@@ -6,18 +6,9 @@ import {
   waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
 import { ThemeProvider, useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
-
-type TestComponentProps = Record<string, never>;
-
-type LocalStorageMock = {
-  getItem: jest.Mock<string | null, [string]>;
-  setItem: jest.Mock<void, [string, string]>;
-  removeItem: jest.Mock<void, [string]>;
-  clear: jest.Mock<void, []>;
-};
+import { TestComponentProps, LocalStorageMock } from "./context.types";
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const { theme, toggleTheme } = useTheme();

@@ -26,7 +26,7 @@ describe("Input component", () => {
     const ref: React.RefObject<HTMLInputElement> = createRef<HTMLInputElement>();
     render(<Input ref={ref} /> as React.ReactElement);
 
-    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+    expect(ref.current as unknown).toBeInstanceOf(HTMLInputElement as unknown);
   });
 
   it("passes additional props to input", () => {
@@ -34,7 +34,6 @@ describe("Input component", () => {
 
     const input: HTMLInputElement = screen.getByPlaceholderText("Test input") as HTMLInputElement;
 
-    // Vérifie le type texte
     expect(input as HTMLInputElement).toHaveAttribute("type", "text");
   });
 });

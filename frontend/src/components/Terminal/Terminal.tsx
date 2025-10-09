@@ -11,7 +11,7 @@ import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
 
-type Command = {
+export type Command = {
   cmd: string;
   descEN: string;
   descFR: string;

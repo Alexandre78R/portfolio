@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Footer from "@/components/Footer/Footer";
+// import Lang  from "@/lang/typeLang";
 
 const translationsMock: Record<string, string> = {
   footerTitle: "Footer Test" as string,

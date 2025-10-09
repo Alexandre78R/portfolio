@@ -6,12 +6,10 @@ import {
   waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-
 import { LangProvider, useLang } from "@/context/Lang/LangContext";
 import fr from "@/lang/fr";
 import en from "@/lang/en";
-
-type TestComponentProps = Record<string, never>;
+import { TestComponentProps, LocalStorageMock } from "./context.types";
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
   const { lang, translations, listLang, setLang }: { lang: string; translations: Record<string, string>; listLang: string[]; setLang: (lang: string) => void; } = useLang();
@@ -33,13 +31,6 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
       </button>
     </div>
   );
-};
-
-type LocalStorageMock = {
-  getItem: jest.Mock<string | null, [string]>;
-  setItem: jest.Mock<void, [string, string]>;
-  removeItem: jest.Mock<void, [string]>;
-  clear: jest.Mock<void, []>;
 };
 
 const localStorageMock: Record<string, string> = {};

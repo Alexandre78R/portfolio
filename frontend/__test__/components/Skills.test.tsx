@@ -1,12 +1,13 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Skills from "@/components/Skills/Skills";
+import { skill } from "@/components/Skills/typeSkills";
 
-const mockSkills: Array<{ name: string; image: string }> = [
-  { name: "React" as const, image: "/react.png" as const },
-  { name: "TypeScript" as const, image: "/typescript.png" as const },
-  { name: "Tailwind" as const, image: "/tailwind.png" as const },
-  { name: "NodeJS" as const, image: "/nodejs.png" as const },
+const mockSkills: skill[] = [
+  { name: "React", image: "/react.png"},
+  { name: "TypeScript", image: "/typescript.png"},
+  { name: "Tailwind", image: "/tailwind.png"},
+  { name: "NodeJS", image: "/nodejs.png"},
 ];
 
 const mockCategory: string = "Frontend";

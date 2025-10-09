@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsCommand";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
+import {Project, ProjectComponent} from "@/components/Projects/typeProjects";
+import Lang from "@/lang/typeLang";
 
 // ---------- mocks ----------
 jest.mock("next/dynamic", () => () => {
@@ -29,15 +31,7 @@ jest.mock("@/components/Button/Button", () => {
   return ButtonMock as React.FC<any>;
 });
 
-const mockProjects: Array<{
-  id: string;
-  title: string;
-  description: string;
-  typeDisplay: string;
-  contentDisplay: string;
-  github?: string;
-  skills: Array<{ name: string; image: string }>;
-}> = [
+const mockProjects: Project[] = [
   {
     id: "1" as string,
     title: "Project One" as string,
@@ -46,9 +40,9 @@ const mockProjects: Array<{
     contentDisplay: "image.png" as string,
     github: "https://github.com/test" as string,
     skills: [
-      { name: "React", image: "/react.png" } as { name: string; image: string },
-      { name: "TS", image: "/ts.png" } as { name: string; image: string },
-    ] as Array<{ name: string; image: string }>,
+      { id: "1", name: "React", image: "/react.png" } as { id: string; name: string; image: string },
+      { id: "2", name: "TS", image: "/ts.png" } as { id: string; name: string; image: string },
+    ] as Array<{ id: string; name: string; image: string }>,
   },
   {
     id: "2" as string,
@@ -56,7 +50,8 @@ const mockProjects: Array<{
     description: "Short description" as string,
     typeDisplay: "image" as string,
     contentDisplay: "image2.png" as string,
-    skills: [] as Array<{ name: string; image: string }>,
+    github: "" as string,
+    skills: [] as Array<{ id: string; name: string; image: string }>,
   },
 ];
 
@@ -71,7 +66,7 @@ describe("ProjectsCommand", () => {
         buttonPaginationNext: "Next" as string,
         buttonPaginationPrevious: "Previous" as string,
         navbarButtonSkill: "Skills" as string,
-      },
+      } as Lang,
     });
 
     const mockedUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
@@ -80,8 +75,8 @@ describe("ProjectsCommand", () => {
         selector({
             projects: {
             dataProjects: mockProjects,
-            } as any,
-        } as any)
+            } as { dataProjects: Project[] },
+        })
     );
 
     Object.defineProperty(window, "innerWidth", {
