@@ -1,44 +1,44 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, RenderResult } from "@testing-library/react";
 import { Form } from "../../../../src/components/Terminal/components/Form";
 import "@testing-library/jest-dom";
 
 describe("Form component", () => {
-  it("renders children correctly", () => {
+  const renderForm = (children: React.ReactNode, onSubmit: () => void): RenderResult =>
     render(
-      <Form onSubmit={() => {}}>
-        <span data-testid="child">Child Content</span>
-      </Form>
+      <Form onSubmit={onSubmit}>
+        {children}
+      </Form> as React.ReactElement
     );
 
-    const child: HTMLElement = screen.getByTestId("child" as string);
-    expect(child as HTMLElement).toBeInTheDocument();
-    expect(child as HTMLElement).toHaveTextContent("Child Content" as string);
+  it("renders children correctly", (): void => {
+    renderForm(<span data-testid="child">Child Content</span>, () => {});
+
+    const child: HTMLElement = screen.getByTestId("child");
+    expect(child).toBeInTheDocument();
+    expect(child).toHaveTextContent("Child Content");
   });
 
-  it("applies the correct CSS class", () => {
-    const { container }: { container: HTMLElement } = render(
-      <Form onSubmit={() => {}}>
-        <span>Test</span>
-      </Form>
-    );
+  it("applies the correct CSS class", (): void => {
+    const { container }: RenderResult = renderForm(<span>Test</span>, () => {});
 
-    const formEl: HTMLElement | null = container.querySelector("form");
-    expect(formEl as HTMLElement).toBeInTheDocument();
-    expect(formEl as HTMLElement).toHaveClass("md:flex" as string);
+    const formEl: HTMLFormElement | null = container.querySelector("form");
+    expect(formEl).toBeInTheDocument();
+    expect(formEl).toHaveClass("md:flex");
   });
 
-  it("calls onSubmit when form is submitted", () => {
+  it("calls onSubmit when form is submitted", (): void => {
     const handleSubmit: jest.Mock = jest.fn();
-    const { container }: { container: HTMLElement } = render(
-      <Form onSubmit={handleSubmit}>
-        <button type="submit">Submit</button>
-      </Form>
+    const { container }: RenderResult = renderForm(
+      <button type="submit">Submit</button>,
+      handleSubmit
     );
 
-    const formEl: HTMLElement | null = container.querySelector("form");
-    fireEvent.submit(formEl! as HTMLElement) as unknown;
+    const formEl: HTMLFormElement | null = container.querySelector("form");
+    expect(formEl).not.toBeNull();
 
-    expect(handleSubmit as jest.Mock).toHaveBeenCalledTimes(1 as const) as unknown;
+    if (formEl) fireEvent.submit(formEl);
+
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
   });
 });

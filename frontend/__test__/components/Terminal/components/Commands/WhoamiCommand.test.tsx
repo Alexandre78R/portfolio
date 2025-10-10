@@ -1,17 +1,17 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import Whoami from "@/components/Terminal/components/Commands/Whoami";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
+// ---------- Mocks Components ----------
 jest.mock(
   "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiError",
   () => ({
     __esModule: true as boolean,
-    default: ({ message }: { message: string }) => (
-      <div data-testid="whoami-error">{message}</div> as React.ReactElement
-    ),
+    default: ({ message }: { message: string }) =>
+      <div data-testid="whoami-error">{message}</div> as React.ReactElement,
   })
 );
 
@@ -39,22 +39,19 @@ jest.mock(
   })
 );
 
+// ---------- Mock Lang ----------
 jest.mock("@/context/Lang/LangContext", () => ({
   __esModule: true as boolean,
   useLang: jest.fn() as jest.Mock,
 }));
 
-// ===================== Test =====================
+// ---------- Tests ----------
 describe("Whoami Component", () => {
-  const translationsMock : Lang = {
-    terminalWhoamiNotArg: "Aucun argument fourni" as string,
-    terminalWhoamiMaxOneArg: "Maximum un argument" as string,
-    terminalWhoamiChoiceNotExiste: "Choix inexistant"as string,
-  }  as Lang;
-
-  beforeEach(() => {
-    (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
-  });
+  const translationsMock: Lang = {
+    terminalWhoamiNotArg: "Aucun argument fourni",
+    terminalWhoamiMaxOneArg: "Maximum un argument",
+    terminalWhoamiChoiceNotExiste: "Choix inexistant",
+  } as Lang;
 
   const termMock: Term = {
     arg: [],
@@ -63,47 +60,51 @@ describe("Whoami Component", () => {
     index: 0,
   };
 
-  const renderWithContext = (arg: string[]) =>
+  const renderWithContext = (args: string[]): RenderResult =>
     render(
-      <termContext.Provider value={{ ...termMock, arg }}>
+      <termContext.Provider value={{ ...termMock, arg: args }}>
         <Whoami />
       </termContext.Provider>
     );
 
-    
-  test("renders WhoamiError when no arguments", () => {
-    renderWithContext([] as string[]);
-    expect(screen.getByTestId("whoami-error" as string) as HTMLElement).toHaveTextContent(
-      translationsMock.terminalWhoamiNotArg as string
-    );
+  beforeEach((): void => {
+    jest.clearAllMocks();
+    (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
   });
 
-  test("renders WhoamiError when more than one argument", () => {
-    renderWithContext(["one", "two"] as string[]);
-    expect(screen.getByTestId("whoami-error" as string) as HTMLElement).toHaveTextContent(
-      translationsMock.terminalWhoamiMaxOneArg as string
-    );
+  it("renders WhoamiError when no arguments", (): void => {
+    renderWithContext([]);
+    const errorElement: HTMLElement = screen.getByTestId("whoami-error");
+    expect(errorElement).toHaveTextContent(translationsMock.terminalWhoamiNotArg);
   });
 
-  test("renders WhoamiExperience when argument is 'experiences'", () => {
-    renderWithContext(["experiences"] as string[]);
-    expect(screen.getByTestId("whoami-experience" as string) as HTMLElement).toBeInTheDocument();
+  it("renders WhoamiError when more than one argument", (): void => {
+    renderWithContext(["one", "two"]);
+    const errorElement: HTMLElement = screen.getByTestId("whoami-error");
+    expect(errorElement).toHaveTextContent(translationsMock.terminalWhoamiMaxOneArg);
   });
 
-  test("renders WhoamiEducation when argument is 'educations'", () => {
-    renderWithContext(["educations"] as string[]);
-    expect(screen.getByTestId("whoami-education" as string)as HTMLElement).toBeInTheDocument();
+  it("renders WhoamiExperience when argument is 'experiences'", (): void => {
+    renderWithContext(["experiences"]);
+    const expElement: HTMLElement = screen.getByTestId("whoami-experience");
+    expect(expElement).toBeInTheDocument();
   });
 
-  test("renders WhoamiSkills when argument is 'skills'", () => {
-    renderWithContext(["skills"] as string[]);
-    expect(screen.getByTestId("whoami-skills" as string) as HTMLElement).toBeInTheDocument();
+  it("renders WhoamiEducation when argument is 'educations'", (): void => {
+    renderWithContext(["educations"]);
+    const eduElement: HTMLElement = screen.getByTestId("whoami-education");
+    expect(eduElement).toBeInTheDocument();
   });
 
-  test("renders WhoamiError when argument is unknown", () => {
-    renderWithContext(["unknown"] as string[]);
-    expect(screen.getByTestId("whoami-error" as string) as HTMLElement).toHaveTextContent(
-      translationsMock.terminalWhoamiChoiceNotExiste as string
-    );
+  it("renders WhoamiSkills when argument is 'skills'", (): void => {
+    renderWithContext(["skills"]);
+    const skillsElement: HTMLElement = screen.getByTestId("whoami-skills");
+    expect(skillsElement).toBeInTheDocument();
+  });
+
+  it("renders WhoamiError when argument is unknown", (): void => {
+    renderWithContext(["unknown"]);
+    const errorElement: HTMLElement = screen.getByTestId("whoami-error");
+    expect(errorElement).toHaveTextContent(translationsMock.terminalWhoamiChoiceNotExiste);
   });
 });

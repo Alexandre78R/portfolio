@@ -1,16 +1,18 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, RenderResult } from "@testing-library/react";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
+import configureStore, { MockStoreEnhanced } from "redux-mock-store";
 import WhoamiExperience from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiExperience";
 import { RootState } from "@/store/store";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
 import Lang from "@/lang/typeLang";
+import { Store } from "redux";
 
-const mockStore = configureStore([]);
+type MockedStore = MockStoreEnhanced<Partial<RootState>, {}>;
+const mockStore = configureStore<Partial<RootState>>();
 
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: () => ({
+  useLang: (): { translations: Lang } => ({
     translations: {
       buttonPaginationPrevious: "Précédent",
       buttonPaginationNext: "Suivant",
@@ -19,7 +21,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
 }));
 
 describe("WhoamiExperience Component", () => {
-  let store: ReturnType<typeof mockStore>;
+  let store: MockedStore;
 
   const mockExperiences: ExperienceType[] = [
     {
@@ -104,74 +106,61 @@ describe("WhoamiExperience Component", () => {
     },
   ];
 
-  it("should render without crashing when dataExperiences is empty", () => {
+  const renderWithStore = (store: Store<Partial<RootState>>): RenderResult =>
+    render(
+      <Provider store={store}>
+        <WhoamiExperience />
+      </Provider>
+    );
+
+  it("renders without crashing when dataExperiences is empty", (): void => {
     store = mockStore({
       experiences: { dataExperiences: [] },
-    } as Partial<RootState>);
+    });
 
-    render(
-      <Provider store={store}>
-        <WhoamiExperience />
-      </Provider>
-    );
+    renderWithStore(store);
 
-    expect(
-      screen.queryByText("Développeur Frontend") as HTMLElement
-    ).not.toBeInTheDocument();
+    const missingElement: HTMLElement | null = screen.queryByText("Développeur Frontend");
+    expect(missingElement).toBeNull();
   });
 
-  it("should render experience items correctly and handle pagination (if visible)", async () => {
+  it("renders experience items correctly and handles pagination", async (): Promise<void> => {
     store = mockStore({
-      experiences: { dataExperiences: mockExperiences},
-    } as Partial<RootState>);
+      experiences: { dataExperiences: mockExperiences },
+    });
 
-    render(
-      <Provider store={store}>
-        <WhoamiExperience />
-      </Provider>
-    );
+    renderWithStore(store);
 
-    expect(screen.getByText("Développeur Backend" as string)as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Stage Fullstack" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Intern Dev" as string) as HTMLElement).toBeInTheDocument();
-    expect(
-      screen.queryByText("Développeur Frontend" as string) as HTMLElement
-    ).not.toBeInTheDocument();
+    const backendElement: HTMLElement = screen.getByText("Développeur Backend");
+    const stageElement: HTMLElement = screen.getByText("Stage Fullstack");
+    const internElement: HTMLElement = screen.getByText("Intern Dev");
+    expect(backendElement).toBeInTheDocument();
+    expect(stageElement).toBeInTheDocument();
+    expect(internElement).toBeInTheDocument();
+
+    const frontendElement: HTMLElement | null = screen.queryByText("Développeur Frontend");
+    expect(frontendElement).toBeNull();
 
     const nextButton: HTMLElement | null = screen.queryByRole("button", { name: "Suivant" });
-    const previousButton: HTMLElement | null  = screen.queryByRole("button", { name: "Précédent" });
+    const previousButton: HTMLElement | null = screen.queryByRole("button", { name: "Précédent" });
 
     if (nextButton) {
-      expect(nextButton as HTMLElement).not.toBeDisabled();
+      expect(nextButton).not.toBeDisabled();
+      if (previousButton) expect(previousButton).toBeDisabled();
 
-      if (previousButton) {
-        expect(previousButton as HTMLElement).toBeDisabled();
-      }
-
-      fireEvent.click(nextButton as HTMLElement);
+      fireEvent.click(nextButton);
 
       await waitFor(() => {
-        expect(
-          screen.getByText("Développeur Frontend" as string) as HTMLElement
-        ).toBeInTheDocument();
+        const frontendAfter: HTMLElement = screen.getByText("Développeur Frontend");
+        expect(frontendAfter).toBeInTheDocument();
       });
 
-      expect(
-        screen.queryByText("Développeur Backend" as string) as HTMLElement
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText("Stage Fullstack" as string) as HTMLElement
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText("Intern Dev" as string) as HTMLElement
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText("Développeur Backend")).toBeNull();
+      expect(screen.queryByText("Stage Fullstack")).toBeNull();
+      expect(screen.queryByText("Intern Dev")).toBeNull();
 
-      const previousButtonAfter: HTMLElement | null = screen.queryByRole("button", {
-        name: "Précédent",
-      });
-      if (previousButtonAfter) {
-        expect(previousButtonAfter as HTMLElement).not.toBeDisabled();
-      }
+      const previousButtonAfter: HTMLElement | null = screen.queryByRole("button", { name: "Précédent" });
+      if (previousButtonAfter) expect(previousButtonAfter).not.toBeDisabled();
     }
   });
 });

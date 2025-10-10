@@ -3,140 +3,137 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsCommand";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
-import {Project, ProjectComponent} from "@/components/Projects/typeProjects";
+import { Project } from "@/components/Projects/typeProjects";
 import Lang from "@/lang/typeLang";
 
 // ---------- mocks ----------
 jest.mock("next/dynamic", () => () => {
-  const DynamicComponent: React.FC = () => <div data-testid="react-player" /> as React.ReactElement;
-  DynamicComponent.displayName = "DynamicComponent" as string;
-  return DynamicComponent as React.FC;
+  const DynamicComponent: React.FC = (): React.ReactElement => (
+    <div data-testid="react-player" />
+  );
+  DynamicComponent.displayName = "DynamicComponent";
+  return DynamicComponent;
 });
 
 jest.mock("@/context/Lang/LangContext");
 jest.mock("react-redux");
 
 jest.mock("@/components/Button/Button", () => {
-  const ButtonMock = (props: any) => (
-    <button
-      disabled={props.disable}
-      onClick={props.onClick}
-    >
+  const ButtonMock: React.FC<{ disable?: boolean; onClick?: () => void; text: string }> = (props) => (
+    <button disabled={props.disable} onClick={props.onClick}>
       {props.text}
     </button>
   );
-
-  ButtonMock.displayName = "ButtonCustom" as string;
-
-  return ButtonMock as React.FC<any>;
+  ButtonMock.displayName = "ButtonCustom";
+  return ButtonMock;
 });
 
+// ---------- mock data ----------
 const mockProjects: Project[] = [
   {
-    id: "1" as string,
-    title: "Project One" as string,
-    description: "A".repeat(120) as string,
-    typeDisplay: "image" as string,
-    contentDisplay: "image.png" as string,
-    github: "https://github.com/test" as string,
+    id: "1",
+    title: "Project One",
+    description: "A".repeat(120),
+    typeDisplay: "image",
+    contentDisplay: "image.png",
+    github: "https://github.com/test",
     skills: [
-      { id: "1", name: "React", image: "/react.png" } as { id: string; name: string; image: string },
-      { id: "2", name: "TS", image: "/ts.png" } as { id: string; name: string; image: string },
-    ] as Array<{ id: string; name: string; image: string }>,
+      { id: "1", name: "React", image: "/react.png" },
+      { id: "2", name: "TS", image: "/ts.png" },
+    ],
   },
   {
-    id: "2" as string,
-    title: "Project Two" as string,
-    description: "Short description" as string,
-    typeDisplay: "image" as string,
-    contentDisplay: "image2.png" as string,
-    github: "" as string,
-    skills: [] as Array<{ id: string; name: string; image: string }>,
+    id: "2",
+    title: "Project Two",
+    description: "Short description",
+    typeDisplay: "image",
+    contentDisplay: "image2.png",
+    github: "",
+    skills: [],
   },
 ];
 
-describe("ProjectsCommand", () => {
-  beforeEach(() => {
+describe("ProjectsCommand component", () => {
+  beforeEach((): void => {
     jest.clearAllMocks();
 
+    // Mock Lang context
     (useLang as jest.Mock).mockReturnValue({
       translations: {
-        buttonSeeMore: "See more" as string,
-        buttonSeeLess: "See less" as string,
-        buttonPaginationNext: "Next" as string,
-        buttonPaginationPrevious: "Previous" as string,
-        navbarButtonSkill: "Skills" as string,
+        buttonSeeMore: "See more",
+        buttonSeeLess: "See less",
+        buttonPaginationNext: "Next",
+        buttonPaginationPrevious: "Previous",
+        navbarButtonSkill: "Skills",
       } as Lang,
     });
 
-    const mockedUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-
-        mockedUseSelector.mockImplementation((selector) =>
-        selector({
-            projects: {
-            dataProjects: mockProjects,
-            } as { dataProjects: Project[] },
-        })
+    const mockedUseSelector: jest.MockedFunction<typeof useSelector> = useSelector as jest.MockedFunction<typeof useSelector>;
+    mockedUseSelector.mockImplementation((selector) =>
+      selector({
+        projects: { dataProjects: mockProjects } as { dataProjects: Project[] },
+      }),
     );
 
     Object.defineProperty(window, "innerWidth", {
-      writable: true as boolean,
-      configurable: true as boolean,
-      value: 1024 as number,
+      writable: true,
+      configurable: true,
+      value: 1024,
     });
   });
 
-  test("renders first project title", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-    expect(screen.getByText("Project One" as string) as HTMLElement).toBeInTheDocument();
+  it("renders first project title", (): void => {
+    render(<ProjectsCommand />);
+    const projectTitle: HTMLElement = screen.getByText("Project One");
+    expect(projectTitle).toBeInTheDocument();
   });
 
-  test("shows truncated description and see more button", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-
-    expect(screen.getByText(/A{90}\.\.\./ as RegExp) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("See more" as string) as HTMLElement).toBeInTheDocument();
+  it("shows truncated description and see more button", (): void => {
+    render(<ProjectsCommand />);
+    const truncatedDesc: HTMLElement = screen.getByText(/A{90}\.\.\./);
+    const seeMoreBtn: HTMLElement = screen.getByText("See more");
+    expect(truncatedDesc).toBeInTheDocument();
+    expect(seeMoreBtn).toBeInTheDocument();
   });
 
-  test("expands and collapses description text", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
+  it("expands and collapses description text", (): void => {
+    render(<ProjectsCommand />);
+    const seeMoreBtn: HTMLElement = screen.getByText("See more");
+    fireEvent.click(seeMoreBtn);
+    const seeLessBtn: HTMLElement = screen.getByText("See less");
+    expect(seeLessBtn).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("See more" as string) as HTMLElement);
-    expect(screen.getByText("See less" as string) as HTMLElement).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText("See less" as string) as HTMLElement);
-    expect(screen.getByText("See more" as string) as HTMLElement).toBeInTheDocument();
+    fireEvent.click(seeLessBtn);
+    expect(screen.getByText("See more")).toBeInTheDocument();
   });
 
-  test("navigates to next project with pagination", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-
-    fireEvent.click(screen.getByText("Next" as string) as HTMLElement);
-    expect(screen.getByText("Project Two" as string) as HTMLElement).toBeInTheDocument();
+  it("navigates to next project with pagination", (): void => {
+    render(<ProjectsCommand />);
+    const nextBtn: HTMLElement = screen.getByText("Next");
+    fireEvent.click(nextBtn);
+    const secondProjectTitle: HTMLElement = screen.getByText("Project Two");
+    expect(secondProjectTitle).toBeInTheDocument();
   });
 
-  test("previous button is disabled on first page", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-    expect(screen.getByText("Previous" as string) as HTMLElement).toBeDisabled();
+  it("previous button is disabled on first page", (): void => {
+    render(<ProjectsCommand />);
+    const prevBtn: HTMLElement = screen.getByText("Previous");
+    expect(prevBtn).toBeDisabled();
   });
 
-  test("expands skills section when clicking expand icon", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-
-    const expandButton: HTMLElement = screen.getByTitle(
-      "Project One - Skills"
-    ) as HTMLElement;
-
-    fireEvent.click(expandButton as HTMLElement);
-
-    expect(screen.getByAltText("React" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByAltText("TS" as string) as unknown as string).toBeInTheDocument();
+  it("expands skills section when clicking expand icon", (): void => {
+    render(<ProjectsCommand />);
+    const expandButton: HTMLElement = screen.getByTitle("Project One - Skills");
+    fireEvent.click(expandButton);
+    const reactSkill: HTMLElement = screen.getByAltText("React");
+    const tsSkill: HTMLElement = screen.getByAltText("TS");
+    expect(reactSkill).toBeInTheDocument();
+    expect(tsSkill).toBeInTheDocument();
   });
 
-  test("renders github link when provided", () => {
-    render(<ProjectsCommand /> as React.ReactElement);
-
-    const link: HTMLElement = screen.getByTitle("Project One - Github" as string) as HTMLElement;
-    expect(link as HTMLElement | null | void).toHaveAttribute("href" as string, "https://github.com/test" as string) as HTMLElement | null | void;
+  it("renders github link when provided", (): void => {
+    render(<ProjectsCommand />);
+    const githubLink: HTMLElement = screen.getByTitle("Project One - Github");
+    expect(githubLink).toHaveAttribute("href", "https://github.com/test");
   });
 });

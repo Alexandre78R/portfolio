@@ -3,9 +3,9 @@ import { render, screen, fireEvent, RenderResult } from "@testing-library/react"
 import WhoamiSkills from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiSkills";
 import { useSelector } from "react-redux";
 import { useLang } from "@/context/Lang/LangContext";
-import { SkillTab, skill } from "@/components/Skills/typeSkills";
+import { SkillTab } from "@/components/Skills/typeSkills";
 
-// Mock des hooks et composants
+// 🔹 Mock des hooks et composants
 jest.mock("react-redux", () => ({
   useSelector: jest.fn(),
 }));
@@ -15,7 +15,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
 }));
 
 jest.mock("@/components/Button/Button", () => {
-  const MockButton = (props: any) => (
+  const MockButton = (props: { disable?: boolean; onClick?: () => void; text: string }): JSX.Element => (
     <button disabled={props.disable} onClick={props.onClick}>
       {props.text}
     </button>
@@ -25,7 +25,7 @@ jest.mock("@/components/Button/Button", () => {
 });
 
 jest.mock("@/components/Terminal/components/Message", () => ({
-  Message: ({ children }: any) => <div>{children}</div>,
+  Message: ({ children }: { children: React.ReactNode }): JSX.Element => <div>{children}</div>,
 }));
 
 describe("WhoamiSkills Component", () => {
@@ -37,13 +37,10 @@ describe("WhoamiSkills Component", () => {
   ];
 
   beforeEach(() => {
-
-    const mockedUseSelector: jest.MockedFunction<typeof useSelector> =
-      useSelector as jest.MockedFunction<typeof useSelector>;
+    const mockedUseSelector: jest.MockedFunction<typeof useSelector> = useSelector as jest.MockedFunction<typeof useSelector>;
     mockedUseSelector.mockReturnValue(mockSkills);
 
-    const mockedUseLang: jest.MockedFunction<typeof useLang> =
-      useLang as jest.MockedFunction<typeof useLang>;
+    const mockedUseLang: jest.MockedFunction<typeof useLang> = useLang as jest.MockedFunction<typeof useLang>;
     mockedUseLang.mockReturnValue({
       lang: "fr",
       setLang: jest.fn(),
@@ -55,67 +52,60 @@ describe("WhoamiSkills Component", () => {
     });
   });
 
-  it("renders first page of skills correctly", () => {
-    const renderResult: RenderResult = render(<WhoamiSkills />);
+  const renderComponent = (): RenderResult => render(<WhoamiSkills />);
 
-    const frontendCategory: HTMLElement = renderResult.getByText("1. Frontend");
-    const backendCategory: HTMLElement = renderResult.getByText("2. Backend");
-    const databaseCategory: HTMLElement = renderResult.getByText("3. Database");
-    const devopsCategory: HTMLElement | null = renderResult.queryByText("4. DevOps");
+  it("renders first page of skills correctly", (): void => {
+    const { getByText, queryByText } = renderComponent();
 
-    const reactImg: HTMLImageElement = document.createElement("img");
-    reactImg.alt = mockSkills[0].skills.name;
-    reactImg.src = mockSkills[0].skills.image;
-
-    const nodeImg: HTMLImageElement = document.createElement("img");
-    nodeImg.alt = mockSkills[1].skills.name;
-    nodeImg.src = mockSkills[1].skills.image;
+    const frontendCategory: HTMLElement = getByText("1. Frontend");
+    const backendCategory: HTMLElement = getByText("2. Backend");
+    const databaseCategory: HTMLElement = getByText("3. Database");
+    const devopsCategory: HTMLElement | null = queryByText("4. DevOps");
 
     expect(frontendCategory).toBeInTheDocument();
     expect(backendCategory).toBeInTheDocument();
     expect(databaseCategory).toBeInTheDocument();
-    expect(devopsCategory).not.toBeInTheDocument();
-
-    expect(reactImg.alt).toBe("React");
-    expect(nodeImg.alt).toBe("Node");
+    expect(devopsCategory).toBeNull();
   });
 
-    it("pagination next button works", () => {
-    render(<WhoamiSkills />);
-    const nextBtn: HTMLButtonElement = screen.getByText("Next") as HTMLButtonElement;
+  it("pagination next button works", (): void => {
+    const { getByText, queryByText } = renderComponent();
 
+    const nextBtn: HTMLButtonElement = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextBtn);
 
-    const devopsCategory: HTMLElement = screen.getByText("4. DevOps");
+    const devopsCategory: HTMLElement = getByText("4. DevOps");
     expect(devopsCategory).toBeInTheDocument();
 
-    expect(screen.queryByText("1. Frontend")).not.toBeInTheDocument();
-    expect(screen.queryByText("2. Backend")).not.toBeInTheDocument();
-    expect(screen.queryByText("3. Database")).not.toBeInTheDocument();
-    });
+    expect(queryByText("1. Frontend")).toBeNull();
+    expect(queryByText("2. Backend")).toBeNull();
+    expect(queryByText("3. Database")).toBeNull();
+  });
 
-  it("pagination previous button works", () => {
-    render(<WhoamiSkills />);
+  it("pagination previous button works", (): void => {
+    const { getByText } = renderComponent();
 
-    const nextBtn: HTMLButtonElement = screen.getByText("Next") as HTMLButtonElement;
-    fireEvent.click(nextBtn); 
+    const nextBtn: HTMLButtonElement = getByText("Next") as HTMLButtonElement;
+    fireEvent.click(nextBtn);
 
-    const prevBtn: HTMLButtonElement = screen.getByText("Previous") as HTMLButtonElement;
+    const prevBtn: HTMLButtonElement = getByText("Previous") as HTMLButtonElement;
     fireEvent.click(prevBtn);
 
-    const frontendCategory: HTMLElement = screen.getByText("1. Frontend");
+    const frontendCategory: HTMLElement = getByText("1. Frontend");
     expect(frontendCategory).toBeInTheDocument();
   });
 
-  it("disables previous button on first page", () => {
-    render(<WhoamiSkills /> as React.ReactElement);
-    const prevBtn: HTMLButtonElement = screen.getByText("Previous") as HTMLButtonElement;
+  it("disables previous button on first page", (): void => {
+    const { getByText } = renderComponent();
+
+    const prevBtn: HTMLButtonElement = getByText("Previous") as HTMLButtonElement;
     expect(prevBtn.disabled).toBe(true);
   });
 
-  it("disables next button on last page", () => {
-    render(<WhoamiSkills />);
-    const nextBtn: HTMLButtonElement = screen.getByText("Next") as HTMLButtonElement;
+  it("disables next button on last page", (): void => {
+    const { getByText } = renderComponent();
+
+    const nextBtn: HTMLButtonElement = getByText("Next") as HTMLButtonElement;
     fireEvent.click(nextBtn);
     fireEvent.click(nextBtn);
     expect(nextBtn.disabled).toBe(true);

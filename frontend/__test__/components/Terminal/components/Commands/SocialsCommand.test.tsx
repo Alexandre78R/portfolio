@@ -1,48 +1,43 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import Socials from "@/components/Terminal/components/Commands/Socials";
-import { termContext } from "@/components/Terminal/Terminal";
+import { termContext, Term } from "@/components/Terminal/Terminal";
 import * as util from "@/components/Terminal/util";
-import { Term } from "@/components/Terminal/Terminal";
 
-// ---------- mocks ----------
+// ---------- Mocks ----------
 jest.mock("@/components/Terminal/util", () => ({
-  getCurrentCmdArry: jest.fn() as typeof util.getCurrentCmdArry,
-  checkRedirect: jest.fn() as typeof util.checkRedirect,
-  isArgInvalid: jest.fn() as typeof util.isArgInvalid,
-  generateTabs: jest.fn(() => "   ") as typeof util.generateTabs,
+  getCurrentCmdArry: jest.fn() as jest.Mock,
+  checkRedirect: jest.fn() as jest.Mock,
+  isArgInvalid: jest.fn() as jest.Mock,
+  generateTabs: jest.fn(() => "   ") as jest.Mock,
 }));
 
 jest.mock("@/components/Terminal/components/Usage", () => {
-  function UsageMock(props: any) { 
-    return <div data-testid={`usage-${props.cmd}`} /> as React.ReactElement;
-  }
-  UsageMock.displayName = "Usage" as string;
-  return UsageMock as React.FC<any>;
+  const UsageMock: React.FC<{ cmd: string }> = (props) => (
+    <div data-testid={`usage-${props.cmd}`} />
+  );
+  UsageMock.displayName = "Usage";
+  return UsageMock;
 });
 
 jest.mock("@/components/Terminal/components/Message", () => {
-  const MessageMock = ({ children, ...props }: any) => (
-    <div {...props}>{children}</div> as React.ReactElement
+  const MessageMock: React.FC<React.PropsWithChildren<unknown>> = ({ children, ...props }) => (
+    <div {...props}>{children}</div>
   );
-
-  MessageMock.displayName = "Message" as string;
-
-  return {
-    __esModule: true as boolean,
-    Message: MessageMock as React.FC<unknown>,
-  };
+  MessageMock.displayName = "Message";
+  return { __esModule: true, Message: MessageMock };
 });
 
 describe("Socials command", () => {
-  const mockGetCurrentCmdArry : jest.Mock = util.getCurrentCmdArry as jest.Mock;
-  const mockCheckRedirect : jest.Mock = util.checkRedirect as jest.Mock;
-  const mockIsArgInvalid : jest.Mock = util.isArgInvalid as jest.Mock;
-  beforeEach(() => {
+  const mockGetCurrentCmdArry: jest.Mock = util.getCurrentCmdArry as jest.Mock;
+  const mockCheckRedirect: jest.Mock = util.checkRedirect as jest.Mock;
+  const mockIsArgInvalid: jest.Mock = util.isArgInvalid as jest.Mock;
+
+  beforeEach((): void => {
     jest.clearAllMocks();
   });
 
-  const renderWithContext = (ctx: any) =>
+  const renderWithContext = (ctx: Term): RenderResult =>
     render(
       <termContext.Provider value={ctx}>
         <Socials />
@@ -51,94 +46,104 @@ describe("Socials command", () => {
 
   // ---------------- TESTS ----------------
 
-  test("renders socials list when no args are provided", () => {
-    mockGetCurrentCmdArry.mockReturnValue([] as any[]);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+  it("renders socials list when no args are provided", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue([] as string[]);
+    mockIsArgInvalid.mockReturnValue(false);
 
     renderWithContext({
-      arg: [] as string[],
-      history: [] as string[],
-      rerender: false as boolean,
-    } as Term);
-
-    expect(screen.getByTestId("socials" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("1. GitHub" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("2. linkedin" as string) as HTMLElement).toBeInTheDocument();
-    expect(
-      screen.getByText("https://github.com/Alexandre78R" as string) as HTMLElement).
-      toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "https://www.linkedin.com/in/alexandrerenard/" as string) as HTMLElement
-    ).toBeInTheDocument();
-
-    expect(screen.getByTestId("usage-socials" as string) as HTMLElement).toBeInTheDocument();
-  });
-
-  test("renders Usage when arguments are invalid", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "3"] as any[]);
-    mockIsArgInvalid.mockReturnValue(true as boolean);
-
-    renderWithContext({
-      arg: ["socials", "go", "3"] as string[],
-      history: [] as string[],
-      rerender: false as boolean,
+      arg: [],
+      history: [],
+      rerender: false,
+      index: 0,
     });
 
-    expect(screen.getByTestId("usage-socials" as string) as HTMLElement).toBeInTheDocument();
+    const socialsContainer: HTMLElement = screen.getByTestId("socials");
+    const githubText: HTMLElement = screen.getByText("1. GitHub");
+    const linkedinText: HTMLElement = screen.getByText("2. linkedin");
+    const githubUrl: HTMLElement = screen.getByText("https://github.com/Alexandre78R");
+    const linkedinUrl: HTMLElement = screen.getByText(
+      "https://www.linkedin.com/in/alexandrerenard/"
+    );
+    const usageElement: HTMLElement = screen.getByTestId("usage-socials");
+
+    expect(socialsContainer).toBeInTheDocument();
+    expect(githubText).toBeInTheDocument();
+    expect(linkedinText).toBeInTheDocument();
+    expect(githubUrl).toBeInTheDocument();
+    expect(linkedinUrl).toBeInTheDocument();
+    expect(usageElement).toBeInTheDocument();
   });
 
-  test("does not render socials list when args are present", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"] as string[]);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+  it("renders Usage when arguments are invalid", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "3"]);
+    mockIsArgInvalid.mockReturnValue(true);
 
     renderWithContext({
-      arg: ["socials", "go", "1"] as string[],
-      history: [] as string[],
-      rerender: false as boolean,
+      arg: ["socials", "go", "3"],
+      history: [],
+      rerender: false,
+      index: 0,
     });
 
-    expect(screen.queryByTestId("socials" as  string) as HTMLElement).not.toBeInTheDocument();
+    const usageElement: HTMLElement = screen.getByTestId("usage-socials");
+    expect(usageElement).toBeInTheDocument();
   });
 
-  test("opens correct url when redirect condition is met", () => {
-    const openSpy = jest
-      .spyOn(window as Window, "open" as "open")
+  it("does not render socials list when args are present", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"]);
+    mockIsArgInvalid.mockReturnValue(false);
+
+    renderWithContext({
+      arg: ["socials", "go", "1"],
+      history: [],
+      rerender: false,
+      index: 0,
+    });
+
+    const socialsContainer: HTMLElement | null = screen.queryByTestId("socials");
+    expect(socialsContainer).not.toBeInTheDocument();
+  });
+
+  it("opens correct url when redirect condition is met", (): void => {
+    const openSpy: jest.SpyInstance = jest
+      .spyOn(window, "open")
       .mockImplementation(() => null as unknown as Window);
 
-    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"] as string[]);
-    mockCheckRedirect.mockReturnValue(true as boolean);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"]);
+    mockCheckRedirect.mockReturnValue(true);
+    mockIsArgInvalid.mockReturnValue(false);
 
     renderWithContext({
-      arg: ["socials", "1"] as string[],
-      history: ["socials 1"] as string[],
-      rerender: true as boolean,
+      arg: ["socials", "1"],
+      history: ["socials 1"],
+      rerender: true,
+      index: 0,
     });
 
     expect(openSpy).toHaveBeenCalledWith(
-      "https://github.com/Alexandre78R" as string,
-      "_blank" as string
-    ) as unknown as void;
+      "https://github.com/Alexandre78R",
+      "_blank"
+    );
 
     openSpy.mockRestore();
   });
 
-  test("does not redirect when checkRedirect returns false", () => {
-    const openSpy = jest
-      .spyOn(window as Window, "open" as "open")
+  it("does not redirect when checkRedirect returns false", (): void => {
+    const openSpy: jest.SpyInstance = jest
+      .spyOn(window, "open")
       .mockImplementation(() => null as unknown as Window);
 
-    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"] as string[]);
-    mockCheckRedirect.mockReturnValue(false as boolean);
+    mockGetCurrentCmdArry.mockReturnValue(["socials", "go", "1"]);
+    mockCheckRedirect.mockReturnValue(false);
 
     renderWithContext({
-      arg: ["socials", "1"] as string[],
-      history: ["socials 1"] as string[],
-      rerender: true as boolean,
+      arg: ["socials", "1"],
+      history: ["socials 1"],
+      rerender: true,
+      index: 0,
     });
 
-    expect(openSpy as jest.Mock).not.toHaveBeenCalled();
+    expect(openSpy).not.toHaveBeenCalled();
     openSpy.mockRestore();
   });
 });

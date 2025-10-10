@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import Lang from "@/components/Terminal/components/Commands/Lang";
-import { termContext } from "@/components/Terminal/Terminal";
+import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
 import Usage from "@/components/Terminal/components/Usage";
 import * as util from "@/components/Terminal/util";
@@ -12,21 +12,25 @@ jest.mock("@/components/Terminal/components/Usage");
 jest.mock("@/components/Terminal/util");
 
 describe("Lang component", () => {
-  const mockSetLang: jest.Mock = jest.fn();
-  const mockCheckLangSwitch: jest.Mock = util.checkLangSwitch as jest.Mock;
-  const mockGetCurrentCmdArry: jest.Mock = util.getCurrentCmdArry as jest.Mock;
-  const mockIsArgInvalid: jest.Mock = util.isArgInvalid as jest.Mock;
+  const mockSetLang: jest.Mock<void, [string]> = jest.fn();
+  const mockCheckLangSwitch: jest.Mock<boolean, [boolean, string[], readonly string[]]> = util.checkLangSwitch as jest.Mock;
+  const mockGetCurrentCmdArry: jest.Mock<string[], [string[]]> = util.getCurrentCmdArry as jest.Mock;
+  const mockIsArgInvalid: jest.Mock<boolean, [string[], string, readonly string[]]> = util.isArgInvalid as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
+
     (useLang as jest.Mock).mockReturnValue({
       listLang: ["en", "fr", "de"] as const,
-      setLang: mockSetLang as jest.Mock,
+      setLang: mockSetLang,
     });
-    (Usage as jest.Mock).mockImplementation(({ cmd }) => <div data-testid={`usage-${cmd}`} />);
+
+    (Usage as jest.Mock).mockImplementation(({ cmd }: { cmd: string }) => (
+      <div data-testid={`usage-${cmd}`} />
+    ));
   });
 
-  const renderWithContext = (ctxProps: any): ReturnType<typeof render> => {
+  const renderWithContext = (ctxProps: Term): RenderResult => {
     return render(
       <termContext.Provider value={ctxProps}>
         <Lang />
@@ -34,59 +38,66 @@ describe("Lang component", () => {
     );
   };
 
-  test("renders nothing if arg length <= 2", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["lang"] as string[]) as jest.Mock;
-    mockCheckLangSwitch.mockReturnValue(false as boolean) as jest.Mock;
-    mockIsArgInvalid.mockReturnValue(false as boolean) as jest.Mock;
+  it("renders nothing if arg length <= 2 and not invalid", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["lang"]);
+    mockCheckLangSwitch.mockReturnValue(false);
+    mockIsArgInvalid.mockReturnValue(false);
 
-    renderWithContext({ arg: ["lang"], history: [], rerender: false } as { arg: string[]; history: string[]; rerender: boolean });
-    expect(screen.queryByTestId("usage-lang" as string)).not.toBeInTheDocument();
+    renderWithContext({ arg: ["lang"], history: [], rerender: false, index: 0 });
+
+    const usageElement: HTMLElement | null = screen.queryByTestId("usage-themes");
+    expect(usageElement).not.toBeInTheDocument();
   });
 
-  test("renders Usage if argument is invalid", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "es"] as string[]);
-    mockCheckLangSwitch.mockReturnValue(false as boolean) as jest.Mock;
-    mockIsArgInvalid.mockReturnValue(true as boolean) as jest.Mock;
+  it("renders Usage if argument is invalid", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "es"]);
+    mockCheckLangSwitch.mockReturnValue(false);
+    mockIsArgInvalid.mockReturnValue(true);
 
-    renderWithContext({ arg: ["lang", "set", "es"], history: [], rerender: false } as { arg: string[]; history: string[]; rerender: boolean });
-    expect(screen.getByTestId("usage-themes" as string) as HTMLElement).toBeInTheDocument();
+    renderWithContext({ arg: ["lang", "set", "es"], history: [], rerender: false, index: 0 });
+
+    const usageElement: HTMLElement = screen.getByTestId("usage-themes");
+    expect(usageElement).toBeInTheDocument();
   });
 
-  test("does not render languages list when args are valid", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "list"] as string[]);
-    mockCheckLangSwitch.mockReturnValue(false as boolean);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+  it("does not render languages list when args are valid", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "list"]);
+    mockCheckLangSwitch.mockReturnValue(false);
+    mockIsArgInvalid.mockReturnValue(false);
 
     renderWithContext({
-      arg: ["lang", "set", "list"] as string[],
-      history: ["lang set list"] as string[],
-      rerender: true as boolean,
+      arg: ["lang", "set", "list"],
+      history: ["lang set list"],
+      rerender: true,
+      index: 0,
     });
 
-    ["en", "fr", "de"].forEach((lang) => {
-      expect(screen.queryByText(lang as string) as HTMLElement).not.toBeInTheDocument();
+    ["en", "fr", "de"].forEach((lang: string) => {
+      const langElement: HTMLElement | null = screen.queryByText(lang);
+      expect(langElement).not.toBeInTheDocument();
     });
 
-    expect(screen.queryByTestId("usage-lang" as string) as HTMLElement).not.toBeInTheDocument();
+    const usageElement: HTMLElement | null = screen.queryByTestId("usage-themes");
+    expect(usageElement).not.toBeInTheDocument();
   });
 
-  test("calls setLang if checkLangSwitch returns true and lang differs", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "fr"] as string[]);
-    mockCheckLangSwitch.mockReturnValue(true as boolean);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+  it("calls setLang if checkLangSwitch returns true and lang differs", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "fr"]);
+    mockCheckLangSwitch.mockReturnValue(true);
+    mockIsArgInvalid.mockReturnValue(false);
 
-    renderWithContext({ arg: ["lang", "set", "fr"], history: [], rerender: true } as { arg: string[]; history: string[]; rerender: boolean });
+    renderWithContext({ arg: ["lang", "set", "fr"], history: [], rerender: true, index: 0 });
 
-    expect(mockSetLang as jest.Mock).toHaveBeenCalledWith("fr" as string);
+    expect(mockSetLang).toHaveBeenCalledWith("fr");
   });
 
-  test("does not call setLang if checkLangSwitch returns false", () => {
-    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "fr"] as any[]);
-    mockCheckLangSwitch.mockReturnValue(false as boolean);
-    mockIsArgInvalid.mockReturnValue(false as boolean);
+  it("does not call setLang if checkLangSwitch returns false", (): void => {
+    mockGetCurrentCmdArry.mockReturnValue(["lang", "set", "fr"]);
+    mockCheckLangSwitch.mockReturnValue(false);
+    mockIsArgInvalid.mockReturnValue(false);
 
-    renderWithContext({ arg: ["lang", "set", "fr"], history: [], rerender: true } as { arg: string[]; history: string[]; rerender: boolean });
+    renderWithContext({ arg: ["lang", "set", "fr"], history: [], rerender: true, index: 0 });
 
-    expect(mockSetLang as jest.Mock).not.toHaveBeenCalled();
+    expect(mockSetLang).not.toHaveBeenCalled();
   });
 });

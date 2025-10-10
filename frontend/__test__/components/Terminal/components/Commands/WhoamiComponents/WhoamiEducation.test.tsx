@@ -1,16 +1,19 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+import React, { ReactElement } from "react";
+import { render, RenderResult, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
-import configureStore from "redux-mock-store";
+import configureStore, { MockStoreEnhanced } from "redux-mock-store";
 import WhoamiEducation from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiEducation";
 import { RootState } from "@/store/store";
 import { EducationType } from "@/store/slices/educationsSlice";
+import { Store } from "redux";
 
-const mockStore = configureStore([]);
+type MockedStore = MockStoreEnhanced<Partial<RootState>, {}>;
+
+const mockStore = configureStore<Partial<RootState>>();
 
 describe("WhoamiEducation Component", () => {
-  let store: ReturnType<typeof mockStore>;
-  
+  let store: MockedStore;
+
   const mockEducations: EducationType[] = [
     {
       id: 1,
@@ -35,35 +38,39 @@ describe("WhoamiEducation Component", () => {
     },
   ];
 
-  it("should render without crashing when dataEducations is empty", () => {
+  const renderWithStore = (store: Store<Partial<RootState>>): RenderResult =>
+    render(
+      <Provider store={store}>
+        <WhoamiEducation />
+      </Provider>
+    );
+
+  it("renders without crashing when dataEducations is empty", (): void => {
     store = mockStore({
       educations: { dataEducations: [] },
-    } as Partial<RootState>);
+    });
 
-    render(
-      <Provider store={store}>
-        <WhoamiEducation />
-      </Provider>
-    );
+    renderWithStore(store);
 
-    expect(screen.queryByText("Bachelor of Science")).not.toBeInTheDocument();
+    const missingElement: HTMLElement | null = screen.queryByText("Bachelor of Science");
+    expect(missingElement).toBeNull();
   });
 
-  it("should render education items correctly", () => {
+  it("renders education items correctly", (): void => {
     store = mockStore({
       educations: { dataEducations: mockEducations },
-    } as Partial<RootState>);
+    });
 
-    render(
-      <Provider store={store}>
-        <WhoamiEducation />
-      </Provider>
-    );
+    renderWithStore(store);
 
-    mockEducations.forEach((edu) => {
-      expect(screen.getByText(edu.year as number) as HTMLElement).toBeInTheDocument();
-      expect(screen.getByText(edu.school as string) as HTMLElement).toBeInTheDocument();
-      expect(screen.getByText(`- ${edu.location}` as string) as HTMLElement).toBeInTheDocument();
+    mockEducations.forEach((edu: EducationType): void => {
+      const yearElement: HTMLElement = screen.getByText(edu.year.toString());
+      const schoolElement: HTMLElement = screen.getByText(edu.school);
+      const locationElement: HTMLElement = screen.getByText(`- ${edu.location}`);
+
+      expect(yearElement).toBeInTheDocument();
+      expect(schoolElement).toBeInTheDocument();
+      expect(locationElement).toBeInTheDocument();
     });
   });
 });

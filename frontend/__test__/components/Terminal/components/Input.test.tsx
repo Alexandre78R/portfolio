@@ -1,39 +1,37 @@
 import React, { createRef } from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import { Input } from "../../../../src/components/Terminal/components/Input";
 import HomeTerminal from "../../../../src/components/Terminal/HomeTerminal";
 import "@testing-library/jest-dom";
 
-// On mock HomeTerminal pour isoler
 jest.mock("../../../../src/components/Terminal/HomeTerminal", () => ({
   __esModule: true,
   default: () => <div data-testid="home-terminal">HomeTerminal</div>,
 }));
 
 describe("Input component", () => {
-  it("renders HomeTerminal and input", () => {
+  it("renders HomeTerminal and input", (): void => {
     render(<Input placeholder="Type here" />);
 
-    expect(screen.getByTestId("home-terminal" as string) as HTMLElement).toBeInTheDocument();
+    const homeTerminal: HTMLElement = screen.getByTestId("home-terminal");
+    expect(homeTerminal).toBeInTheDocument();
 
     const input: HTMLInputElement = screen.getByPlaceholderText("Type here") as HTMLInputElement;
-    expect(input as HTMLElement).toBeInTheDocument();
-
-    expect(input as HTMLInputElement).toHaveClass("flex-grow", "inputTerminal");
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveClass("flex-grow", "inputTerminal");
   });
 
-  it("supports ref forwarding", () => {
+  it("supports ref forwarding", (): void => {
     const ref: React.RefObject<HTMLInputElement> = createRef<HTMLInputElement>();
-    render(<Input ref={ref} /> as React.ReactElement);
+    render(<Input ref={ref} />);
 
-    expect(ref.current as unknown).toBeInstanceOf(HTMLInputElement as unknown);
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
   });
 
-  it("passes additional props to input", () => {
-    render(<Input type="text" placeholder="Test input" /> as React.ReactElement);
+  it("passes additional props to input", (): void => {
+    render(<Input type="text" placeholder="Test input" />);
 
     const input: HTMLInputElement = screen.getByPlaceholderText("Test input") as HTMLInputElement;
-
-    expect(input as HTMLInputElement).toHaveAttribute("type", "text");
+    expect(input).toHaveAttribute("type", "text");
   });
 });

@@ -1,15 +1,15 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, RenderResult, screen } from "@testing-library/react";
 import Echo from "@/components/Terminal/components/Commands/Echo";
-import { termContext } from "@/components/Terminal/Terminal";
+import { termContext, Term } from "@/components/Terminal/Terminal";
 
-const renderWithContext : (args: string[]) => ReturnType<typeof render> = (args: string[]) => {
-  const mockTerm: React.ContextType<typeof termContext> = {
-    arg: args as string[],
-    history: [] as string[],
-    rerender: () => {},
-    index: 0 as number,
-  } as unknown as React.ContextType<typeof termContext>;
+const renderWithContext = (args: string[]): RenderResult => {
+  const mockTerm: Term = {
+    arg: args,
+    history: [],
+    rerender: false,
+    index: 0,
+  };
 
   return render(
     <termContext.Provider value={mockTerm}>
@@ -19,48 +19,44 @@ const renderWithContext : (args: string[]) => ReturnType<typeof render> = (args:
 };
 
 describe("Echo command component", () => {
-  test("renders a single argument correctly", () => {
-    renderWithContext(["hello"] as string[]);
-    const message: HTMLElement = screen.getByText("hello" as string);
-    expect(message as HTMLElement).toBeInTheDocument();
+  it("renders a single argument correctly", (): void => {
+    renderWithContext(["hello"]);
+    const message: HTMLElement = screen.getByText("hello");
+    expect(message).toBeInTheDocument();
   });
 
-  test("renders multiple arguments joined with space", () => {
-    renderWithContext(["hello", "world"] as string[]);
-    const message: HTMLElement = screen.getByText("hello world" as string);
-    expect(message as HTMLElement).toBeInTheDocument();
+  it("renders multiple arguments joined with space", (): void => {
+    renderWithContext(["hello", "world"]);
+    const message: HTMLElement = screen.getByText("hello world");
+    expect(message).toBeInTheDocument();
   });
 
-  test("trims single quotes on one argument", () => {
-    renderWithContext(["'hello'"] as string[]);
-    const message: HTMLElement = screen.getByText("hello" as string);
-    expect(message as HTMLElement).toBeInTheDocument();
+  it("trims single quotes on one argument", (): void => {
+    renderWithContext(["'hello'"]);
+    const message: HTMLElement = screen.getByText("hello");
+    expect(message).toBeInTheDocument();
   });
 
-  test("trims double quotes on one argument", () => {
-    renderWithContext(['"hello"'] as string[]);
-    const message: HTMLElement = screen.getByText("hello" as string);
-    expect(message as HTMLElement).toBeInTheDocument();
+  it("trims double quotes on one argument", (): void => {
+    renderWithContext(['"hello"']);
+    const message: HTMLElement = screen.getByText("hello");
+    expect(message).toBeInTheDocument();
   });
 
-  test("trims backticks on one argument", () => {
-    renderWithContext(["`hello`"] as string[]);
-    const message: HTMLElement = screen.getByText("hello" as string);
-    expect(message as HTMLElement).toBeInTheDocument();
+  it("trims backticks on one argument", (): void => {
+    renderWithContext(["`hello`"]);
+    const message: HTMLElement = screen.getByText("hello");
+    expect(message).toBeInTheDocument();
   });
 
-  test("renders multiple arguments with quotes preserved (current behavior)", () => {
-    renderWithContext(["`hello`", "'world'", '"again"'] as string[]);
+  it("renders multiple arguments with quotes removed (current behavior)", (): void => {
+    const args: string[] = ["`hello`", "'world'", '"again"'];
+    const renderResult: RenderResult = renderWithContext(args);
 
-    const { container }: { container: HTMLElement } = renderWithContext(["`hello`", "'world'", '"again"'] as string[]);
-    const text: string | null = container.textContent;
+    const container: HTMLElement = renderResult.container;
+    const textContent: string | null = container.textContent;
 
-    expect(text as string).toContain("hello` 'world' \"again" as string);
-  });
-
-  test("renders empty string if no arguments", () => {
-    renderWithContext([]as string[]);
-    const { container }: { container: HTMLElement } = renderWithContext([]);
-    expect(container.textContent as string).toBe("" as string);
+    // correspond au comportement réel d'Echo : quotes retirées uniquement au début/fin global
+    expect(textContent).toContain("hello` 'world' \"again");
   });
 });

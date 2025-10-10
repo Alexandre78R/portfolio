@@ -1,33 +1,35 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import Clear from "@/components/Terminal/components/Commands/Clear";
-import { termContext } from "@/components/Terminal/Terminal";
+import { termContext, Term } from "@/components/Terminal/Terminal";
 
-// Helper pour mocker le context
-const renderWithContext: (contextValue: any) => ReturnType<typeof render> = (contextValue: any) => {
-  return render(
+const renderWithContext = (contextValue: Term): RenderResult =>
+  render(
     <termContext.Provider value={contextValue}>
       <Clear />
     </termContext.Provider>
   );
-};
 
 describe("Clear command component", () => {
-  test("calls clearHistory if arg is empty", () => {
+  it("calls clearHistory if arg is empty", (): void => {
     const clearHistoryMock: jest.Mock = jest.fn();
-    renderWithContext({ arg: [], clearHistory: clearHistoryMock } as { arg: string[]; clearHistory: () => void });
 
-    expect(clearHistoryMock as jest.Mock).toHaveBeenCalledTimes(1 as const);
+    renderWithContext({ arg: [], history: [], rerender: false, index: 0, clearHistory: clearHistoryMock });
 
-    expect(screen.queryByText("Usage: clear" as string)).toBeNull();
+    expect(clearHistoryMock).toHaveBeenCalledTimes(1);
+
+    const usageMessage: HTMLElement | null = screen.queryByText("Usage: clear");
+    expect(usageMessage).toBeNull();
   });
 
-  test("renders usage message if arg is not empty", () => {
+  it("renders usage message if arg is not empty", (): void => {
     const clearHistoryMock: jest.Mock = jest.fn();
-    renderWithContext({ arg: ["something"], clearHistory: clearHistoryMock } as { arg: string[]; clearHistory: () => void });
 
-    expect(screen.getByText("Usage: clear" as const) as HTMLElement).toBeInTheDocument();
+    renderWithContext({ arg: ["something"], history: [], rerender: false, index: 0, clearHistory: clearHistoryMock });
 
-    expect(clearHistoryMock as jest.Mock).not.toHaveBeenCalled();
+    const usageMessage: HTMLElement = screen.getByText("Usage: clear");
+    expect(usageMessage).toBeInTheDocument();
+
+    expect(clearHistoryMock).not.toHaveBeenCalled();
   });
 });

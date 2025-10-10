@@ -1,14 +1,16 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import { Empty } from "../../../../src/components/Terminal/components/Empty";
 import "@testing-library/jest-dom";
 
 describe("Empty component", () => {
-  it("renders correctly", () => {
-    const { container }: { container: HTMLElement } = render(<Empty />);
+  const renderComponent = (): RenderResult => render(<Empty /> as React.ReactElement);
 
-    const div: HTMLElement = container.firstChild as HTMLElement;
-    expect(div as HTMLElement).toBeInTheDocument();
-    expect(div as HTMLElement).toHaveClass("mb-1");
+  it("renders correctly", (): void => {
+    const { container }: RenderResult = renderComponent();
+
+    const div: HTMLElement | null = container.firstChild as HTMLElement | null;
+    expect(div).toBeInTheDocument();
+    expect(div).toHaveClass("mb-1");
   });
 });

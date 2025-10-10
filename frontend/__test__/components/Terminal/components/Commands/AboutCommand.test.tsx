@@ -1,37 +1,47 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import About from "../../../../../src/components/Terminal/components/Commands/About";
+import { render, screen, RenderResult } from "@testing-library/react";
+import About from "@/components/Terminal/components/Commands/About";
 import "@testing-library/jest-dom";
 import Lang from "@/lang/typeLang";
 
-jest.mock("../../../../../src/context/Lang/LangContext", () => ({
-  useLang: () => ({
+jest.mock("@/context/Lang/LangContext", () => ({
+  useLang: (): { translations: Lang } => ({
     translations: {
-      titleAboutMe: "À propos de moi" as string,
-      descriptionAboutMe1: "Je suis développeur fullstack." as string,
-      descriptionAboutMe2: "J'aime coder en React et Node.js." as string,
-      descriptionAboutMe3: "Je travaille aussi sur des projets personnels." as string,
+      titleAboutMe: "À propos de moi",
+      descriptionAboutMe1: "Je suis développeur fullstack.",
+      descriptionAboutMe2: "J'aime coder en React et Node.js.",
+      descriptionAboutMe3: "Je travaille aussi sur des projets personnels.",
     } as Lang,
-  } as const),
-} as const));
+  }),
+}));
 
-
-jest.mock("../../../../../src/components/Terminal/components/Message", () => ({
-  Message: ({ children }: any) => <div data-testid="message">{children}</div>,
+jest.mock("@/components/Terminal/components/Message", () => ({
+  Message: ({ children }: { children: React.ReactNode }): JSX.Element => (
+    <div data-testid="message">{children}</div>
+  ),
 }));
 
 describe("About command component", () => {
-  it("renders correctly with translations", () => {
-    render(<About /> as React.ReactElement);
+  const renderComponent = (): RenderResult => render(<About />);
 
-    const messageWrapper: HTMLElement = screen.getByTestId("message"as const);
-    expect(messageWrapper as HTMLElement).toBeInTheDocument();
+  it("renders correctly with translations", (): void => {
+    renderComponent();
 
-    expect(screen.getByText("À propos de moi" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 3 } as { level : number}) as HTMLElement).toHaveTextContent("À propos de moi");
+    const messageWrapper: HTMLElement = screen.getByTestId("message");
+    expect(messageWrapper).toBeInTheDocument();
 
-    expect(screen.getByText("Je suis développeur fullstack." as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("J'aime coder en React et Node.js." as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Je travaille aussi sur des projets personnels." as string) as HTMLElement).toBeInTheDocument();
+    const title: HTMLElement = screen.getByText("À propos de moi");
+    expect(title).toBeInTheDocument();
+
+    const heading: HTMLElement = screen.getByRole("heading", { level: 3 });
+    expect(heading).toHaveTextContent("À propos de moi");
+
+    const desc1: HTMLElement = screen.getByText("Je suis développeur fullstack.");
+    const desc2: HTMLElement = screen.getByText("J'aime coder en React et Node.js.");
+    const desc3: HTMLElement = screen.getByText("Je travaille aussi sur des projets personnels.");
+
+    expect(desc1).toBeInTheDocument();
+    expect(desc2).toBeInTheDocument();
+    expect(desc3).toBeInTheDocument();
   });
 });

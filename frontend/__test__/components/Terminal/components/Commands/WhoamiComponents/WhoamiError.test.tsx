@@ -1,26 +1,28 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, RenderResult } from "@testing-library/react";
 import WhoamiError from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiError";
 
-jest.mock(
-  "@/components/Terminal/components/Usage",
-  () => {
-    const MockUsage = (props: any) => <div data-testid="usage-mock">{props.cmd}</div>;
-    MockUsage.displayName = "MockUsage" as string;
-    return MockUsage;
-  }
-);
+// 🔹 Mock strictement typé
+jest.mock("@/components/Terminal/components/Usage", () => {
+  const MockUsage = (props: { cmd: string }): JSX.Element => (
+    <div data-testid="usage-mock">{props.cmd}</div>
+  );
+  MockUsage.displayName = "MockUsage";
+  return MockUsage;
+});
 
 describe("WhoamiError Component", () => {
-  it("should render the error message and Usage component", () => {
+  it("renders the error message and Usage component", (): void => {
     const errorMessage: string = "Commande inconnue";
 
-    render(<WhoamiError message={errorMessage} /> as React.ReactElement);
+    const renderResult: RenderResult = render(<WhoamiError message={errorMessage} />);
 
-    expect(screen.getByText(errorMessage as string) as HTMLElement).toBeInTheDocument();
+    const errorElement: HTMLElement | null = screen.queryByText(errorMessage);
+    expect(errorElement).not.toBeNull();
+    if (errorElement) expect(errorElement).toBeInTheDocument();
 
-    const usage: HTMLElement = screen.getByTestId("usage-mock" as string) as HTMLElement;
-    expect(usage as HTMLElement).toBeInTheDocument() as void;
-    expect(usage as HTMLElement).toHaveTextContent("whoami") as void;
+    const usageElement: HTMLElement = screen.getByTestId("usage-mock");
+    expect(usageElement).toBeInTheDocument();
+    expect(usageElement).toHaveTextContent("whoami");
   });
 });
