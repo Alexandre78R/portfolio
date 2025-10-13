@@ -2,7 +2,6 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import BackUpList from "../../../../src/components/AdminLayout/Pages/BackUp/BackUpList";
 
-
 const refetchMock: jest.Mock = jest.fn();
 const generateBackupMock: jest.Mock = jest.fn();
 const deleteBackupMock: jest.Mock = jest.fn();

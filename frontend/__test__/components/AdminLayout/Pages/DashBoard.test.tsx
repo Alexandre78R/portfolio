@@ -1,106 +1,144 @@
 import React from "react";
 import { render, screen } from "../../../test-utils";
 import Dashboard from "../../../../src/components/AdminLayout/Pages/Dashboard/Dashboard";
-import { useGetGlobalStatsQuery } from "../../../../src/types/graphql";
+import { useGetGlobalStatsQuery, GetGlobalStatsQuery } from "../../../../src/types/graphql";
 import { useLang } from "../../../../src/context/Lang/LangContext";
+import { MainStat, RoleStat } from "../../../../src/components/AdminLayout/Pages/Dashboard/Dashboard";
 
 jest.mock("../../../../src/types/graphql", () => ({
-  useGetGlobalStatsQuery: jest.fn() as jest.Mock,
+  useGetGlobalStatsQuery: jest.fn(),
 }));
 
 jest.mock("../../../../src/context/Lang/LangContext", () => ({
-  useLang: jest.fn() as jest.Mock,
+  useLang: jest.fn(),
 }));
 
-jest.mock(
-  "../../../../src/components/Charts/HorizontalBarChart",
-  () => {
-    const Mock: React.FC<{ labels: string[] }> = (props) => (
-      <div data-testid="horizontal-bar-chart">
-        {props.labels.join(",")}
-      </div>
-    );
-    Mock.displayName = "HorizontalBarChart" as string;
-    return Mock as React.FC<{ labels: string[] }>;
-  }
-);
+jest.mock("../../../../src/components/Charts/HorizontalBarChart", () => {
+  const Mock: React.FC<{ labels: string[]; data?: number[] }> = (props) => (
+    <div data-testid="horizontal-bar-chart">{props.labels.join(",")}</div>
+  );
+  Mock.displayName = "HorizontalBarChart";
+  return Mock;
+});
 
 describe("Dashboard Page", () => {
   const translations: Record<string, string> = {
-    messagePageDashBoardErreurData: "Erreur data" as string,
-    messagePageDashBoardTitle: "Dashboard" as string,
-    messagePageDashBoardCardStatsProject: "Projects" as string,
-    messagePageDashBoardCardStatsSkill: "Skills" as string,
-    messagePageDashBoardCardStatsEducation: "Educations" as string,
-    messagePageDashBoardCardStatsExperience: "Experiences" as string,
-    messagePageDashBoardCardStatsUser: "Users" as string,
-    messagePageDashBoardTittleSection1: "Average Skills" as string,
-    messagePageDashBoardMessageAverageLeft: "Average is" as string,
-    messagePageDashBoardMessageAverageRight: "per project" as string,
-    messagePageDashBoardTittleSection2: "Top Skills" as string,
-    messagePageDashBoardTittleSection3: "Role Distribution" as string,
-    messagePageDashBoardRoleAdmin: "Admin" as string,
-    messagePageDashBoardRoleEditor: "Editor" as string,
-    messagePageDashBoardRoleViewer: "Viewer" as string,
+    messagePageDashBoardErreurData: "Erreur data",
+    messagePageDashBoardTitle: "Dashboard",
+    messagePageDashBoardCardStatsProject: "Projects",
+    messagePageDashBoardCardStatsSkill: "Skills",
+    messagePageDashBoardCardStatsEducation: "Educations",
+    messagePageDashBoardCardStatsExperience: "Experiences",
+    messagePageDashBoardCardStatsUser: "Users",
+    messagePageDashBoardTittleSection1: "Average Skills",
+    messagePageDashBoardMessageAverageLeft: "Average is",
+    messagePageDashBoardMessageAverageRight: "per project",
+    messagePageDashBoardTittleSection2: "Top Skills",
+    messagePageDashBoardTittleSection3: "Role Distribution",
+    messagePageDashBoardRoleAdmin: "Admin",
+    messagePageDashBoardRoleEditor: "Editor",
+    messagePageDashBoardRoleViewer: "Viewer",
   };
 
-  const mockData: Record<string, any> = {
+  const mockData: GetGlobalStatsQuery = {
     getGlobalStats: {
+      __typename: "GlobalStatsResponse",
+      code: 200,
+      message: "OK",
       stats: {
-        totalProjects: 5 as number,
-        totalSkills: 10 as number,
-        totalEducations: 3 as number,
-        totalExperiences: 7 as number,
-        totalUsers: 4 as number,
-      } as { [key: string]: number },
-    } as { stats: { [key: string]: number } } ,
-    getAverageSkillsPerProject: 2.5 as number,
+        __typename: "GlobalStats",
+        totalProjects: 5,
+        totalSkills: 10,
+        totalEducations: 3,
+        totalExperiences: 7,
+        totalUsers: 4,
+        usersByRoleAdmin: 20,
+        usersByRoleEditor: 50,
+        usersByRoleView: 30,
+      },
+    },
+    getAverageSkillsPerProject: 2.5,
     getUsersRoleDistribution: {
-      admin: 20 as number,
-      editor: 50 as number,
-      view: 30 as number  ,
-    } as { [key: string]: number },
+      __typename: "UserRolePercent",
+      admin: 20,
+      editor: 50,
+      view: 30,
+      code: 200,
+      message: "OK",
+    },
     getTopUsedSkills: {
+      __typename: "TopSkillsResponse",
+      code: 200,
+      message: "OK",
       skills: [
-        { name: "React", usageCount: 10 },
-        { name: "TypeScript", usageCount: 5 },
-      ] as { name: string; usageCount: number }[],
-    } as { skills: { name: string; usageCount: number }[] },
+        { __typename: "TopSkillUsage", id: 1, name: "React", usageCount: 10 },
+        { __typename: "TopSkillUsage", id: 2, name: "TypeScript", usageCount: 5 },
+      ],
+    },
   };
 
   beforeEach(() => {
-    (useLang as jest.Mock).mockReturnValue({ translations } as { translations: Record<string, string> });
+    (useLang as jest.Mock).mockReturnValue({ translations });
   });
 
   it("renders loading state", () => {
-    (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({ loading: true } as { loading: boolean });
-    render(<Dashboard /> as React.ReactElement);
-    expect(screen.getByRole("progressbar" as string) as HTMLElement).toBeInTheDocument();
+    (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({
+      loading: true,
+      error: undefined,
+      data: undefined,
+    });
+    render(<Dashboard />);
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 
   it("renders error state", () => {
     (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({
-      loading: false as boolean,
-      error: true as boolean,
+      loading: false,
+      error: true,
+      data: undefined,
     });
-    render(<Dashboard /> as React.ReactElement);
-    expect(
-      screen.getByText(translations.messagePageDashBoardErreurData as string)
-    ).toBeInTheDocument();
+    render(<Dashboard />);
+    expect(screen.getByText(translations.messagePageDashBoardErreurData)).toBeInTheDocument();
   });
 
-  it("renders dashboard stats", () => {
+  it("renders dashboard stats correctly", () => {
     (useGetGlobalStatsQuery as jest.Mock).mockReturnValue({
-      loading: false as boolean,
-      error: false as boolean,
-      data: mockData as Record<string, any>,
+      loading: false,
+      error: false,
+      data: mockData,
     });
 
-    render(<Dashboard /> as React.ReactElement);
+    render(<Dashboard />);
 
-    expect(screen.getByText("Projects" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("5" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Admin" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("20%" as string) as HTMLElement).toBeInTheDocument();
+    const stats = mockData.getGlobalStats.stats!;
+    const averageSkills: number = mockData.getAverageSkillsPerProject;
+    const topSkills = mockData.getTopUsedSkills.skills;
+    const roleDistribution: RoleStat[] = [
+      { label: translations.messagePageDashBoardRoleAdmin, value: stats.usersByRoleAdmin },
+      { label: translations.messagePageDashBoardRoleEditor, value: stats.usersByRoleEditor },
+      { label: translations.messagePageDashBoardRoleViewer, value: stats.usersByRoleView },
+    ];
+
+    const mainStats: MainStat[] = [
+      { title: translations.messagePageDashBoardCardStatsProject, value: stats.totalProjects, icon: <></>, color: "" },
+      { title: translations.messagePageDashBoardCardStatsSkill, value: stats.totalSkills, icon: <></>, color: "" },
+      { title: translations.messagePageDashBoardCardStatsEducation, value: stats.totalEducations, icon: <></>, color: "" },
+      { title: translations.messagePageDashBoardCardStatsExperience, value: stats.totalExperiences, icon: <></>, color: "" },
+      { title: translations.messagePageDashBoardCardStatsUser, value: stats.totalUsers, icon: <></>, color: "" },
+    ];
+
+    mainStats.forEach((stat) => {
+      expect(screen.getByText(stat.title)).toBeInTheDocument();
+      expect(screen.getByText(stat.value.toString())).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(averageSkills.toFixed(2))).toBeInTheDocument();
+
+    roleDistribution.forEach((role) => {
+      expect(screen.getByText(role.label)).toBeInTheDocument();
+      expect(screen.getByText(`${role.value.toFixed(0)}%`)).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("horizontal-bar-chart")).toHaveTextContent(topSkills.map(s => s.name).join(","));
   });
 });
