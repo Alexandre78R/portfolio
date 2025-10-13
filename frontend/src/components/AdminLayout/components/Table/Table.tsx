@@ -2,20 +2,17 @@ import React from "react";
 
 export interface ColumnDef<T> {
   header: string;
-  accessor: keyof T | ((row: T) => React.ReactNode);
+  accessor: keyof T | ((row: T) => React.ReactNode | string | number);
   className?: string;
   headerClassName?: string;
 }
 
-interface TableProps<T> {
+export interface TableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
 }
 
-const Table = <T extends Record<string, any>>({
-  columns,
-  data,
-}: TableProps<T>) => {
+const Table = <T,>({ columns, data }: TableProps<T>): JSX.Element => {
   return (
     <div className="overflow-x-auto rounded-xl border border-border bg-muted shadow-sm">
       <table className="min-w-full text-sm text-left text-text">
@@ -25,7 +22,7 @@ const Table = <T extends Record<string, any>>({
               <th
                 key={index}
                 className={`px-6 py-4 font-bold uppercase text-xs tracking-wide border-b border-border ${
-                  col.headerClassName || ""
+                  col.headerClassName ?? ""
                 }`}
               >
                 {col.header}
@@ -50,9 +47,9 @@ const Table = <T extends Record<string, any>>({
                 return (
                   <td
                     key={colIndex}
-                    className={`px-6 py-4 ${col.className || ""}`}
+                    className={`px-6 py-4 ${col.className ?? ""}`}
                   >
-                    {value}
+                    {value as React.ReactNode}
                   </td>
                 );
               })}
