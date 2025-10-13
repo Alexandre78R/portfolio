@@ -1,28 +1,9 @@
-export interface Theme {
-  id: string;
-  name: string;
-  colors: {
-    body: string;
-    scrollHandle: string;
-    scrollHandleHover: string;
-    primary: string;
-    secondary: string;
-    success: string;
-    error: string;
-    warn: string;
-    info: string;
-    grey: string;
-    placeholder: string;
-    footer: string;
-    admin: string;
-    text: {
-      default: string;
-      100: string;
-      200: string;
-      300: string;
-      button: string;
-    };
-  };
+export interface ThemeColorsText {
+  default: string;
+  100: string;
+  200: string;
+  300: string;
+  button: string;
 }
 
 export interface ThemeColors {
@@ -40,15 +21,13 @@ export interface ThemeColors {
   admin: string;
 }
 
-export interface ThemeColorsText {
-  default: string;
-  100: string;
-  200: string;
-  300: string;
-  button: string;
+export interface Theme {
+  id: string;
+  name: string;
+  colors: ThemeColors & { text: ThemeColorsText };
 }
 
-const themes: { [key: string]: Theme } = {
+const themes = {
   dark: {
     id: "1",
     name: "dark",
@@ -127,22 +106,9 @@ const themes: { [key: string]: Theme } = {
       },
     },
   },
-};
+} as const;
 
-export const tabThemes = (): Theme[] => {
-  const tab: Theme[] = [];
-  for (const key in themes) {
-    tab.push(themes[key]);
-  }
-  return tab;
-};
-
-export const tabThemesName = (): string[] => {
-  const tab: any[] = [];
-  for (const key in themes) {
-    tab.push(themes[key].name);
-  }
-  return tab;
-};
+export type ThemeKey = keyof typeof themes;
+export type ThemeType = typeof themes[ThemeKey];
 
 export default themes;
