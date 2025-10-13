@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, ReactElement } from 'react'
 
-type MobileOverlayProps = {
+export interface MobileOverlayProps {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const MobileOverlay = ({ setSidebarOpen }: MobileOverlayProps): React.ReactElement => {
+const MobileOverlay = ({ setSidebarOpen }: MobileOverlayProps): ReactElement => {
   return (
     <div
       data-testid="overlay"
@@ -15,4 +15,4 @@ const MobileOverlay = ({ setSidebarOpen }: MobileOverlayProps): React.ReactEleme
   )
 }
 
-export default MobileOverlay;
+export default MobileOverlay

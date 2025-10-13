@@ -1,38 +1,54 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import ToggleButton from '@/components/AdminLayout/ToggleButton'
-import React from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 describe('ToggleButton', () => {
-  const setSidebarOpen: jest.Mock = jest.fn()
+  let setSidebarOpen: jest.MockedFunction<Dispatch<SetStateAction<boolean>>>
 
-  beforeEach(() => {
-    jest.clearAllMocks()
+  beforeEach((): void => {
+    setSidebarOpen = jest.fn()
   })
 
-  it('renders correctly when sidebar is closed', () => {
-    render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} /> as React.ReactElement)
-    const btn: HTMLElement = screen.getByRole('button' as string, { name: /open sidebar/i })
-    expect(btn).toBeInTheDocument()
-    expect(btn).not.toHaveClass('hidden' as string)
+  it('renders correctly when sidebar is closed', (): void => {
+    render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />)
+
+    const button: HTMLButtonElement = screen.getByRole('button', {
+      name: /open sidebar/i,
+    })
+
+    expect(button).toBeInTheDocument()
+    expect(button).not.toHaveClass('hidden')
   })
 
-  it('renders hidden when sidebar is open', () => {
-    render(<ToggleButton sidebarOpen={true} setSidebarOpen={setSidebarOpen} /> as React.ReactElement)
-    const btn: HTMLElement = screen.getByRole('button' as string, { name: /open sidebar/i })
-    expect(btn).toHaveClass('hidden' as string)
+  it('renders hidden when sidebar is open', (): void => {
+    render(<ToggleButton sidebarOpen setSidebarOpen={setSidebarOpen} />)
+
+    const button: HTMLButtonElement = screen.getByRole('button', {
+      name: /open sidebar/i,
+    })
+
+    expect(button).toHaveClass('hidden')
   })
 
-  it('calls setSidebarOpen(true) when clicked', () => {
-    render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} /> as React.ReactElement)
-    const btn: HTMLElement = screen.getByRole('button' as string, { name: /open sidebar/i })
-    fireEvent.click(btn as HTMLElement)
-    expect(setSidebarOpen as jest.Mock).toHaveBeenCalledTimes(1 as number)
-    expect(setSidebarOpen as jest.Mock).toHaveBeenCalledWith(true as boolean)
+  it('calls setSidebarOpen(true) when clicked', (): void => {
+    render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />)
+
+    const button: HTMLButtonElement = screen.getByRole('button', {
+      name: /open sidebar/i,
+    })
+
+    fireEvent.click(button)
+
+    expect(setSidebarOpen).toHaveBeenCalledTimes(1)
+    expect(setSidebarOpen).toHaveBeenCalledWith(true)
   })
 
-  it('renders the Menu icon', () => {
-    const { container }: { container: HTMLElement } = render(<ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />)
-    const icon: SVGSVGElement | null = container.querySelector('svg' as string)
-    expect(icon as SVGSVGElement).toBeInTheDocument()
+  it('renders the Menu icon', (): void => {
+    const { container }: { container: HTMLElement } = render(
+      <ToggleButton sidebarOpen={false} setSidebarOpen={setSidebarOpen} />
+    )
+
+    const icon: SVGSVGElement | null = container.querySelector('svg')
+    expect(icon).toBeInTheDocument()
   })
 })

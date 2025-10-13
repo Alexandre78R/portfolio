@@ -1,9 +1,9 @@
-type NavItem = {
+export type NavItem = {
   name: string
   key: string
 }
 
-type TopbarMobileProps = {
+export type TopbarMobileProps = {
   activeTab: string
   navigation: NavItem[]
 }

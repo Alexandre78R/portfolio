@@ -1,16 +1,16 @@
-import { Dispatch, SetStateAction } from 'react';
-import clsx from 'clsx';
-import { ChevronDown, X } from 'lucide-react';
-import { useLang } from "@/context/Lang/LangContext";
-import Lang from '@/lang/typeLang';
-import { NavItem } from './Navigation';
+import { ReactElement, Dispatch, SetStateAction } from 'react'
+import clsx from 'clsx'
+import { ChevronDown, X } from 'lucide-react'
+import { useLang } from "@/context/Lang/LangContext"
+import { NavItem } from './Navigation'
+import Lang from '@/lang/typeLang'
 
-type SidebarProps = {
+ export interface SideBarProps {
   navigation: NavItem[]
   sidebarOpen: boolean
   setSidebarOpen: Dispatch<SetStateAction<boolean>>
   activeTab: string
-  setActiveTab: Dispatch<SetStateAction<string>>
+  setActiveTab: (key: string) => void
   openMenus: string[]
   setOpenMenus: Dispatch<SetStateAction<string[]>>
 }
@@ -23,23 +23,20 @@ const SideBar = ({
   setActiveTab,
   openMenus,
   setOpenMenus,
-}: SidebarProps): React.ReactElement => {
-
-  const { translations } = useLang();
+}: SideBarProps): ReactElement => {
+  const { translations } = useLang()
 
   const toggleMenu = (key: string) => {
-    setOpenMenus((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
-    )
+    setOpenMenus(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])
   }
 
   const getTranslation = (
-    translations: Lang | { [key: string]: string },
+    translations: Lang | Record<string, string>,
     key: string,
     fallback: string
   ): string => {
-    const dict = translations as { [key: string]: string };
-    return dict[key] ?? fallback;
+    const dict: Record<string, string> = translations as Record<string, string>
+    return dict[key] ?? fallback
   }
 
   return (
@@ -57,27 +54,25 @@ const SideBar = ({
           </button>
         </div>
         <nav className="overflow-y-auto p-4 space-y-4">
-          {navigation.map((item) => {
-            const isOpen = openMenus.includes(item.key);
-            const hasChildren = !!item.children?.length;
-            
+          {navigation.map(item => {
+            const isOpen = openMenus.includes(item.key)
+            const hasChildren = !!item.children?.length
+
             return (
               <div key={item.key}>
                 <button
                   onClick={() => {
-                    if (item.disabled) return;
-                    if (hasChildren) toggleMenu(item.key);
+                    if (item.disabled) return
+                    if (hasChildren) toggleMenu(item.key)
                     else {
-                      setActiveTab(item.key);
-                      setSidebarOpen(false);
+                      setActiveTab(item.key)
+                      setSidebarOpen(false)
                     }
                   }}
                   className={clsx(
                     'flex items-center justify-between w-full px-4 py-2 rounded transition-all',
                     activeTab === item.key ? 'text-primary font-semibold' : 'text-text',
-                    item.disabled
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'hover:bg-primary hover:text-secondary'
+                    item.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary hover:text-secondary'
                   )}
                   disabled={item.disabled}
                 >
@@ -87,30 +82,23 @@ const SideBar = ({
                     {item.disabled && <span className="ml-2">🔒</span>}
                   </span>
                   {hasChildren && (
-                    <ChevronDown
-                      className={clsx(
-                        'transition-transform duration-200',
-                        isOpen ? 'rotate-180' : ''
-                      )}
-                    />
+                    <ChevronDown className={clsx('transition-transform duration-200', isOpen ? 'rotate-180' : '')} />
                   )}
                 </button>
                 {hasChildren && isOpen && (
                   <div className="pl-8 mt-1 space-y-1 text-text">
-                    {item.children?.map((child) => (
+                    {item.children?.map(child => (
                       <button
                         key={child.key}
                         onClick={() => {
-                          if (child.disabled) return;
-                          setActiveTab(child.key);
-                          setSidebarOpen(false);
+                          if (child.disabled) return
+                          setActiveTab(child.key)
+                          setSidebarOpen(false)
                         }}
                         className={clsx(
                           'flex items-center gap-3 px-3 py-1 rounded w-full text-sm transition-all',
                           activeTab === child.key ? 'text-primary font-semibold' : 'text-text',
-                          child.disabled
-                            ? 'opacity-50 cursor-not-allowed'
-                            : 'hover:bg-primary hover:text-secondary'
+                          child.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary hover:text-secondary'
                         )}
                         disabled={child.disabled}
                       >
@@ -130,4 +118,4 @@ const SideBar = ({
   )
 }
 
-export default SideBar;
+export default SideBar

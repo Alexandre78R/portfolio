@@ -1,49 +1,53 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import SideBar from '@/components/AdminLayout/SideBar'
+import { render, screen, fireEvent, RenderResult } from '@testing-library/react'
+import SideBar, { SideBarProps } from '@/components/AdminLayout/SideBar'
 import { NavItem } from '@/components/AdminLayout/Navigation'
-import { HtmlContext } from 'next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints'
+import { Dispatch, SetStateAction, ComponentType } from 'react'
 
-// Mock le contexte Lang
 jest.mock('@/context/Lang/LangContext', () => ({
-  useLang: () => ({
-    translations: {} as Record<string, string>,
+  useLang: (): { translations: Record<string, string> } => ({
+    translations: {},
   }),
 }))
 
-// Mock icônes simples
-const MockIcon: React.FC = () => <span data-testid="icon" />
+const MockIcon: ComponentType<{ className?: string }> = (): JSX.Element => (
+  <span data-testid="icon" />
+)
 
 describe('SideBar', () => {
-  const setSidebarOpen: jest.Mock = jest.fn()
-  const setActiveTab: jest.Mock = jest.fn()
-  const setOpenMenus: jest.Mock = jest.fn()
+
+  const setSidebarOpen: Dispatch<SetStateAction<boolean>> = jest.fn()
+  const setActiveTab: (key: string) => void = jest.fn()
+  const setOpenMenus: Dispatch<SetStateAction<string[]>> = jest.fn()
 
   const navigation: NavItem[] = [
     {
-      name: 'Dashboard' as string,
-      key: 'dashboard' as string,
-      icon: MockIcon as React.FC,
+      name: 'Dashboard',
+      key: 'dashboard',
+      icon: MockIcon,
     },
     {
-      name: 'Projets' as string,
-      key: 'projects' as string,
-      icon: MockIcon as React.FC,
+      name: 'Projets',
+      key: 'projects',
+      icon: MockIcon,
       children: [
-        { name: 'Voir projets' as string, key: 'projects/list' as string, icon: MockIcon as React.FC, parentKey: 'projects' as string },
-        { name: 'Créer projet' as string, key: 'projects/create' as string, icon: MockIcon as React.FC, parentKey: 'projects' as string, disabled: true },
+        {
+          name: 'Voir projets',
+          key: 'projects/list',
+          icon: MockIcon,
+          parentKey: 'projects',
+        },
+        {
+          name: 'Créer projet',
+          key: 'projects/create',
+          icon: MockIcon,
+          parentKey: 'projects',
+          disabled: true,
+        },
       ],
     },
   ]
 
-  const defaultProps: {
-    navigation: NavItem[]
-    sidebarOpen: boolean
-    setSidebarOpen: jest.Mock
-    activeTab: string
-    setActiveTab: jest.Mock
-    openMenus: string[]
-    setOpenMenus: jest.Mock
-  } = {
+  const defaultProps: SideBarProps = {
     navigation,
     sidebarOpen: true,
     setSidebarOpen,
@@ -53,49 +57,65 @@ describe('SideBar', () => {
     setOpenMenus,
   }
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks()
   })
 
-  it('renders all top-level items', () => {
-    render(<SideBar {...defaultProps} /> as React.ReactElement)
-    expect(screen.getByText('Dashboard') as RTCAnswerOptions).toBeInTheDocument()
-    expect(screen.getByText('Projets') as RTCAnswerOptions).toBeInTheDocument()
+  it('renders all top-level items', (): void => {
+    const result: RenderResult = render(<SideBar {...defaultProps} />)
+
+    const dashboard: HTMLElement = result.getByText('Dashboard')
+    const projets: HTMLElement = result.getByText('Projets')
+
+    expect(dashboard).toBeInTheDocument()
+    expect(projets).toBeInTheDocument()
   })
 
-  it('renders children only if menu is open', () => {
-    const props = { ...defaultProps, openMenus: ['projects'] }
-    render(<SideBar {...props} /> as  React.ReactElement)
-    expect(screen.getByText('Voir projets') as RTCAnswerOptions).toBeInTheDocument()
-    expect(screen.getByText('Créer projet') as RTCAnswerOptions).toBeInTheDocument()
+  it('renders children only if menu is open', (): void => {
+    const result: RenderResult = render(
+      <SideBar {...defaultProps} openMenus={['projects']} />
+    )
+
+    const view: HTMLElement = result.getByText('Voir projets')
+    const create: HTMLElement = result.getByText('Créer projet')
+
+    expect(view).toBeInTheDocument()
+    expect(create).toBeInTheDocument()
   })
 
-  it('calls setActiveTab and setSidebarOpen when clicking on top-level item without children', () => {
-    render(<SideBar {...defaultProps} /> as React.ReactElement)
-    fireEvent.click(screen.getByText('Dashboard' as string) as HTMLElement)
-    expect(setActiveTab as jest.Mock).toHaveBeenCalledWith('dashboard' as string)
-    expect(setSidebarOpen as jest.Mock).toHaveBeenCalledWith(false as boolean)
+  it('calls setActiveTab and setSidebarOpen when clicking item without children', (): void => {
+    render(<SideBar {...defaultProps} />)
+
+    const dashboardButton: HTMLElement = screen.getByText('Dashboard')
+    fireEvent.click(dashboardButton)
+
+    expect(setActiveTab).toHaveBeenCalledWith('dashboard')
+    expect(setSidebarOpen).toHaveBeenCalledWith(false)
   })
 
-  it('toggles menu open when clicking on top-level item with children', () => {
-    const props = { ...defaultProps, openMenus: [] }
-    render(<SideBar {...props} /> as React.ReactElement)
-    fireEvent.click(screen.getByText('Projets' as string) as HTMLElement)
-    expect(setOpenMenus as jest.Mock).toHaveBeenCalledWith(expect.any(Function))
+  it('toggles menu when clicking item with children', (): void => {
+    render(<SideBar {...defaultProps} />)
+
+    const projectsButton: HTMLElement = screen.getByText('Projets')
+    fireEvent.click(projectsButton)
+
+    expect(setOpenMenus).toHaveBeenCalledWith(expect.any(Function))
   })
 
-  it('does not allow clicking disabled child items', () => {
-    const props = { ...defaultProps, openMenus: ['projects'] }
-    render(<SideBar {...props} /> as React.ReactElement)
-    const disabledButton: HTMLElement = screen.getByText('Créer projet')
-    fireEvent.click(disabledButton)
-    expect(setActiveTab as jest.Mock).not.toHaveBeenCalled()
-    expect(setSidebarOpen as jest.Mock).not.toHaveBeenCalled()
+  it('does not allow clicking disabled child items', (): void => {
+    render(<SideBar {...defaultProps} openMenus={['projects']} />)
+
+    const disabledChild: HTMLElement = screen.getByText('Créer projet')
+    fireEvent.click(disabledChild)
+
+    expect(setActiveTab).not.toHaveBeenCalled()
+    expect(setSidebarOpen).not.toHaveBeenCalled()
   })
 
-  it('renders icon for each item', () => {
-    render(<SideBar {...defaultProps} /> as React.ReactElement)
+  it('renders icons for items', (): void => {
+    render(<SideBar {...defaultProps} />)
+
     const icons: HTMLElement[] = screen.getAllByTestId('icon')
-    expect(icons.length as number).toBeGreaterThan(0)
+    expect(icons.length).toBeGreaterThan(0)
   })
 })

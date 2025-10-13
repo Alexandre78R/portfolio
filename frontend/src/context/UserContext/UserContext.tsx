@@ -10,7 +10,7 @@ import {
   useGetMeQuery,
 } from "@/types/graphql";
 
-interface UserContextType {
+export interface UserContextType {
   user: GetMeQuery["me"] | null;
   loading: boolean;
   error: Error | null;

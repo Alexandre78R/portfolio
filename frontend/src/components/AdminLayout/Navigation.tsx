@@ -1,3 +1,4 @@
+import { ReactNode, ComponentType } from 'react'
 import {
   LayoutDashboard,
   User,
@@ -9,16 +10,18 @@ import {
   FileUser,
 } from 'lucide-react'
 
-export type NavItem = {
+export type Role = 'admin' | 'editor' | 'view'
+
+export interface NavItem {
   name: string
   key: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
   children?: NavItem[]
-  roles?: ('admin' | 'editor' | 'view')[]
-  access?: boolean
+  roles?: Role[]
   parentKey?: string
   disabled?: boolean
 }
+
 
 const navigation: NavItem[] = [
   {

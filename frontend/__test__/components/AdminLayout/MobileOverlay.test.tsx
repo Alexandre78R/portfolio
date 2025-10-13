@@ -1,9 +1,11 @@
+import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import MobileOverlay from '@/components/AdminLayout/MobileOverlay'
+import MobileOverlay, { MobileOverlayProps } from '@/components/AdminLayout/MobileOverlay'
 
 describe('MobileOverlay', () => {
   it('renders correctly', () => {
-    const mockSetSidebarOpen: jest.Mock = jest.fn()
+    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn()
+
     render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />)
 
     const overlay: HTMLElement = screen.getByTestId('overlay')
@@ -22,13 +24,14 @@ describe('MobileOverlay', () => {
   })
 
   it('calls setSidebarOpen(false) when clicked', () => {
-    const mockSetSidebarOpen: jest.Mock = jest.fn()
+    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn()
+
     render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />)
 
     const overlay: HTMLElement = screen.getByTestId('overlay')
-    fireEvent.click(overlay as HTMLElement)
+    fireEvent.click(overlay)
 
-    expect(mockSetSidebarOpen as jest.Mock).toHaveBeenCalledTimes(1)
-    expect(mockSetSidebarOpen as jest.Mock).toHaveBeenCalledWith(false)
+    expect(mockSetSidebarOpen).toHaveBeenCalledTimes(1)
+    expect(mockSetSidebarOpen).toHaveBeenCalledWith(false)
   })
 })

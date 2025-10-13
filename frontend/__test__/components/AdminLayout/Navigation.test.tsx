@@ -1,72 +1,107 @@
-import navigation, { NavItem } from '@/components/AdminLayout/Navigation'
+import navigation, { NavItem, Role } from '@/components/AdminLayout/Navigation'
+import { ComponentType } from 'react'
 
-describe('Navigation', () => {
-  it('should be an array', () => {
-    expect(Array.isArray(navigation)).toBe(true)
+const isReactComponent = (
+  component: unknown
+): component is ComponentType<{ className?: string }> => {
+  return (
+    typeof component === 'function' ||
+    (typeof component === 'object' && component !== null)
+  )
+}
+
+describe('Navigation', (): void => {
+  it('should be an array', (): void => {
+    const isArray: boolean = Array.isArray(navigation)
+    expect(isArray).toBe(true)
   })
 
-  it('all top-level items should have name, key and icon', () => {
-    const isReactComponent: (comp: any) => boolean = (comp: any) =>
-        typeof comp === 'function' || (typeof comp === 'object' && comp !== null)
+  it('all top-level items should have name, key and icon', (): void => {
+    navigation.forEach((item: NavItem): void => {
+      const name: string = item.name
+      const key: string = item.key
+      const icon = item.icon
 
-    navigation.forEach((item) => {
-        expect(item.name as string).toBeDefined()
-        expect(typeof item.name as string).toBe('string')
+      expect(name).toBeDefined()
+      expect(typeof name).toBe('string')
 
-        expect(item.key as string).toBeDefined()
-        expect(typeof item.key as string).toBe('string')
+      expect(key).toBeDefined()
+      expect(typeof key).toBe('string')
 
-        expect(item.icon as any).toBeDefined()
-        expect(isReactComponent(item.icon as any)).toBe(true as boolean)
+      expect(icon).toBeDefined()
+      expect(isReactComponent(icon)).toBe(true)
     })
   })
 
-  it('all keys should be unique', () => {
-    const allKeys: string[] = []  as string[]
+  it('all keys should be unique', (): void => {
+    const allKeys: string[] = []
 
-    const collectKeys: (items: NavItem[]) => void = (items) => {
-      items.forEach((item) => {
-        allKeys.push(item.key as string)
-        if (item.children as NavItem[]) collectKeys(item.children as NavItem[])
-      })
-    }
+    const collectKeys = (items: NavItem[]): void => {
+      items.forEach((item: NavItem): void => {
+        const key: string = item.key
+        allKeys.push(key)
 
-    collectKeys(navigation as NavItem[])
-
-    const uniqueKeys: Set<string> = new Set(allKeys as string[])
-    expect(uniqueKeys.size as number).toBe(allKeys.length as number)
-  })
-
-  it('all children should have parentKey matching their parent', () => {
-    navigation.forEach((parent) => {
-      parent.children?.forEach((child) => {
-        expect(child.parentKey as string).toBe(parent.key as string)
-      })
-    })
-  })
-
-  it('all roles should be valid', () => {
-    const validRoles: string[] = ['admin', 'editor', 'view']
-
-    const checkRoles: (items: NavItem[]) => void = (items) => {
-      items.forEach((item) => {
-        if (item.roles) {
-          item.roles.forEach((role) => expect(validRoles as string[]).toContain(role as string))
+        const children: NavItem[] | undefined = item.children
+        if (children) {
+          collectKeys(children)
         }
-        if (item.children as NavItem[]) checkRoles(item.children as NavItem[])
       })
     }
 
-    checkRoles(navigation as NavItem[])
+    collectKeys(navigation)
+
+    const uniqueKeys: Set<string> = new Set<string>(allKeys)
+    const uniqueCount: number = uniqueKeys.size
+    const totalCount: number = allKeys.length
+
+    expect(uniqueCount).toBe(totalCount)
   })
 
-  it('optional fields should exist if present', () => {
-    navigation.forEach((item) => {
-      if (item.children) {
-        item.children.forEach((child) => {
-          expect(child.key as string).toBeDefined()
-          expect(child.name as string).toBeDefined()
-          expect(child.icon as any).toBeDefined()
+  it('all children should have parentKey matching their parent', (): void => {
+    navigation.forEach((parent: NavItem): void => {
+      const parentKey: string = parent.key
+
+      parent.children?.forEach((child: NavItem): void => {
+        const childParentKey: string | undefined = child.parentKey
+        expect(childParentKey).toBe(parentKey)
+      })
+    })
+  })
+
+  it('all roles should be valid', (): void => {
+    const validRoles: ReadonlyArray<Role> = ['admin', 'editor', 'view']
+
+    const checkRoles = (items: NavItem[]): void => {
+      items.forEach((item: NavItem): void => {
+        const roles: Role[] | undefined = item.roles
+
+        roles?.forEach((role: Role): void => {
+          expect(validRoles).toContain(role)
+        })
+
+        const children: NavItem[] | undefined = item.children
+        if (children) {
+          checkRoles(children)
+        }
+      })
+    }
+
+    checkRoles(navigation)
+  })
+
+  it('optional fields should exist if present', (): void => {
+    navigation.forEach((item: NavItem): void => {
+      const children: NavItem[] | undefined = item.children
+
+      if (children) {
+        children.forEach((child: NavItem): void => {
+          const key: string = child.key
+          const name: string = child.name
+          const icon: ComponentType<{ className?: string }> = child.icon
+
+          expect(key).toBeDefined()
+          expect(name).toBeDefined()
+          expect(icon).toBeDefined()
         })
       }
     })
