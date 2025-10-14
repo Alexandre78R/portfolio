@@ -4,9 +4,10 @@ import React, {
   useRef,
   RefObject,
   useMemo,
+  ReactNode,
 } from "react";
 
-type SectionRefsContextProps = {
+export interface SectionRefsContextProps {
   aboutMeRef: RefObject<HTMLDivElement>;
   projectRef: RefObject<HTMLDivElement>;
   headerRef: RefObject<HTMLDivElement>;
@@ -14,25 +15,28 @@ type SectionRefsContextProps = {
   terminalRef: RefObject<HTMLDivElement>;
   educationRef: RefObject<HTMLDivElement>;
   contactRef: RefObject<HTMLDivElement>;
-};
+}
 
-const SectionRefsContext = createContext<SectionRefsContextProps | undefined>(
-  undefined
-);
+const SectionRefsContext: React.Context<SectionRefsContextProps | undefined> =
+  createContext<SectionRefsContextProps | undefined>(undefined);
 
-export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({
+export interface SectionRefsProviderProps {
+  children: ReactNode;
+}
+
+export const SectionRefsProvider: React.FC<SectionRefsProviderProps> = ({
   children,
 }): React.ReactElement => {
-  const aboutMeRef = useRef<HTMLDivElement>(null);
-  const projectRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const skillRef = useRef<HTMLDivElement>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const educationRef = useRef<HTMLDivElement>(null);
-  const contactRef = useRef<HTMLDivElement>(null);
+  const aboutMeRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const projectRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const headerRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const skillRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const terminalRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const educationRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const contactRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
-  const value: SectionRefsContextProps = useMemo(
-    () => ({
+  const value: SectionRefsContextProps = useMemo<SectionRefsContextProps>(
+    (): SectionRefsContextProps => ({
       aboutMeRef,
       projectRef,
       headerRef,
@@ -41,7 +45,7 @@ export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({
       educationRef,
       contactRef,
     }),
-    []
+    [aboutMeRef, projectRef, headerRef, skillRef, terminalRef, educationRef, contactRef]
   );
 
   return (
@@ -52,9 +56,14 @@ export const SectionRefsProvider: React.FC<{ children: React.ReactNode }> = ({
 };
 
 export const useSectionRefs = (): SectionRefsContextProps => {
-  const context = useContext(SectionRefsContext);
+  const context: SectionRefsContextProps | undefined =
+    useContext<SectionRefsContextProps | undefined>(SectionRefsContext);
+
   if (context === undefined) {
-    throw new Error("useSectionRefs must be used within a SectionRefsProvider");
+    throw new Error(
+      "useSectionRefs must be used within a SectionRefsProvider"
+    );
   }
+
   return context;
 };

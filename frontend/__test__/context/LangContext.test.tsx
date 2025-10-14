@@ -1,31 +1,23 @@
-import React from "react";
-import {
-  render,
-  screen,
-  act,
-  waitFor,
-} from "@testing-library/react";
+import React, { ReactElement } from "react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { LangProvider, useLang } from "@/context/Lang/LangContext";
+import { LangProvider, useLang, LangContextType } from "@/context/Lang/LangContext";
 import fr from "@/lang/fr";
 import en from "@/lang/en";
-import { TestComponentProps, LocalStorageMock } from "./context.types";
 
-const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
-  const { lang, translations, listLang, setLang }: { lang: string; translations: Record<string, string>; listLang: string[]; setLang: (lang: string) => void; } = useLang();
+const TestComponent: React.FC<unknown> = (): ReactElement => {
+  const { lang, translations, listLang, setLang }: LangContextType = useLang();
 
   return (
     <div>
       <span data-testid="lang">{lang}</span>
-      <span data-testid="title">
-        {"titleAboutMe" in translations ? translations.titleAboutMe : ""}
-      </span>
+      <span data-testid="title">{translations.titleAboutMe}</span>
       <span data-testid="listLang">{listLang.join(",")}</span>
 
       <button
         type="button"
         data-testid="change-lang"
-        onClick={() => setLang("en")}
+        onClick={(): void => setLang("en")}
       >
         Change
       </button>
@@ -36,17 +28,19 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
 const localStorageMock: Record<string, string> = {};
 
 beforeEach((): void => {
-  const mock: LocalStorageMock = {
-    getItem: jest.fn((key: string) => localStorageMock[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => {
+  const mock: Storage = {
+    getItem: jest.fn((key: string): string | null => localStorageMock[key] ?? null),
+    setItem: jest.fn((key: string, value: string): void => {
       localStorageMock[key] = value;
     }),
-    removeItem: jest.fn((key: string) => {
+    removeItem: jest.fn((key: string): void => {
       delete localStorageMock[key];
     }),
-    clear: jest.fn(() => {
+    clear: jest.fn((): void => {
       Object.keys(localStorageMock).forEach((key) => delete localStorageMock[key]);
     }),
+    length: 0,
+    key: jest.fn(),
   };
 
   Object.defineProperty(window, "localStorage", {
@@ -59,7 +53,7 @@ afterEach((): void => {
   jest.clearAllMocks();
 });
 
-describe("LangContext", () => {
+describe("LangContext", (): void => {
   it("provides default values", (): void => {
     render(
       <LangProvider>
@@ -67,9 +61,13 @@ describe("LangContext", () => {
       </LangProvider>
     );
 
-    expect(screen.getByTestId("lang")).toHaveTextContent("fr");
-    expect(screen.getByTestId("title")).toHaveTextContent(fr.titleAboutMe);
-    expect(screen.getByTestId("listLang")).toHaveTextContent("fr,en");
+    const langSpan: HTMLElement = screen.getByTestId("lang") as HTMLElement;
+    const titleSpan: HTMLElement = screen.getByTestId("title") as HTMLElement;
+    const listLangSpan: HTMLElement = screen.getByTestId("listLang") as HTMLElement;
+
+    expect(langSpan).toHaveTextContent("fr");
+    expect(titleSpan).toHaveTextContent(fr.titleAboutMe);
+    expect(listLangSpan).toHaveTextContent("fr,en");
   });
 
   it("updates language when setLang is called", async (): Promise<void> => {
@@ -79,15 +77,19 @@ describe("LangContext", () => {
       </LangProvider>
     );
 
-    act(() => {
-      screen.getByTestId("change-lang").click();
+    const changeButton: HTMLButtonElement = screen.getByTestId("change-lang") as HTMLButtonElement;
+
+    act((): void => {
+      changeButton.click();
     });
 
-    await waitFor(() => {
-      expect(screen.getByTestId("lang")).toHaveTextContent("en");
+    await waitFor((): void => {
+      const langSpan: HTMLElement = screen.getByTestId("lang") as HTMLElement;
+      expect(langSpan).toHaveTextContent("en");
     });
 
-    expect(screen.getByTestId("title")).toHaveTextContent(en.titleAboutMe);
+    const titleSpan: HTMLElement = screen.getByTestId("title") as HTMLElement;
+    expect(titleSpan).toHaveTextContent(en.titleAboutMe);
     expect(window.localStorage.setItem).toHaveBeenCalledWith("lang", "en");
   });
 
@@ -100,10 +102,12 @@ describe("LangContext", () => {
       </LangProvider>
     );
 
-    await waitFor(() => {
-      expect(screen.getByTestId("lang")).toHaveTextContent("en");
+    await waitFor((): void => {
+      const langSpan: HTMLElement = screen.getByTestId("lang") as HTMLElement;
+      expect(langSpan).toHaveTextContent("en");
     });
 
-    expect(screen.getByTestId("title")).toHaveTextContent(en.titleAboutMe);
+    const titleSpan: HTMLElement = screen.getByTestId("title") as HTMLElement;
+    expect(titleSpan).toHaveTextContent(en.titleAboutMe);
   });
 });

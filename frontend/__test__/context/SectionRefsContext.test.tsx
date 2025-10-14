@@ -1,13 +1,14 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import {
   SectionRefsProvider,
   useSectionRefs,
+  SectionRefsContextProps,
 } from "@/context/SectionRefs/SectionRefsContext";
 import { TestComponentProps } from "./context.types";
 
-const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
+const TestComponent: React.FC<TestComponentProps> = (): ReactElement => {
   const {
     aboutMeRef,
     projectRef,
@@ -16,31 +17,20 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
     terminalRef,
     educationRef,
     contactRef,
-  } = useSectionRefs();
+  }: SectionRefsContextProps = useSectionRefs();
+
+  const renderRefStatus = (ref: React.RefObject<HTMLDivElement>): string =>
+    ref.current === null ? "null" : "defined";
 
   return (
     <div>
-      <span data-testid="aboutMeRef">
-        {aboutMeRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="projectRef">
-        {projectRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="headerRef">
-        {headerRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="skillRef">
-        {skillRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="terminalRef">
-        {terminalRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="educationRef">
-        {educationRef.current === null ? "null" : "defined"}
-      </span>
-      <span data-testid="contactRef">
-        {contactRef.current === null ? "null" : "defined"}
-      </span>
+      <span data-testid="aboutMeRef">{renderRefStatus(aboutMeRef)}</span>
+      <span data-testid="projectRef">{renderRefStatus(projectRef)}</span>
+      <span data-testid="headerRef">{renderRefStatus(headerRef)}</span>
+      <span data-testid="skillRef">{renderRefStatus(skillRef)}</span>
+      <span data-testid="terminalRef">{renderRefStatus(terminalRef)}</span>
+      <span data-testid="educationRef">{renderRefStatus(educationRef)}</span>
+      <span data-testid="contactRef">{renderRefStatus(contactRef)}</span>
     </div>
   );
 };
@@ -53,17 +43,25 @@ describe("SectionRefsContext", () => {
       </SectionRefsProvider>
     );
 
-    expect(screen.getByTestId("aboutMeRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("projectRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("headerRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("skillRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("terminalRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("educationRef")).toHaveTextContent("null");
-    expect(screen.getByTestId("contactRef")).toHaveTextContent("null");
+    const aboutMeSpan: HTMLElement = screen.getByTestId("aboutMeRef");
+    const projectSpan: HTMLElement = screen.getByTestId("projectRef");
+    const headerSpan: HTMLElement = screen.getByTestId("headerRef");
+    const skillSpan: HTMLElement = screen.getByTestId("skillRef");
+    const terminalSpan: HTMLElement = screen.getByTestId("terminalRef");
+    const educationSpan: HTMLElement = screen.getByTestId("educationRef");
+    const contactSpan: HTMLElement = screen.getByTestId("contactRef");
+
+    expect(aboutMeSpan).toHaveTextContent("null");
+    expect(projectSpan).toHaveTextContent("null");
+    expect(headerSpan).toHaveTextContent("null");
+    expect(skillSpan).toHaveTextContent("null");
+    expect(terminalSpan).toHaveTextContent("null");
+    expect(educationSpan).toHaveTextContent("null");
+    expect(contactSpan).toHaveTextContent("null");
   });
 
   it("throws an error when useSectionRefs is used outside provider", (): void => {
-    const renderOutsideProvider: () => void = (): void => {
+    const renderOutsideProvider = (): void => {
       render(<TestComponent />);
     };
 

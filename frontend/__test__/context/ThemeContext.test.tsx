@@ -6,12 +6,14 @@ import {
   waitFor,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { ThemeProvider, useTheme } from "@/context/Theme/ThemeContext";
+import { ThemeProvider, useTheme, ThemeContextType, ThemeProviderProps, ThemeKey } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
-import { TestComponentProps, LocalStorageMock } from "./context.types";
+import { LocalStorageMock } from "./context.types";
+
+interface TestComponentProps {}
 
 const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme }: ThemeContextType = useTheme();
 
   return (
     <div>
@@ -20,7 +22,7 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
       <button
         type="button"
         data-testid="set-light"
-        onClick={() => toggleTheme("light")}
+        onClick={() => toggleTheme("light" as ThemeKey)}
       >
         Light
       </button>
@@ -28,7 +30,7 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
       <button
         type="button"
         data-testid="set-dark"
-        onClick={() => toggleTheme("dark")}
+        onClick={() => toggleTheme("dark" as ThemeKey)}
       >
         Dark
       </button>
@@ -64,18 +66,17 @@ afterEach((): void => {
   jest.clearAllMocks();
 });
 
-
-
 describe("ThemeContext", () => {
   it("provides default theme and writes it to localStorage", async (): Promise<void> => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider> as React.ReactElement<ThemeProviderProps>
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("theme")).toHaveTextContent("dark");
+      const themeSpan: HTMLElement = screen.getByTestId("theme") as HTMLElement;
+      expect(themeSpan).toHaveTextContent("dark");
     });
 
     expect(window.localStorage.setItem).toHaveBeenCalledWith("theme", "dark");
@@ -85,15 +86,18 @@ describe("ThemeContext", () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider> as React.ReactElement<ThemeProviderProps>
     );
 
+    const lightButton: HTMLButtonElement = screen.getByTestId("set-light") as HTMLButtonElement;
+
     act(() => {
-      screen.getByTestId("set-light").click();
+      lightButton.click();
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId("theme")).toHaveTextContent("light");
+      const themeSpan: HTMLElement = screen.getByTestId("theme") as HTMLElement;
+      expect(themeSpan).toHaveTextContent("light");
     });
 
     expect(window.localStorage.setItem).toHaveBeenCalledWith("theme", "light");
@@ -101,12 +105,9 @@ describe("ThemeContext", () => {
     const firstColorKey: string | undefined = Object.keys(themes.light.colors).find(
       (key) => key !== "text"
     );
-
     if (firstColorKey) {
       expect(
-        document.documentElement.style.getPropertyValue(
-          `--${firstColorKey}-color`
-        )
+        document.documentElement.style.getPropertyValue(`--${firstColorKey}-color`)
       ).not.toBe("");
     }
   });
@@ -117,11 +118,12 @@ describe("ThemeContext", () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider> as React.ReactElement<ThemeProviderProps>
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("theme")).toHaveTextContent("light");
+      const themeSpan: HTMLElement = screen.getByTestId("theme") as HTMLElement;
+      expect(themeSpan).toHaveTextContent("light");
     });
   });
 
@@ -131,18 +133,19 @@ describe("ThemeContext", () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider> as React.ReactElement<ThemeProviderProps>
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("theme")).toHaveTextContent("dark");
+      const themeSpan: HTMLElement = screen.getByTestId("theme") as HTMLElement;
+      expect(themeSpan).toHaveTextContent("dark");
     });
 
     expect(window.localStorage.setItem).toHaveBeenCalledWith("theme", "dark");
   });
 
   it("throws error when useTheme is used outside ThemeProvider", (): void => {
-    const renderOutsideProvider: () => void = (): void => {
+    const renderOutsideProvider = (): void => {
       render(<TestComponent />);
     };
 
