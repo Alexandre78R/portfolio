@@ -1,18 +1,21 @@
+import React from "react";
 import Button from "@mui/material/Button";
 
-type Props = {
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  text: string;
-  disable?: boolean;
-  disableHover?: boolean;
-};
 
-const ButtonCustom: React.FC<Props> = ({
+export interface ButtonCustomProps {
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  // text: string;
+  text?: React.ReactNode;
+  disable?: boolean; 
+  disableHover?: boolean;
+}
+
+const ButtonCustom: React.FC<ButtonCustomProps> = ({
   onClick,
   text,
-  disable,
-  disableHover,
-}) => {
+  disable = false,
+  disableHover = false,
+}): JSX.Element => {
   return (
     <Button
       onClick={onClick}
@@ -32,9 +35,7 @@ const ButtonCustom: React.FC<Props> = ({
           : {
               bgcolor: "var(--secondary-color)",
             },
-        // pointerEvents: disable ? "none" : "auto",
         outline: "none",
-        // color: disable ? "white" : "",
       }}
     >
       {text}

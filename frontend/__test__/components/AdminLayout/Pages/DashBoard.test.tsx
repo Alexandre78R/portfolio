@@ -4,6 +4,7 @@ import Dashboard from "../../../../src/components/AdminLayout/Pages/Dashboard/Da
 import { useGetGlobalStatsQuery, GetGlobalStatsQuery } from "../../../../src/types/graphql";
 import { useLang } from "../../../../src/context/Lang/LangContext";
 import { MainStat, RoleStat } from "../../../../src/components/AdminLayout/Pages/Dashboard/Dashboard";
+import Lang from "@/lang/typeLang";
 
 jest.mock("../../../../src/types/graphql", () => ({
   useGetGlobalStatsQuery: jest.fn(),
