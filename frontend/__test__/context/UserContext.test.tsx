@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
 import { render, screen, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { UserProvider, useUser } from "@/context/UserContext/UserContext";
+import { UserProvider, useUser, UserContextType } from "@/context/UserContext/UserContext";
 import { UseGetMeQueryMock } from "./context.types";
+import { useGetMeQuery } from "@/types/graphql";
 
 const mockRefetch: jest.Mock = jest.fn();
 
@@ -14,17 +15,19 @@ jest.mock("@/types/graphql", () => {
   };
 });
 
-import { useGetMeQuery } from "@/types/graphql";
-
-const TestComponent: React.FC<{ children?: ReactNode }> = () => {
-  const { user, loading, error, refetch } = useUser();
+const TestComponent: React.FC<{ children?: ReactNode }> = (): React.ReactElement => {
+  const { user, loading, error, refetch }: UserContextType = useUser();
 
   return (
     <div>
       <span data-testid="user">{user ? user.email : "null"}</span>
       <span data-testid="loading">{loading ? "true" : "false"}</span>
       <span data-testid="error">{error ? error.message : "null"}</span>
-      <button data-testid="refetch" onClick={() => refetch()}>
+      <button
+        type="button"
+        data-testid="refetch"
+        onClick={() => refetch()}
+      >
         Refetch
       </button>
     </div>
@@ -32,11 +35,11 @@ const TestComponent: React.FC<{ children?: ReactNode }> = () => {
 };
 
 describe("UserContext", () => {
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
   });
 
-  it("provides default values when data is undefined", () => {
+  it("provides default values when data is undefined", (): void => {
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: undefined,
       loading: true,
@@ -50,12 +53,16 @@ describe("UserContext", () => {
       </UserProvider>
     );
 
-    expect(screen.getByTestId("user")).toHaveTextContent("null");
-    expect(screen.getByTestId("loading")).toHaveTextContent("true");
-    expect(screen.getByTestId("error")).toHaveTextContent("null");
+    const userSpan: HTMLElement = screen.getByTestId("user");
+    const loadingSpan: HTMLElement = screen.getByTestId("loading");
+    const errorSpan: HTMLElement = screen.getByTestId("error");
+
+    expect(userSpan).toHaveTextContent("null");
+    expect(loadingSpan).toHaveTextContent("true");
+    expect(errorSpan).toHaveTextContent("null");
   });
 
-  it("sets user when data is available", () => {
+  it("sets user when data is available", (): void => {
     const fakeUser: { id: string; email: string } = { id: "1", email: "test@example.com" };
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: { me: fakeUser },
@@ -70,12 +77,16 @@ describe("UserContext", () => {
       </UserProvider>
     );
 
-    expect(screen.getByTestId("user")).toHaveTextContent("test@example.com");
-    expect(screen.getByTestId("loading")).toHaveTextContent("false");
-    expect(screen.getByTestId("error")).toHaveTextContent("null");
+    const userSpan: HTMLElement = screen.getByTestId("user");
+    const loadingSpan: HTMLElement = screen.getByTestId("loading");
+    const errorSpan: HTMLElement = screen.getByTestId("error");
+
+    expect(userSpan).toHaveTextContent("test@example.com");
+    expect(loadingSpan).toHaveTextContent("false");
+    expect(errorSpan).toHaveTextContent("null");
   });
 
-  it("handles errors", () => {
+  it("handles errors", (): void => {
     const fakeError: Error = new Error("Network error");
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: undefined,
@@ -90,12 +101,16 @@ describe("UserContext", () => {
       </UserProvider>
     );
 
-    expect(screen.getByTestId("user")).toHaveTextContent("null");
-    expect(screen.getByTestId("loading")).toHaveTextContent("false");
-    expect(screen.getByTestId("error")).toHaveTextContent("Network error");
+    const userSpan: HTMLElement = screen.getByTestId("user");
+    const loadingSpan: HTMLElement = screen.getByTestId("loading");
+    const errorSpan: HTMLElement = screen.getByTestId("error");
+
+    expect(userSpan).toHaveTextContent("null");
+    expect(loadingSpan).toHaveTextContent("false");
+    expect(errorSpan).toHaveTextContent("Network error");
   });
 
-  it("calls refetch when button clicked", () => {
+  it("calls refetch when button clicked", (): void => {
     (useGetMeQuery as jest.Mock).mockReturnValue({
       data: undefined,
       loading: false,
@@ -109,17 +124,19 @@ describe("UserContext", () => {
       </UserProvider>
     );
 
+    const refetchButton: HTMLButtonElement = screen.getByTestId("refetch") as HTMLButtonElement;
+
     act(() => {
-      screen.getByTestId("refetch").click();
+      refetchButton.click();
     });
 
     expect(mockRefetch).toHaveBeenCalledTimes(1);
   });
 
   it("throws error when used outside provider", () => {
-    const renderOutsideProvider: () => void = () => render(<TestComponent />);
+    const renderOutsideProvider = () => render(<TestComponent />);
     expect(renderOutsideProvider).toThrow(
       "useUser must be used within a UserProvider"
     );
   });
-});
+})

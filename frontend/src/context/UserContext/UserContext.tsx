@@ -1,14 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import {
-  GetMeQuery,
-  useGetMeQuery,
-} from "@/types/graphql";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { GetMeQuery, useGetMeQuery } from "@/types/graphql";
 
 export interface UserContextType {
   user: GetMeQuery["me"] | null;
@@ -17,15 +8,23 @@ export interface UserContextType {
   refetch: () => void;
 }
 
+export interface UserProviderProps {
+  children: ReactNode;
+}
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const { data, loading, error, refetch } = useGetMeQuery();
+export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+  const { data, loading, error, refetch } = useGetMeQuery() as {
+    data?: GetMeQuery;
+    loading: boolean;
+    error?: Error;
+    refetch: () => void;
+  };
+
   const [user, setUser] = useState<GetMeQuery["me"] | null>(null);
 
-  useEffect(() => {
-    console.log("data", data);
-    
+  useEffect((): void => {
     if (data?.me) {
       setUser(data.me);
     } else {
@@ -33,11 +32,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [data]);
 
-  return (
-    <UserContext.Provider value={{ user, loading, error: error ?? null, refetch }}>
-      {children}
-    </UserContext.Provider>
-  );
+  const contextValue: UserContextType = {
+    user,
+    loading,
+    error: error ?? null,
+    refetch,
+  };
+
+  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
 
 export const useUser = (): UserContextType => {
