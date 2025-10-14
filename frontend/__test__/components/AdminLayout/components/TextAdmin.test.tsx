@@ -1,62 +1,56 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
+import TextAdmin, { TextAdminType, TextAdminProps } from "@/components/AdminLayout/components/Text/TextAdmin";
 
 describe("TextAdmin Component", () => {
-  const types: Array<React.ComponentProps<typeof TextAdmin>["type"]> = [
-    "h1", "h2", "h3", "h4", "h5", "h6", "p", "span"
-  ] as const;
+  const types: Array<TextAdminType> = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span"];
 
   it("renders children correctly", () => {
-    render(<TextAdmin type="h1">Hello World</TextAdmin> as React.ReactElement);
-    expect(screen.getByText("Hello World" as string) as HTMLElement).toBeInTheDocument();
+    const props: TextAdminProps = { type: "h1", children: "Hello World" };
+    const element: React.ReactElement = <TextAdmin {...props} />;
+    render(element);
+
+    const childElement: HTMLElement = screen.getByText("Hello World") as HTMLElement;
+    expect(childElement).toBeInTheDocument();
   });
 
-  it("renders correct variant and component for each type", () => {
-    types.forEach((type) => {
-      const { unmount }: { unmount: () => void } = render(<TextAdmin type={type}>{type}</TextAdmin>);
+  it("renders correct tag for each type", () => {
+    types.forEach((type: TextAdminType) => {
+      const props: TextAdminProps = { type, children: type };
+      const { unmount }: { unmount: () => void } = render(<TextAdmin {...props} />);
+
       const element: HTMLElement = screen.getByText(type) as HTMLElement;
+      expect(element.tagName.toLowerCase()).toBe(type);
 
-      expect(element.tagName.toLowerCase() as string).toBe(type);
+      const typographyElement: HTMLElement | null = element.closest(".MuiTypography-root") as HTMLElement;
+      expect(typographyElement).toBeInTheDocument();
 
-      const typography: HTMLElement | null = element.closest('.MuiTypography-root' as string) as HTMLElement;
-      expect(typography as HTMLElement).toBeInTheDocument();
-
-      unmount() as void;
+      unmount();
     });
   });
 
   it("applies correct fontSize and color", () => {
-    const typeFontSizeMap: Record<typeof types[number], string> = {
-      h1: "2rem" as string,
-      h2: "1.75rem" as string,
-      h3: "1.5rem" as string,
-      h4: "1.25rem" as string,
-      h5: "1.125rem" as string,
-      h6: "1rem" as string,
-      p: "0.875rem" as string,
-      span: "0.75rem" as string,
+    const fontSizeMap: Record<TextAdminType, string> = {
+      h1: "2rem", h2: "1.75rem", h3: "1.5rem", h4: "1.25rem",
+      h5: "1.125rem", h6: "1rem", p: "0.875rem", span: "0.75rem",
     };
 
-    const typeColorMap: Record<typeof types[number], string> = {
-      h1: "var(--primary-color)" as string,
-      h2: "var(--primary-color)" as string,
-      h3: "var(--primary-color)" as string,
-      h4: "var(--primary-color)" as string,
-      h5: "var(--primary-color)" as string,
-      h6: "var(--primary-color)" as string,
-      p: "var(--text-color)" as string,
-      span: "var(--text-color)" as string,
+    const colorMap: Record<TextAdminType, string> = {
+      h1: "var(--primary-color)", h2: "var(--primary-color)", h3: "var(--primary-color)", h4: "var(--primary-color)",
+      h5: "var(--primary-color)", h6: "var(--primary-color)", p: "var(--text-color)", span: "var(--text-color)",
     };
 
-    types.forEach((type) => {
-      const { unmount }: { unmount: () => void } = render(<TextAdmin type={type}>{type}</TextAdmin>);
+    types.forEach((type: TextAdminType) => {
+      const props: TextAdminProps = { type, children: type };
+      const { unmount }: { unmount: () => void } = render(<TextAdmin {...props} />);
+
       const element: HTMLElement = screen.getByText(type) as HTMLElement;
-      expect(element as HTMLElement).toHaveStyle(`font-size: ${typeFontSizeMap[type]}` as string);
-      expect(element as HTMLElement).toHaveStyle(`color: ${typeColorMap[type]}` as string);
-      // expect(element).toHaveStyle("font-weight: bold");
-      expect(element as HTMLElement).toHaveStyle("font-weight: 700" as string);
-      unmount() as void;
+
+      expect(element).toHaveStyle(`font-size: ${fontSizeMap[type]}`);
+      expect(element).toHaveStyle(`color: ${colorMap[type]}`);
+      expect(element).toHaveStyle("font-weight: 700");
+
+      unmount();
     });
   });
 });

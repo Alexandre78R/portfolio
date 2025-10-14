@@ -1,4 +1,4 @@
-type DashboardCardProps = {
+export type DashboardCardProps = {
   key ?: number | string;
   title: string;
   value: number;

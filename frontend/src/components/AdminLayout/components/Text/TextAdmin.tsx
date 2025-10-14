@@ -1,9 +1,9 @@
 import { Typography, Box } from "@mui/material";
 import React from "react";
 
-type TextAdminType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
+export type TextAdminType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
 
-interface TextAdminProps {
+export interface TextAdminProps {
   type: TextAdminType;
   children: React.ReactNode;
 }
