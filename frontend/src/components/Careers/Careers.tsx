@@ -4,7 +4,10 @@ import { RootState } from "@/store/store";
 import { EducationType } from "@/store/slices/educationsSlice";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
 
+export type CombinedData = (EducationType | ExperienceType)[];
+
 const Careers: React.FC = (): React.ReactElement => {
+  
   const dataEducations = useSelector(
     (state: RootState) => state.educations.dataEducations
   );
@@ -12,7 +15,6 @@ const Careers: React.FC = (): React.ReactElement => {
     (state: RootState) => state.experiences.dataExperiences
   );
 
-  type CombinedData = (EducationType | ExperienceType)[];
 
   const combinedData: CombinedData = useMemo(() => {
     const combined: CombinedData = [...dataExperiences, ...dataEducations];

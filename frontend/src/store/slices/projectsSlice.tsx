@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SkillsProject = {
+export type SkillsProject = {
   name: string;
   image: string;
 };
 
-type Project = {
+export type Project = {
   id: number;
   title: string;
   descriptionFR: string;
@@ -16,7 +16,7 @@ type Project = {
   skills: SkillsProject[];
 };
 
-type ProjectsState = {
+export type ProjectsState = {
   dataProjects: Project[];
 };
 

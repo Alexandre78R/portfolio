@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import Lang from "@/lang/typeLang";
 export type EducationType = {
   id: number;
   title?: string;

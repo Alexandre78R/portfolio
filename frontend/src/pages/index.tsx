@@ -10,8 +10,9 @@ import AboutMe from "@/components/AboutMe/AboutMe";
 import Footer from "@/components/Footer/Footer";
 import Terminal from "@/components/Terminal/Terminal";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "@/store/store";
+// import { useDispatch, useSelector } from "react-redux";
+// import { RootState, AppDispatch } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setSkills, updateSkillCategories } from "@/store/slices/skillsSlice";
 import { updateProjectDescriptions, setProjects} from "@/store/slices/projectsSlice";
 import { setEducations, updateEducationsTitle } from "@/store/slices/educationsSlice";
@@ -25,6 +26,7 @@ import {
   useGetEducationsListQuery,
   useGetExperiencesListQuery,
 } from "@/types/graphql";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 
 const Home: React.FC = (): React.ReactElement => {
@@ -45,16 +47,22 @@ const Home: React.FC = (): React.ReactElement => {
   } = useSectionRefs();
   const { selectedView } = useChoiceView();
 
-  const dispatch = useDispatch<AppDispatch>();
-  const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);
-  const dataProjects = useSelector(
-    (state: RootState) => state.projects.dataProjects
+  const dispatch = useAppDispatch();
+
+  const dataSkills = useAppSelector(
+    (state) => state.skills.dataSkills
   );
-  const dataEducations = useSelector(
-    (state: RootState) => state.educations.dataEducations
+
+  const dataProjects = useAppSelector(
+    (state) => state.projects.dataProjects
   );
-  const dataExperiences = useSelector(
-    (state: RootState) => state.experiences.dataExperiences
+
+  const dataEducations = useAppSelector(
+    (state) => state.educations.dataEducations
+  );
+
+  const dataExperiences = useAppSelector(
+    (state) => state.experiences.dataExperiences
   );
 
   useEffect(() => {

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SkillSubItem = {
+export type SkillSubItem = {
   name: string;
   image: string;
 };
 
-type Skill = {
+export type Skill = {
   id: number;
   categoryFR: string;
   categoryEN: string;
@@ -13,7 +13,7 @@ type Skill = {
   skills: SkillSubItem[];
 };
 
-type SkillsState = {
+export type SkillsState = {
   dataSkills: Skill[];
 };
 
