@@ -3,9 +3,10 @@ import { SparklesCore } from "../ui/SparklesCore";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import themes from "@/context/Theme/themes";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
+import Lang from "@/lang/typeLang";
 
 const Header: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
+  const { translations }: { translations: Lang } = useLang();
   const { theme } = useTheme();
   const { headerRef } = useSectionRefs();
 
