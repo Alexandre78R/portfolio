@@ -1,12 +1,13 @@
+import React, { ReactElement, MouseEventHandler } from "react";
 import { useLang } from "@/context/Lang/LangContext";
-import { Typography } from "@mui/material";
 import ButtonCustom from "../Button/Button";
 import TitleH3 from "../Title/TitleH3";
+import Lang from "@/lang/typeLang";
 
-const AboutMe: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
+const AboutMe: React.FC = (): ReactElement => {
+  const { translations }: { translations: Lang } = useLang();
 
-  const handleClick: () => void = (): void => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (): void => {
     window.open("/Alexandre-Renard-CV.pdf", "_blank");
   };
 

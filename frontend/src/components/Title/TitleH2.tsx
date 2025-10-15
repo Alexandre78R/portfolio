@@ -1,10 +1,11 @@
+import React, { ReactElement } from "react";
 import { Typography, Box } from "@mui/material";
 
-type Props = {
+export interface TitleH2Props {
   title: string;
-};
+}
 
-const TitleH2: React.FC<Props> = ({ title }): React.ReactElement => {
+const TitleH2: React.FC<TitleH2Props> = ({ title }): ReactElement => {
   return (
     <Box m={5}>
       <Typography

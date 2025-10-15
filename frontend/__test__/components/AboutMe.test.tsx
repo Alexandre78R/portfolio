@@ -1,33 +1,35 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import AboutMe from "@/components/AboutMe/AboutMe";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: jest.fn() as jest.Mock,
+  useLang: jest.fn() as jest.Mock<{
+    translations: Lang;
+  }>,
 }));
 
 jest.mock("@/components/Button/Button", () => ({
   __esModule: true as const,
-  default: ({ text, onClick }: { text: string; onClick: () => void }) => (
+  default: ({ text, onClick }: { text: string; onClick: () => void }): ReactElement => (
     <button onClick={onClick}>{text}</button>
   ),
 }));
 
 jest.mock("@/components/Title/TitleH3", () => ({
   __esModule: true as const,
-  default: ({ title }: { title: string }) => <h3>{title}</h3>,
+  default: ({ title }: { title: string }): ReactElement => <h3>{title}</h3>,
 }));
 
-
 describe("AboutMe component", () => {
-  const translations: Record<string, string> = {
-    titleAboutMe: "About Me" as const,
-    descriptionAboutMe1: "Description 1" as const,
-    descriptionAboutMe2: "Description 2" as const,
-    descriptionAboutMe3: "Description 3" as const,
-    buttonCV: "Download CV" as const,
-  };
+  const translations: Lang = {
+    titleAboutMe: "About Me",
+    descriptionAboutMe1: "Description 1",
+    descriptionAboutMe2: "Description 2",
+    descriptionAboutMe3: "Description 3",
+    buttonCV: "Download CV",
+  } as Lang;
 
   beforeEach(() => {
     (useLang as jest.Mock).mockReturnValue({ translations });
@@ -39,33 +41,39 @@ describe("AboutMe component", () => {
     jest.restoreAllMocks();
   });
 
-  it("renders title and descriptions", () => {
-    render(<AboutMe /> as React.ReactElement);
+  it("renders title and descriptions", (): void => {
+    render(<AboutMe /> as ReactElement);
 
-    expect(screen.getByText("About Me" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Description 1" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Description 2" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Description 3" as string) as HTMLElement).toBeInTheDocument();
+    const titleElement: HTMLElement = screen.getByText(translations.titleAboutMe);
+    const desc1: HTMLElement = screen.getByText(translations.descriptionAboutMe1);
+    const desc2: HTMLElement = screen.getByText(translations.descriptionAboutMe2);
+    const desc3: HTMLElement = screen.getByText(translations.descriptionAboutMe3);
+
+    expect(titleElement).toBeInTheDocument();
+    expect(desc1).toBeInTheDocument();
+    expect(desc2).toBeInTheDocument();
+    expect(desc3).toBeInTheDocument();
   });
 
-  it("renders CV button", () => {
-    render(<AboutMe /> as React.ReactElement);
+  it("renders CV button", (): void => {
+    render(<AboutMe /> as ReactElement);
 
-    expect(
-      screen.getByRole("button" as keyof HTMLElementTagNameMap, { name: "Download CV" as string } as Partial<HTMLElement>)
-    ).toBeInTheDocument();
+    const cvButton: HTMLButtonElement = screen.getByRole("button", {
+      name: translations.buttonCV,
+    }) as HTMLButtonElement;
+
+    expect(cvButton).toBeInTheDocument();
   });
 
-  it("opens CV PDF in new tab when button is clicked", () => {
-    render(<AboutMe /> as React.ReactElement);
+  it("opens CV PDF in new tab when button is clicked", (): void => {
+    render(<AboutMe /> as ReactElement);
 
-    fireEvent.click(
-      screen.getByRole("button" as keyof HTMLElementTagNameMap, { name: "Download CV" as string } as Partial<HTMLElement>)
-    );
+    const cvButton: HTMLButtonElement = screen.getByRole("button", {
+      name: translations.buttonCV,
+    }) as HTMLButtonElement;
 
-    expect(window.open).toHaveBeenCalledWith(
-      "/Alexandre-Renard-CV.pdf" as string,
-      "_blank" as string
-    );
+    fireEvent.click(cvButton);
+
+    expect(window.open).toHaveBeenCalledWith("/Alexandre-Renard-CV.pdf", "_blank");
   });
 });
