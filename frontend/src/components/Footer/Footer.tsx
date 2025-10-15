@@ -1,10 +1,11 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 const Footer: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
-  const currentYear = new Date().getFullYear();
+  const { translations }: { translations: Lang } = useLang();
+  const currentYear: number = new Date().getFullYear();
 
   return (
     <footer className="mt-10 bg-footer text-text py-4">

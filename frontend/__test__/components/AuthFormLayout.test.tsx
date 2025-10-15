@@ -1,40 +1,73 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { render, RenderResult, screen } from "@testing-library/react";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 
 describe("AuthFormLayout", () => {
-  it("renders the title", () => {
-    render(
+  let renderResult: RenderResult;
+  let titleElement: HTMLElement;
+  let childElement: HTMLElement;
+
+  it("renders the title correctly", (): void => {
+    renderResult = render(
       <AuthFormLayout title="Login">
         <div>Form content</div>
       </AuthFormLayout>
     );
 
-    expect(screen.getByText("Login" as string)).toBeInTheDocument();
+    titleElement = screen.getByText("Login" as string) as HTMLElement;
+    expect(titleElement).toBeInTheDocument();
+    expect(titleElement.tagName).toBe("H2");
+    expect(titleElement).toHaveClass("text-2xl", "font-bold", "text-center");
   });
 
-  it("renders children correctly", () => {
-    render(
+  it("renders children correctly", (): void => {
+    renderResult = render(
       <AuthFormLayout title="Register">
-        <button>Submit</button>
+        <button type="button">Submit</button>
       </AuthFormLayout>
     );
 
-    expect(screen.getByText("Submit" as string)).toBeInTheDocument();
+    childElement = screen.getByText("Submit" as string) as HTMLButtonElement;
+    expect(childElement).toBeInTheDocument();
+    expect(childElement.tagName).toBe("BUTTON");
+    expect(childElement).toHaveAttribute("type", "button");
   });
 
-  it("renders layout structure", () => {
-    const { container }: RenderResult = render(
+  it("renders layout structure with correct classes", (): void => {
+    renderResult = render(
       <AuthFormLayout title="Auth">
         <p>Child</p>
       </AuthFormLayout>
     );
 
-    expect(container.firstChild).toHaveClass(
-      "min-h-screen" as string,
-      "flex" as string,
-      "items-center" as string,
-      "justify-center" as string
+    const containerDiv: HTMLElement | null = renderResult.container.firstChild as HTMLElement;
+    expect(containerDiv).not.toBeNull();
+    expect(containerDiv).toHaveClass(
+      "min-h-screen",
+      "flex",
+      "items-center",
+      "justify-center"
     );
+
+    const boxDiv: HTMLElement | null = renderResult.container.querySelector(".max-w-md");
+    expect(boxDiv).not.toBeNull();
+    expect(boxDiv).toHaveClass("w-full", "p-6", "rounded", "shadow", "space-y-6", "bg-body");
+  });
+
+  it("renders multiple children correctly", (): void => {
+    renderResult = render(
+      <AuthFormLayout title="Multi">
+        <>
+          <input type="text" placeholder="Username" />
+          <input type="password" placeholder="Password" />
+        </>
+      </AuthFormLayout>
+    );
+
+    const usernameInput: HTMLInputElement = screen.getByPlaceholderText("Username") as HTMLInputElement;
+    const passwordInput: HTMLInputElement = screen.getByPlaceholderText("Password") as HTMLInputElement;
+
+    expect(usernameInput).toBeInTheDocument();
+    expect(passwordInput).toBeInTheDocument();
   });
 });

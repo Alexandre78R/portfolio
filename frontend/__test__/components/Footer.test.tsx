@@ -1,14 +1,14 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Footer from "@/components/Footer/Footer";
-// import Lang  from "@/lang/typeLang";
+import Lang  from "@/lang/typeLang";
 
 const translationsMock: Record<string, string> = {
   footerTitle: "Footer Test" as string,
   footerAdmin: "Admin" as string,
   footerNetworks: "Réseaux" as string,
   footerCopyright: "Alexandre Renard" as string,
-};
+} as Lang;
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: () => ({ translations: translationsMock as Record<string, string> }),
