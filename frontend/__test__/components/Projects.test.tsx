@@ -1,8 +1,10 @@
-import React from "react";
+
+import React, { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Projects from "@/components/Projects/Projects";
 import { useLang } from "@/context/Lang/LangContext";
 import { Project } from "@/components/Projects/typeProjects";
+import Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn() as jest.Mock,
@@ -10,112 +12,129 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 jest.mock("react-player", () => {
   const ReactPlayerMock: React.FC = () => <div data-testid="react-player" />;
-  ReactPlayerMock.displayName = "ReactPlayer" as const;
+  ReactPlayerMock.displayName = "ReactPlayer";
   return ReactPlayerMock;
 });
 
 jest.mock("@mui/material", () => ({
-  CardContent: ({ children }: any) => <div>{children}</div>,
-  Typography: ({ children }: any) => <div>{children}</div>,
+  CardContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Typography: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 jest.mock("@mui/material/IconButton", () => ({
-  __esModule: true as boolean,
-  default: ({ children }: any) => <button>{children}</button>,
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <button>{children}</button>,
 }));
 
 jest.mock("@mui/material/CardActions", () => ({
-  __esModule: true as boolean,
-  default: ({ children }: any) => <div>{children}</div>,
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 jest.mock("@mui/icons-material/GitHub", () => {
   const GitHubMock: React.FC = () => <span data-testid="github-icon" />;
-  GitHubMock.displayName = "GitHubIcon" as const;
+  GitHubMock.displayName = "GitHubIcon";
   return GitHubMock;
 });
 
 jest.mock("@mui/icons-material/ExpandMore", () => {
-  const ExpandMoreMock: React.FC = (props: any) => <span data-testid="expand-icon" {...props} />;
-  ExpandMoreMock.displayName = "ExpandMoreIcon" as const;
+  const ExpandMoreMock: React.FC<any> = (props) => <span data-testid="expand-icon" {...props} />;
+  ExpandMoreMock.displayName = "ExpandMoreIcon";
   return ExpandMoreMock;
 });
 
+// ---------------------- Mock Data ----------------------
 const mockProject: Project = {
-  id: "1" as unknown as string,
-  title: "Test Project" as unknown as string,
-  description: "A".repeat(200) as unknown as string,
-  typeDisplay: "image" as unknown as string,
-  contentDisplay: "image.png" as unknown as string,
-  github: "https://github.com/test/project" as unknown as string,
+  id: "1",
+  title: "Test Project",
+  description: "A".repeat(200),
+  typeDisplay: "image",
+  contentDisplay: "image.png",
+  github: "https://github.com/test/project",
   skills: [
-    { name: "React", image: "/react.png" } as { name: string; image: string },
-    { name: "TypeScript", image: "/ts.png" } as { name: string; image: string },
-  ] as any[],
-} as Project;
+    { id: "s1", name: "React", image: "/react.png" },
+    { id: "s2", name: "TypeScript", image: "/ts.png" },
+  ],
+};
 
-describe("Projects component", () => {
-  beforeEach(() => {
-    (useLang as jest.Mock).mockReturnValue({
-      translations: {
-        buttonSeeMore: "See more" as const,
-        buttonSeeLess: "See less" as const,
-        navbarButtonSkill: "Skills" as const,
-      } as Record<string, string>,
-    }as any);
+describe("Projects component", (): void => {
+  const translations = {
+    buttonSeeMore: "See more",
+    buttonSeeLess: "See less",
+    navbarButtonSkill: "Skills",
+  } as Lang;
 
-    process.env.NEXT_PUBLIC_API_URL = "http://localhost:3000" as string;
+  beforeEach((): void => {
+    (useLang as jest.Mock).mockReturnValue({ translations });
+    process.env.NEXT_PUBLIC_API_URL = "http://localhost:3000";
   });
 
-  it("renders project title", () => {
-    render(<Projects project={mockProject as any} />);
-
-    expect(screen.getByText("Test Project")).toBeInTheDocument();
+  afterEach((): void => {
+    jest.clearAllMocks();
   });
 
-  it("renders shortened description with see more button", () => {
-    render(<Projects project={mockProject as any} />);
+  it("renders project title", (): void => {
+    render(<Projects project={mockProject} /> as ReactElement);
 
-    expect(screen.getByText(/A{150}\.\.\./ as RegExp) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("See more" as string) as HTMLElement).toBeInTheDocument();
+    const titleElement: HTMLElement = screen.getByText(mockProject.title);
+    expect(titleElement).toBeInTheDocument();
   });
 
-  it("expands and collapses description text", () => {
-    render(<Projects project={mockProject as any} />);
+  it("renders shortened description with see more button", (): void => {
+    render(<Projects project={mockProject} /> as ReactElement);
 
-    fireEvent.click(screen.getByText("See more" as string));
-    expect(screen.getByText(mockProject.description as string)).toBeInTheDocument();
+    const shortDescRegex: RegExp = new RegExp("A{150}\\.\\.\\.");
+    const descElement: HTMLElement = screen.getByText(shortDescRegex);
+    expect(descElement).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("See less" as string));
-    expect(screen.getByText(/A{150}\.\.\./ as RegExp)).toBeInTheDocument();
+    const seeMoreButton: HTMLElement = screen.getByText(translations.buttonSeeMore);
+    expect(seeMoreButton).toBeInTheDocument();
   });
 
-  it("renders github link when provided", () => {
-    render(<Projects project={mockProject as any} /> as React.ReactElement);
+  it("expands and collapses description text when clicking see more/see less", (): void => {
+    render(<Projects project={mockProject} /> as ReactElement);
 
-    const link: HTMLAnchorElement = screen.getByTitle("Test Project - Github" as string) as HTMLAnchorElement;
-    expect(link).toHaveAttribute("href", mockProject.github as string);
+    const seeMoreButton: HTMLElement = screen.getByText(translations.buttonSeeMore);
+    fireEvent.click(seeMoreButton);
+
+    const fullDescElement: HTMLElement = screen.getByText(mockProject.description);
+    expect(fullDescElement).toBeInTheDocument();
+
+    const seeLessButton: HTMLElement = screen.getByText(translations.buttonSeeLess);
+    fireEvent.click(seeLessButton);
+
+    const shortDescRegex: RegExp = new RegExp("A{150}\\.\\.\\.");
+    expect(screen.getByText(shortDescRegex)).toBeInTheDocument();
   });
 
-  it("toggles skills section when expand icon is clicked", () => {
-    render(<Projects project={mockProject as any} /> as React.ReactElement);
+  it("renders github link when provided", (): void => {
+    render(<Projects project={mockProject} /> as ReactElement);
 
-    fireEvent.click(screen.getByTestId("expand-icon" as string) as HTMLElement);
-
-    expect(screen.getByAltText("React" as string)).toBeInTheDocument();
-    expect(screen.getByAltText("TypeScript" as string)).toBeInTheDocument();
+    const githubLink: HTMLAnchorElement = screen.getByTitle(`${mockProject.title} - Github`) as HTMLAnchorElement;
+    expect(githubLink).toHaveAttribute("href", mockProject.github);
   });
 
-  it("renders ReactPlayer when project type is video", () => {
+  it("toggles skills section when expand icon is clicked", (): void => {
+    render(<Projects project={mockProject} /> as ReactElement);
+
+    const expandButton: HTMLElement = screen.getByTestId("expand-icon");
+    fireEvent.click(expandButton);
+
+    const skill1: HTMLElement = screen.getByAltText("React");
+    const skill2: HTMLElement = screen.getByAltText("TypeScript");
+
+    expect(skill1).toBeInTheDocument();
+    expect(skill2).toBeInTheDocument();
+  });
+
+  it("renders ReactPlayer when project type is video", (): void => {
     render(
       <Projects
-        project={{
-          ...mockProject,
-          typeDisplay: "video",
-        } as any}
-      />
+        project={{ ...mockProject, typeDisplay: "video" }}
+      /> as ReactElement
     );
 
-    expect(screen.getByTestId("react-player") as HTMLElement).toBeInTheDocument();
+    const playerElement: HTMLElement = screen.getByTestId("react-player");
+    expect(playerElement).toBeInTheDocument();
   });
 });
