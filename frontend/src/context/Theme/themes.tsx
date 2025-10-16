@@ -108,7 +108,18 @@ const themes = {
   },
 } as const;
 
+// 🔥 Types dérivés automatiquement
 export type ThemeKey = keyof typeof themes;
 export type ThemeType = typeof themes[ThemeKey];
+export type ThemeName = ThemeType["name"];
+
+// 🔥 Fonctions typées
+export const tabThemes = (): ThemeType[] => {
+  return (Object.keys(themes) as ThemeKey[]).map((key) => themes[key]);
+};
+
+export const tabThemesName = (): ThemeName[] => {
+  return (Object.keys(themes) as ThemeKey[]).map((key) => themes[key].name);
+};
 
 export default themes;

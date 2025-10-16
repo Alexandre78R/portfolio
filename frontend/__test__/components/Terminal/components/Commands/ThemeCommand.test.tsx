@@ -6,23 +6,39 @@ import { useTheme } from "@/context/Theme/ThemeContext";
 import * as util from "@/components/Terminal/util";
 
 // ---------- Mocks ----------
-jest.mock("@/context/Theme/ThemeContext");
-jest.mock("@/components/Terminal/components/Usage", () => jest.fn(() => <div>Usage Component</div>));
-jest.mock("@/components/Terminal/util");
+jest.mock("@/components/Terminal/util", () => ({
+  isArgInvalid: jest.fn(),
+  checkThemeSwitch: jest.fn(),
+  getCurrentCmdArry: jest.fn(),
+}));
+
+jest.mock("@/components/Terminal/components/Usage", () => ({
+  __esModule: true,
+  default: () => <div>Usage Component</div>,
+}));
+
 jest.mock("@/context/Theme/themes", () => ({
   tabThemes: jest.fn(() => [
-    { id: "1", name: "Dark" } as { id: string; name: string },
-    { id: "2", name: "Light" } as { id: string; name: string },
+    { id: "1", name: "dark" },
+    { id: "2", name: "light" },
   ]),
-  tabThemesName: jest.fn(() => ["Dark", "Light"] as string[]),
+  tabThemesName: jest.fn(() => ["dark", "light"]),
+}));
+
+jest.mock("@/context/Theme/ThemeContext", () => ({
+  useTheme: jest.fn(),
 }));
 
 describe("Themes command component", () => {
-  const toggleThemeMock: jest.Mock = jest.fn();
+  let toggleThemeMock: jest.Mock;
 
-  beforeEach((): void => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    (useTheme as jest.Mock).mockReturnValue({ toggleTheme: toggleThemeMock } as { toggleTheme: (themeName: string) => void });
+    toggleThemeMock = jest.fn();
+
+    (useTheme as jest.Mock).mockReturnValue({
+      toggleTheme: toggleThemeMock,
+    });
   });
 
   const renderWithContext = (contextValue: Term): RenderResult =>
@@ -32,24 +48,32 @@ describe("Themes command component", () => {
       </termContext.Provider>
     );
 
-  it("renders Usage if arg is invalid", (): void => {
+  it("renders Usage if arg is invalid", () => {
     (util.isArgInvalid as jest.Mock).mockReturnValue(true);
 
-    const contextValue: Term = { arg: ["themes", "set", "InvalidTheme"], history: [], rerender: false, index: 0 };
-    renderWithContext(contextValue);
+    renderWithContext({
+      arg: ["themes", "set", "invalidtheme"],
+      history: [],
+      rerender: false,
+      index: 0,
+    });
 
     const usageElement: HTMLElement = screen.getByText("Usage Component");
     expect(usageElement).toBeInTheDocument();
   });
 
-  it("renders list of themes if arg length <= 2", (): void => {
+  it("renders list of themes if arg length <= 2", () => {
     (util.isArgInvalid as jest.Mock).mockReturnValue(false);
 
-    const contextValue: Term = { arg: ["themes"], history: [], rerender: false, index: 0 };
-    renderWithContext(contextValue);
+    renderWithContext({
+      arg: ["themes"],
+      history: [],
+      rerender: false,
+      index: 0,
+    });
 
-    const darkElement: HTMLElement = screen.getByText("Dark");
-    const lightElement: HTMLElement = screen.getByText("Light");
+    const darkElement: HTMLElement = screen.getByText("dark");
+    const lightElement: HTMLElement = screen.getByText("light");
     const usageElement: HTMLElement = screen.getByText("Usage Component");
 
     expect(darkElement).toBeInTheDocument();
@@ -57,24 +81,40 @@ describe("Themes command component", () => {
     expect(usageElement).toBeInTheDocument();
   });
 
-  it("calls toggleTheme if currentCommand is different from currentTheme", (): void => {
+  it("calls toggleTheme if currentCommand is valid and different from currentTheme", () => {
     (util.checkThemeSwitch as jest.Mock).mockReturnValue(true);
-    (util.getCurrentCmdArry as jest.Mock).mockReturnValue(["themes", "set", "Dark"]);
+    (util.getCurrentCmdArry as jest.Mock).mockReturnValue([
+      "themes",
+      "set",
+      "dark",
+    ]);
     (util.isArgInvalid as jest.Mock).mockReturnValue(false);
 
-    const contextValue: Term = { arg: ["themes", "set", "Dark"], history: [], rerender: false, index: 0 };
-    renderWithContext(contextValue);
+    renderWithContext({
+      arg: ["themes", "set", "dark"],
+      history: [],
+      rerender: false,
+      index: 0,
+    });
 
-    expect(toggleThemeMock).toHaveBeenCalledWith("Dark");
+    expect(toggleThemeMock).toHaveBeenCalledWith("dark");
   });
 
-  it("does not call toggleTheme if currentCommand is the same as currentTheme", (): void => {
+  it("does not call toggleTheme if checkThemeSwitch returns false", () => {
     (util.checkThemeSwitch as jest.Mock).mockReturnValue(false);
-    (util.getCurrentCmdArry as jest.Mock).mockReturnValue(["themes", "set", "Dark"]);
+    (util.getCurrentCmdArry as jest.Mock).mockReturnValue([
+      "themes",
+      "set",
+      "dark",
+    ]);
     (util.isArgInvalid as jest.Mock).mockReturnValue(false);
 
-    const contextValue: Term = { arg: ["themes", "set", "Dark"], history: [], rerender: false, index: 0 };
-    renderWithContext(contextValue);
+    renderWithContext({
+      arg: ["themes", "set", "dark"],
+      history: [],
+      rerender: false,
+      index: 0,
+    });
 
     expect(toggleThemeMock).not.toHaveBeenCalled();
   });
