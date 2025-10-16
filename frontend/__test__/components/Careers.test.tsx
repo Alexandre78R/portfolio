@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { render, screen } from "@testing-library/react";
 import Careers from "@/components/Careers/Careers";
 import { useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { EducationType } from "@/store/slices/educationsSlice";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
 
 jest.mock("react-redux", () => ({
-  useSelector: jest.fn() as jest.Mock,
+  useSelector: jest.fn(),
 }));
 
 const mockExperiences: ExperienceType[] = [
@@ -28,6 +28,7 @@ const mockExperiences: ExperienceType[] = [
     endDateEN: "December 2023",
     endDate: "Décembre 2023",
     month: 1,
+    type: "Experience",
   },
 ];
 
@@ -52,16 +53,18 @@ const mockEducations: EducationType[] = [
     endDateEN: "June 2024",
     endDate: "Juin 2024",
     month: 9,
+    type: "Education",
   },
 ];
 
 describe("Careers component", () => {
   beforeEach(() => {
-    (useSelector as unknown as jest.Mock).mockImplementation((selectorFn: any) =>
-      selectorFn({
-        educations: { dataEducations: mockEducations } as { dataEducations: typeof mockEducations },
-        experiences: { dataExperiences: mockExperiences } as { dataExperiences: typeof mockExperiences },
-      })
+    (useSelector as unknown as jest.Mock).mockImplementation(
+      (selectorFn: (state: any) => any) =>
+        selectorFn({
+          educations: { dataEducations: mockEducations },
+          experiences: { dataExperiences: mockExperiences },
+        })
     );
   });
 
@@ -70,41 +73,47 @@ describe("Careers component", () => {
   });
 
   it("renders experiences and educations", () => {
-    render(<Careers /> as React.ReactElement);
+    render(<Careers /> as ReactElement);
 
-    expect(screen.getByText("Frontend Developer" as string) as HTMLElement).toBeInTheDocument();
-    expect(screen.getByText("Master Informatique" as string) as HTMLElement).toBeInTheDocument();
+    const expElement: HTMLElement = screen.getByText("Frontend Developer");
+    const eduElement: HTMLElement = screen.getByText("Master Informatique");
+
+    expect(expElement).toBeInTheDocument();
+    expect(eduElement).toBeInTheDocument();
   });
 
   it("prioritizes Experience over Education when same year", () => {
     render(<Careers /> as React.ReactElement);
 
     const titles: HTMLElement[] = screen.getAllByText(
-      /Frontend Developer|Master Informatique/ as RegExp
-    )as HTMLElement[];
+      /Frontend Developer|Master Informatique/
+    ) as HTMLElement[];
 
-    expect(titles[0] as HTMLElement).toHaveTextContent("Frontend Developer" as string);
-    expect(titles[1] as HTMLElement).toHaveTextContent("Master Informatique" as string);
+    expect(titles[0].textContent?.trim()).toBe("Frontend Developer");
+    expect(titles[1].textContent?.trim()).toBe("Master Informatique");
   });
 
   it("renders dates correctly", () => {
-    render(<Careers /> as React.ReactElement);
+    render(<Careers /> as ReactElement);
 
-    expect(
-      screen.getByText("Janvier 2023 - Décembre 2023" as string)
-    ).toBeInTheDocument();
+    const expDate: HTMLElement = screen.getByText("Janvier 2023 - Décembre 2023");
+    const eduDate: HTMLElement = screen.getByText("Septembre 2023 - Juin 2024");
 
-    expect(
-      screen.getByText("Septembre 2023 - Juin 2024" as string)
-    ).toBeInTheDocument();
+    expect(expDate).toBeInTheDocument();
+    expect(eduDate).toBeInTheDocument();
   });
 
   it("renders additional information fields", () => {
-    render(<Careers /> as React.ReactElement);
+    render(<Careers /> as ReactElement);
 
-    expect(screen.getByText("CDI" as string)).toBeInTheDocument();
-    expect(screen.getByText("Tech Corp" as string)).toBeInTheDocument();
-    expect(screen.getByText("Master" as string)).toBeInTheDocument();
-    expect(screen.getByText("Université Paris" as string)).toBeInTheDocument();
+    const contractEl: HTMLElement = screen.getByText("CDI");
+    const businessEl: HTMLElement = screen.getByText("Tech Corp");
+    const diplomaEl: HTMLElement = screen.getByText("Master");
+    const schoolEl: HTMLElement = screen.getByText("Université Paris");
+
+    expect(contractEl).toBeInTheDocument();
+    expect(businessEl).toBeInTheDocument();
+    expect(diplomaEl).toBeInTheDocument();
+    expect(schoolEl).toBeInTheDocument();
   });
 });
