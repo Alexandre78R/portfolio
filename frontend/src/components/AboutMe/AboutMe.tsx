@@ -4,7 +4,7 @@ import ButtonCustom from "../Button/Button";
 import TitleH3 from "../Title/TitleH3";
 import Lang from "@/lang/typeLang";
 
-const AboutMe: React.FC = (): ReactElement => {
+const AboutMe = (): JSX.Element => {
   const { translations }: { translations: Lang } = useLang();
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (): void => {

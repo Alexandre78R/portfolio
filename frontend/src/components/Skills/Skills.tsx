@@ -2,7 +2,7 @@ import React, { FC, ReactElement } from "react";
 import { Card, Typography } from "@mui/material";
 import { Skill, SkillsCategory } from "./typeSkills";
 
-const Skills: FC<SkillsCategory> = ({ category, skills }): ReactElement => {
+const Skills: FC<SkillsCategory> = ({ category, skills }): JSX.Element => {
   return (
     <Card
       className="flex-shrink-0 w-[350px] rounded-lg text-white overflow-hidden"

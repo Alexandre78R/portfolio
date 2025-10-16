@@ -9,7 +9,8 @@ import { useLang } from "@/context/Lang/LangContext";
 import ReactPlayer from "react-player";
 import Lang from "@/lang/typeLang";
 
-const Projects: React.FC<ProjectComponent> = ({ project }): ReactElement => {
+const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
+  
   const [expandedText, setExpandedText] = useState<Set<string>>(new Set());
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [isClient, setIsClient] = useState<boolean>(false);

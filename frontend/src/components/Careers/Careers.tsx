@@ -41,6 +41,7 @@ const Careers: FC = (): React.ReactElement => {
         return 1;
       }
 
+      // Tri par date de début décroissante, puis date de fin
       return dateBStart !== dateAStart ? dateBStart - dateAStart : dateBEnd - dateAEnd;
     });
   }, [dataEducations, dataExperiences]);
