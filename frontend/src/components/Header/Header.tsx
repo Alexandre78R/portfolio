@@ -1,14 +1,16 @@
-import { useLang } from "@/context/Lang/LangContext";
-import { SparklesCore } from "../ui/SparklesCore";
+import { RefObject } from "react";
+import { useLang, LangKey } from "@/context/Lang/LangContext";
 import { useTheme } from "@/context/Theme/ThemeContext";
-import themes from "@/context/Theme/themes";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
-import Lang from "@/lang/typeLang";
+import { SparklesCore } from "../ui/SparklesCore";
+import themes from "@/context/Theme/themes";
+import type LangType from "@/lang/typeLang";
 
-const Header: React.FC = (): React.ReactElement => {
-  const { translations }: { translations: Lang } = useLang();
-  const { theme } = useTheme();
-  const { headerRef } = useSectionRefs();
+const Header = (): JSX.Element => {
+
+  const { translations } = useLang() as { translations: LangType; lang: LangKey };
+  const { theme } = useTheme() as { theme: keyof typeof themes };
+  const { headerRef } = useSectionRefs() as { headerRef: RefObject<HTMLDivElement> };
 
   return (
     <header ref={headerRef} id="header">
@@ -24,6 +26,7 @@ const Header: React.FC = (): React.ReactElement => {
             particleColor={themes[theme].colors.primary}
           />
         </div>
+
         <div className="relative z-20 flex flex-col items-center justify-center">
           <div className="w-40 h-40 relative overflow-hidden">
             <img
@@ -31,8 +34,8 @@ const Header: React.FC = (): React.ReactElement => {
               src="/img/alex-pixel.png"
               alt="Description de l'image"
             />
-            {/* <img className="w-full h-full object-cover rounded-full border-4 border-primary transform transition-transform duration-500 rotateY-180 hover:rotateY-0" src="/img/autre-image.png" alt="Description de l'image" /> */}
           </div>
+
           <h1 className="text-4xl lg:text-6xl font-bold text-center text-primary relative hover:text-secondary">
             {translations.headerTitle}
           </h1>
