@@ -1,16 +1,28 @@
-export type skills = {
-  id?: number;
-  category: string;
-  skills: any;
-};
+// export type skills = {
+//   id?: number;
+//   category: string;
+//   skills: any;
+// };
 
-export type skill = {
+// export type skill = {
+//   name: string;
+//   image: string;
+// };
+
+// export type SkillTab = {
+//   id?: number;
+//   category: string;
+//   skills: skill;
+// };
+
+
+export type Skill = {
   name: string;
   image: string;
 };
 
-export type SkillTab = {
+export type SkillsCategory = {
   id?: number;
   category: string;
-  skills: skill;
+  skills: Skill[];
 };
