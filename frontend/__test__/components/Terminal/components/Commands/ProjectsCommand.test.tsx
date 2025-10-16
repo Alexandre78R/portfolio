@@ -3,14 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsCommand";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
-import { Project } from "@/components/Projects/typeProjects";
+import { Project, SkillsProject } from "@/store/slices/projectsSlice";
 import Lang from "@/lang/typeLang";
 
-// ---------- mocks ----------
 jest.mock("next/dynamic", () => () => {
-  const DynamicComponent: React.FC = (): React.ReactElement => (
-    <div data-testid="react-player" />
-  );
+  const DynamicComponent: React.FC = () => <div data-testid="react-player" />;
   DynamicComponent.displayName = "DynamicComponent";
   return DynamicComponent;
 });
@@ -19,45 +16,50 @@ jest.mock("@/context/Lang/LangContext");
 jest.mock("react-redux");
 
 jest.mock("@/components/Button/Button", () => {
-  const ButtonMock: React.FC<{ disable?: boolean; onClick?: () => void; text: string }> = (props) => (
-    <button disabled={props.disable} onClick={props.onClick}>
-      {props.text}
+  const ButtonMock: React.FC<{
+    text: string;
+    onClick?: () => void;
+    disable?: boolean;
+    disableHover?: boolean;
+  }> = ({ text, onClick, disable }) => (
+    <button disabled={disable} onClick={onClick}>
+      {text}
     </button>
   );
   ButtonMock.displayName = "ButtonCustom";
   return ButtonMock;
 });
 
-// ---------- mock data ----------
 const mockProjects: Project[] = [
   {
-    id: "1",
+    id: 1,
     title: "Project One",
-    description: "A".repeat(120),
+    descriptionFR: "A".repeat(120),
+    descriptionEN: "A".repeat(120),
     typeDisplay: "image",
     contentDisplay: "image.png",
     github: "https://github.com/test",
     skills: [
-      { id: "1", name: "React", image: "/react.png" },
-      { id: "2", name: "TS", image: "/ts.png" },
+      { name: "React", image: "/react.png" },
+      { name: "TS", image: "/ts.png" },
     ],
   },
   {
-    id: "2",
+    id: 2,
     title: "Project Two",
-    description: "Short description",
+    descriptionFR: "Short description",
+    descriptionEN: "Short description",
     typeDisplay: "image",
     contentDisplay: "image2.png",
-    github: "",
+    github: null,
     skills: [],
   },
 ];
 
-describe("ProjectsCommand component", () => {
-  beforeEach((): void => {
+describe("ProjectsCommand", () => {
+  beforeEach(() => {
     jest.clearAllMocks();
 
-    // Mock Lang context
     (useLang as jest.Mock).mockReturnValue({
       translations: {
         buttonSeeMore: "See more",
@@ -66,13 +68,16 @@ describe("ProjectsCommand component", () => {
         buttonPaginationPrevious: "Previous",
         navbarButtonSkill: "Skills",
       } as Lang,
+      lang: "fr",
     });
 
-    const mockedUseSelector: jest.MockedFunction<typeof useSelector> = useSelector as jest.MockedFunction<typeof useSelector>;
-    mockedUseSelector.mockImplementation((selector) =>
-      selector({
-        projects: { dataProjects: mockProjects } as { dataProjects: Project[] },
-      }),
+    (useSelector as jest.MockedFunction<typeof useSelector>).mockImplementation(
+      (selector) =>
+        selector({
+          projects: {
+            dataProjects: mockProjects,
+          },
+        })
     );
 
     Object.defineProperty(window, "innerWidth", {
@@ -82,58 +87,54 @@ describe("ProjectsCommand component", () => {
     });
   });
 
-  it("renders first project title", (): void => {
+  test("renders first project title", () => {
     render(<ProjectsCommand />);
-    const projectTitle: HTMLElement = screen.getByText("Project One");
-    expect(projectTitle).toBeInTheDocument();
+    expect(screen.getByText("Project One")).toBeInTheDocument();
   });
 
-  it("shows truncated description and see more button", (): void => {
+  test("shows truncated description and see more button", () => {
     render(<ProjectsCommand />);
-    const truncatedDesc: HTMLElement = screen.getByText(/A{90}\.\.\./);
-    const seeMoreBtn: HTMLElement = screen.getByText("See more");
-    expect(truncatedDesc).toBeInTheDocument();
-    expect(seeMoreBtn).toBeInTheDocument();
-  });
-
-  it("expands and collapses description text", (): void => {
-    render(<ProjectsCommand />);
-    const seeMoreBtn: HTMLElement = screen.getByText("See more");
-    fireEvent.click(seeMoreBtn);
-    const seeLessBtn: HTMLElement = screen.getByText("See less");
-    expect(seeLessBtn).toBeInTheDocument();
-
-    fireEvent.click(seeLessBtn);
+    expect(screen.getByText(/A{90}\.\.\./)).toBeInTheDocument();
     expect(screen.getByText("See more")).toBeInTheDocument();
   });
 
-  it("navigates to next project with pagination", (): void => {
+  test("expands and collapses description text", () => {
     render(<ProjectsCommand />);
-    const nextBtn: HTMLElement = screen.getByText("Next");
-    fireEvent.click(nextBtn);
-    const secondProjectTitle: HTMLElement = screen.getByText("Project Two");
-    expect(secondProjectTitle).toBeInTheDocument();
+    const seeMoreButton: HTMLParagraphElement = screen.getByText("See more");
+    fireEvent.click(seeMoreButton);
+    expect(screen.getByText("See less")).toBeInTheDocument();
+    const seeLessButton: HTMLParagraphElement = screen.getByText("See less");
+    fireEvent.click(seeLessButton);
+    expect(screen.getByText("See more")).toBeInTheDocument();
   });
 
-  it("previous button is disabled on first page", (): void => {
+  test("navigates to next project with pagination", () => {
     render(<ProjectsCommand />);
-    const prevBtn: HTMLElement = screen.getByText("Previous");
-    expect(prevBtn).toBeDisabled();
+    const nextButton: HTMLButtonElement = screen.getByText("Next");
+    fireEvent.click(nextButton);
+    expect(screen.getByText("Project Two")).toBeInTheDocument();
   });
 
-  it("expands skills section when clicking expand icon", (): void => {
+  test("previous button is disabled on first page", () => {
     render(<ProjectsCommand />);
-    const expandButton: HTMLElement = screen.getByTitle("Project One - Skills");
-    fireEvent.click(expandButton);
-    const reactSkill: HTMLElement = screen.getByAltText("React");
-    const tsSkill: HTMLElement = screen.getByAltText("TS");
-    expect(reactSkill).toBeInTheDocument();
-    expect(tsSkill).toBeInTheDocument();
+    const prevButton: HTMLButtonElement = screen.getByText("Previous");
+    expect(prevButton).toBeDisabled();
   });
 
-  it("renders github link when provided", (): void => {
+  test("expands skills section when clicking expand icon", () => {
     render(<ProjectsCommand />);
-    const githubLink: HTMLElement = screen.getByTitle("Project One - Github");
-    expect(githubLink).toHaveAttribute("href", "https://github.com/test");
+    const expandButton: HTMLButtonElement | null = screen.getByTitle(
+      "Project One - Skills"
+    );
+    expect(expandButton).toBeInTheDocument();
+    if (expandButton) fireEvent.click(expandButton);
+    expect(screen.getByAltText("React")).toBeInTheDocument();
+    expect(screen.getByAltText("TS")).toBeInTheDocument();
+  });
+
+  test("renders github link when provided", () => {
+    render(<ProjectsCommand />);
+    const link: HTMLAnchorElement = screen.getByTitle("Project One - Github");
+    expect(link).toHaveAttribute("href", "https://github.com/test");
   });
 });
