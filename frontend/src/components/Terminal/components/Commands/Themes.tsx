@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import Usage from "../Usage";
 import { Message } from "../Message";
 import { useTheme } from "@/context/Theme/ThemeContext";
@@ -7,13 +7,11 @@ import { tabThemes, tabThemesName, ThemeName } from "@/context/Theme/themes";
 import { checkThemeSwitch, getCurrentCmdArry, isArgInvalid } from "../../util";
 
 const Themes: React.FC = () => {
-  const { arg, history, rerender } = useContext(termContext);
+  const { arg, history, rerender } = useContext<Term>(termContext);
   const { toggleTheme } = useTheme();
   const [currentTheme, setCurrentTheme] = useState<ThemeName | "">("");
 
   const currentCommand: string[] = getCurrentCmdArry(history) || [];
-
-  // On force le typage ici
   const newTheme = currentCommand[2] as ThemeName | undefined;
 
   useEffect(() => {

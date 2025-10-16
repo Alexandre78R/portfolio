@@ -10,16 +10,18 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import dynamic from "next/dynamic";
 import { Project, SkillsProject } from "@/store/slices/projectsSlice";
+import Lang from "@/lang/typeLang";
+import { LangKey } from "@/context/Lang/LangContext";
 
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 
-const ProjectsCommand: React.FC = () => {
+const ProjectsCommand = (): JSX.Element => {
 
   const dataProjects: Project[] = useSelector(
     (state: RootState) => state.projects.dataProjects
   );
 
-  const { translations, lang } = useLang();
+  const { translations, lang }: { translations : Lang, lang : LangKey } = useLang();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const datasPerPage: number = 1;

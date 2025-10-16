@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
 
-export const Empty: React.FC = (): React.ReactElement => {
+export const Empty = (): JSX.Element => {
   return <div className="mb-1" />;
 };

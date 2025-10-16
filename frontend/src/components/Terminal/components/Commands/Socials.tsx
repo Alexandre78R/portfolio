@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Message } from "../Message";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import {
   getCurrentCmdArry,
   checkRedirect,
@@ -9,7 +9,7 @@ import {
 } from "../../util";
 import Usage from "../Usage";
 
-type Socials = {
+export type Socials = {
   id: number;
   title: string;
   url: string;
@@ -31,8 +31,8 @@ const socials: Socials[] = [
   },
 ];
 
-const Socials: React.FC = (): React.ReactNode => {
-  const { arg, history, rerender } = useContext(termContext);
+const Socials = (): React.ReactNode => {
+  const { arg, history, rerender } = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Socials: React.FC = (): React.ReactNode => {
     }
   }, [arg, rerender, currentCommand]);
 
-  const checkArg = () =>
+  const checkArg = () :  React.ReactElement | null =>
     isArgInvalid(arg, "go", ["1", "2"]) ? <Usage cmd="socials" /> : null;
 
   return arg.length > 0 || arg.length > 2 ? (

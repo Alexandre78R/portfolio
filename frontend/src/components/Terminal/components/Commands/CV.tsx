@@ -1,9 +1,9 @@
 import { useContext, useEffect } from "react";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import { getCurrentCmdArry } from "../../util";
 
-const CV: React.FC = (): React.ReactNode => {
-  const { history, rerender } = useContext(termContext);
+const CV = (): JSX.Element => {
+  const { history, rerender } = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {

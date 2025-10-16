@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import _ from "lodash";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import { Message } from "../Message";
 
-const Echo: React.FC = (): React.ReactElement => {
-  const { arg } = useContext(termContext);
+const Echo = (): JSX.Element => {
+  const { arg } = useContext<Term>(termContext);
 
   let outputStr: string = _.join(arg, " ");
   outputStr = _.trim(outputStr, "'"); // remove trailing single quotes ''
