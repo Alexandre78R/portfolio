@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from "react";
+import React, { ReactNode } from "react";
 import { Box } from "@mui/material";
 
 export interface AuthFormLayoutProps {
@@ -6,7 +6,7 @@ export interface AuthFormLayoutProps {
   children: ReactNode;
 }
 
-const AuthFormLayout: FC<AuthFormLayoutProps> = ({ title, children }): React.ReactElement => {
+const AuthFormLayout = ({ title, children }: AuthFormLayoutProps): JSX.Element => {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Box className="max-w-md w-full p-6 rounded shadow space-y-6 bg-body">
