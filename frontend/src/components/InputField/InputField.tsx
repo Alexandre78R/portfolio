@@ -1,25 +1,10 @@
 import React, { ChangeEvent } from "react";
 import { TextField, TextFieldProps } from "@mui/material";
 
-type InputType =
-  | "text"
-  | "email"
-  | "password"
-  | "number"
-  | "tel"
-  | "url"
-  | "search"
-  | "date"
-  | "time"
-  | "datetime-local"
-  | "month"
-  | "week"
-  | "color";
-
 export interface InputFieldProps {
   id: string;
   label: string;
-  type?: InputType; // type limité aux types HTML valides
+  type?: string; // type limité aux types HTML valides
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   multiline?: boolean;
