@@ -4,6 +4,7 @@ import ToggleButton from "./ToggleButton";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import MouseIcon from "@mui/icons-material/Mouse";
 
+
 const ChoiceViewButton: React.FC = (): React.ReactElement => {
   const { selectedView, setSelectedView } = useChoiceView();
 
@@ -27,6 +28,7 @@ const ChoiceViewButton: React.FC = (): React.ReactElement => {
       option1={<MouseIcon fontSize="small" />}
       option2={<TerminalIcon fontSize="small" />}
       isChecked={isCheckedView}
+      data-testid="toggle-button"
     />
   );
 };
