@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`HorizontalBarChart matches snapshot 1`] = `
+<div>
+  <div
+    class="w-full max-w-4xl mx-auto"
+    style="height: 300px;"
+  >
+    <canvas
+      height="150"
+      role="img"
+      width="300"
+    />
+  </div>
+</div>
+`;

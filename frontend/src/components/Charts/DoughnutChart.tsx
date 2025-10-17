@@ -24,11 +24,19 @@ const DoughnutChart = ({ labels, data, title }: DoughnutChartProps): JSX.Element
   const [labelColor, setLabelColor] = useState<string>('#334155');
 
   useEffect(() => {
-    const style = getComputedStyle(document.documentElement);
-    const chartColors = style.getPropertyValue('--chart-colors');
-    const chartLabelColor = style.getPropertyValue('--chart-label-color');
+    // const style = getComputedStyle(document.documentElement);
+    // const chartColors = style.getPropertyValue('--chart-colors');
+    // const chartLabelColor = style.getPropertyValue('--chart-label-color');
 
-    setColors(chartColors ? chartColors.split(',').map((c) => c.trim()) : []);
+    // setColors(chartColors ? chartColors.split(',').map((c) => c.trim()) : []);
+    const style: CSSStyleDeclaration = getComputedStyle(document.documentElement);
+    const chartColorsString: string = style.getPropertyValue("--chart-colors").trim();
+    const chartColors: string[] = chartColorsString
+      ? chartColorsString.split(",").map((c) => c.trim())
+      : [];
+
+    const chartLabelColor: string = style.getPropertyValue("--chart-label-color").trim() || "#334155";
+
     setLabelColor(chartLabelColor.trim() || '#334155');
   }, []);
 

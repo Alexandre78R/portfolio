@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   BarElement,
@@ -8,10 +8,12 @@ import {
   Legend,
   ChartOptions,
   ChartData,
+  ChartTypeRegistry,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { useTheme } from "@/context/Theme/ThemeContext";
+import { useTheme, ThemeContextObject } from "@/context/Theme/ThemeContext";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -20,17 +22,17 @@ export interface HorizontalBarChartProps {
   data: number[];
 }
 
-const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data }) => {
+const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data }): JSX.Element => {
   const [primaryColor, setPrimaryColor] = useState<string>("#6366f1");
   const [labelColor, setLabelColor] = useState<string>("#1f2937");
 
-  const { theme } = useTheme();
-  const { translations } = useLang();
+  const { theme }: ThemeContextObject = useTheme();
+  const { translations }: { translations: Lang } = useLang();
 
-  useEffect(() => {
-    const style = getComputedStyle(document.documentElement);
-    const cssPrimary = style.getPropertyValue("--primary-color").trim();
-    const cssTextColor = style.getPropertyValue("--text-color").trim();
+  useEffect((): void => {
+    const style: CSSStyleDeclaration = getComputedStyle(document.documentElement);
+    const cssPrimary: string = style.getPropertyValue("--primary-color").trim();
+    const cssTextColor: string = style.getPropertyValue("--text-color").trim();
 
     if (cssPrimary) setPrimaryColor(cssPrimary);
     if (cssTextColor) setLabelColor(cssTextColor);
@@ -40,7 +42,7 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data })
     labels,
     datasets: [
       {
-        label: translations.messagePageDashBoardMessageStatsChart || "Nombre d'utilisations",
+        label: translations.messagePageDashBoardMessageStatsChart ?? "Nombre d'utilisations",
         data,
         backgroundColor: primaryColor,
         borderRadius: 4,
@@ -56,9 +58,9 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data })
     maintainAspectRatio: false,
     animation: {
       duration: 1000,
-      delay: (ctx) => {
-        const index = ctx.dataIndex ?? 0;
-        const datasetIndex = ctx.datasetIndex ?? 0;
+      delay: (ctx): number => {
+        const index: number = ctx.dataIndex ?? 0;
+        const datasetIndex: number = ctx.datasetIndex ?? 0;
         return index * 150 + datasetIndex * 50;
       },
     },
@@ -80,8 +82,8 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data })
         ticks: {
           color: labelColor,
           font: { size: 14 },
-          callback: function (value) {
-            const label = this.getLabelForValue(Number(value)) ?? "";
+          callback: function (value: string | number) {
+            const label: string = this.getLabelForValue(Number(value)) ?? "";
             return label.length > 20 ? label.slice(0, 20) + "…" : label;
           },
         },
@@ -91,7 +93,10 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data })
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto" style={{ height: Math.max(300, labels.length * 40) }}>
+    <div
+      className="w-full max-w-4xl mx-auto"
+      style={{ height: Math.max(300, labels.length * 40) }}
+    >
       <Bar data={chartData} options={chartOptions} />
     </div>
   );

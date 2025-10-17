@@ -10,6 +10,8 @@ import themes, { ThemeColors, ThemeColorsText } from "./themes";
 
 export type ThemeKey = keyof typeof themes;
 
+export type ThemeContextObject = { theme: string };
+
 export interface ThemeContextType {
   theme: ThemeKey;
   toggleTheme: (newTheme: ThemeKey) => void;
