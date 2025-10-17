@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`DoughnutChart renders Doughnut chart with data and labels 1`] = `
+<div
+  data="[object Object]"
+  data-testid="doughnut-chart"
+  options="[object Object]"
+>
+  Mocked Doughnut
+</div>
+`;
+
+exports[`DoughnutChart uses colors from CSS variables 1`] = `
+<div
+  data="[object Object]"
+  data-testid="doughnut-chart"
+  options="[object Object]"
+>
+  Mocked Doughnut
+</div>
+`;
