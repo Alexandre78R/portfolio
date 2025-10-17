@@ -1,15 +1,33 @@
 import React, { ChangeEvent } from "react";
-import { TextField } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 
-interface InputFieldProps {
+type InputType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "url"
+  | "search"
+  | "date"
+  | "time"
+  | "datetime-local"
+  | "month"
+  | "week"
+  | "color";
+
+export interface InputFieldProps {
   id: string;
   label: string;
-  type?: string;
+  type?: InputType; // type limité aux types HTML valides
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   multiline?: boolean;
-  rows?: number;
+  rows?: number; // facultatif, utilisé seulement si multiline
   name?: string;
+  required?: boolean; // ajouté pour plus de flexibilité
+  className?: string; // optionnel pour override Tailwind classes
+  sx?: TextFieldProps["sx"]; // permet d'étendre les styles MUI
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -20,8 +38,13 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   multiline = false,
   rows,
-  name
+  name,
+  required = true,
+  className,
+  sx,
 }) => {
+  const rowsProp = multiline && rows ? rows : undefined;
+
   return (
     <TextField
       id={id}
@@ -29,19 +52,18 @@ const InputField: React.FC<InputFieldProps> = ({
       type={type}
       variant="outlined"
       fullWidth
-      required
+      required={required}
       value={value}
       onChange={onChange}
       multiline={multiline}
-      rows={rows}
+      rows={rowsProp}
       name={name}
-      className="bg-white border border-gray-300 rounded-md text-text"
+      className={`bg-white border border-gray-300 rounded-md text-text ${className ?? ""}`}
       sx={{
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-          {
-            borderColor: "var(--primary-color)",
-            borderWidth: "0.2rem",
-          },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderColor: "var(--primary-color)",
+          borderWidth: "0.2rem",
+        },
         "& .MuiFormLabel-root": {
           color: "var(--primary-color)",
           fontWeight: "bold",
@@ -52,6 +74,7 @@ const InputField: React.FC<InputFieldProps> = ({
           fontWeight: "bold",
           backgroundColor: "white",
         },
+        ...sx,
       }}
     />
   );

@@ -41,7 +41,6 @@ describe("ButtonCustom Component", () => {
     render(<ButtonCustom {...defaultProps} disableHover />);
     const button: HTMLButtonElement = screen.getByRole("button", { name: /click me/i });
 
-    // On hover, the style object should remain unchanged for disableHover
     fireEvent.mouseOver(button);
     expect(button).toBeInTheDocument();
   });

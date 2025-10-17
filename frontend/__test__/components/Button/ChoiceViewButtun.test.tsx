@@ -38,11 +38,9 @@ describe("ChoiceViewButton", () => {
   test("renders ToggleButton with correct initial state when selectedView is 'text'", () => {
     renderComponent("text");
 
-    // On récupère le toggle button
     const toggleButton: HTMLElement = screen.getByTestId("toggle-button");
     expect(toggleButton).toBeInTheDocument();
 
-    // On reste en HTMLElement pour éviter l'erreur de conversion SVG
     const mouseIcon: HTMLElement = screen.getByTestId("mouse-icon");
     const terminalIcon: HTMLElement = screen.getByTestId("terminal-icon");
 
