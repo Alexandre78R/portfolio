@@ -9,6 +9,7 @@ export interface ButtonCustomProps {
   disableHover?: boolean; // désactive le style hover
   className?: string; // classe supplémentaire optionnelle
   sx?: SxProps<Theme>; // styles supplémentaires optionnels
+  "data-testid"?: string; // ajout pour tests
 }
 
 const ButtonCustom: FC<ButtonCustomProps> = ({
@@ -18,6 +19,7 @@ const ButtonCustom: FC<ButtonCustomProps> = ({
   disableHover = false,
   className,
   sx,
+  "data-testid": dataTestId,
 }): JSX.Element => {
   const buttonStyles: SxProps<Theme> = {
     fontSize: "12px",
@@ -45,6 +47,7 @@ const ButtonCustom: FC<ButtonCustomProps> = ({
       className={className}
       sx={buttonStyles}
       type="button"
+      data-testid={dataTestId}
     >
       {text}
     </Button>
