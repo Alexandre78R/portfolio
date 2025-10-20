@@ -1,9 +1,8 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
 
-interface ModalCustomProps {
+export interface ModalCustomProps {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -18,7 +17,6 @@ const ModalCustom: React.FC<ModalCustomProps> = ({
   width = 400,
   className = "",
 }) => {
-  const theme = useTheme();
 
   return (
     <Modal
