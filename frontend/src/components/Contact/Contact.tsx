@@ -1,93 +1,98 @@
+import React, { useState, useEffect, ChangeEvent, MouseEvent } from "react";
+
 import { useLang } from "@/context/Lang/LangContext";
-import { useState, ChangeEvent, useEffect } from "react";
-import { Typography } from "@mui/material";
 import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
-import { useSendContactMutation } from "@/types/graphql";
 import Captcha from "../Captcha/Captcha";
-import { checkRegex, emailRegex } from "@/regex";
 import TitleH3 from "../Title/TitleH3";
 
+import { useSendContactMutation, SendContactMutation, SendContactMutationVariables } from "@/types/graphql";
+import { checkRegex, emailRegex } from "@/regex";
+import Lang from "@/lang/typeLang";
+
+interface FormData {
+  email: string;
+  object: string;
+  message: string;
+}
+
 const Contact: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
-  const { showAlert } = CustomToast();
+  const { translations }: { translations: Lang } = useLang();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
+
   const [sendContact] = useSendContactMutation();
 
-  const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] =
-    useState<boolean>(false);
-
-  const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
-
-  const handleCaptchaValidation = (isValid: boolean) => {
-    setCaptchaValid(isValid);
-  };
-
-  const [formData, setFormData] = useState<{
-    email: string;
-    object: string;
-    message: string;
-  }>({
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     object: "",
     message: "",
   });
 
+  const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] = useState<boolean>(false);
+
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
+
+  const handleCaptchaValidation = (isValid: boolean): void => {
+    setCaptchaValid(isValid);
+  };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  ): void => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
       [id]: value,
     }));
   };
 
   useEffect(() => {
-    if (captchaValid) {
-      sendContact({
-        variables: {
-          data: formData,
-        },
-        onCompleted(data) {
-          if (data?.sendContact.status) {
-            showAlert("success", translations.messageSuccessFormulaireSend);
-            setCaptchaValid(false);
-            setFormData({
-              email: "",
-              object: "",
-              message: "",
-            });
-          } else {
-            showAlert("error", translations.messageErrorNotSend);
-            setCaptchaValid(true);
-          }
-        },
-        onError(error) {
-          console.log("error", error);
-          let errorMessage: string = translations.messageErrorServerOff;
-          if (error.message === "Invaid format email.") {
-            errorMessage = translations.messageErrorFormatEmail;
-          }
-          showAlert("error", errorMessage);
-          setCaptchaValid(true);
-          handleOpen();
-        },
-      });
-    }
-  }, [captchaValid]);
+    if (!captchaValid) return;
 
-  const handleClick = (): void => {
+    sendContact({
+      variables: { data: formData } as SendContactMutationVariables,
+      onCompleted: (data: SendContactMutation | undefined): void => {
+        if (data?.sendContact.status) {
+          showAlert("success", translations.messageSuccessFormulaireSend);
+          setFormData({ email: "", object: "", message: "" });
+          setCaptchaValid(false);
+        } else {
+          showAlert("error", translations.messageErrorNotSend);
+          setCaptchaValid(true);
+        }
+      },
+      onError: (error: Error): void => {
+        console.error("Contact error:", error);
+        const errorMessage: string =
+          error.message === "Invaid format email."
+            ? translations.messageErrorFormatEmail
+            : translations.messageErrorServerOff;
+
+        showAlert("error", errorMessage);
+        setCaptchaValid(true);
+        handleOpen();
+      },
+    });
+  }, [captchaValid, formData, sendContact, showAlert, translations]);
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+
     const { email, object, message } = formData;
 
-    if (!email || !object || !message)
-      return showAlert("error", translations.messageErrorFillAllInput);
+    if (!email || !object || !message) {
+      showAlert("error", translations.messageErrorFillAllInput);
+      return;
+    }
 
-    if (!checkRegex(emailRegex, email))
-      return showAlert("error", translations.messageErrorFormatEmail);
+    if (!checkRegex(emailRegex, email)) {
+      showAlert("error", translations.messageErrorFormatEmail);
+      return;
+    }
 
     setAuthorizeGenerateCaptcha(true);
     handleOpen();
@@ -105,23 +110,20 @@ const Contact: React.FC = (): React.ReactElement => {
             value={formData.email}
             onChange={handleInputChange}
           />
-
           <InputField
             id="object"
             label={translations.inputNameContactObject}
             value={formData.object}
             onChange={handleInputChange}
           />
-
           <InputField
             id="message"
             label={translations.inputNameContactMessage}
+            value={formData.message}
             multiline
             rows={6}
-            value={formData.message}
             onChange={handleInputChange}
           />
-
           <ButtonCustom
             onClick={handleClick}
             text={translations.buttonSendMessageContact}
