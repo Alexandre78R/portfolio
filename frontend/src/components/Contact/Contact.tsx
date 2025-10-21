@@ -82,7 +82,7 @@ const Contact: React.FC = (): React.ReactElement => {
   const handleClick = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
 
-    const { email, object, message } = formData;
+    const { email, object, message } : FormData = formData;
 
     if (!email || !object || !message) {
       showAlert("error", translations.messageErrorFillAllInput);

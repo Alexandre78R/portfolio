@@ -156,7 +156,7 @@ const Navbar: React.FC = (): JSX.Element => {
 
       {/* Mobile Sidebar */}
       {menuOpen && (
-        <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
+        <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6" data-testid="mobile-menu">
           <ul className="flex flex-col space-y-4">
             {selectedView !== "terminal" ? (
               <>
