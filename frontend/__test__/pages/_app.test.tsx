@@ -5,17 +5,9 @@ import App from "@/pages/_app";
 import type { AppProps } from "next/app";
 import type { Router } from "next/router";
 
-/* -------------------------------------------------------------------------- */
-/*                               Env variables                                */
-/* -------------------------------------------------------------------------- */
-
 beforeAll((): void => {
   process.env.NEXT_PUBLIC_API_TOKEN = "test-token";
 });
-
-/* -------------------------------------------------------------------------- */
-/*                                  Mocks                                     */
-/* -------------------------------------------------------------------------- */
 
 jest.mock("@/components/Loading/LoadingCustom", () => {
   const Loading = (): React.ReactElement => (
@@ -45,7 +37,6 @@ type ProviderProps = {
   children: React.ReactNode;
 };
 
-// ✅ Définir dans chaque mock pour éviter le hoisting
 jest.mock("@/context/Theme/ThemeContext", () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -90,9 +81,6 @@ jest.mock("@/components/ToastCustom/ToastProvider", () => {
   };
 });
 
-/* -------------------------------------------------------------------------- */
-/*                              Apollo Client Mock                             */
-/* -------------------------------------------------------------------------- */
 
 type ApolloLinkLike = {
   request: jest.Mock;
@@ -140,10 +128,6 @@ jest.mock("@apollo/client", () => {
   };
 });
 
-/* -------------------------------------------------------------------------- */
-/*                                Router Mock                                 */
-/* -------------------------------------------------------------------------- */
-
 const mockRouter = {
   basePath: "",
   pathname: "/",
@@ -168,9 +152,6 @@ const mockRouter = {
   forward: jest.fn(),
 } as unknown as Router;
 
-/* -------------------------------------------------------------------------- */
-/*                                   Tests                                    */
-/* -------------------------------------------------------------------------- */
 
 describe("App component", () => {
   const MockComponent = (): React.ReactElement => (
