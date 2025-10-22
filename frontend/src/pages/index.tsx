@@ -1,153 +1,176 @@
 'use client';
 
-import { useEffect } from "react";
-import { useLang } from "@/context/Lang/LangContext";
-import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
-import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
-import TitleH2 from "@/components/Title/TitleH2";
-import Header from "@/components/Header/Header";
-import AboutMe from "@/components/AboutMe/AboutMe";
-import Footer from "@/components/Footer/Footer";
-import Terminal from "@/components/Terminal/Terminal";
-import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
-// import { useDispatch, useSelector } from "react-redux";
-// import { RootState, AppDispatch } from "@/store/store";
+import React, { useEffect, ReactElement } from "react";
+import { useLang, LangContextType } from "@/context/Lang/LangContext";
+import { useSectionRefs, SectionRefsContextProps } from "@/context/SectionRefs/SectionRefsContext";
+import { useChoiceView, ChoiceVieContextType } from "@/context/ChoiceView/ChoiceViewContext";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
+
+// Redux actions
 import { setSkills, updateSkillCategories } from "@/store/slices/skillsSlice";
-import { updateProjectDescriptions, setProjects} from "@/store/slices/projectsSlice";
+import { setProjects, updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { setEducations, updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { setExperiences, updateExperiences } from "@/store/slices/experiencesSlice";
-import Seo from "@/components/Seo/Seo";
-import Educations from "@/components/Careers/Careers";
-import Contact from "@/components/Contact/Contact";
+
+// Types Redux (ajustez les chemins)
+import type { Skill } from "@/store/slices/skillsSlice";
+import type { Project } from "@/store/slices/projectsSlice";
+import type { EducationType } from "@/store/slices/educationsSlice";
+import type { ExperienceType } from "@/store/slices/experiencesSlice";
+
+// GraphQL hooks
 import {
   useGetProjectsListQuery,
   useGetSkillsListQuery,
   useGetEducationsListQuery,
   useGetExperiencesListQuery,
 } from "@/types/graphql";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
+// Composants
+import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
+import TitleH2 from "@/components/Title/TitleH2";
+import Header from "@/components/Header/Header";
+import AboutMe from "@/components/AboutMe/AboutMe";
+import Footer from "@/components/Footer/Footer";
+import Terminal from "@/components/Terminal/Terminal";
+import Seo from "@/components/Seo/Seo";
+import Educations from "@/components/Careers/Careers";
+import Contact from "@/components/Contact/Contact";
 
-const Home: React.FC = (): React.ReactElement => {
-  
-  const projectsData = useGetProjectsListQuery();
-  const skillsData = useGetSkillsListQuery();
-  const educationsData = useGetEducationsListQuery();
-  const experiencesData = useGetExperiencesListQuery();
+const Home: React.FC = (): ReactElement => {
+  const { data: projectsData } = useGetProjectsListQuery();
+  const { data: skillsData } = useGetSkillsListQuery();
+  const { data: educationsData } = useGetEducationsListQuery();
+  const { data: experiencesData } = useGetExperiencesListQuery();
 
-  const { translations } = useLang();
-  const {
-    aboutMeRef,
-    projectRef,
-    skillRef,
-    terminalRef,
-    educationRef,
-    contactRef,
-  } = useSectionRefs();
-  const { selectedView } = useChoiceView();
+  const { translations }: LangContextType = useLang();
+  const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef }: SectionRefsContextProps = useSectionRefs();
+  const { selectedView }: ChoiceVieContextType = useChoiceView();
 
   const dispatch = useAppDispatch();
-
-  const dataSkills = useAppSelector(
-    (state) => state.skills.dataSkills
-  );
-
-  const dataProjects = useAppSelector(
-    (state) => state.projects.dataProjects
-  );
-
-  const dataEducations = useAppSelector(
-    (state) => state.educations.dataEducations
-  );
-
-  const dataExperiences = useAppSelector(
-    (state) => state.experiences.dataExperiences
-  );
+  const dataSkills: Skill[] = useAppSelector((state: any) => state.skills.dataSkills);
+  const dataProjects: Project[] = useAppSelector((state: any) => state.projects.dataProjects);
+  const dataEducations: EducationType[] = useAppSelector((state: any) => state.educations.dataEducations);
+  const dataExperiences: ExperienceType[] = useAppSelector((state: any) => state.experiences.dataExperiences);
 
   useEffect(() => {
-    const responseProject = projectsData.data?.projectList;
-
-    if (responseProject?.code === 200 && responseProject.projects && dataProjects.length === 0) {
-      const formattedProjects = responseProject.projects.map((project) => ({
-        ...project,
-        id: Number(project.id),
-        github: project.github ?? null,
-        description:
-          translations.file === "fr" ? project.descriptionFR : project.descriptionEN,
-      }));
-      dispatch(setProjects(formattedProjects));
+    const projectList = projectsData?.projectList;
+    if (!projectList || 
+        !projectList.projects || 
+        projectList.code !== 200 || 
+        dataProjects.length > 0) {
+      return;
     }
 
-    const responseSkill = skillsData.data?.skillList;
+    const formattedProjects: Project[] = projectList.projects.map((project: any) => ({
+      id: Number(project.id),
+      title: project.title,
+      descriptionFR: project.descriptionFR,
+      descriptionEN: project.descriptionEN,
+      typeDisplay: project.typeDisplay,
+      github: project.github ?? null,
+      contentDisplay: project.contentDisplay,
+      skills: project.skills || [],
+      description: translations.file === "fr" ? project.descriptionFR : project.descriptionEN,
+    }));
+    
+    dispatch(setProjects(formattedProjects));
+  }, [projectsData, dataProjects.length, dispatch, translations.file]);
 
-    if (responseSkill?.code === 200 && responseSkill.categories && dataSkills.length === 0) {
-      const formattedSkills = responseSkill.categories.map((skill) => ({
-        ...skill,
-        id: Number(skill.id),
-        category: translations.file === "fr" ? skill.categoryFR : skill.categoryEN,
-      }));
-      dispatch(setSkills(formattedSkills));
+  useEffect(() => {
+    const skillList = skillsData?.skillList;
+    if (!skillList || 
+        !skillList.categories || 
+        skillList.code !== 200 || 
+        dataSkills.length > 0) {
+      return;
     }
 
-    const responseEducation = educationsData.data?.educationList;
+    const formattedSkills: Skill[] = skillList.categories.map((skill: any) => ({
+      id: Number(skill.id),
+      categoryFR: skill.categoryFR,
+      categoryEN: skill.categoryEN,
+      skills: skill.skills || [],
+      category: translations.file === "fr" ? skill.categoryFR : skill.categoryEN,
+    }));
+    
+    dispatch(setSkills(formattedSkills));
+  }, [skillsData, dataSkills.length, dispatch, translations.file]);
 
-    if (responseEducation?.code === 200 && responseEducation.educations && dataEducations.length === 0) {
-      const formattedEducation = responseEducation.educations.map((edu) => ({
-        ...edu,
-        id: parseInt(edu.id, 10),
-        month: edu.month ?? null,
-        title: translations.file === "fr" ? edu.titleFR : edu.titleEN,
-        diplomaLevel:
-          translations.file  === "fr" ? edu.diplomaLevelFR : edu.diplomaLevelEN,
-        startDate:
-          translations.file  === "fr" ? edu.startDateFR : edu.startDateEN,
-        endDate: translations.file  === "fr" ? edu.endDateFR : edu.endDateEN,
-        type: translations.file  === "fr" ? edu.typeFR : edu.typeEN,
-      }));
-      dispatch(setEducations(formattedEducation));
+  useEffect(() => {
+    const educationList = educationsData?.educationList;
+    if (!educationList || 
+        !educationList.educations || 
+        educationList.code !== 200 || 
+        dataEducations.length > 0) {
+      return;
     }
 
-    const responseExperience = experiencesData.data?.experienceList;
+    const formattedEducations: EducationType[] = educationList.educations.map((edu: any) => ({
+      id: Number(edu.id),
+      titleFR: edu.titleFR || "",
+      titleEN: edu.titleEN || "",
+      diplomaLevelFR: edu.diplomaLevelFR || "",
+      diplomaLevelEN: edu.diplomaLevelEN || "",
+      school: edu.school || "",
+      location: edu.location || "",
+      year: edu.year ? Number(edu.year) : 0,
+      startDateFR: edu.startDateFR || "",
+      startDateEN: edu.startDateEN || "",
+      endDateFR: edu.endDateFR || "",
+      endDateEN: edu.endDateEN || "",
+      month: edu.month ? Number(edu.month) : null,
+      typeFR: edu.typeFR || "",
+      typeEN: edu.typeEN || "",
+      title: translations.file === "fr" ? edu.titleFR : edu.titleEN,
+      diplomaLevel: translations.file === "fr" ? edu.diplomaLevelFR : edu.diplomaLevelEN,
+      startDate: translations.file === "fr" ? edu.startDateFR : edu.startDateEN,
+      endDate: translations.file === "fr" ? edu.endDateFR : edu.endDateEN,
+      type: translations.file === "fr" ? edu.typeFR : edu.typeEN,
+    }));
+    
+    dispatch(setEducations(formattedEducations));
+  }, [educationsData, dataEducations.length, dispatch, translations.file]);
 
-    if (responseExperience?.code === 200 && responseExperience.experiences && dataExperiences.length === 0) {
-      const formattedExperience = responseExperience.experiences.map((exp) => ({
-        ...exp,
-        id: parseInt(exp.id, 10),
-        month: exp.month ?? null, 
-        employmentContractEN: exp.employmentContractEN ?? null,
-        employmentContractFR: exp.employmentContractFR ?? null,
-        job: translations.file === "fr" ? exp.jobFR : exp.jobEN,
-        employmentContract:
-          translations.file === "fr"
-            ? exp.employmentContractFR
-            : exp.employmentContractEN,
-        startDate:
-          translations.file === "fr" ? exp.startDateFR : exp.startDateEN,
-        endDate: translations.file === "fr" ? exp.endDateFR : exp.endDateEN,
-        type: translations.file === "fr" ? exp.typeFR : exp.typeEN,
-      }));
-      dispatch(setExperiences(formattedExperience));
+  useEffect(() => {
+    const experienceList = experiencesData?.experienceList;
+    if (!experienceList || 
+        !experienceList.experiences || 
+        experienceList.code !== 200 || 
+        dataExperiences.length > 0) {
+      return;
     }
-  }, [
-      educationsData,
-      experiencesData,
-      projectsData,
-      skillsData,
-      dispatch,
-      translations, 
-      dataSkills,
-      dataEducations,
-      dataProjects,
-      dataExperiences,
-    ]);
+
+    const formattedExperiences: ExperienceType[] = experienceList.experiences.map((exp: any) => ({
+      id: Number(exp.id),
+      jobFR: exp.jobFR || "",
+      jobEN: exp.jobEN || "",
+      business: exp.business || "",
+      employmentContractFR: exp.employmentContractFR ?? null,
+      employmentContractEN: exp.employmentContractEN ?? null,
+      startDateFR: exp.startDateFR || "",
+      startDateEN: exp.startDateEN || "",
+      endDateFR: exp.endDateFR || "",
+      endDateEN: exp.endDateEN || "",
+      month: exp.month ? Number(exp.month) : null,
+      typeFR: exp.typeFR || "",
+      typeEN: exp.typeEN || "",
+      job: translations.file === "fr" ? exp.jobFR : exp.jobEN,
+      employmentContract: translations.file === "fr" ? exp.employmentContractFR : exp.employmentContractEN,
+      startDate: translations.file === "fr" ? exp.startDateFR : exp.startDateEN,
+      endDate: translations.file === "fr" ? exp.endDateFR : exp.endDateEN,
+      type: translations.file === "fr" ? exp.typeFR : exp.typeEN,
+    }));
+    
+    dispatch(setExperiences(formattedExperiences));
+  }, [experiencesData, dataExperiences.length, dispatch, translations.file]);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
     dispatch(updateProjectDescriptions(translations.file));
     dispatch(updateEducationsTitle(translations.file));
     dispatch(updateExperiences(translations.file));
-  }, [translations, dispatch]);
+  }, [translations.file, dispatch]);
 
   return (
     <>
@@ -168,37 +191,25 @@ const Home: React.FC = (): React.ReactElement => {
               <AboutMe />
             </section>
             <section ref={skillRef} id="skill">
-              <div>
-                <TitleH2 title={translations.nameCategorySkills} />
-              </div>
-              <div>
-                <HorizontalScroll data={dataSkills} category="skills" />
-              </div>
+              <TitleH2 title={translations.nameCategorySkills} />
+              <HorizontalScroll data={dataSkills} category="skills" testId="horizontal-scroll-skills" />
             </section>
             <section ref={projectRef} id="project">
-              <div>
-                <TitleH2 title={translations.nameCategoryProjects} />
-              </div>
-              <HorizontalScroll data={dataProjects} category="projects" />
+              <TitleH2 title={translations.nameCategoryProjects} />
+              <HorizontalScroll data={dataProjects} category="projects" testId="horizontal-scroll-projects" />
             </section>
-            <section ref={educationRef} id="project">
-              <div>
-                <TitleH2 title={translations.nameCategoryCareer} />
-              </div>
+            <section ref={educationRef} id="career">
+              <TitleH2 title={translations.nameCategoryCareer} />
               <Educations />
             </section>
             <section ref={contactRef} id="contact">
-              <div>
-                <TitleH2 title={translations.nameCategoryContact} />
-              </div>
+              <TitleH2 title={translations.nameCategoryContact} />
               <Contact />
             </section>
           </>
         )}
       </main>
-      <section>
-        <Footer />
-      </section>
+      <Footer />
     </>
   );
 };

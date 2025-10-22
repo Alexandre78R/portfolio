@@ -9,11 +9,13 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 type Props = {
   data: any;
   category: string;
+  testId?: string;
 };
 
 const HorizontalScroll: React.FC<Props> = ({
   data,
   category,
+  testId,
 }): React.ReactElement => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -177,6 +179,7 @@ const HorizontalScroll: React.FC<Props> = ({
           scrollbarWidth: "none",
           msOverflowStyle: "none",
         }}
+        data-testid={testId} 
       >
         <div
           className="m-5"
