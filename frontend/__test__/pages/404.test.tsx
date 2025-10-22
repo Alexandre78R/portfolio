@@ -4,6 +4,7 @@ import Custom404 from "@/pages/404";
 import { useLang } from "@/context/Lang/LangContext";
 import { useRouter } from "next/router";
 import "@testing-library/jest-dom";
+import Lang from "@/lang/typeLang";
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
@@ -16,16 +17,10 @@ jest.mock("@/context/Lang/LangContext", () => ({
 interface MockRouter {
   push: jest.Mock;
 }
-interface MockTranslations {
-  titleHTMLNotFound: string;
-  messagePageNotFoundH1: string;
-  messagePageNotFoundP: string;
-  messagePageNotFoundButtom: string;
-}
 
 describe("Custom404 Component", () => {
   let mockRouter: MockRouter;
-  let mockTranslations: MockTranslations;
+  let mockTranslations: Lang;
 
   beforeEach(() => {
     mockRouter = { push: jest.fn() };
@@ -36,7 +31,7 @@ describe("Custom404 Component", () => {
       messagePageNotFoundH1: "Oops! Page not found",
       messagePageNotFoundP: "Sorry, the page you are looking for does not exist.",
       messagePageNotFoundButtom: "Go Home",
-    };
+    } as Lang;
     (useLang as jest.Mock).mockReturnValue({ translations: mockTranslations });
   });
 
