@@ -10,6 +10,7 @@ import {
   MutationMutationVariables,
 } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { Router, useRouter } from "next/router";
 
 type LoginFormState = {
   email: string;
@@ -17,6 +18,8 @@ type LoginFormState = {
 };
 
 const LoginPage = (): React.ReactElement => {
+
+  const router = useRouter();
   
   const { showAlert } = CustomToast();
   const { translations } = useLang();
@@ -61,6 +64,7 @@ const LoginPage = (): React.ReactElement => {
       if (response?.code === 200) {
         console.log("✅ Connexion réussie :", response.message);
         showAlert("success", translations.messagePageLoginMessageSuccess);
+        router.push("/404");
       } else if (response?.code === 401) {
         console.warn("❌ Identifiants invalides :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);

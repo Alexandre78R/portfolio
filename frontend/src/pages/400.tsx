@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 import { Router, useRouter } from "next/router";
 
-const Custom404 = (): React.ReactElement => {
+const Custom400 = (): React.ReactElement => {
   const { translations } = useLang();
   
   const router = useRouter();
@@ -50,4 +50,4 @@ const Custom404 = (): React.ReactElement => {
   );
 };
 
-export default Custom404;
+export default Custom400;

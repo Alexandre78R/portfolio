@@ -12,7 +12,7 @@ import { setProjects, updateProjectDescriptions } from "@/store/slices/projectsS
 import { setEducations, updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { setExperiences, updateExperiences } from "@/store/slices/experiencesSlice";
 
-// Types Redux (ajustez les chemins)
+// Types Redux
 import type { Skill } from "@/store/slices/skillsSlice";
 import type { Project } from "@/store/slices/projectsSlice";
 import type { EducationType } from "@/store/slices/educationsSlice";
