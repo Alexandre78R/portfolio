@@ -5,16 +5,10 @@ import App from "@/pages/_app";
 import type { AppProps } from "next/app";
 import { Router } from "next/router";
 
-// --------------------------------------------------------------------------
-// Mock token
-// --------------------------------------------------------------------------
 beforeAll(() => {
   process.env.NEXT_PUBLIC_API_TOKEN = "test-token";
 });
 
-// --------------------------------------------------------------------------
-// Mocks Components / Contexts
-// --------------------------------------------------------------------------
 jest.mock("@/components/Loading/LoadingCustom", () => ({
   __esModule: true,
   default: jest.fn(() => <div data-testid="loading">Loading...</div>),
@@ -55,13 +49,10 @@ jest.mock("@/context/UserContext/UserContext", () => ({
   UserProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-// --------------------------------------------------------------------------
-// Mock Apollo Client
-// --------------------------------------------------------------------------
+
 jest.mock("@apollo/client", () => {
   const actual = jest.requireActual("@apollo/client");
   
-  // Classe mock qui implémente correctement ApolloLink
   class MockApolloLink {
     request: any;
     
@@ -70,7 +61,7 @@ jest.mock("@apollo/client", () => {
     }
     
     concat(link: any) {
-      return new MockApolloLink(); // retourne une nouvelle instance
+      return new MockApolloLink();
     }
   }
 
@@ -89,9 +80,7 @@ jest.mock("@apollo/client", () => {
     setContext: jest.fn().mockImplementation(() => new MockApolloLink()),
   };
 });
-// --------------------------------------------------------------------------
-// Mock Router
-// --------------------------------------------------------------------------
+
 const mockRouter: Router = {
   basePath: "",
   pathname: "/",
@@ -116,9 +105,6 @@ const mockRouter: Router = {
   forward: jest.fn(),
 } as unknown as Router;
 
-// --------------------------------------------------------------------------
-// Tests
-// --------------------------------------------------------------------------
 describe("App component", () => {
   const MockComponent: React.FC = () => <div data-testid="page-component">Page</div>;
 
@@ -128,19 +114,15 @@ describe("App component", () => {
     router: mockRouter,
   };
 
-it("should eventually show content after loading", async () => {
-  const { queryByTestId, getByTestId } = render(<App {...appProps} />);
-  
-  // Soit loading est affiché, soit directement le contenu (selon le timing)
-  // On teste juste que le contenu final est bien là
-  await waitFor(() => {
-    expect(getByTestId("navbar")).toBeInTheDocument();
-    expect(getByTestId("page-component")).toBeInTheDocument();
+  it("should eventually show content after loading", async () => {
+    const { queryByTestId, getByTestId } = render(<App {...appProps} />);
+    await waitFor(() => {
+        expect(getByTestId("navbar")).toBeInTheDocument();
+        expect(getByTestId("page-component")).toBeInTheDocument();
+    });
+    
+    expect(queryByTestId("loading")).not.toBeInTheDocument();
   });
-  
-  // Vérifier que loading n'est plus là
-  expect(queryByTestId("loading")).not.toBeInTheDocument();
-});
 
   it("should render Navbar and page component after ApolloClient is set", async () => {
     render(<App {...appProps} />);

@@ -1,56 +1,85 @@
 import React, { useEffect, useState } from "react";
-import "../styles/globals.css";
-import "../styles/output.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "../context/Theme/ThemeContext";
-import { LangProvider } from "@/context/Lang/LangContext";
-import Navbar from "@/components/NavBar/NavBar";
-import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
-import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
-import ReduxProvider from "../store/provider";
-import ToastProvider from "@/components/ToastCustom/ToastProvider";
+import type { NormalizedCacheObject } from "@apollo/client";
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
   HttpLink,
+  ApolloLink,
 } from "@apollo/client";
-import { API_URL } from "@/config";
 import { setContext } from "@apollo/client/link/context";
-import LoadingCustom from "@/components/Loading/LoadingCustom";
+
+import "../styles/globals.css";
+import "../styles/output.css";
+
+import { ThemeProvider } from "@/context/Theme/ThemeContext";
+import { LangProvider } from "@/context/Lang/LangContext";
+import { SectionRefsProvider } from "@/context/SectionRefs/SectionRefsContext";
+import { ChoiceViewProvider } from "@/context/ChoiceView/ChoiceViewContext";
 import { UserProvider } from "@/context/UserContext/UserContext";
 
+import Navbar from "@/components/NavBar/NavBar";
+import LoadingCustom from "@/components/Loading/LoadingCustom";
+import ToastProvider from "@/components/ToastCustom/ToastProvider";
+
+import ReduxProvider from "@/store/provider";
+import { API_URL } from "@/config";
+import type {
+  GraphQLRequest,
+  DefaultContext,
+} from "@apollo/client/core";
+
+/* -------------------------------------------------------------------------- */
+/*                                   Types                                    */
+/* -------------------------------------------------------------------------- */
+
+type ApolloClientState = ApolloClient<NormalizedCacheObject> | null;
+
+/* -------------------------------------------------------------------------- */
+/*                                   App                                      */
+/* -------------------------------------------------------------------------- */
+
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
-  const [client, setClient] = useState<ApolloClient<any> | null>(null);
+  const [client, setClient] = useState<ApolloClientState>(null);
 
-  useEffect(() => {
-    const token = process.env.NEXT_PUBLIC_API_TOKEN;
+  useEffect((): void => {
+    const token: string | undefined = process.env.NEXT_PUBLIC_API_TOKEN;
 
-    if (!token) {
-      console.error(
-        "Le token d'API n'est pas défini. Vérifiez votre fichier .env."
-      );
+    if (!API_URL) {
+      console.error("API_URL is not defined");
+      return;
     }
 
-    const httpLink = new HttpLink({
-      uri: `${API_URL}`,
+    if (!token) {
+      console.error("NEXT_PUBLIC_API_TOKEN is not defined");
+    }
+
+    const httpLink: HttpLink = new HttpLink({
+      uri: API_URL,
       credentials: "include",
     });
 
-    const authLink = setContext((_, { headers }) => {
-      return {
-        headers: {
-          ...headers,
-          "x-api-key": token ? `${token}` : "",
-        },
-      };
-    });
+    const authLink: ApolloLink = setContext(
+      (
+        _operation: GraphQLRequest,
+        previousContext: DefaultContext
+      ): DefaultContext => {
+        const headers: Record<string, string> = {
+          ...(previousContext.headers as Record<string, string> | undefined),
+          "x-api-key": token ?? "",
+        };
 
-    const apolloClient = new ApolloClient({
-      link: authLink.concat(httpLink),
-      cache: new InMemoryCache(),
-      credentials: "include",
-    });
+        return { headers };
+      }
+    );
+
+    const apolloClient: ApolloClient<NormalizedCacheObject> =
+      new ApolloClient({
+        link: authLink.concat(httpLink),
+        cache: new InMemoryCache(),
+        credentials: "include",
+      });
 
     setClient(apolloClient);
   }, []);
