@@ -30,15 +30,7 @@ import type {
   DefaultContext,
 } from "@apollo/client/core";
 
-/* -------------------------------------------------------------------------- */
-/*                                   Types                                    */
-/* -------------------------------------------------------------------------- */
-
-type ApolloClientState = ApolloClient<NormalizedCacheObject> | null;
-
-/* -------------------------------------------------------------------------- */
-/*                                   App                                      */
-/* -------------------------------------------------------------------------- */
+export type ApolloClientState = ApolloClient<NormalizedCacheObject> | null;
 
 const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const [client, setClient] = useState<ApolloClientState>(null);
