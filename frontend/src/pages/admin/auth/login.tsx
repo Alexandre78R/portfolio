@@ -12,7 +12,7 @@ import {
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { Router, useRouter } from "next/router";
 
-type LoginFormState = {
+export type LoginFormState = {
   email: string;
   password: string;
 };
