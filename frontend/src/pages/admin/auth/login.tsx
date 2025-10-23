@@ -1,16 +1,17 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 import ButtonCustom from "@/components/Button/Button";
-import { useLang } from "@/context/Lang/LangContext";
 import InputField from "@/components/InputField/InputField";
-import { useMutation } from "@apollo/client";
+import { useLang } from "@/context/Lang/LangContext";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useMutation, MutationResult, MutationFunction } from "@apollo/client";
 import {
   MutationDocument,
   MutationMutation,
   MutationMutationVariables,
 } from "@/types/graphql";
-import CustomToast from "@/components/ToastCustom/CustomToast";
-import { Router, useRouter } from "next/router";
+import { useRouter, NextRouter } from "next/router";
+import Lang from "@/lang/typeLang";
 
 export type LoginFormState = {
   email: string;
@@ -19,32 +20,33 @@ export type LoginFormState = {
 
 const LoginPage = (): React.ReactElement => {
 
-  const router = useRouter();
-  
-  const { showAlert } = CustomToast();
-  const { translations } = useLang();
+  const router: NextRouter = useRouter();
+
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
+
+  const { translations }: { translations: Lang } = useLang();
 
   const [form, setForm] = useState<LoginFormState>({
     email: "",
     password: "",
   });
 
-  const [login, { data, loading, error }] = useMutation<
-    MutationMutation,
-    MutationMutationVariables
-  >(MutationDocument);
+  const [login, { data, loading, error }]: [
+    MutationFunction<MutationMutation, MutationMutationVariables>,
+    MutationResult<MutationMutation>
+  ] = useMutation<MutationMutation, MutationMutationVariables>(MutationDocument);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value }: { name: string; value: string } = e.target;
+    setForm((prev: LoginFormState): LoginFormState => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
 
     console.log("varible NEXT_PUBLIC_JWT_SECRET -->", process.env.NEXT_PUBLIC_JWT_SECRET);
@@ -75,7 +77,7 @@ const LoginPage = (): React.ReactElement => {
         console.warn("⚠️ Autre erreur :", response?.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Erreur Apollo :", err);
       showAlert("error", "Erreur serveur : veuillez réessayer plus tard.");
     }
