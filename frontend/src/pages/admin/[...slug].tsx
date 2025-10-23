@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
+import React, { useEffect, useMemo, useState, type ReactElement } from 'react';
+import { useRouter, type NextRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import AdminLayout from '@/components/AdminLayout/AdminLayout';
-import { useEffect, useMemo, useState } from 'react';
-import navigation from '@/components/AdminLayout/Navigation';
-import { useUser } from '@/context/UserContext/UserContext';
+import navigation, { type NavItem } from '@/components/AdminLayout/Navigation';
+import { useUser, type UserContextType } from '@/context/UserContext/UserContext';
 import LoadingCustom from '@/components/Loading/LoadingCustom';
 
 const pagesMap: Record<string, () => Promise<any>> = {
@@ -23,69 +23,72 @@ const pagesMap: Record<string, () => Promise<any>> = {
   'backup/list': () => import('@/components/AdminLayout/Pages/BackUp/BackUpList'),
   'cv/view': () => import('@/components/AdminLayout/Pages/CV/CVView'),
   'cv/update': () => import('@/components/AdminLayout/Pages/CV/CVUpdate'),
-}
+};
 
-const AdminPage = (): React.ReactElement | null => {
-  const { query, replace } = useRouter()
-  const slug = query.slug
-  const { user, loading: userLoading } = useUser()
-  const [ready, setReady] = useState(false)
+const AdminPage = (): ReactElement | null => {
+  const { query, replace }: NextRouter = useRouter();
+  const slug: string | string[] | undefined = query.slug;
+  const { user, loading: userLoading }: UserContextType = useUser();
 
-  const role = user?.role || 'view';
+  const [ready, setReady] = useState<boolean>(false);
 
-  const slugPath = useMemo(() => {
-    if (Array.isArray(slug)) return slug.join('/')
-    return slug ?? 'dashboard'
-  }, [slug])
+  const role: string = user?.role ?? 'view';
+
+  const slugPath: string = useMemo<string>(() => {
+    if (Array.isArray(slug)) return slug.join('/');
+    return slug ?? 'dashboard';
+  }, [slug]);
 
   const hasAccess = (key: string, role: string): boolean => {
-    const findInItems = (items: typeof navigation): boolean => {
+    const findInItems = (items: NavItem[]): boolean => {
       for (const item of items) {
         if (item.key === key) {
-          return !item.roles || item.roles.includes(role as any)
+          return !item.roles || item.roles.includes(role as any);
         }
         if (item.children && findInItems(item.children)) {
-          const child = item.children.find(c => c.key === key)
+          const child: NavItem | undefined = item.children.find(c => c.key === key);
           if (child) {
-            return !child.roles || child.roles.includes(role as any)
+            return !child.roles || child.roles.includes(role as any);
           }
         }
       }
-      return false
-    }
-    return findInItems(navigation)
-  }
+      return false;
+    };
+    return findInItems(navigation);
+  };
 
-  useEffect(() => {
+  useEffect((): void => {
     if (!userLoading && user !== undefined) {
-      setReady(true)
+      setReady(true);
     }
-  }, [userLoading, user])
+  }, [userLoading, user]);
 
-  useEffect(() => {
-    if (!ready) return
-    if (!slugPath) return
+  useEffect((): void => {
+    if (!ready) return;
+    if (!slugPath) return;
 
     if (!pagesMap[slugPath] || !hasAccess(slugPath, role)) {
-      replace('/admin/dashboard')
+      replace('/admin/dashboard');
     }
-  }, [slugPath, role, replace, ready])
+  }, [slugPath, role, replace, ready]);
 
   if (!ready) {
     return (
-      <div className="flex items-center justify-center h-screen bg-body">
+      <div className="flex items-center justify-center h-screen bg-body" data-testid="admin-loading">
         <LoadingCustom />
       </div>
-    )
+    );
   }
 
-  const DynamicComponent = dynamic(pagesMap[slugPath] || pagesMap['dashboard'])
+  const DynamicComponent = dynamic(pagesMap[slugPath] || pagesMap['dashboard']);
 
   return (
     <AdminLayout>
       <DynamicComponent />
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default AdminPage
+AdminPage.displayName = 'AdminPage';
+
+export default AdminPage;
