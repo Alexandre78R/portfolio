@@ -1,50 +1,58 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, ReactElement } from "react";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
-type ForgotPasswordFormState = {
+export type ForgotPasswordFormState = {
   email: string;
 };
 
-const ForgotPasswordPage = (): React.ReactElement => {
-  const { translations } = useLang();
+const ForgotPasswordPage = (): ReactElement => {
+  const { translations }: { translations : Lang } = useLang();
 
   const [form, setForm] = useState<ForgotPasswordFormState>({
     email: "",
   });
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = event.target;
+    setForm((prevForm: ForgotPasswordFormState) => ({
+      ...prevForm,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
     console.log("Demande de réinitialisation envoyée !", form);
   };
 
   return (
     <AuthFormLayout title={translations?.messagePageForgotPasswordTitle}>
-      <form className="space-y-4" onSubmit={handleSubmit} data-testid="forgot-password-form">
+      <form
+        className="space-y-4"
+        onSubmit={handleSubmit}
+        data-testid="forgot-password-form"
+        noValidate
+      >
         <InputField
           id="forgot-email"
           name="email"
-          label={translations?.messagePageForgotPasswordEmail}
+          label={translations?.messagePageForgotPasswordEmail ?? ""}
           type="email"
           value={form.email}
           onChange={handleChange}
+          required
         />
         <div className="flex justify-center">
           <ButtonCustom
-            text={translations?.messagePageForgotPasswordButton}
-            onClick={handleSubmit}
+            text={translations?.messagePageForgotPasswordButton ?? ""}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+            }}
           />
         </div>
       </form>
