@@ -32,7 +32,7 @@ const ForgotPasswordPage = (): React.ReactElement => {
 
   return (
     <AuthFormLayout title={translations?.messagePageForgotPasswordTitle}>
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit} data-testid="forgot-password-form">
         <InputField
           id="forgot-email"
           name="email"
