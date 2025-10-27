@@ -66,7 +66,7 @@ const LoginPage = (): React.ReactElement => {
       if (response?.code === 200) {
         console.log("✅ Connexion réussie :", response.message);
         showAlert("success", translations.messagePageLoginMessageSuccess);
-        router.push("/404");
+        router.push("/admin");
       } else if (response?.code === 401) {
         console.warn("❌ Identifiants invalides :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);

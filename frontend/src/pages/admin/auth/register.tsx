@@ -1,18 +1,19 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, ReactElement } from "react";
+import { SelectChangeEvent } from "@mui/material";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomSelect from "@/components/CustomSelect/CustomSelect";
 
-type RegisterFormState = {
+export type RegisterFormState = {
   email: string;
   prenom: string;
   nom: string;
   role: "admin" | "editor" | "view";
 };
 
-const RegisterPage = (): React.ReactElement => {
+const RegisterPage = (): ReactElement => {
   const { translations } = useLang();
 
   const [form, setForm] = useState<RegisterFormState>({
@@ -22,24 +23,23 @@ const RegisterPage = (): React.ReactElement => {
     role: "view",
   });
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
-    setForm((prev) => ({
+    setForm((prev: RegisterFormState) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleRoleChange = (event: any) => {
-    setForm((prev) => ({
+  const handleRoleChange = (e: SelectChangeEvent<string>): void => {
+    const value: RegisterFormState["role"] = e.target.value as RegisterFormState["role"];
+    setForm((prev: RegisterFormState) => ({
       ...prev,
-      role: event.target.value as RegisterFormState["role"],
+      role: value,
     }));
   };
 
-  const handleRegister = (e: FormEvent) => {
+  const handleRegister = (e: FormEvent<HTMLFormElement | HTMLButtonElement>): void => {
     e.preventDefault();
     console.log("Register cliqué !", form);
   };

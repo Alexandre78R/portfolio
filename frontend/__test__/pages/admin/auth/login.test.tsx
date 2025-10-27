@@ -189,7 +189,7 @@ describe("LoginPage Component", (): void => {
         "success",
         translationsMock.messagePageLoginMessageSuccess
       );
-      expect(mockPush).toHaveBeenCalledWith("/404");
+      expect(mockPush).toHaveBeenCalledWith("/admin");
     });
   });
 
