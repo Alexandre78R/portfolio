@@ -1,11 +1,7 @@
 import "reflect-metadata";
 import * as fs from 'fs';
 import * as path from 'path';
-
-interface DeleteBackupResult {
-  code: number;
-  message: string;
-}
+import { Response } from "../../../src/types/response.types";
 
 jest.mock('fs', () => {
   const existsSyncMock: jest.Mock<boolean, [fs.PathLike]> = jest.fn();
@@ -29,7 +25,7 @@ const { __existsSyncMock: existsSyncMock, __unlinkMock: unlinkMock } = fs as unk
 class AdminResolverMock {
   private dataFolderPath: string = path.join(__dirname, '../../../backups');
 
-  async deleteBackupFile(fileName: string): Promise<DeleteBackupResult> {
+  async deleteBackupFile(fileName: string): Promise<Response> {
     if (!fileName || fileName.includes('..') || path.isAbsolute(fileName)) {
       return { code: 400, message: 'Invalid file path' };
     }
@@ -70,7 +66,7 @@ describe('AdminResolver - deleteBackupFile', () => {
     existsSyncMock.mockReturnValue(true);
     unlinkMock.mockResolvedValue();
 
-    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
+    const result: Response = await resolver.deleteBackupFile(fileName);
 
     expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
     expect(unlinkMock).toHaveBeenCalledWith(expect.any(String));
@@ -81,7 +77,7 @@ describe('AdminResolver - deleteBackupFile', () => {
   it('should reject deletion if path traversal detected', async () => {
     const fileName: string = '../evil.sql';
 
-    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
+    const result: Response = await resolver.deleteBackupFile(fileName);
 
     expect(result.code).toBe(400);
     expect(result.message).toMatch(/Invalid file path/);
@@ -93,7 +89,7 @@ describe('AdminResolver - deleteBackupFile', () => {
     const fileName: string = 'missing.sql';
     existsSyncMock.mockReturnValue(false);
 
-    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
+    const result: Response = await resolver.deleteBackupFile(fileName);
 
     expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
     expect(unlinkMock).not.toHaveBeenCalled();
@@ -108,7 +104,7 @@ describe('AdminResolver - deleteBackupFile', () => {
     existsSyncMock.mockReturnValue(true);
     unlinkMock.mockRejectedValue(error);
 
-    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
+    const result: Response = await resolver.deleteBackupFile(fileName);
 
     expect(existsSyncMock).toHaveBeenCalledWith(expect.any(String));
     expect(unlinkMock).toHaveBeenCalledWith(expect.any(String));
@@ -120,7 +116,7 @@ describe('AdminResolver - deleteBackupFile', () => {
   it('should reject deletion if fileName is empty', async () => {
     const fileName: string = '';
 
-    const result: DeleteBackupResult = await resolver.deleteBackupFile(fileName);
+    const result: Response = await resolver.deleteBackupFile(fileName);
 
     expect(result.code).toBe(400);
     expect(result.message).toMatch(/Invalid file path/);

@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { AdminResolver } from "../../../src/resolvers/admin.resolver";
 import { UserRole } from "../../../src/entities/user.entity";
 import { PrismaClient } from "@prisma/client";
-import { GlobalStatsResponse, GlobalStats } from "../../../src/types/response.types";
+import { GlobalStatsResponse } from "../../../src/types/response.types";
 
 interface MockPrismaClient {
   user: {
@@ -76,7 +76,7 @@ describe("AdminResolver.getGlobalStats", (): void => {
    
     mockDb.user.count.mockRejectedValue(new Error("DB error"));
     const result: GlobalStatsResponse = await resolver.getGlobalStats();
-    
+
     expect(result.code).not.toBe(200);
     expect(result.stats).toBeUndefined();
     expect(result.message).toBeDefined();
