@@ -1,16 +1,10 @@
 import "reflect-metadata";
 import { CaptchaResolver } from "../../../src/resolvers/captcha.resolver";
 import { MyContext } from "../../../src";
-import {
-  ValidationResponse,
-  CaptchaResponse,
-} from "../../../src/types/captcha.types";
+import { ValidationResponse, CaptchaResponse, CaptchaImage } from "../../../src/types/captcha.types";
 
 import * as CaptchaMapModule from "../../../src/CaptchaMap";
-import {
-  captchaImageMap,
-  captchaMap,
-} from "../../../src/CaptchaMap";
+import { captchaImageMap, captchaMap } from "../../../src/CaptchaMap";
 
 jest.mock("../../../src/CaptchaMap", () => ({
   ...jest.requireActual("../../../src/CaptchaMap"),
@@ -19,11 +13,7 @@ jest.mock("../../../src/CaptchaMap", () => ({
 
 describe("CaptchaResolver - validateCaptcha", () => {
   let resolver: CaptchaResolver;
-
-  let mockCheckExpiredCaptcha: jest.MockedFunction<
-    typeof CaptchaMapModule.checkExpiredCaptcha
-  >;
-
+  let mockCheckExpiredCaptcha: jest.MockedFunction<typeof CaptchaMapModule.checkExpiredCaptcha>;
   const context: MyContext = {} as MyContext;
 
   const MOCK_CAPTCHA_ID = "test-captcha-123";
@@ -48,25 +38,23 @@ describe("CaptchaResolver - validateCaptcha", () => {
   };
 
   beforeEach(() => {
-    mockCheckExpiredCaptcha = jest.mocked(
-      CaptchaMapModule.checkExpiredCaptcha
-    );
+    mockCheckExpiredCaptcha = jest.mocked(CaptchaMapModule.checkExpiredCaptcha);
     mockCheckExpiredCaptcha.mockClear();
 
-    Object.keys(captchaMap).forEach(key => delete captchaMap[key]);
-    Object.keys(captchaImageMap).forEach(key => delete captchaImageMap[key]);
+    Object.keys(captchaMap).forEach((key: string) => delete captchaMap[key]);
+    Object.keys(captchaImageMap).forEach((key: string) => delete captchaImageMap[key]);
 
     captchaMap[MOCK_CAPTCHA_ID] = { ...MOCK_CAPTCHA_DATA };
 
-    MOCK_CAPTCHA_DATA.images.forEach(image => {
+    MOCK_CAPTCHA_DATA.images.forEach((image: CaptchaImage) => {
       captchaImageMap[image.id] = `mock-src-${image.id}.png`;
     });
 
     resolver = new CaptchaResolver();
   });
 
-  it("should validate captcha correctly and clean maps", async () => {
-    const correctIndices = [0, 2, 4];
+  it("should validate captcha correctly and clear maps", async () => {
+    const correctIndices: number[] = [0, 2, 4];
 
     const result: ValidationResponse = await resolver.validateCaptcha(
       correctIndices,
@@ -80,15 +68,15 @@ describe("CaptchaResolver - validateCaptcha", () => {
     expect(mockCheckExpiredCaptcha).toHaveBeenCalledWith(MOCK_CAPTCHA_ID);
 
     expect(captchaMap[MOCK_CAPTCHA_ID]).toBeUndefined();
-    MOCK_CAPTCHA_DATA.images.forEach(img => {
+    MOCK_CAPTCHA_DATA.images.forEach((img: CaptchaImage) => {
       expect(captchaImageMap[img.id]).toBeUndefined();
     });
   });
 
-  it("should return isValid false for incorrect indices", async () => {
-    const incorrectIndices = [0, 1];
+  it("should return isValid false for incorrect selected indices", async () => {
+    const incorrectIndices: number[] = [0, 1];
 
-    const result = await resolver.validateCaptcha(
+    const result: ValidationResponse = await resolver.validateCaptcha(
       incorrectIndices,
       MOCK_CHALLENGE_TYPE,
       MOCK_CAPTCHA_ID,
@@ -100,10 +88,10 @@ describe("CaptchaResolver - validateCaptcha", () => {
     expect(captchaMap[MOCK_CAPTCHA_ID]).toBeDefined();
   });
 
-  it("should return isValid false if selected count is incorrect", async () => {
-    const partialIndices = [0, 2];
+  it("should return isValid false if the number of selected indices is incorrect", async () => {
+    const partialIndices: number[] = [0, 2];
 
-    const result = await resolver.validateCaptcha(
+    const result: ValidationResponse = await resolver.validateCaptcha(
       partialIndices,
       MOCK_CHALLENGE_TYPE,
       MOCK_CAPTCHA_ID,
@@ -114,7 +102,7 @@ describe("CaptchaResolver - validateCaptcha", () => {
     expect(mockCheckExpiredCaptcha).toHaveBeenCalledTimes(1);
   });
 
-  it("should throw if captcha is expired or missing", async () => {
+  it("should throw an error if captcha is expired or missing", async () => {
     delete captchaMap[MOCK_CAPTCHA_ID];
 
     await expect(
@@ -124,8 +112,8 @@ describe("CaptchaResolver - validateCaptcha", () => {
     expect(mockCheckExpiredCaptcha).toHaveBeenCalledTimes(1);
   });
 
-  it("should throw if images array is undefined", async () => {
-    captchaMap[MOCK_CAPTCHA_ID].images = undefined as unknown as never;
+  it("should throw an error if captcha images array is undefined", async () => {
+    captchaMap[MOCK_CAPTCHA_ID].images = undefined as unknown as CaptchaImage[];
 
     await expect(
       resolver.validateCaptcha([], MOCK_CHALLENGE_TYPE, MOCK_CAPTCHA_ID, context)
@@ -134,8 +122,8 @@ describe("CaptchaResolver - validateCaptcha", () => {
     expect(mockCheckExpiredCaptcha).toHaveBeenCalledTimes(1);
   });
 
-  it("should return isValid false if challenge type is incorrect", async () => {
-    const result = await resolver.validateCaptcha(
+  it("should return isValid false if the challenge type does not match", async () => {
+    const result: ValidationResponse = await resolver.validateCaptcha(
       [0, 2, 4],
       "boat",
       MOCK_CAPTCHA_ID,
