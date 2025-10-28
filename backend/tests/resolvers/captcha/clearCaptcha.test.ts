@@ -18,7 +18,6 @@ interface CaptchaData {
 
 describe("CaptchaResolver - clearCaptcha", () => {
   let resolver: CaptchaResolver;
-
   const context: MyContext = {} as MyContext;
 
   const MOCK_CAPTCHA_ID_EXISTS: string = "test-captcha-to-clear-123";
@@ -43,8 +42,8 @@ describe("CaptchaResolver - clearCaptcha", () => {
     resolver = new CaptchaResolver();
   });
 
-  it("should return true and delete the captcha if it exists in the map", async (): Promise<void> => {
-    captchaMap[MOCK_CAPTCHA_ID_EXISTS] = MOCK_CAPTCHA_DATA;
+  it("should return true and remove the captcha if it exists in the map", async (): Promise<void> => {
+    captchaMap[MOCK_CAPTCHA_ID_EXISTS] = { ...MOCK_CAPTCHA_DATA };
 
     const result: boolean = await resolver.clearCaptcha(
       MOCK_CAPTCHA_ID_EXISTS,
