@@ -6,15 +6,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-// ---------------------------
-// Set JWT_SECRET before imports
-// ---------------------------
+
 const SECRET: string = "mysecret";
 process.env.JWT_SECRET = SECRET;
 
-// ---------------------------
-// Jest Mocks
-// ---------------------------
 jest.mock("next/server", () => ({
   NextResponse: {
     next: jest.fn((): { cookies: { delete: jest.Mock<void, [string]> } } => ({
@@ -30,9 +25,7 @@ jest.mock("jose", () => ({
   jwtVerify: jest.fn(),
 }));
 
-// ---------------------------
-// Import middleware AFTER mocks
-// ---------------------------
+
 let middleware: (request: NextRequest) => Promise<NextResponse>;
 let config: { matcher: string[] };
 
@@ -42,9 +35,7 @@ beforeAll(async () => {
   config = middlewareModule.config;
 });
 
-// ---------------------------
-// Helper Types
-// ---------------------------
+
 interface MockNextUrl {
   pathname: string;
   origin: string;
@@ -55,7 +46,6 @@ interface MockNextUrl {
 interface MockCookies {
   get: jest.Mock<{ name: string; value: string } | undefined, [string]>;
   delete: jest.Mock<void, [string]>;
-  // on peut ajouter les méthodes utilisées si besoin (size, getAll, etc.) plus tard
 }
 
 interface MockNextRequest {
@@ -64,9 +54,6 @@ interface MockNextRequest {
   url: string;
 }
 
-// ---------------------------
-// Helper Function
-// ---------------------------
 const createMockRequest = (url: string, cookieValue?: string): MockNextRequest => {
   const mockUrl = new URL(url);
 
@@ -89,9 +76,6 @@ const createMockRequest = (url: string, cookieValue?: string): MockNextRequest =
   };
 };
 
-// ---------------------------
-// Tests
-// ---------------------------
 describe("Admin Middleware", () => {
   beforeEach(() => {
     jest.clearAllMocks();
