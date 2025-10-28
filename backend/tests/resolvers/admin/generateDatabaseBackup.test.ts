@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import * as child_process from "child_process";
 import * as fs from "fs";
-import path from "path";
 import { AdminResolver } from "../../../src/resolvers/admin.resolver";
 import { BackupResponse } from "../../../src/types/response.types";
 
@@ -13,7 +12,6 @@ jest.mock("child_process", () => ({
 describe("AdminResolver - generateDatabaseBackup", () => {
   let resolver: AdminResolver;
 
-  // Typing exec mock precisely
   const execMock = child_process.exec as unknown as jest.MockedFunction<
     (
       command: string,
@@ -32,11 +30,9 @@ describe("AdminResolver - generateDatabaseBackup", () => {
 
     jest.clearAllMocks();
 
-    // fs mocks
     (fs.existsSync as unknown as jest.Mock<boolean, [fs.PathLike]>).mockReturnValue(true);
     (fs.mkdirSync as unknown as jest.Mock<void, [fs.PathLike, fs.Mode | fs.MakeDirectoryOptions | undefined]>).mockImplementation(() => undefined);
 
-    // exec mock returns success by default
     execMock.mockImplementation(
       (
         _command: string,
