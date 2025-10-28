@@ -33,6 +33,7 @@ describe("AdminResolver - generateDatabaseBackup", () => {
     (fs.existsSync as unknown as jest.Mock<boolean, [fs.PathLike]>).mockReturnValue(true);
     (fs.mkdirSync as unknown as jest.Mock<void, [fs.PathLike, fs.Mode | fs.MakeDirectoryOptions | undefined]>).mockImplementation(() => undefined);
 
+    // exec mock returns success by default
     execMock.mockImplementation(
       (
         _command: string,
