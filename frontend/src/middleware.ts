@@ -6,7 +6,8 @@ import { jwtVerify } from "jose";
 export interface JWTPayloadAdmin extends JWTPayload {
   role?: string;
 }
-
+//A typed array of 8-bit unsigned integer values. 
+// The contents are initialized to 0. If the requested number of bytes could not be allocated an exception is raised.
 const SECRET_KEY: Uint8Array = new TextEncoder().encode(
   process.env.JWT_SECRET ?? ""
 );

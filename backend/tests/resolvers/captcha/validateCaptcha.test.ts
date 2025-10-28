@@ -20,7 +20,6 @@ jest.mock("../../../src/CaptchaMap", () => ({
 describe("CaptchaResolver - validateCaptcha", () => {
   let resolver: CaptchaResolver;
 
-  // ✅ Mock TYPÉ correctement
   let mockCheckExpiredCaptcha: jest.MockedFunction<
     typeof CaptchaMapModule.checkExpiredCaptcha
   >;
