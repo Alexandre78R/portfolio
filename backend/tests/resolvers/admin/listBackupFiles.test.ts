@@ -1,23 +1,23 @@
 import "reflect-metadata";
 import * as fs from "fs";
+import path from "path";
 import { AdminResolver } from "../../../src/resolvers/admin.resolver";
-import { BackupFilesResponse } from "../../../src/types/response.types";
+import { BackupFilesResponse, BackupFileInfo } from "../../../src/types/response.types";
 
 describe("AdminResolver - listBackupFiles", () => {
   let resolver: AdminResolver;
-  let consoleErrorSpy: jest.SpyInstance;
-  let consoleWarnSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]]>;
+  let consoleWarnSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]]>;
 
-  // On force ici le type sur Promise<string[]>
-  const readdirMock = jest.spyOn(
-    fs.promises,
-    "readdir"
-  ) as unknown as jest.Mock<Promise<string[]>, [fs.PathLike | string]>;
+  // Mock fs.promises.readdir
+  const readdirMock: jest.MockedFunction<(path: fs.PathLike) => Promise<string[]>> =
+    jest.spyOn(fs.promises, "readdir") as unknown as jest.MockedFunction<(path: fs.PathLike) => Promise<string[]>>;
 
-  const statMock = jest.spyOn(fs.promises, "stat") as jest.SpyInstance<
-    Promise<fs.Stats>,
-    Parameters<typeof fs.promises.stat>
-  >;
+  // Mock fs.promises.stat
+  const statMock: jest.SpyInstance<
+    Promise<fs.Stats | fs.BigIntStats>,
+    [fs.PathLike, fs.StatOptions?]
+  > = jest.spyOn(fs.promises, "stat");
 
   beforeEach(() => {
     resolver = new AdminResolver();
@@ -25,12 +25,8 @@ describe("AdminResolver - listBackupFiles", () => {
     readdirMock.mockReset();
     statMock.mockReset();
 
-    consoleErrorSpy = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
-    consoleWarnSpy = jest
-      .spyOn(console, "warn")
-      .mockImplementation(() => undefined);
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
+    consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
   });
 
   afterEach(() => {
@@ -38,29 +34,34 @@ describe("AdminResolver - listBackupFiles", () => {
     consoleWarnSpy.mockRestore();
   });
 
-  test("should return empty files if data folder does not exist", async () => {
-    const enoentError = new Error("not found") as NodeJS.ErrnoException;
+  test("should return empty array if backup directory does not exist", async () => {
+    // Simulate ENOENT error
+    const enoentError = new Error("Directory not found") as NodeJS.ErrnoException;
     enoentError.code = "ENOENT";
 
-    readdirMock.mockRejectedValue(enoentError);
+    readdirMock.mockRejectedValueOnce(enoentError);
 
     const result: BackupFilesResponse = await resolver.listBackupFiles();
 
     expect(result.code).toBe(200);
     expect(result.files).toEqual([]);
+    expect(result.message).toMatch(/No backup directory found/);
   });
 
-  test("should list backup files with their stats", async () => {
-    readdirMock.mockResolvedValue(["file1.sql", "file2.sql"]);
+  test("should list backup files with stats", async () => {
+    const fakeFiles: string[] = ["file1.sql", "file2.sql"];
+    readdirMock.mockResolvedValueOnce(fakeFiles);
 
-    statMock.mockResolvedValue({
+    const fakeStats: fs.Stats = {
       size: 1234,
       mtime: new Date("2025-06-10T10:00:00Z"),
       ctime: new Date("2025-06-10T10:00:00Z"),
+      atime: new Date(),
+      birthtime: new Date(),
       isFile: () => true,
+      isDirectory: () => false,
       isBlockDevice: () => false,
       isCharacterDevice: () => false,
-      isDirectory: () => false,
       isFIFO: () => false,
       isSocket: () => false,
       isSymbolicLink: () => false,
@@ -73,58 +74,58 @@ describe("AdminResolver - listBackupFiles", () => {
       rdev: 0,
       blksize: 0,
       blocks: 0,
-      atime: new Date(),
       atimeMs: 0,
       mtimeMs: 0,
       ctimeMs: 0,
-      birthtime: new Date(),
       birthtimeMs: 0,
-    } as fs.Stats);
+    } as fs.Stats;
+
+    statMock.mockResolvedValue(fakeStats);
 
     const result: BackupFilesResponse = await resolver.listBackupFiles();
 
     expect(result.code).toBe(200);
     expect(result.message).toMatch(/Backup files listed successfully/);
-    expect(result.files).toHaveLength(2);
+    expect(result.files).toHaveLength(fakeFiles.length);
     expect(result.files![0].fileName).toBe("file1.sql");
+    expect(result.files![0].sizeBytes).toBe(fakeStats.size);
   });
 
-  test("should continue if stat fails for a file and log warning", async () => {
-    readdirMock.mockResolvedValue(["goodfile.sql", "badfile.sql"]);
+  test("should skip files if stat fails and log a warning", async () => {
+    const files: string[] = ["goodfile.sql", "badfile.sql"];
+    readdirMock.mockResolvedValueOnce(files);
+
+    const goodStats: fs.Stats = {
+      size: 5678,
+      mtime: new Date("2025-06-11T12:00:00Z"),
+      ctime: new Date("2025-06-11T12:00:00Z"),
+      atime: new Date(),
+      birthtime: new Date(),
+      isFile: () => true,
+      isDirectory: () => false,
+      isBlockDevice: () => false,
+      isCharacterDevice: () => false,
+      isFIFO: () => false,
+      isSocket: () => false,
+      isSymbolicLink: () => false,
+      dev: 0,
+      ino: 0,
+      mode: 0,
+      nlink: 0,
+      uid: 0,
+      gid: 0,
+      rdev: 0,
+      blksize: 0,
+      blocks: 0,
+      atimeMs: 0,
+      mtimeMs: 0,
+      ctimeMs: 0,
+      birthtimeMs: 0,
+    } as fs.Stats;
 
     statMock
-      .mockImplementationOnce(async () => {
-        return {
-          size: 5678,
-          mtime: new Date("2025-06-11T12:00:00Z"),
-          ctime: new Date("2025-06-11T12:00:00Z"),
-          isFile: () => true,
-          isBlockDevice: () => false,
-          isCharacterDevice: () => false,
-          isDirectory: () => false,
-          isFIFO: () => false,
-          isSocket: () => false,
-          isSymbolicLink: () => false,
-          dev: 0,
-          ino: 0,
-          mode: 0,
-          nlink: 0,
-          uid: 0,
-          gid: 0,
-          rdev: 0,
-          blksize: 0,
-          blocks: 0,
-          atime: new Date(),
-          atimeMs: 0,
-          mtimeMs: 0,
-          ctimeMs: 0,
-          birthtime: new Date(),
-          birthtimeMs: 0,
-        } as fs.Stats;
-      })
-      .mockImplementationOnce(async () => {
-        throw new Error("stat error");
-      });
+      .mockResolvedValueOnce(goodStats) // goodfile.sql
+      .mockRejectedValueOnce(new Error("stat error")); // badfile.sql
 
     const result: BackupFilesResponse = await resolver.listBackupFiles();
 
@@ -138,13 +139,13 @@ describe("AdminResolver - listBackupFiles", () => {
     );
   });
 
-  test("should return 500 error if readdir throws unexpected error", async () => {
-    readdirMock.mockRejectedValue(new Error("readdir error"));
+  test("should return 500 error for unexpected readdir error", async () => {
+    readdirMock.mockRejectedValueOnce(new Error("Unexpected readdir error"));
 
     const result: BackupFilesResponse = await resolver.listBackupFiles();
 
     expect(result.code).toBe(500);
-    expect(result.message).toMatch(/readdir error/);
+    expect(result.message).toMatch(/Unexpected readdir error/);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error listing backup files:",

@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-// ✅ Mock type-graphql BEFORE any imports
+// Mock type-graphql BEFORE any imports
 jest.mock("type-graphql", (): Record<string, unknown> => ({
   Resolver: (): ClassDecorator => (): void => {},
   Query: (): MethodDecorator => (): void => {},
@@ -19,7 +19,7 @@ jest.mock("type-graphql", (): Record<string, unknown> => ({
   registerEnumType: jest.fn<void, unknown[]>(),
 }));
 
-// ✅ Mock TypeORM BEFORE any imports to prevent native module loading
+// Mock TypeORM BEFORE any imports to prevent native module loading
 jest.mock("typeorm", (): Record<string, unknown> => ({
   Entity: (): ClassDecorator => (): void => {},
   PrimaryGeneratedColumn: (): PropertyDecorator => (): void => {},
@@ -33,7 +33,7 @@ jest.mock("typeorm", (): Record<string, unknown> => ({
   Repository: jest.fn<unknown, unknown[]>(),
 }));
 
-// ✅ Mock fs BEFORE imports
+// Mock fs BEFORE imports
 jest.mock("fs", (): {
   existsSync: jest.Mock<boolean, [fs.PathLike]>;
   promises: { unlink: jest.Mock<Promise<void>, [fs.PathLike]> };
@@ -53,13 +53,13 @@ jest.mock("fs", (): {
   };
 });
 
-// ✅ NOW import modules after mocks are set up
+// NOW import modules after mocks are set up
 import * as fs from "fs";
 import * as path from "path";
 import { AdminResolver } from "../../../src/resolvers/admin.resolver";
 import { Response } from "../../../src/types/response.types";
 
-// ✅ Extract mocks with proper typing
+//  Extract mocks with proper typing
 const { __existsSyncMock: existsSyncMock, __unlinkMock: unlinkMock } = fs as unknown as {
   __existsSyncMock: jest.Mock<boolean, [fs.PathLike]>;
   __unlinkMock: jest.Mock<Promise<void>, [fs.PathLike]>;
@@ -70,7 +70,7 @@ describe("AdminResolver - deleteBackupFile", (): void => {
   let consoleErrorSpy: jest.SpyInstance<void, [message?: unknown, ...optionalParams: unknown[]], unknown>;
 
   beforeEach((): void => {
-    // ✅ Optional injection of db = undefined to avoid loading Prisma/DataSource
+    // Optional injection of db = undefined to avoid loading Prisma/DataSource
     resolver = new AdminResolver(undefined);
 
     jest.clearAllMocks();
