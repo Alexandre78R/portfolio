@@ -1,13 +1,15 @@
 import "reflect-metadata";
+
 import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
 import { ExperiencesResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 
 describe("ExperienceResolver - experienceList", () => {
+  
   let resolver: ExperienceResolver;
 
-  const mockExperiences: PrismaExperience[] = [
+  const EXPERIENCES_LIST: ReadonlyArray<PrismaExperience> = [
     {
       id: 1,
       jobFR: "Développeur Fullstack",
@@ -42,24 +44,29 @@ describe("ExperienceResolver - experienceList", () => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+
     prismaMock.experience.findMany.mockReset();
     resolver = new ExperienceResolver(prismaMock);
   });
 
-  it("should return a list of experiences successfully", async (): Promise<void> => {
-    prismaMock.experience.findMany.mockResolvedValueOnce(mockExperiences);
+  it("should return all experiences when records exist", async (): Promise<void> => {
+ 
+    prismaMock.experience.findMany.mockResolvedValueOnce(
+      [...EXPERIENCES_LIST]
+    );
 
     const result: ExperiencesResponse = await resolver.experienceList();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experiences fetched");
-    expect(result.experiences).toEqual(mockExperiences);
+    expect(result.experiences).toEqual(EXPERIENCES_LIST);
 
     expect(prismaMock.experience.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.experience.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return an empty list if no experiences are found", async (): Promise<void> => {
+  it("should return an empty list when no experiences exist", async (): Promise<void> => {
+
     prismaMock.experience.findMany.mockResolvedValueOnce([]);
 
     const result: ExperiencesResponse = await resolver.experienceList();
@@ -72,9 +79,11 @@ describe("ExperienceResolver - experienceList", () => {
     expect(prismaMock.experience.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return 500 if there is a database error", async (): Promise<void> => {
-    const errorMessage: string = "Database connection error during fetch";
-    prismaMock.experience.findMany.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 when the database throws an error", async (): Promise<void> => {
+
+    prismaMock.experience.findMany.mockRejectedValueOnce(
+      new Error("Database connection error during fetch")
+    );
 
     const result: ExperiencesResponse = await resolver.experienceList();
 
