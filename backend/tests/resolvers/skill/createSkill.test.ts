@@ -34,7 +34,6 @@ describe("SkillResolver - createSkill", () => {
     isPasswordChange: true,
   };
 
-  // ✅ Base context readonly typé strict
   const baseContext: Readonly<MyContext> = {
     req: {} as MyContext["req"],
     res: {} as MyContext["res"],
@@ -60,12 +59,10 @@ describe("SkillResolver - createSkill", () => {
 
     resolver = new SkillResolver(prismaMock);
 
-    // ✅ Création de mocks profonds typés
     cookiesMock = mockDeep<Cookies>();
     reqMock = mockDeep<Request>();
     resMock = mockDeep<Response>();
 
-    // Injection des mocks dans le contexte
     (baseContext as MyContext).cookies = cookiesMock;
     (baseContext as MyContext).req = reqMock;
     (baseContext as MyContext).res = resMock;

@@ -5,12 +5,15 @@ import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { CategoryResponse } from "../../../src/types/response.types";
 import Cookies from "cookies";
-import { mockDeep } from "jest-mock-extended";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
+import { Request, Response } from "express";
+import { PrismaClient, Skill as PrismaSkill, SkillCategory as PrismaSkillCategory } from "@prisma/client";
 
 describe("SkillResolver - deleteCategory", () => {
   let resolver: SkillResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let cookiesMock: DeepMockProxy<Cookies>;
+  let reqMock: DeepMockProxy<Request>;
+  let resMock: DeepMockProxy<Response>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -30,23 +33,21 @@ describe("SkillResolver - deleteCategory", () => {
     isPasswordChange: true,
   };
 
-  const baseContext: MyContext = {
-    // req: {} as Request,
-    // res: {} as Response,
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+  const baseContext: Readonly<MyContext> = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
   };
 
-  const mockCategory = { id: 1, categoryEN: "Test Category EN", categoryFR: "Catégorie FR" };
-  const mockSkills = [
-    { id: 10, name: "Skill 1", categoryId: 1, image: "s1.png" },
-    { id: 11, name: "Skill 2", categoryId: 1, image: "s2.png" },
+  const mockCategory: PrismaSkillCategory = { id: 1, categoryEN: "Test Category EN", categoryFR: "Catégorie FR" };
+  const mockSkills: PrismaSkill[] = [
+    { id: 10, name: "Skill 1", image: "s1.png", categoryId: 1 },
+    { id: 11, name: "Skill 2", image: "s2.png", categoryId: 1 },
   ];
-  const skillIds = mockSkills.map(s => s.id);
+  const skillIds: number[] = mockSkills.map((s) => s.id);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -58,11 +59,19 @@ describe("SkillResolver - deleteCategory", () => {
 
     resolver = new SkillResolver(prismaMock);
 
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
+    cookiesMock = mockDeep<Cookies>();
+    reqMock = mockDeep<Request>();
+    resMock = mockDeep<Response>();
+
+    (baseContext as MyContext).cookies = cookiesMock;
+    (baseContext as MyContext).req = reqMock;
+    (baseContext as MyContext).res = resMock;
+
+    cookiesMock.set.mockClear();
+    cookiesMock.get.mockClear();
   });
 
-  // --- SUCCESS CASES ---
+  
   it("should delete category with skills and projectSkills as admin", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
 
@@ -74,8 +83,8 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Category and related skills deleted");
+    expect(result.code).toBe<number>(200);
+    expect(result.message).toBe<string>("Category and related skills deleted");
     expect(result.categories).toBeUndefined();
   });
 
@@ -89,36 +98,36 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe(200);
+    expect(result.code).toBe<number>(200);
     expect(prismaMock.projectSkill.deleteMany).not.toHaveBeenCalled();
   });
 
-  // --- AUTHORIZATION CASES ---
-  it("returns 401 if no user", async () => {
+  it("should return 401 if user is not authenticated", async () => {
     const ctx: MyContext = { ...baseContext, user: null };
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe(401);
+    expect(result.code).toBe<number>(401);
+    expect(result.categories).toBeUndefined();
   });
 
-  it("returns 403 if user is not admin", async () => {
+  it("should return 403 if user is not admin", async () => {
     const ctx: MyContext = { ...baseContext, user: mockRegularUser };
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe(403);
+    expect(result.code).toBe<number>(403);
+    expect(result.categories).toBeUndefined();
   });
 
-  // --- NOT FOUND CASE ---
-  it("returns 404 if category not found", async () => {
+  it("should return 404 if category not found", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(null);
 
     const result: CategoryResponse = await resolver.deleteCategory(999, ctx);
 
-    expect(result.code).toBe(404);
+    expect(result.code).toBe<number>(404);
+    expect(result.categories).toBeUndefined();
   });
 
-  // --- SERVER ERRORS ---
   it.each([
     ["category lookup", () => prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error("DB error"))],
     ["skill lookup", () => {
@@ -143,13 +152,14 @@ describe("SkillResolver - deleteCategory", () => {
       prismaMock.skill.deleteMany.mockResolvedValueOnce({ count: mockSkills.length });
       prismaMock.skillCategory.delete.mockRejectedValueOnce(new Error("DB error"));
     }],
-  ])("returns 500 on %s error", async (_, setup) => {
+  ])("should return 500 on %s error", async (_, setup) => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     setup();
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Error deleting category");
+    expect(result.code).toBe<number>(500);
+    expect(result.message).toBe<string>("Error deleting category");
+    expect(result.categories).toBeUndefined();
   });
 });
