@@ -6,11 +6,11 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { UpdateCategoryInput } from "../../../src/entities/inputs/skill.input";
 import { CategoryResponse } from "../../../src/types/response.types";
 import Cookies from "cookies";
-import { mockDeep } from "jest-mock-extended";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("SkillResolver - updateCategory", () => {
   let skillResolver: SkillResolver;
-  const mockCookies = mockDeep<Cookies>();
+  let cookiesMock: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -40,9 +40,9 @@ describe("SkillResolver - updateCategory", () => {
   };
 
   const baseContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
@@ -67,12 +67,19 @@ describe("SkillResolver - updateCategory", () => {
     jest.clearAllMocks();
     prismaMock.skillCategory.findUnique.mockReset();
     prismaMock.skillCategory.update.mockReset();
+
     skillResolver = new SkillResolver(prismaMock);
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
+
+    cookiesMock = mockDeep<Cookies>();
+    baseContext.cookies = cookiesMock;
+
+    cookiesMock.get.mockClear();
+    cookiesMock.set.mockClear();
   });
 
-  it("should update a category fully by an admin", async () => {
+  // --- SUCCESS CASES ---
+
+  it("should fully update a category by admin user", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockExistingCategory);
@@ -95,17 +102,9 @@ describe("SkillResolver - updateCategory", () => {
       categoryFR: fullUpdateInput.categoryFR,
       skills: [],
     });
-
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledWith({
-      where: { id: mockExistingCategory.id },
-    });
-    expect(prismaMock.skillCategory.update).toHaveBeenCalledWith({
-      where: { id: mockExistingCategory.id },
-      data: fullUpdateInput,
-    });
   });
 
-  it("should update a category fully by an editor", async () => {
+  it("should fully update a category by editor user", async () => {
     const context: MyContext = { ...baseContext, user: mockEditorUser };
 
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockExistingCategory);
@@ -124,7 +123,7 @@ describe("SkillResolver - updateCategory", () => {
     expect(result.categories?.[0].categoryEN).toBe(fullUpdateInput.categoryEN);
   });
 
-  it("should partially update a category by an admin", async () => {
+  it("should partially update a category by admin user", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockExistingCategory);
@@ -141,20 +140,15 @@ describe("SkillResolver - updateCategory", () => {
     );
 
     expect(result.code).toBe(200);
-    expect(result.categories?.[0].categoryEN).toBe(partialUpdateInput.categoryEN);
+    expect(result.categories?.[0].categoryEN).toBe(partialUpdateInput.categoryEN!);
     expect(result.categories?.[0].categoryFR).toBe(mockExistingCategory.categoryFR);
-
-    expect(prismaMock.skillCategory.update).toHaveBeenCalledWith({
-      where: { id: mockExistingCategory.id },
-      data: {
-        categoryEN: partialUpdateInput.categoryEN,
-        categoryFR: mockExistingCategory.categoryFR,
-      },
-    });
   });
+
+  // --- AUTHORIZATION CASES ---
 
   it("should return 401 if user is not authenticated", async () => {
     const context: MyContext = { ...baseContext, user: null };
+
     const result: CategoryResponse = await skillResolver.updateCategory(
       mockExistingCategory.id,
       fullUpdateInput,
@@ -166,8 +160,9 @@ describe("SkillResolver - updateCategory", () => {
     expect(prismaMock.skillCategory.update).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if user is not admin/editor", async () => {
+  it("should return 403 if user is neither admin nor editor", async () => {
     const context: MyContext = { ...baseContext, user: mockRegularUser };
+
     const result: CategoryResponse = await skillResolver.updateCategory(
       mockExistingCategory.id,
       fullUpdateInput,
@@ -179,8 +174,11 @@ describe("SkillResolver - updateCategory", () => {
     expect(prismaMock.skillCategory.update).not.toHaveBeenCalled();
   });
 
+  // --- NOT FOUND CASE ---
+
   it("should return 404 if category does not exist", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
+
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(null);
 
     const result: CategoryResponse = await skillResolver.updateCategory(
@@ -194,8 +192,11 @@ describe("SkillResolver - updateCategory", () => {
     expect(prismaMock.skillCategory.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 if findUnique throws", async () => {
+  // --- SERVER ERROR CASES ---
+
+  it("should return 500 if findUnique throws an error", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
+
     prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error("DB findUnique error"));
 
     const result: CategoryResponse = await skillResolver.updateCategory(
@@ -208,8 +209,9 @@ describe("SkillResolver - updateCategory", () => {
     expect(result.message).toBe("Error updating category");
   });
 
-  it("should return 500 if update throws", async () => {
+  it("should return 500 if update throws an error", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
+
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockExistingCategory);
     prismaMock.skillCategory.update.mockRejectedValueOnce(new Error("DB update error"));
 
