@@ -8,10 +8,6 @@ import type {
   ProjectSkill as PrismaProjectSkill,
 } from "@prisma/client";
 
-/* -------------------------------------------------------------------------- */
-/*                                 Types                                       */
-/* -------------------------------------------------------------------------- */
-
 type PrismaProjectWithSkills = PrismaProject & {
   skills: Array<PrismaProjectSkill & { skill: PrismaSkill }>;
 };
@@ -31,10 +27,6 @@ type ProjectResolverOutput = {
     categoryId: number;
   }>;
 };
-
-/* -------------------------------------------------------------------------- */
-/*                                Test Suite                                   */
-/* -------------------------------------------------------------------------- */
 
 describe("ProjectResolver - projectById", () => {
   let resolver: ProjectResolver;
@@ -77,19 +69,11 @@ describe("ProjectResolver - projectById", () => {
     })),
   };
 
-  /* -------------------------------------------------------------------------- */
-  /*                                  Setup                                      */
-  /* -------------------------------------------------------------------------- */
-
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.project.findUnique.mockReset();
     resolver = new ProjectResolver(prismaMock);
   });
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   Tests                                     */
-  /* -------------------------------------------------------------------------- */
 
   it("should return a project by ID with its associated skills successfully", async () => {
     prismaMock.project.findUnique.mockResolvedValueOnce(mockProject);
