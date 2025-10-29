@@ -2,12 +2,44 @@ import "reflect-metadata";
 import { ProjectResolver } from "../../../src/resolvers/project.resolver";
 import { prismaMock } from "../../singleton";
 import { ProjectResponse } from "../../../src/types/response.types";
-import { Project as PrismaProject, Skill as PrismaSkill, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
+import type {
+  Project as PrismaProject,
+  Skill as PrismaSkill,
+  ProjectSkill as PrismaProjectSkill,
+} from "@prisma/client";
+
+/* -------------------------------------------------------------------------- */
+/*                                 Types                                       */
+/* -------------------------------------------------------------------------- */
+
+type PrismaProjectWithSkills = PrismaProject & {
+  skills: Array<PrismaProjectSkill & { skill: PrismaSkill }>;
+};
+
+type ProjectResolverOutput = {
+  id: number;
+  title: string;
+  descriptionEN: string;
+  descriptionFR: string;
+  typeDisplay: string;
+  github: string | null;
+  contentDisplay: string;
+  skills: Array<{
+    id: number;
+    name: string;
+    image: string;
+    categoryId: number;
+  }>;
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                Test Suite                                   */
+/* -------------------------------------------------------------------------- */
 
 describe("ProjectResolver - projectById", () => {
   let resolver: ProjectResolver;
 
-  const mockProject: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } = {
+  const mockProject: Readonly<PrismaProjectWithSkills> = {
     id: 1,
     title: "My Awesome Project",
     descriptionEN: "A project to showcase skills.",
@@ -29,7 +61,7 @@ describe("ProjectResolver - projectById", () => {
     ],
   };
 
-  const expectedProjectResponse = {
+  const expectedProject: ProjectResolverOutput = {
     id: mockProject.id,
     title: mockProject.title,
     descriptionEN: mockProject.descriptionEN,
@@ -37,19 +69,27 @@ describe("ProjectResolver - projectById", () => {
     typeDisplay: mockProject.typeDisplay,
     github: mockProject.github,
     contentDisplay: mockProject.contentDisplay,
-    skills: mockProject.skills.map(s => ({
-      id: s.skill.id,
-      name: s.skill.name,
-      image: s.skill.image,
-      categoryId: s.skill.categoryId,
+    skills: mockProject.skills.map(({ skill }) => ({
+      id: skill.id,
+      name: skill.name,
+      image: skill.image,
+      categoryId: skill.categoryId,
     })),
   };
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Setup                                      */
+  /* -------------------------------------------------------------------------- */
 
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.project.findUnique.mockReset();
     resolver = new ProjectResolver(prismaMock);
   });
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Tests                                     */
+  /* -------------------------------------------------------------------------- */
 
   it("should return a project by ID with its associated skills successfully", async () => {
     prismaMock.project.findUnique.mockResolvedValueOnce(mockProject);
@@ -59,7 +99,7 @@ describe("ProjectResolver - projectById", () => {
     expect(result).toEqual({
       code: 200,
       message: "Project found",
-      project: expectedProjectResponse,
+      project: expectedProject,
     });
 
     expect(prismaMock.project.findUnique).toHaveBeenCalledTimes(1);
