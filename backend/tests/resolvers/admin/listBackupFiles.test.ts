@@ -124,8 +124,8 @@ describe("AdminResolver - listBackupFiles", () => {
     } as fs.Stats;
 
     statMock
-      .mockResolvedValueOnce(goodStats) // goodfile.sql
-      .mockRejectedValueOnce(new Error("stat error")); // badfile.sql
+      .mockResolvedValueOnce(goodStats)
+      .mockRejectedValueOnce(new Error("stat error"));
 
     const result: BackupFilesResponse = await resolver.listBackupFiles();
 

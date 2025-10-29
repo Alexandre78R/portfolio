@@ -68,8 +68,8 @@ describe("CaptchaResolver - generateCaptcha", (): void => {
   });
 
   it("should generate a captcha with correct structure and images", async (): Promise<void> => {
-    const mockCaptchaId = "captcha-id-123";
-    const mockImageIds = ["img-id-1","img-id-2","img-id-3","img-id-4","img-id-5","img-id-6"];
+    const mockCaptchaId: string = "captcha-id-123";
+    const mockImageIds: string[] = ["img-id-1","img-id-2","img-id-3","img-id-4","img-id-5","img-id-6"];
 
     mockUuidV4
       .mockReturnValueOnce(mockCaptchaId)
