@@ -6,10 +6,14 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { SubItemResponse } from "../../../src/types/response.types";
 import Cookies from "cookies";
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
+import { Request, Response } from "express";
+import { Skill as PrismaSkill } from "@prisma/client";
 
 describe("SkillResolver - deleteSkill", () => {
-  let skillResolver: SkillResolver;
+  let resolver: SkillResolver;
   let cookiesMock: DeepMockProxy<Cookies>;
+  let reqMock: DeepMockProxy<Request>;
+  let resMock: DeepMockProxy<Response>;
 
   const adminUser: User = {
     id: 1,
@@ -29,18 +33,16 @@ describe("SkillResolver - deleteSkill", () => {
     isPasswordChange: true,
   };
 
-  const baseContext: MyContext = {
-    // req: {} as Request,
-    // res: {} as Response,
-    req: {} as any,
-    res: {} as any,
+  const baseContext: Readonly<MyContext> = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
     cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
   };
 
-  const existingSkillMock = {
+  const existingSkillMock: PrismaSkill = {
     id: 10,
     name: "Existing Skill",
     image: "existing_skill.png",
@@ -51,26 +53,34 @@ describe("SkillResolver - deleteSkill", () => {
     jest.clearAllMocks();
 
     cookiesMock = mockDeep<Cookies>();
-    baseContext.cookies = cookiesMock;
+    reqMock = mockDeep<Request>();
+    resMock = mockDeep<Response>();
+
+    (baseContext as MyContext).cookies = cookiesMock;
+    (baseContext as MyContext).req = reqMock;
+    (baseContext as MyContext).res = resMock;
+
+    resolver = new SkillResolver(prismaMock);
+
+    cookiesMock.set.mockClear();
+    cookiesMock.get.mockClear();
 
     prismaMock.skill.findUnique.mockReset();
     prismaMock.skill.delete.mockReset();
     prismaMock.projectSkill.deleteMany.mockReset();
-
-    skillResolver = new SkillResolver(prismaMock);
   });
 
   it("should delete a skill with associated project skills for admin user", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
 
     prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkillMock);
     prismaMock.projectSkill.deleteMany.mockResolvedValueOnce({ count: 3 });
     prismaMock.skill.delete.mockResolvedValueOnce(existingSkillMock);
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(200);
-    expect(response.message).toBe("Skill and related sub-items deleted");
+    expect(response.code).toBe<number>(200);
+    expect(response.message).toBe<string>("Skill and related sub-items deleted");
     expect(response.subItems).toBeUndefined();
 
     expect(prismaMock.skill.findUnique).toHaveBeenCalledWith({ where: { id: existingSkillMock.id } });
@@ -79,76 +89,76 @@ describe("SkillResolver - deleteSkill", () => {
   });
 
   it("should delete a skill with no associated project skills for admin user", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
 
     prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkillMock);
     prismaMock.projectSkill.deleteMany.mockResolvedValueOnce({ count: 0 });
     prismaMock.skill.delete.mockResolvedValueOnce(existingSkillMock);
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(200);
-    expect(response.message).toBe("Skill and related sub-items deleted");
+    expect(response.code).toBe<number>(200);
+    expect(response.message).toBe<string>("Skill and related sub-items deleted");
   });
 
   it("should return 401 if user is not authenticated", async () => {
-    const context: MyContext = { ...baseContext, user: null };
+    const ctx: MyContext = { ...baseContext, user: null };
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(401);
-    expect(response.message).toBe("Authentication required.");
+    expect(response.code).toBe<number>(401);
+    expect(response.message).toBe<string>("Authentication required.");
   });
 
   it("should return 403 if user is not admin", async () => {
-    const context: MyContext = { ...baseContext, user: regularUser };
+    const ctx: MyContext = { ...baseContext, user: regularUser };
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(403);
-    expect(response.message).toBe("Access denied. Admin role required.");
+    expect(response.code).toBe<number>(403);
+    expect(response.message).toBe<string>("Access denied. Admin role required.");
   });
 
   it("should return 404 if skill does not exist", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
     prismaMock.skill.findUnique.mockResolvedValueOnce(null);
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(999, context);
+    const response: SubItemResponse = await resolver.deleteSkill(999, ctx);
 
-    expect(response.code).toBe(404);
-    expect(response.message).toBe("Skill not found");
+    expect(response.code).toBe<number>(404);
+    expect(response.message).toBe<string>("Skill not found");
   });
 
   it("should return 500 for error during skill lookup", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
     prismaMock.skill.findUnique.mockRejectedValueOnce(new Error("DB lookup error"));
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(500);
-    expect(response.message).toBe("Error deleting skill");
+    expect(response.code).toBe<number>(500);
+    expect(response.message).toBe<string>("Error deleting skill");
   });
 
   it("should return 500 for error during project skill deletion", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
     prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkillMock);
     prismaMock.projectSkill.deleteMany.mockRejectedValueOnce(new Error("DB projectSkill delete error"));
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(500);
-    expect(response.message).toBe("Error deleting skill");
+    expect(response.code).toBe<number>(500);
+    expect(response.message).toBe<string>("Error deleting skill");
   });
 
   it("should return 500 for error during skill deletion", async () => {
-    const context: MyContext = { ...baseContext, user: adminUser };
+    const ctx: MyContext = { ...baseContext, user: adminUser };
     prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkillMock);
     prismaMock.projectSkill.deleteMany.mockResolvedValueOnce({ count: 1 });
     prismaMock.skill.delete.mockRejectedValueOnce(new Error("DB skill delete error"));
 
-    const response: SubItemResponse = await skillResolver.deleteSkill(existingSkillMock.id, context);
+    const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe(500);
-    expect(response.message).toBe("Error deleting skill");
+    expect(response.code).toBe<number>(500);
+    expect(response.message).toBe<string>("Error deleting skill");
   });
 });
