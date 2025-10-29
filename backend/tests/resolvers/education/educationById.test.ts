@@ -32,6 +32,7 @@ describe("EducationResolver - educationById", () => {
   });
 
   it("should return an education record by ID successfully", async (): Promise<void> => {
+
     prismaMock.education.findUnique.mockResolvedValueOnce(mockEducation);
 
     const result: EducationResponse = await resolver.educationById(mockEducation.id);
@@ -41,7 +42,9 @@ describe("EducationResolver - educationById", () => {
     expect(result.education).toEqual(mockEducation);
 
     expect(prismaMock.education.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: mockEducation.id } });
+    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({
+      where: { id: mockEducation.id },
+    });
   });
 
   it("should return 404 if the education record is not found", async (): Promise<void> => {
@@ -54,12 +57,15 @@ describe("EducationResolver - educationById", () => {
     expect(result.education).toBeUndefined();
 
     expect(prismaMock.education.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: 999 } });
+    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({
+      where: { id: 999 },
+    });
   });
 
   it("should return 500 for an internal server error", async (): Promise<void> => {
-    const errorMessage: string = "Database query failed";
-    prismaMock.education.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.education.findUnique.mockRejectedValueOnce(
+      new Error("Database query failed")
+    );
 
     const result: EducationResponse = await resolver.educationById(mockEducation.id);
 
@@ -68,6 +74,8 @@ describe("EducationResolver - educationById", () => {
     expect(result.education).toBeUndefined();
 
     expect(prismaMock.education.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: mockEducation.id } });
+    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({
+      where: { id: mockEducation.id },
+    });
   });
 });
