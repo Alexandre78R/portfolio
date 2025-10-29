@@ -135,7 +135,7 @@ describe("EducationResolver - createEducation", () => {
   });
 
   it("should return 500 if a database error occurs during education creation", async (): Promise<void> => {
-    
+
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const dbErrorMessage: string = "Database error during education creation";
     prismaMock.education.create.mockRejectedValueOnce(new Error(dbErrorMessage));

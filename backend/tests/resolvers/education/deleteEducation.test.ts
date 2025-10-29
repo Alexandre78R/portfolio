@@ -72,7 +72,6 @@ describe("EducationResolver - deleteEducation", () => {
 
   it("should successfully delete an education record by an admin user", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
     prismaMock.education.findUnique.mockResolvedValueOnce(mockExistingEducation);
     prismaMock.education.delete.mockResolvedValueOnce(mockExistingEducation);
 
@@ -129,7 +128,6 @@ describe("EducationResolver - deleteEducation", () => {
 
   it("should return 404 if the education record to delete is not found", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
     prismaMock.education.findUnique.mockResolvedValueOnce(null);
 
     const result: EducationResponse = await resolver.deleteEducation(999, adminContext);
@@ -145,9 +143,7 @@ describe("EducationResolver - deleteEducation", () => {
 
   it("should return 500 for a database error during finding the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage: string = "DB error during findUnique";
-
-    prismaMock.education.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.education.findUnique.mockRejectedValueOnce(new Error("DB error during findUnique"));
 
     const result: EducationResponse = await resolver.deleteEducation(
       mockExistingEducation.id,
@@ -164,10 +160,9 @@ describe("EducationResolver - deleteEducation", () => {
 
   it("should return 500 for a database error during deleting the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage: string = "DB error during delete";
 
     prismaMock.education.findUnique.mockResolvedValueOnce(mockExistingEducation);
-    prismaMock.education.delete.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.education.delete.mockRejectedValueOnce(new Error("DB error during delete"));
 
     const result: EducationResponse = await resolver.deleteEducation(
       mockExistingEducation.id,
