@@ -1,13 +1,15 @@
 import "reflect-metadata";
+
 import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
 import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 
 describe("ExperienceResolver - experienceById", () => {
+  
   let resolver: ExperienceResolver;
 
-  const mockExperience: PrismaExperience = {
+  const EXISTING_EXPERIENCE: Readonly<PrismaExperience> = {
     id: 1,
     jobFR: "Développeur Senior",
     jobEN: "Senior Developer",
@@ -25,48 +27,65 @@ describe("ExperienceResolver - experienceById", () => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+
     prismaMock.experience.findUnique.mockReset();
     resolver = new ExperienceResolver(prismaMock);
   });
 
-  it("should return an experience record by ID successfully", async (): Promise<void> => {
-    prismaMock.experience.findUnique.mockResolvedValueOnce(mockExperience);
+  it("should return an experience when the ID exists", async (): Promise<void> => {
 
-    const result: ExperienceResponse = await resolver.experienceById(mockExperience.id);
+    prismaMock.experience.findUnique.mockResolvedValueOnce(EXISTING_EXPERIENCE);
+
+    const result: ExperienceResponse = await resolver.experienceById(
+      EXISTING_EXPERIENCE.id
+    );
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experience fetched");
-    expect(result.experience).toEqual(mockExperience);
+    expect(result.experience).toEqual(EXISTING_EXPERIENCE);
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: mockExperience.id } });
+    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({
+      where: { id: EXISTING_EXPERIENCE.id },
+    });
   });
 
-  it("should return 404 if the experience record is not found", async (): Promise<void> => {
+  it("should return 404 when the experience does not exist", async (): Promise<void> => {
+
+    const NON_EXISTENT_ID: number = 999;
     prismaMock.experience.findUnique.mockResolvedValueOnce(null);
 
-    const nonExistentId: number = 999;
-    const result: ExperienceResponse = await resolver.experienceById(nonExistentId);
+    const result: ExperienceResponse = await resolver.experienceById(
+      NON_EXISTENT_ID
+    );
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Experience not found");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: nonExistentId } });
+    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({
+      where: { id: NON_EXISTENT_ID },
+    });
   });
 
-  it("should return 500 for an internal server error", async (): Promise<void> => {
-    const errorMessage: string = "Database query failed unexpectedly";
-    prismaMock.experience.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 when the database throws an error", async (): Promise<void> => {
 
-    const result: ExperienceResponse = await resolver.experienceById(mockExperience.id);
+    prismaMock.experience.findUnique.mockRejectedValueOnce(
+      new Error("Database query failed unexpectedly")
+    );
+
+    const result: ExperienceResponse = await resolver.experienceById(
+      EXISTING_EXPERIENCE.id
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching experience");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: mockExperience.id } });
+    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({
+      where: { id: EXISTING_EXPERIENCE.id },
+    });
   });
 });
