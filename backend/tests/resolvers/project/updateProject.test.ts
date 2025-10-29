@@ -24,6 +24,7 @@ type ProjectWithSkillsAndSkill = PrismaProject & {
 describe("ProjectResolver - updateProject", () => {
 
   let resolver: ProjectResolver;
+  let mockCookies: DeepMockProxy<Cookies>;
 
   const adminUser: User = {
     id: 1,
