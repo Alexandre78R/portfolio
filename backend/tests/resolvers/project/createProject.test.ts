@@ -16,10 +16,6 @@ import type {
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 import Cookies from "cookies";
 
-/* -------------------------------------------------------------------------- */
-/*                                Test DTOs                                   */
-/* -------------------------------------------------------------------------- */
-
 type ProjectResolverOutput = {
   id: number;
   title: string;
@@ -45,7 +41,7 @@ type PrismaProjectWithSkills = PrismaProject & {
 };
 
 describe("ProjectResolver - createProject", () => {
-  
+
   let resolver: ProjectResolver;
   let cookiesMock: DeepMockProxy<Cookies>;
 

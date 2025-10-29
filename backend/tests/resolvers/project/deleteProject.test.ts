@@ -4,16 +4,15 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { Response } from "../../../src/types/response.types";
-import { Project as PrismaProject, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
-import { mockDeep } from "jest-mock-extended";
+import type { Project as PrismaProject, ProjectSkill as PrismaProjectSkill } from "@prisma/client";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 import Cookies from "cookies";
 
 describe("ProjectResolver - deleteProject", () => {
   let resolver: ProjectResolver;
+  let cookiesMock: DeepMockProxy<Cookies>;
 
-  const mockCookies = mockDeep<Cookies>();
-
-  const mockAdminUser: User = {
+  const adminUser: Readonly<User> = {
     id: 1,
     firstname: "Admin",
     lastname: "User",
@@ -22,7 +21,7 @@ describe("ProjectResolver - deleteProject", () => {
     isPasswordChange: true,
   };
 
-  const mockRegularUser: User = {
+  const regularUser: Readonly<User> = {
     id: 2,
     firstname: "Regular",
     lastname: "User",
@@ -31,16 +30,16 @@ describe("ProjectResolver - deleteProject", () => {
     isPasswordChange: true,
   };
 
-  const baseMockContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+  const baseContext: Readonly<MyContext> = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
   };
 
-  const mockExistingProject: PrismaProject = {
+  const existingProject: Readonly<PrismaProject> = {
     id: 100,
     title: "Project to Delete",
     descriptionEN: "Desc EN",
@@ -52,43 +51,32 @@ describe("ProjectResolver - deleteProject", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    cookiesMock = mockDeep<Cookies>();
+    resolver = new ProjectResolver(prismaMock);
+
     prismaMock.project.findUnique.mockReset();
     prismaMock.projectSkill.deleteMany.mockReset();
     prismaMock.project.delete.mockReset();
-    resolver = new ProjectResolver(prismaMock);
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
   });
 
-  it("should successfully delete a project and its associated skills by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should delete a project and its skills successfully by an admin", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser, cookies: cookiesMock };
 
-    prismaMock.project.findUnique.mockResolvedValueOnce(mockExistingProject);
+    prismaMock.project.findUnique.mockResolvedValueOnce(existingProject);
     prismaMock.projectSkill.deleteMany.mockResolvedValueOnce({ count: 3 });
-    prismaMock.project.delete.mockResolvedValueOnce(mockExistingProject);
+    prismaMock.project.delete.mockResolvedValueOnce(existingProject);
 
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, adminContext);
+    const result: Response = await resolver.deleteProject(existingProject.id, context);
 
-    expect(result).toEqual({
-      code: 200,
-      message: "Project deleted successfully",
-    });
+    expect(result).toEqual({ code: 200, message: "Project deleted successfully" });
 
-    expect(prismaMock.project.findUnique).toHaveBeenCalledWith({
-      where: { id: mockExistingProject.id },
-    });
-    expect(prismaMock.projectSkill.deleteMany).toHaveBeenCalledWith({
-      where: { projectId: mockExistingProject.id },
-    });
-    expect(prismaMock.project.delete).toHaveBeenCalledWith({
-      where: { id: mockExistingProject.id },
-    });
+    expect(prismaMock.project.findUnique).toHaveBeenCalledWith({ where: { id: existingProject.id } });
+    expect(prismaMock.projectSkill.deleteMany).toHaveBeenCalledWith({ where: { projectId: existingProject.id } });
+    expect(prismaMock.project.delete).toHaveBeenCalledWith({ where: { id: existingProject.id } });
   });
 
   it("should return 401 if no user is authenticated", async () => {
-    const context: MyContext = { ...baseMockContext, user: null };
-
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, context);
+    const result: Response = await resolver.deleteProject(existingProject.id, baseContext);
 
     expect(result).toEqual({ code: 401, message: "Authentication required." });
 
@@ -98,9 +86,8 @@ describe("ProjectResolver - deleteProject", () => {
   });
 
   it("should return 403 if authenticated user is not an admin", async () => {
-    const context: MyContext = { ...baseMockContext, user: mockRegularUser };
-
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, context);
+    const context: MyContext = { ...baseContext, user: regularUser, cookies: cookiesMock };
+    const result: Response = await resolver.deleteProject(existingProject.id, context);
 
     expect(result).toEqual({ code: 403, message: "Access denied. Admin role required." });
 
@@ -109,8 +96,8 @@ describe("ProjectResolver - deleteProject", () => {
     expect(prismaMock.project.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the project to delete is not found", async () => {
-    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should return 404 if the project to delete does not exist", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser, cookies: cookiesMock };
     prismaMock.project.findUnique.mockResolvedValueOnce(null);
 
     const result: Response = await resolver.deleteProject(999, context);
@@ -122,11 +109,11 @@ describe("ProjectResolver - deleteProject", () => {
     expect(prismaMock.project.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during project lookup", async () => {
-    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should return 500 if database error occurs during project lookup", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser, cookies: cookiesMock };
     prismaMock.project.findUnique.mockRejectedValueOnce(new Error("DB error during findUnique"));
 
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, context);
+    const result: Response = await resolver.deleteProject(existingProject.id, context);
 
     expect(result).toEqual({ code: 500, message: "Internal server error" });
 
@@ -134,12 +121,12 @@ describe("ProjectResolver - deleteProject", () => {
     expect(prismaMock.project.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during projectSkill deletion", async () => {
-    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
-    prismaMock.project.findUnique.mockResolvedValueOnce(mockExistingProject);
+  it("should return 500 if database error occurs during projectSkill deletion", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser, cookies: cookiesMock };
+    prismaMock.project.findUnique.mockResolvedValueOnce(existingProject);
     prismaMock.projectSkill.deleteMany.mockRejectedValueOnce(new Error("DB error during projectSkill deleteMany"));
 
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, context);
+    const result: Response = await resolver.deleteProject(existingProject.id, context);
 
     expect(result).toEqual({ code: 500, message: "Internal server error" });
 
@@ -148,13 +135,13 @@ describe("ProjectResolver - deleteProject", () => {
     expect(prismaMock.project.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during project deletion", async () => {
-    const context: MyContext = { ...baseMockContext, user: mockAdminUser };
-    prismaMock.project.findUnique.mockResolvedValueOnce(mockExistingProject);
+  it("should return 500 if database error occurs during project deletion", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser, cookies: cookiesMock };
+    prismaMock.project.findUnique.mockResolvedValueOnce(existingProject);
     prismaMock.projectSkill.deleteMany.mockResolvedValueOnce({ count: 1 });
     prismaMock.project.delete.mockRejectedValueOnce(new Error("DB error during project delete"));
 
-    const result: Response = await resolver.deleteProject(mockExistingProject.id, context);
+    const result: Response = await resolver.deleteProject(existingProject.id, context);
 
     expect(result).toEqual({ code: 500, message: "Internal server error" });
 
