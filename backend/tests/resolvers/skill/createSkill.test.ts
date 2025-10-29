@@ -6,12 +6,15 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateSkillInput } from "../../../src/entities/inputs/skill.input";
 import { SubItemResponse } from "../../../src/types/response.types";
 import Cookies from "cookies";
-import { mockDeep } from "jest-mock-extended";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
+import { Request, Response } from "express";
+import { PrismaClient, Skill as PrismaSkill, SkillCategory as PrismaSkillCategory } from "@prisma/client";
 
 describe("SkillResolver - createSkill", () => {
   let resolver: SkillResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let cookiesMock: DeepMockProxy<Cookies>;
+  let reqMock: DeepMockProxy<Request>;
+  let resMock: DeepMockProxy<Response>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -31,12 +34,11 @@ describe("SkillResolver - createSkill", () => {
     isPasswordChange: true,
   };
 
-  const baseContext: MyContext = {
-    // req: {} as Request,
-    // res: {} as Response,
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+  // ✅ Base context readonly typé strict
+  const baseContext: Readonly<MyContext> = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
@@ -48,17 +50,31 @@ describe("SkillResolver - createSkill", () => {
     categoryId: 1,
   };
 
-  const mockCategory = { id: 1, categoryEN: "Programming", categoryFR: "Programmation" };
-  const mockCreatedSkill = { id: 100, name: "New Skill", image: "new_skill.png", categoryId: 1 };
+  const mockCategory: PrismaSkillCategory = { id: 1, categoryEN: "Programming", categoryFR: "Programmation" };
+  const mockCreatedSkill: PrismaSkill = { id: 100, name: "New Skill", image: "new_skill.png", categoryId: 1 };
 
   beforeEach(() => {
     jest.clearAllMocks();
     prismaMock.skillCategory.findUnique.mockReset();
     prismaMock.skill.create.mockReset();
+
     resolver = new SkillResolver(prismaMock);
+
+    // ✅ Création de mocks profonds typés
+    cookiesMock = mockDeep<Cookies>();
+    reqMock = mockDeep<Request>();
+    resMock = mockDeep<Response>();
+
+    // Injection des mocks dans le contexte
+    (baseContext as MyContext).cookies = cookiesMock;
+    (baseContext as MyContext).req = reqMock;
+    (baseContext as MyContext).res = resMock;
+
+    cookiesMock.set.mockClear();
+    cookiesMock.get.mockClear();
   });
 
-  it("should create skill as admin", async () => {
+  it("should create a skill successfully for admin user", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
 
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
@@ -66,53 +82,60 @@ describe("SkillResolver - createSkill", () => {
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Skill created successfully");
+    expect(result.code).toBe<number>(200);
+    expect(result.message).toBe<string>("Skill created successfully");
+    expect(result.subItems).toBeDefined();
+    expect(result.subItems?.length).toBe<number>(1);
     expect(result.subItems?.[0]).toEqual(mockCreatedSkill);
   });
 
-  it("returns 401 if no user", async () => {
+  it("should return 401 if user is not authenticated", async () => {
     const ctx: MyContext = { ...baseContext, user: null };
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(401);
+    expect(result.code).toBe<number>(401);
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("returns 403 if user not admin", async () => {
+  it("should return 403 if user is not admin", async () => {
     const ctx: MyContext = { ...baseContext, user: mockRegularUser };
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(403);
+    expect(result.code).toBe<number>(403);
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("returns 400 if category not found", async () => {
+  it("should return 400 if category is not found", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(null);
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(400);
-    expect(result.message).toBe("Category not found");
+    expect(result.code).toBe<number>(400);
+    expect(result.message).toBe<string>("Category not found");
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("returns 500 if DB error during category lookup", async () => {
+  it("should return 500 if DB error occurs during category lookup", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error("DB error"));
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Failed to create skill");
+    expect(result.code).toBe<number>(500);
+    expect(result.message).toBe<string>("Failed to create skill");
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("returns 500 if DB error during skill creation", async () => {
+  it("should return 500 if DB error occurs during skill creation", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
     prismaMock.skill.create.mockRejectedValueOnce(new Error("DB error"));
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Failed to create skill");
+    expect(result.code).toBe<number>(500);
+    expect(result.message).toBe<string>("Failed to create skill");
+    expect(result.subItems).toBeUndefined();
   });
 });
