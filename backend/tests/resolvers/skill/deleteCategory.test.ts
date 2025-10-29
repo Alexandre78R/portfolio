@@ -71,7 +71,7 @@ describe("SkillResolver - deleteCategory", () => {
     cookiesMock.get.mockClear();
   });
 
-  
+
   it("should delete category with skills and projectSkills as admin", async () => {
     const ctx: MyContext = { ...baseContext, user: mockAdminUser };
 
@@ -83,8 +83,8 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe<number>(200);
-    expect(result.message).toBe<string>("Category and related skills deleted");
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Category and related skills deleted");
     expect(result.categories).toBeUndefined();
   });
 
@@ -98,7 +98,7 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe<number>(200);
+    expect(result.code).toBe(200);
     expect(prismaMock.projectSkill.deleteMany).not.toHaveBeenCalled();
   });
 
@@ -106,7 +106,7 @@ describe("SkillResolver - deleteCategory", () => {
     const ctx: MyContext = { ...baseContext, user: null };
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe<number>(401);
+    expect(result.code).toBe(401);
     expect(result.categories).toBeUndefined();
   });
 
@@ -114,7 +114,7 @@ describe("SkillResolver - deleteCategory", () => {
     const ctx: MyContext = { ...baseContext, user: mockRegularUser };
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe<number>(403);
+    expect(result.code).toBe(403);
     expect(result.categories).toBeUndefined();
   });
 
@@ -124,7 +124,7 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(999, ctx);
 
-    expect(result.code).toBe<number>(404);
+    expect(result.code).toBe(404);
     expect(result.categories).toBeUndefined();
   });
 
@@ -158,8 +158,8 @@ describe("SkillResolver - deleteCategory", () => {
 
     const result: CategoryResponse = await resolver.deleteCategory(mockCategory.id, ctx);
 
-    expect(result.code).toBe<number>(500);
-    expect(result.message).toBe<string>("Error deleting category");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Error deleting category");
     expect(result.categories).toBeUndefined();
   });
 });

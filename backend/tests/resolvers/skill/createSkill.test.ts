@@ -79,8 +79,8 @@ describe("SkillResolver - createSkill", () => {
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe<number>(200);
-    expect(result.message).toBe<string>("Skill created successfully");
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Skill created successfully");
     expect(result.subItems).toBeDefined();
     expect(result.subItems?.length).toBe<number>(1);
     expect(result.subItems?.[0]).toEqual(mockCreatedSkill);
@@ -98,7 +98,7 @@ describe("SkillResolver - createSkill", () => {
     const ctx: MyContext = { ...baseContext, user: mockRegularUser };
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe<number>(403);
+    expect(result.code).toBe(403);
     expect(result.subItems).toBeUndefined();
   });
 
@@ -108,8 +108,8 @@ describe("SkillResolver - createSkill", () => {
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe<number>(400);
-    expect(result.message).toBe<string>("Category not found");
+    expect(result.code).toBe(400);
+    expect(result.message).toBe("Category not found");
     expect(result.subItems).toBeUndefined();
   });
 
@@ -119,8 +119,8 @@ describe("SkillResolver - createSkill", () => {
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe<number>(500);
-    expect(result.message).toBe<string>("Failed to create skill");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Failed to create skill");
     expect(result.subItems).toBeUndefined();
   });
 
@@ -131,8 +131,8 @@ describe("SkillResolver - createSkill", () => {
 
     const result: SubItemResponse = await resolver.createSkill(createSkillInput, ctx);
 
-    expect(result.code).toBe<number>(500);
-    expect(result.message).toBe<string>("Failed to create skill");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Failed to create skill");
     expect(result.subItems).toBeUndefined();
   });
 });

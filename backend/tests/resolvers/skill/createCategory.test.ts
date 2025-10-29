@@ -82,8 +82,8 @@ describe("SkillResolver - createCategory", () => {
       adminContext
     );
 
-    expect(result.code).toBe<number>(200);
-    expect(result.message).toBe<string>("Category created successfully");
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Category created successfully");
     expect(result.categories).toBeDefined();
     expect(result.categories?.length).toBe<number>(1);
 
@@ -112,8 +112,8 @@ describe("SkillResolver - createCategory", () => {
       context
     );
 
-    expect(result.code).toBe<number>(401);
-    expect(result.message).toBe<string>("Authentication required.");
+    expect(result.code).toBe(401);
+    expect(result.message).toBe("Authentication required.");
     expect(result.categories).toBeUndefined();
     expect(prismaMock.skillCategory.create).not.toHaveBeenCalled();
   });
@@ -126,8 +126,8 @@ describe("SkillResolver - createCategory", () => {
       context
     );
 
-    expect(result.code).toBe<number>(403);
-    expect(result.message).toBe<string>("Access denied. Admin role required.");
+    expect(result.code).toBe(403);
+    expect(result.message).toBe("Access denied. Admin role required.");
     expect(result.categories).toBeUndefined();
     expect(prismaMock.skillCategory.create).not.toHaveBeenCalled();
   });
@@ -142,8 +142,8 @@ describe("SkillResolver - createCategory", () => {
       adminContext
     );
 
-    expect(result.code).toBe<number>(500);
-    expect(result.message).toBe<string>("Failed to create category");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Failed to create category");
 
     expect(prismaMock.skillCategory.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.create).toHaveBeenCalledWith({

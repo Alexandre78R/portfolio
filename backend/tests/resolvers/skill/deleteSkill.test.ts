@@ -79,8 +79,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(200);
-    expect(response.message).toBe<string>("Skill and related sub-items deleted");
+    expect(response.code).toBe(200);
+    expect(response.message).toBe("Skill and related sub-items deleted");
     expect(response.subItems).toBeUndefined();
 
     expect(prismaMock.skill.findUnique).toHaveBeenCalledWith({ where: { id: existingSkillMock.id } });
@@ -97,8 +97,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(200);
-    expect(response.message).toBe<string>("Skill and related sub-items deleted");
+    expect(response.code).toBe(200);
+    expect(response.message).toBe("Skill and related sub-items deleted");
   });
 
   it("should return 401 if user is not authenticated", async () => {
@@ -106,8 +106,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(401);
-    expect(response.message).toBe<string>("Authentication required.");
+    expect(response.code).toBe(401);
+    expect(response.message).toBe("Authentication required.");
   });
 
   it("should return 403 if user is not admin", async () => {
@@ -115,8 +115,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(403);
-    expect(response.message).toBe<string>("Access denied. Admin role required.");
+    expect(response.code).toBe(403);
+    expect(response.message).toBe("Access denied. Admin role required.");
   });
 
   it("should return 404 if skill does not exist", async () => {
@@ -125,8 +125,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(999, ctx);
 
-    expect(response.code).toBe<number>(404);
-    expect(response.message).toBe<string>("Skill not found");
+    expect(response.code).toBe(404);
+    expect(response.message).toBe("Skill not found");
   });
 
   it("should return 500 for error during skill lookup", async () => {
@@ -135,8 +135,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(500);
-    expect(response.message).toBe<string>("Error deleting skill");
+    expect(response.code).toBe(500);
+    expect(response.message).toBe("Error deleting skill");
   });
 
   it("should return 500 for error during project skill deletion", async () => {
@@ -146,8 +146,8 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(500);
-    expect(response.message).toBe<string>("Error deleting skill");
+    expect(response.code).toBe(500);
+    expect(response.message).toBe("Error deleting skill");
   });
 
   it("should return 500 for error during skill deletion", async () => {
@@ -158,7 +158,7 @@ describe("SkillResolver - deleteSkill", () => {
 
     const response: SubItemResponse = await resolver.deleteSkill(existingSkillMock.id, ctx);
 
-    expect(response.code).toBe<number>(500);
-    expect(response.message).toBe<string>("Error deleting skill");
+    expect(response.code).toBe(500);
+    expect(response.message).toBe("Error deleting skill");
   });
 });
