@@ -77,8 +77,6 @@ describe("SkillResolver - updateCategory", () => {
     cookiesMock.set.mockClear();
   });
 
-  // --- SUCCESS CASES ---
-
   it("should fully update a category by admin user", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
@@ -144,8 +142,6 @@ describe("SkillResolver - updateCategory", () => {
     expect(result.categories?.[0].categoryFR).toBe(mockExistingCategory.categoryFR);
   });
 
-  // --- AUTHORIZATION CASES ---
-
   it("should return 401 if user is not authenticated", async () => {
     const context: MyContext = { ...baseContext, user: null };
 
@@ -174,8 +170,6 @@ describe("SkillResolver - updateCategory", () => {
     expect(prismaMock.skillCategory.update).not.toHaveBeenCalled();
   });
 
-  // --- NOT FOUND CASE ---
-
   it("should return 404 if category does not exist", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
@@ -191,8 +185,6 @@ describe("SkillResolver - updateCategory", () => {
     expect(result.message).toBe("Category not found");
     expect(prismaMock.skillCategory.update).not.toHaveBeenCalled();
   });
-
-  // --- SERVER ERROR CASES ---
 
   it("should return 500 if findUnique throws an error", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
