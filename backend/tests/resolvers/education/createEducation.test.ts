@@ -71,7 +71,6 @@ describe("EducationResolver - createEducation", () => {
 
     resolver = new EducationResolver(prismaMock);
 
-    // Mocks complets pour Express
     mockReq = mockDeep<Request>();
     mockRes = mockDeep<Response>();
     mockCookies = mockDeep<Cookies>();
@@ -85,17 +84,15 @@ describe("EducationResolver - createEducation", () => {
   });
 
   it("should successfully create a new education record by an admin user", async (): Promise<void> => {
-    // Arrange
+
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     prismaMock.education.create.mockResolvedValueOnce(mockCreatedEducation);
 
-    // Act
     const result: EducationResponse = await resolver.createEducation(
       mockCreateEducationInput,
       adminContext
     );
 
-    // Assert
     expect(result.code).toBe(200);
     expect(result.message).toBe("Education created");
     expect(result.education).toEqual(mockCreatedEducation);
@@ -107,16 +104,14 @@ describe("EducationResolver - createEducation", () => {
   });
 
   it("should return 401 if no user is authenticated", async (): Promise<void> => {
-    // Arrange
+
     const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
 
-    // Act
     const result: EducationResponse = await resolver.createEducation(
       mockCreateEducationInput,
       unauthenticatedContext
     );
 
-    // Assert
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
     expect(result.education).toBeUndefined();
@@ -125,16 +120,13 @@ describe("EducationResolver - createEducation", () => {
   });
 
   it("should return 403 if authenticated user is not an admin", async (): Promise<void> => {
-    // Arrange
     const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
 
-    // Act
     const result: EducationResponse = await resolver.createEducation(
       mockCreateEducationInput,
       regularUserContext
     );
 
-    // Assert
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
     expect(result.education).toBeUndefined();
@@ -143,18 +135,16 @@ describe("EducationResolver - createEducation", () => {
   });
 
   it("should return 500 if a database error occurs during education creation", async (): Promise<void> => {
-    // Arrange
+    
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     const dbErrorMessage: string = "Database error during education creation";
     prismaMock.education.create.mockRejectedValueOnce(new Error(dbErrorMessage));
 
-    // Act
     const result: EducationResponse = await resolver.createEducation(
       mockCreateEducationInput,
       adminContext
     );
 
-    // Assert
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error creating education");
     expect(result.education).toBeUndefined();
