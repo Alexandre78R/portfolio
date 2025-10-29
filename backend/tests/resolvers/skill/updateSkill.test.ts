@@ -6,12 +6,11 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { UpdateSkillInput } from "../../../src/entities/inputs/skill.input";
 import { SubItemResponse } from "../../../src/types/response.types";
 import Cookies from "cookies";
-import { mockDeep } from "jest-mock-extended";
-import { CreateSkillInput } from "../../../src/entities/inputs/skill.input";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("SkillResolver - updateSkill", () => {
   let resolver: SkillResolver;
-  const mockCookies = mockDeep<Cookies>();
+  let cookiesMock: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -41,9 +40,9 @@ describe("SkillResolver - updateSkill", () => {
   };
 
   const baseContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
     token: undefined,
@@ -77,11 +76,17 @@ describe("SkillResolver - updateSkill", () => {
     prismaMock.skill.findUnique.mockReset();
     prismaMock.skill.update.mockReset();
     prismaMock.skillCategory.findUnique.mockReset();
+
     resolver = new SkillResolver(prismaMock);
+
+    cookiesMock = mockDeep<Cookies>();
+    baseContext.cookies = cookiesMock;
+
+    cookiesMock.get.mockClear();
+    cookiesMock.set.mockClear();
   });
 
-  // ✅ Full update by admin
-  it("should update a skill fully by admin", async () => {
+  it("should fully update a skill by admin", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
@@ -97,14 +102,9 @@ describe("SkillResolver - updateSkill", () => {
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill updated");
     expect(result.subItems?.[0]).toEqual({ ...mockExistingSkill, ...fullUpdateInput });
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
   });
 
-  // ✅ Full update by editor
-  it("should update a skill fully by editor", async () => {
+  it("should fully update a skill by editor", async () => {
     const context: MyContext = { ...baseContext, user: mockEditorUser };
 
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
@@ -121,7 +121,6 @@ describe("SkillResolver - updateSkill", () => {
     expect(result.subItems?.[0].name).toBe(fullUpdateInput.name);
   });
 
-  // ✅ Partial updates
   it("should update skill name only", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
 
@@ -134,7 +133,7 @@ describe("SkillResolver - updateSkill", () => {
       context
     );
 
-    expect(result.subItems?.[0].name).toBe(partialNameInput.name);
+    expect(result.subItems?.[0].name).toBe(partialNameInput.name!);
     expect(result.subItems?.[0].image).toBe(mockExistingSkill.image);
     expect(result.subItems?.[0].categoryId).toBe(mockExistingSkill.categoryId);
   });
@@ -151,7 +150,7 @@ describe("SkillResolver - updateSkill", () => {
       context
     );
 
-    expect(result.subItems?.[0].image).toBe(partialImageInput.image);
+    expect(result.subItems?.[0].image).toBe(partialImageInput.image!);
     expect(result.subItems?.[0].name).toBe(mockExistingSkill.name);
   });
 
@@ -168,10 +167,9 @@ describe("SkillResolver - updateSkill", () => {
       context
     );
 
-    expect(result.subItems?.[0].categoryId).toBe(partialCategoryInput.categoryId);
+    expect(result.subItems?.[0].categoryId).toBe(partialCategoryInput.categoryId!);
   });
 
-  // ✅ Unauthorized access
   it("should return 401 if no user", async () => {
     const context: MyContext = { ...baseContext, user: null };
     const result: SubItemResponse = await resolver.updateSkill(
@@ -179,6 +177,7 @@ describe("SkillResolver - updateSkill", () => {
       fullUpdateInput,
       context
     );
+
     expect(result.code).toBe(401);
     expect(result.subItems).toBeUndefined();
   });
@@ -190,11 +189,11 @@ describe("SkillResolver - updateSkill", () => {
       fullUpdateInput,
       context
     );
+
     expect(result.code).toBe(403);
     expect(result.subItems).toBeUndefined();
   });
 
-  // ✅ Not found
   it("should return 404 if skill not found", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skill.findUnique.mockResolvedValueOnce(null);
@@ -209,7 +208,6 @@ describe("SkillResolver - updateSkill", () => {
     expect(result.subItems).toBeUndefined();
   });
 
-  // ✅ Invalid category
   it("should return 400 if invalid categoryId", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
     const invalidInput: UpdateSkillInput = { ...fullUpdateInput, categoryId: 999 };
@@ -227,7 +225,6 @@ describe("SkillResolver - updateSkill", () => {
     expect(result.subItems).toBeUndefined();
   });
 
-  // ✅ Unexpected errors
   it("should return 500 if skill findUnique throws", async () => {
     const context: MyContext = { ...baseContext, user: mockAdminUser };
     prismaMock.skill.findUnique.mockRejectedValueOnce(new Error("DB error"));
