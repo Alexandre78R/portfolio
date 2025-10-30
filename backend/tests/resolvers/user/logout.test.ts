@@ -23,101 +23,46 @@ jest.mock("jose", () => {
   };
 });
 
-describe("UserResolver - login & logout", () => {
+describe("UserResolver - logout", () => {
   let resolver: UserResolver;
-  let mockCookies: DeepMockProxy<Cookies>;
-  let baseMockContext: MyContext;
+  let cookiesMock: DeepMockProxy<Cookies>;
+  let baseContext: Readonly<MyContext>;
 
-  const prismaUserMock: {
-    id: number;
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    role: UserRole;
-    isPasswordChange: boolean;
-  } = {
-    id: 1,
-    firstname: "Test",
-    lastname: "User",
-    email: "test@example.com",
-    password: "hashed_password_from_db",
-    role: UserRole.admin,
-    isPasswordChange: false,
-  };
-
-  const gqlUserMock: GraphQLUser = {
+  const gqlUserMock: Readonly<GraphQLUser> = {
     id: 1,
     firstname: "Test",
     lastname: "User",
     email: "test@example.com",
     role: UserRole.admin,
     isPasswordChange: false,
-  };
-
-  const loginInput: LoginInput = {
-    email: prismaUserMock.email,
-    password: "plain_password",
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     resolver = new UserResolver(prismaMock);
-    mockCookies = mockDeep<Cookies>();
+    cookiesMock = mockDeep<Cookies>();
 
-    baseMockContext = {
-      req: {} as any,
-      res: {} as any,
-      cookies: mockCookies,
+    baseContext = {
+      req: {} as MyContext["req"],
+      res: {} as MyContext["res"],
+      cookies: {} as Cookies,
       user: null,
       apiKey: undefined,
       token: undefined,
     };
-
-    (argon2.verify as jest.Mock).mockResolvedValue(true);
-  });
-
-  it("should log in successfully and set cookie", async () => {
-    prismaMock.user.findUnique.mockResolvedValueOnce(prismaUserMock);
-
-    const result: LoginResponse = await resolver.login(loginInput, baseMockContext);
-
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Login successful.");
-    expect(result.token).toBe("fake-jwt-token");
-
-    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-      where: { email: loginInput.email },
-    });
-
-    expect(argon2.verify).toHaveBeenCalledWith(prismaUserMock.password, loginInput.password);
-
-    expect(mockCookies.set).toHaveBeenCalledWith(
-      "token",
-      "fake-jwt-token",
-      expect.objectContaining({
-        httpOnly: true,
-        secure: expect.any(Boolean),
-        sameSite: "lax",
-        path: "/",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      })
-    );
   });
 
   it("should log out successfully and clear cookie", async () => {
-    const context: MyContext = {
-      ...baseMockContext,
-      user: gqlUserMock,
-    };
+    const context: MyContext = { ...baseContext, user: gqlUserMock, cookies: cookiesMock };
 
     const result: Response = await resolver.logout(context);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Logged out successfully.");
+    expect(result.code as number).toBe(200);
+    expect(result.message as string).toBe("Logged out successfully.");
 
-    expect(mockCookies.set).toHaveBeenCalledWith(
+    expect(cookiesMock.set).toHaveBeenCalledTimes(1);
+    expect(cookiesMock.set).toHaveBeenCalledWith(
       "token",
       "",
       expect.objectContaining({
@@ -126,22 +71,22 @@ describe("UserResolver - login & logout", () => {
         sameSite: "lax",
         path: "/",
         expires: expect.any(Date),
-      })
+      }),
     );
 
-    const setArgs = mockCookies.set.mock.calls[0];
+    const setArgs = cookiesMock.set.mock.calls[0];
     expect(setArgs[2]?.expires?.getTime()).toBe(0);
 
     expect(context.user).toBeNull();
   });
 
-  it("should return 401 if no user authenticated", async () => {
-    const context: MyContext = { ...baseMockContext, user: null };
+  it("should return 401 if no user authenticated during logout", async () => {
+    const context: MyContext = { ...baseContext, user: null, cookies: cookiesMock };
 
     const result: Response = await resolver.logout(context);
 
-    expect(result.code).toBe(401);
-    expect(result.message).toBe("Authentication required.");
-    expect(mockCookies.set).not.toHaveBeenCalled();
+    expect(result.code as number).toBe(401);
+    expect(result.message as string).toBe("Authentication required.");
+    expect(cookiesMock.set).not.toHaveBeenCalled();
   });
 });

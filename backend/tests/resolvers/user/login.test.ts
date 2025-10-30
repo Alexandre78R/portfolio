@@ -24,24 +24,21 @@ interface LoginInput {
   password: string;
 }
 
-interface UserMock {
-  id: number;
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  role: UserRole;
-  isPasswordChange: boolean;
-  pseudo: string | null;
-  ban: boolean;
-}
-
 describe("UserResolver - login", () => {
   let resolver: UserResolver;
-  let mockCookies: DeepMockProxy<Cookies>;
-  let mockContext: MyContext;
+  let cookiesMock: DeepMockProxy<Cookies>;
 
-  const mockExistingUser: UserMock = {
+  const prismaUserMock: Readonly<{
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    role: UserRole;
+    isPasswordChange: boolean;
+    pseudo: string | null;
+    ban: boolean;
+  }> = {
     id: 1,
     firstname: "Test",
     lastname: "User",
@@ -54,8 +51,17 @@ describe("UserResolver - login", () => {
   };
 
   const loginInput: LoginInput = {
-    email: mockExistingUser.email,
+    email: prismaUserMock.email,
     password: "plain_password",
+  };
+
+  const baseContext: Readonly<MyContext> = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
+    user: null,
+    apiKey: undefined,
+    token: undefined,
   };
 
   beforeEach(() => {
@@ -63,16 +69,7 @@ describe("UserResolver - login", () => {
     prismaMock.user.findUnique.mockReset();
 
     resolver = new UserResolver(prismaMock);
-
-    mockCookies = mockDeep<Cookies>();
-    mockContext = {
-      req: {} as any,
-      res: {} as any,
-      cookies: mockCookies,
-      user: null,
-      apiKey: undefined,
-      token: undefined,
-    };
+    cookiesMock = mockDeep<Cookies>();
 
     (argon2.verify as jest.MockedFunction<typeof argon2.verify>).mockResolvedValue(true);
     process.env.JWT_SECRET = "test_secret";
@@ -83,9 +80,11 @@ describe("UserResolver - login", () => {
   });
 
   it("should successfully log in a user and set a cookie", async () => {
-    prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
+    prismaMock.user.findUnique.mockResolvedValueOnce(prismaUserMock);
 
-    const result: LoginResponse = await resolver.login(loginInput, mockContext);
+    const context: MyContext = { ...baseContext, cookies: cookiesMock };
+
+    const result: LoginResponse = await resolver.login(loginInput, context);
 
     expect(result.code as number).toBe(200);
     expect(result.message as string).toBe("Login successful.");
@@ -97,10 +96,10 @@ describe("UserResolver - login", () => {
     });
 
     expect(argon2.verify).toHaveBeenCalledTimes(1);
-    expect(argon2.verify).toHaveBeenCalledWith(mockExistingUser.password, loginInput.password);
+    expect(argon2.verify).toHaveBeenCalledWith(prismaUserMock.password, loginInput.password);
 
-    expect(mockContext.cookies.set).toHaveBeenCalledTimes(1);
-    expect(mockContext.cookies.set).toHaveBeenCalledWith(
+    expect(cookiesMock.set).toHaveBeenCalledTimes(1);
+    expect(cookiesMock.set).toHaveBeenCalledWith(
       "token",
       "fake-jwt-token",
       expect.objectContaining({
@@ -109,14 +108,16 @@ describe("UserResolver - login", () => {
         sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24 * 7,
         path: "/",
-      })
+      }),
     );
   });
 
   it("should return 401 if the user is not found", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-    const result: LoginResponse = await resolver.login(loginInput, mockContext);
+    const context: MyContext = { ...baseContext, cookies: cookiesMock };
+
+    const result: LoginResponse = await resolver.login(loginInput, context);
 
     expect(result.code as number).toBe(401);
     expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
@@ -126,10 +127,12 @@ describe("UserResolver - login", () => {
   });
 
   it("should return 401 if password is invalid", async () => {
-    prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
+    prismaMock.user.findUnique.mockResolvedValueOnce(prismaUserMock);
     (argon2.verify as jest.MockedFunction<typeof argon2.verify>).mockResolvedValueOnce(false);
 
-    const result: LoginResponse = await resolver.login(loginInput, mockContext);
+    const context: MyContext = { ...baseContext, cookies: cookiesMock };
+
+    const result: LoginResponse = await resolver.login(loginInput, context);
 
     expect(result.code as number).toBe(401);
     expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
@@ -139,10 +142,12 @@ describe("UserResolver - login", () => {
   });
 
   it("should return 500 if JWT_SECRET is not set", async () => {
-    prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
+    prismaMock.user.findUnique.mockResolvedValueOnce(prismaUserMock);
     delete process.env.JWT_SECRET;
 
-    const result: LoginResponse = await resolver.login(loginInput, mockContext);
+    const context: MyContext = { ...baseContext, cookies: cookiesMock };
+
+    const result: LoginResponse = await resolver.login(loginInput, context);
 
     expect(result.code as number).toBe(500);
     expect(result.message as string).toBe("Please check your JWT configuration !");
@@ -152,7 +157,9 @@ describe("UserResolver - login", () => {
   it("should return 500 for unexpected errors", async () => {
     prismaMock.user.findUnique.mockRejectedValueOnce(new Error("Database connection failed"));
 
-    const result: LoginResponse = await resolver.login(loginInput, mockContext);
+    const context: MyContext = { ...baseContext, cookies: cookiesMock };
+
+    const result: LoginResponse = await resolver.login(loginInput, context);
 
     expect(result.code as number).toBe(500);
     expect(result.message as string).toBe("Database connection failed");
