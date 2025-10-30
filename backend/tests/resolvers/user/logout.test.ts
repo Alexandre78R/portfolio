@@ -5,9 +5,7 @@ import { MyContext } from "../../../src";
 import { User as GraphQLUser, UserRole } from "../../../src/entities/user.entity";
 import Cookies from "cookies";
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
-import * as argon2 from "argon2";
 import { LoginResponse, Response } from "../../../src/types/response.types";
-import { LoginInput } from "../../../src/types/graphql";
 
 jest.mock("argon2");
 jest.mock("jose", () => {
