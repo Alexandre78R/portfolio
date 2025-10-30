@@ -15,7 +15,17 @@ jest.mock("../../../src/regex", () => ({
 describe("UserResolver - changePassword", () => {
   let resolver: UserResolver;
 
-  const mockExistingUser = {
+  interface MockUser {
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    role: UserRole;
+    isPasswordChange: boolean;
+  }
+
+  const mockExistingUser: MockUser = {
     id: 1,
     firstname: "John",
     lastname: "Doe",
@@ -25,8 +35,8 @@ describe("UserResolver - changePassword", () => {
     isPasswordChange: false,
   };
 
-  const newValidPassword: string = "NewValidPassword123!";
-  const newInvalidPassword: string = "short";
+  const newValidPassword = "NewValidPassword123!";
+  const newInvalidPassword = "short";
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -51,9 +61,9 @@ describe("UserResolver - changePassword", () => {
       newValidPassword
     );
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Password updated successfully.");
-    expect(result.user).toBeUndefined(); // on ne renvoie pas le password
+    expect(result.code as number).toBe(200);
+    expect(result.message as string).toBe("Password updated successfully.");
+    expect(result.user).toBeUndefined();
 
     expect(regexUtils.checkRegex).toHaveBeenCalledTimes(1);
     expect(regexUtils.checkRegex).toHaveBeenCalledWith(regexUtils.passwordRegex, newValidPassword);
@@ -84,8 +94,8 @@ describe("UserResolver - changePassword", () => {
       newInvalidPassword
     );
 
-    expect(result.code).toBe(400);
-    expect(result.message).toBe(
+    expect(result.code as number).toBe(400);
+    expect(result.message as string).toBe(
       "The password must contain at least 9 characters, with at least one uppercase letter, one lowercase letter, one number and one symbol."
     );
     expect(result.user).toBeUndefined();
@@ -104,8 +114,8 @@ describe("UserResolver - changePassword", () => {
       newValidPassword
     );
 
-    expect(result.code).toBe(404);
-    expect(result.message).toBe("User not found with this email.");
+    expect(result.code as number).toBe(404);
+    expect(result.message as string).toBe("User not found with this email.");
     expect(result.user).toBeUndefined();
 
     expect(regexUtils.checkRegex).toHaveBeenCalledTimes(1);
@@ -118,7 +128,7 @@ describe("UserResolver - changePassword", () => {
     expect(prismaMock.user.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for an unexpected server error during user lookup", async () => {
+  it("should return 500 for unexpected server error during user lookup", async () => {
     prismaMock.user.findUnique.mockRejectedValueOnce(new Error("DB findUnique error"));
 
     const result: UserResponse = await resolver.changePassword(
@@ -126,8 +136,8 @@ describe("UserResolver - changePassword", () => {
       newValidPassword
     );
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Server error while updating password.");
+    expect(result.code as number).toBe(500);
+    expect(result.message as string).toBe("Server error while updating password.");
     expect(result.user).toBeUndefined();
 
     expect(regexUtils.checkRegex).toHaveBeenCalledTimes(1);
@@ -136,7 +146,7 @@ describe("UserResolver - changePassword", () => {
     expect(prismaMock.user.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for an unexpected server error during password hashing", async () => {
+  it("should return 500 for unexpected server error during password hashing", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     (argon2.hash as jest.Mock).mockRejectedValueOnce(new Error("Hash error"));
 
@@ -145,8 +155,8 @@ describe("UserResolver - changePassword", () => {
       newValidPassword
     );
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Server error while updating password.");
+    expect(result.code as number).toBe(500);
+    expect(result.message as string).toBe("Server error while updating password.");
     expect(result.user).toBeUndefined();
 
     expect(regexUtils.checkRegex).toHaveBeenCalledTimes(1);
@@ -155,7 +165,7 @@ describe("UserResolver - changePassword", () => {
     expect(prismaMock.user.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for an unexpected server error during database update", async () => {
+  it("should return 500 for unexpected server error during database update", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     prismaMock.user.update.mockRejectedValueOnce(new Error("DB update error"));
 
@@ -164,8 +174,8 @@ describe("UserResolver - changePassword", () => {
       newValidPassword
     );
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Server error while updating password.");
+    expect(result.code as number).toBe(500);
+    expect(result.message as string).toBe("Server error while updating password.");
     expect(result.user).toBeUndefined();
 
     expect(regexUtils.checkRegex).toHaveBeenCalledTimes(1);
