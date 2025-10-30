@@ -86,9 +86,9 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, context);
 
-    expect(result.code as number).toBe(200);
-    expect(result.message as string).toBe("Login successful.");
-    expect(result.token as string).toBe("fake-jwt-token");
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Login successful.");
+    expect(result.token).toBe("fake-jwt-token");
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
@@ -119,8 +119,8 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, context);
 
-    expect(result.code as number).toBe(401);
-    expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
+    expect(result.code).toBe(401);
+    expect(result.message).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledTimes(1);
@@ -134,8 +134,8 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, context);
 
-    expect(result.code as number).toBe(401);
-    expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
+    expect(result.code).toBe(401);
+    expect(result.message).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
 
     expect(argon2.verify).toHaveBeenCalledTimes(1);
@@ -149,8 +149,8 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, context);
 
-    expect(result.code as number).toBe(500);
-    expect(result.message as string).toBe("Please check your JWT configuration !");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Please check your JWT configuration !");
     expect(result.token).toBeUndefined();
   });
 
@@ -161,8 +161,8 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, context);
 
-    expect(result.code as number).toBe(500);
-    expect(result.message as string).toBe("Database connection failed");
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("Database connection failed");
     expect(result.token).toBeUndefined();
   });
 });

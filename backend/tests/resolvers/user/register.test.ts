@@ -41,7 +41,7 @@ describe("UserResolver - registerUser", () => {
       role: UserRole.admin,
     };
 
-    const existingUser: User & { password: string; pseudo: string | null; ban: boolean } = {
+    const existingUser: Readonly<User & { password: string; pseudo: string | null; ban: boolean }> = {
       id: 1,
       firstname: "Alex",
       lastname: "Renard",
@@ -72,7 +72,7 @@ describe("UserResolver - registerUser", () => {
 
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-    const createdUser: User & { password: string; pseudo: string | null; ban: boolean } = {
+    const createdUser: Readonly<User & { password: string; pseudo: string | null; ban: boolean }> = {
       id: 1,
       firstname: input.firstname,
       lastname: input.lastname,
@@ -115,5 +115,40 @@ describe("UserResolver - registerUser", () => {
         isPasswordChange: false,
       },
     });
+  });
+
+  it("should return 400 if email format is invalid", async () => {
+    const input: CreateUserInput = {
+      firstname: "Jean",
+      lastname: "Dupont",
+      email: "invalid-email",
+      role: UserRole.admin,
+    };
+
+    (checkRegex as jest.Mock).mockReturnValueOnce(false);
+
+    const result: UserResponse = await resolver.registerUser(input);
+
+    expect(result.code).toBe(400);
+    expect(result.message).toBe("You have entered an invalid email address.");
+    expect(result.user).toBeUndefined();
+  });
+
+  it("should return 500 if user creation fails", async () => {
+    const input: CreateUserInput = {
+      firstname: "Jean",
+      lastname: "Dupont",
+      email: "jean.dupont@example.com",
+      role: UserRole.admin,
+    };
+
+    prismaMock.user.findUnique.mockResolvedValueOnce(null);
+    prismaMock.user.create.mockRejectedValueOnce(new Error("DB error"));
+
+    const result: UserResponse = await resolver.registerUser(input);
+
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("DB error");
+    expect(result.user).toBeUndefined();
   });
 });

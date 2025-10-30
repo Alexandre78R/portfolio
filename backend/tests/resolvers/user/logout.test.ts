@@ -56,8 +56,8 @@ describe("UserResolver - logout", () => {
 
     const result: Response = await resolver.logout(context);
 
-    expect(result.code as number).toBe(200);
-    expect(result.message as string).toBe("Logged out successfully.");
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Logged out successfully.");
 
     expect(cookiesMock.set).toHaveBeenCalledTimes(1);
     expect(cookiesMock.set).toHaveBeenCalledWith(
@@ -83,8 +83,8 @@ describe("UserResolver - logout", () => {
 
     const result: Response = await resolver.logout(context);
 
-    expect(result.code as number).toBe(401);
-    expect(result.message as string).toBe("Authentication required.");
+    expect(result.code).toBe(401);
+    expect(result.message).toBe("Authentication required.");
     expect(cookiesMock.set).not.toHaveBeenCalled();
   });
 });
