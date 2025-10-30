@@ -87,13 +87,16 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Login successful.");
-    expect(result.token).toBe("fake-jwt-token");
+    expect(result.code as number).toBe(200);
+    expect(result.message as string).toBe("Login successful.");
+    expect(result.token as string).toBe("fake-jwt-token");
 
+    expect(prismaMock.user.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { email: loginInput.email },
     });
+
+    expect(argon2.verify).toHaveBeenCalledTimes(1);
     expect(argon2.verify).toHaveBeenCalledWith(mockExistingUser.password, loginInput.password);
 
     expect(mockContext.cookies.set).toHaveBeenCalledTimes(1);
@@ -110,35 +113,39 @@ describe("UserResolver - login", () => {
     );
   });
 
-  it("should return 401 if user not found", async () => {
+  it("should return 401 if the user is not found", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
     const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
-    expect(result.code).toBe(401);
-    expect(result.message).toBe("Invalid credentials (email or password incorrect).");
+    expect(result.code as number).toBe(401);
+    expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
+
+    expect(prismaMock.user.findUnique).toHaveBeenCalledTimes(1);
   });
 
-  it("should return 401 if password invalid", async () => {
+  it("should return 401 if password is invalid", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     (argon2.verify as jest.MockedFunction<typeof argon2.verify>).mockResolvedValueOnce(false);
 
     const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
-    expect(result.code).toBe(401);
-    expect(result.message).toBe("Invalid credentials (email or password incorrect).");
+    expect(result.code as number).toBe(401);
+    expect(result.message as string).toBe("Invalid credentials (email or password incorrect).");
     expect(result.token).toBeUndefined();
+
+    expect(argon2.verify).toHaveBeenCalledTimes(1);
   });
 
-  it("should return 500 if JWT_SECRET not set", async () => {
+  it("should return 500 if JWT_SECRET is not set", async () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockExistingUser);
     delete process.env.JWT_SECRET;
 
     const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Please check your JWT configuration !");
+    expect(result.code as number).toBe(500);
+    expect(result.message as string).toBe("Please check your JWT configuration !");
     expect(result.token).toBeUndefined();
   });
 
@@ -147,8 +154,8 @@ describe("UserResolver - login", () => {
 
     const result: LoginResponse = await resolver.login(loginInput, mockContext);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Database connection failed");
+    expect(result.code as number).toBe(500);
+    expect(result.message as string).toBe("Database connection failed");
     expect(result.token).toBeUndefined();
   });
 });
