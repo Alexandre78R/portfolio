@@ -1,14 +1,9 @@
 import request from "supertest";
-import express, { Express } from "express";
+import express, { type Express } from "express";
 import type { Request, Response, NextFunction } from "express";
 import backupsRouter from "../../src/routes/backups.routes";
 import fs from "fs/promises";
 
-/* -------------------------------------------------------------------------- */
-/*                                   MOCKS                                    */
-/* -------------------------------------------------------------------------- */
-
-// Middlewares
 jest.mock("../../src/middlewares/authenticate", () => ({
   authenticate: (
     _req: Request,
@@ -29,22 +24,13 @@ jest.mock("../../src/middlewares/requireAdmin", () => ({
   },
 }));
 
-// fs/promises
 jest.mock("fs/promises");
 
-/* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
-/* -------------------------------------------------------------------------- */
-
-type MockedFsPromises = {
+type FsPromisesMock = {
   readdir: jest.Mock<Promise<string[]>, [string]>;
 };
 
-const mockedFs: MockedFsPromises = fs as unknown as MockedFsPromises;
-
-/* -------------------------------------------------------------------------- */
-/*                                   TESTS                                    */
-/* -------------------------------------------------------------------------- */
+const fsMock = fs as unknown as FsPromisesMock;
 
 describe("GET /backups", (): void => {
   let app: Express;
@@ -55,17 +41,15 @@ describe("GET /backups", (): void => {
     jest.clearAllMocks();
   });
 
-  it("should return the list of backup files if backups exist", async (): Promise<void> => {
-    const filesInDirectory: string[] = [
+  it("should return the list of valid backup files when backups exist", async (): Promise<void> => {
+    const directoryFiles: string[] = [
       "bdd_20250101_120000.sql",
       "bdd_20250102_130000.sql",
       "not_a_backup.txt",
       "bdd_invalid.sql",
     ];
 
-    mockedFs.readdir.mockImplementation(
-      async (): Promise<string[]> => filesInDirectory
-    );
+    fsMock.readdir.mockResolvedValue(directoryFiles);
 
     const response = await request(app).get("/backups");
 
@@ -75,18 +59,17 @@ describe("GET /backups", (): void => {
       "bdd_20250102_130000.sql",
     ]);
 
-    expect(mockedFs.readdir).toHaveBeenCalledTimes(1);
+    expect(fsMock.readdir).toHaveBeenCalledTimes(1);
+    expect(fsMock.readdir).toHaveBeenCalledWith(expect.any(String));
   });
 
-  it("should return an empty array if no valid backups exist", async (): Promise<void> => {
-    const filesInDirectory: string[] = [
+  it("should return an empty array when no valid backup files exist", async (): Promise<void> => {
+    const directoryFiles: string[] = [
       "random.txt",
       "image.png",
     ];
 
-    mockedFs.readdir.mockImplementation(
-      async (): Promise<string[]> => filesInDirectory
-    );
+    fsMock.readdir.mockResolvedValue(directoryFiles);
 
     const response = await request(app).get("/backups");
 
@@ -94,12 +77,8 @@ describe("GET /backups", (): void => {
     expect(response.body).toEqual([]);
   });
 
-  it("should return 500 if fs.readdir throws an error", async (): Promise<void> => {
-    mockedFs.readdir.mockImplementation(
-      async (): Promise<string[]> => {
-        throw new Error("Filesystem error");
-      }
-    );
+  it("should return 500 when reading the backup directory fails", async (): Promise<void> => {
+    fsMock.readdir.mockRejectedValue(new Error("Filesystem error"));
 
     const response = await request(app).get("/backups");
 
