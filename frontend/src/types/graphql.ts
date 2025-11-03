@@ -16,6 +16,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTimeISO: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type BackupFileInfo = {
@@ -29,7 +30,7 @@ export type BackupFileInfo = {
 export type BackupFilesResponse = {
   __typename?: 'BackupFilesResponse';
   code: Scalars['Int']['output'];
-  files?: Maybe<Array<BackupFileInfo>>;
+  files: Array<BackupFileInfo>;
   message: Scalars['String']['output'];
 };
 
@@ -263,6 +264,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
+  uploadCV: Scalars['Boolean']['output'];
   validateCaptcha: ValidationResponse;
 };
 
@@ -375,6 +377,11 @@ export type MutationUpdateSkillArgs = {
 };
 
 
+export type MutationUploadCvArgs = {
+  file: Scalars['Upload']['input'];
+};
+
+
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
   idCaptcha: Scalars['String']['input'];
@@ -409,8 +416,10 @@ export type ProjectsResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  cvUrl: Scalars['String']['output'];
   educationById: EducationResponse;
   educationList: EducationsResponse;
+  educationListPagination: EducationsResponse;
   experienceById: ExperienceResponse;
   experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
@@ -429,6 +438,13 @@ export type Query = {
 
 export type QueryEducationByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryEducationListPaginationArgs = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -635,12 +651,17 @@ export type GetGlobalStatsQuery = { __typename?: 'Query', getAverageSkillsPerPro
 export type GetBackupsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetBackupsListQuery = { __typename?: 'Query', listBackupFiles: { __typename?: 'BackupFilesResponse', message: string, code: number, files?: Array<{ __typename?: 'BackupFileInfo', sizeBytes: number, modifiedAt: any, fileName: string, createdAt: any }> | null } };
+export type GetBackupsListQuery = { __typename?: 'Query', listBackupFiles: { __typename?: 'BackupFilesResponse', message: string, code: number, files: Array<{ __typename?: 'BackupFileInfo', sizeBytes: number, modifiedAt: any, fileName: string, createdAt: any }> } };
 
 export type GenerateCaptchaQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GenerateCaptchaQuery = { __typename?: 'Query', generateCaptcha: { __typename?: 'CaptchaResponse', id: string, challengeType: string, images: Array<{ __typename?: 'CaptchaImage', typeEN: string, typeFR: string, url: string, id: string }>, challengeTypeTranslation: { __typename?: 'ChallengeTypeTranslation', typeEN: string, typeFR: string } } };
+
+export type CvQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CvQuery = { __typename?: 'Query', cvUrl: string };
 
 export type GetEducationsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1039,6 +1060,43 @@ export type GenerateCaptchaQueryHookResult = ReturnType<typeof useGenerateCaptch
 export type GenerateCaptchaLazyQueryHookResult = ReturnType<typeof useGenerateCaptchaLazyQuery>;
 export type GenerateCaptchaSuspenseQueryHookResult = ReturnType<typeof useGenerateCaptchaSuspenseQuery>;
 export type GenerateCaptchaQueryResult = Apollo.QueryResult<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>;
+export const CvDocument = gql`
+    query CV {
+  cvUrl
+}
+    `;
+
+/**
+ * __useCvQuery__
+ *
+ * To run a query within a React component, call `useCvQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCvQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCvQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCvQuery(baseOptions?: Apollo.QueryHookOptions<CvQuery, CvQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CvQuery, CvQueryVariables>(CvDocument, options);
+      }
+export function useCvLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CvQuery, CvQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CvQuery, CvQueryVariables>(CvDocument, options);
+        }
+export function useCvSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CvQuery, CvQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CvQuery, CvQueryVariables>(CvDocument, options);
+        }
+export type CvQueryHookResult = ReturnType<typeof useCvQuery>;
+export type CvLazyQueryHookResult = ReturnType<typeof useCvLazyQuery>;
+export type CvSuspenseQueryHookResult = ReturnType<typeof useCvSuspenseQuery>;
+export type CvQueryResult = Apollo.QueryResult<CvQuery, CvQueryVariables>;
 export const GetEducationsListDocument = gql`
     query GetEducationsList {
   educationList {

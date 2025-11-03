@@ -3,12 +3,34 @@ import { useLang } from "@/context/Lang/LangContext";
 import ButtonCustom from "../Button/Button";
 import TitleH3 from "../Title/TitleH3";
 import Lang from "@/lang/typeLang";
+import { useCvQuery } from "@/types/graphql";
+import CustomToast from "@/components/ToastCustom/CustomToast";
 
 const AboutMe = (): JSX.Element => {
   const { translations }: { translations: Lang } = useLang();
 
-  const handleClick: MouseEventHandler<HTMLButtonElement> = (): void => {
-    window.open("/Alexandre-Renard-CV.pdf", "_blank");
+  const { data, loading, error } = useCvQuery();
+
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
+
+  const handleClick = (): void => {
+    if (loading) {
+      showAlert("error", translations.messageCVLoading);
+      return;
+    }
+
+    if (error) {
+      showAlert("error", translations.messageCVNotFetch);
+      return;
+    }
+    if (data?.cvUrl) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+      window.open(`${baseUrl}${data.cvUrl}`, "_blank");
+    } else {
+      showAlert("success", translations.messageCVNotFound);
+    }
   };
 
   return (

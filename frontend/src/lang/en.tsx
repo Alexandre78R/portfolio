@@ -178,6 +178,9 @@ const en: Lang = {
   messagePageBackUpDeletedSuccess: "Backup deleted successfully.",
   messagePageBackUpDeletedError1: "An error occurred while deleting.",
   messagePageBackUpDeletedError2: "Failed to delete backup.",
+  messageCVNotFound: "CV not available at the moment.",
+  messageCVNotFetch: "Error fetching CV, try again later.",
+  messageCVLoading: "Please wait, loading CV...",
 };
 
 export default en;

@@ -13,6 +13,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTimeISO: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type BackupFileInfo = {
@@ -26,7 +27,7 @@ export type BackupFileInfo = {
 export type BackupFilesResponse = {
   __typename?: 'BackupFilesResponse';
   code: Scalars['Int']['output'];
-  files?: Maybe<Array<BackupFileInfo>>;
+  files: Array<BackupFileInfo>;
   message: Scalars['String']['output'];
 };
 
@@ -260,6 +261,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
+  uploadCV: Scalars['Boolean']['output'];
   validateCaptcha: ValidationResponse;
 };
 
@@ -372,6 +374,11 @@ export type MutationUpdateSkillArgs = {
 };
 
 
+export type MutationUploadCvArgs = {
+  file: Scalars['Upload']['input'];
+};
+
+
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
   idCaptcha: Scalars['String']['input'];
@@ -406,6 +413,7 @@ export type ProjectsResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  cvUrl: Scalars['String']['output'];
   educationById: EducationResponse;
   educationList: EducationsResponse;
   educationListPagination: EducationsResponse;

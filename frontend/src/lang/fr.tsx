@@ -178,6 +178,9 @@ const fr: Lang = {
   messagePageBackUpDeletedSuccess: "Sauvegarde supprimée avec succès.",
   messagePageBackUpDeletedError1: "Une erreur est survenue lors de la suppression.",
   messagePageBackUpDeletedError2: "Échec de la suppression de la sauvegarde.",
+  messageCVNotFound: "CV non disponible pour le moment.",
+  messageCVNotFetch: "CV non disponible pour le moment.",
+  messageCVLoading: "Erreur lors de la récupération du CV, veuillez réessayer plus tard.",
 };
 
 export default fr;

@@ -1,16 +1,40 @@
 import { useContext, useEffect } from "react";
 import { termContext, Term } from "../../Terminal";
 import { getCurrentCmdArry } from "../../util";
+import { useCvQuery } from "@/types/graphql";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 const CV = (): JSX.Element => {
   const { history, rerender } = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
+  const { translations }: { translations: Lang } = useLang();
+
+  const { data, loading, error } = useCvQuery();
+  const { showAlert } = CustomToast();
+
   useEffect(() => {
     if (rerender && currentCommand[0] === "cv") {
-      window.open("/Alexandre-Renard-CV.pdf", "_blank");
+      if (loading) {
+        showAlert("error", translations.messageCVLoading);
+        return;
+      }
+
+      if (error) {
+        showAlert("error", translations.messageCVNotFetch);
+        return;
+      }
+
+      if (data?.cvUrl) {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+        window.open(`${baseUrl}${data.cvUrl}`, "_blank");
+      } else {
+        showAlert("error", translations.messageCVNotFound);
+      }
     }
-  }, []);
+  }, [rerender, currentCommand, data, loading, error, showAlert, translations]);
 
   return <></>;
 };

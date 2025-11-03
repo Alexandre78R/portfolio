@@ -161,6 +161,9 @@ type Lang = {
   messagePageBackUpDeletedSuccess: string;
   messagePageBackUpDeletedError1: string;
   messagePageBackUpDeletedError2: string;
+  messageCVNotFound: string;
+  messageCVNotFetch: string;
+  messageCVLoading: string;
 };
 
 export default Lang;
