@@ -52,6 +52,7 @@ app.use("/api/badges", badgeRoutes);           // → /api/badges/…
 app.use("/api/backups", backupsRoutes);        // → /api/backups/…
 app.use("/api/dynamic-images", captchaRoutes);// → /api/dynamic-images/:id
 app.use("/api/upload", uploadRoutes);          // → /api/upload/:type/:filename
+app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));// → /api/upload/ cv
 
 /* --- Serve static files --- */
 app.use(

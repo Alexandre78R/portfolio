@@ -20,6 +20,7 @@ import { ExperienceResolver } from "../resolvers/experience.resolver";
 import { EducationResolver } from "../resolvers/education.resolver";
 import { UserResolver } from "../resolvers/user.resolver";
 import { AdminResolver } from "../resolvers/admin.resolver";
+import { CVResolver } from "../resolvers/cv.resolver";
 
 /* --- Types context GraphQL --- */
 
@@ -54,6 +55,7 @@ export async function mountGraphQL(app: Express) {
       EducationResolver,
       UserResolver,
       AdminResolver,
+      CVResolver,
     ],
     validate: false,
     authChecker: customAuthChecker,
