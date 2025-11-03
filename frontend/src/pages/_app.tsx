@@ -5,10 +5,14 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  HttpLink,
+  // HttpLink,
   ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { createUploadLink } from "apollo-upload-client";
+// const { createUploadLink } = require("apollo-upload-client");
+// import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
+// import { createUploadLink } from "apollo-upload-client";
 
 import "../styles/globals.css";
 import "../styles/output.css";
@@ -47,10 +51,30 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
       console.error("NEXT_PUBLIC_API_TOKEN is not defined");
     }
 
-    const httpLink: HttpLink = new HttpLink({
+    // const httpLink: HttpLink = new HttpLink({
+    //   uri: API_URL,
+    //   credentials: "include",
+    // });
+
+    const uploadLink = createUploadLink({
       uri: API_URL,
       credentials: "include",
-    });
+      headers: {
+        "Apollo-Require-Preflight": "true",
+      },
+      fetch: (uri: RequestInfo | URL, options?: RequestInit) => {
+        return fetch(uri, options).then(async (response) => {
+          if (!response.ok) {
+            // const text = await response.text();
+          }
+          return response;
+        });
+      },
+    }) as unknown as ApolloLink;
+    // const uploadLink = UploadHttpLink({
+    //   uri: API_URL,
+    //   credentials: "include",
+    // });
 
     const authLink: ApolloLink = setContext(
       (
@@ -68,7 +92,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
 
     const apolloClient: ApolloClient<NormalizedCacheObject> =
       new ApolloClient({
-        link: authLink.concat(httpLink),
+        // link: authLink.concat(httpLink),
+        link: authLink.concat(uploadLink as ApolloLink),
         cache: new InMemoryCache(),
         credentials: "include",
       });

@@ -2,7 +2,6 @@ import { Express } from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { buildSchema } from "type-graphql";
-import { graphqlUploadExpress } from "graphql-upload-ts";
 import cors from "cors";
 import Cookies from "cookies";
 import { jwtVerify, JWTPayload } from "jose";
@@ -73,11 +72,6 @@ export async function mountGraphQL(app: Express) {
       origin: process.env.CLIENT_URL?.split(",") ?? ["http://localhost:3000"],
       credentials: true,
     }),
-    // IMPORTANT: graphqlUploadExpress AVANT express.json()
-    graphqlUploadExpress({ 
-      maxFileSize: 10000000, // 10MB
-      maxFiles: 10 
-    }),
     express.json(),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
@@ -110,7 +104,7 @@ export async function mountGraphQL(app: Express) {
               };
             }
           } catch (err: unknown) {
-            console.error("JWT invalide :", err);
+            console.error("JWT invalide :", err);
             cookies.set("token", "", {
               expires: new Date(0),
               httpOnly: true,

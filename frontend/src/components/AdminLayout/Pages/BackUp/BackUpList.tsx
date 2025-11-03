@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {
+import { 
   useGetBackupsListQuery,
   useGenerateDatabaseBackupMutation,
   useDeleteBackupFileMutation,
@@ -7,25 +7,19 @@ import {
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
-import Table, { ColumnDef} from "../../components/Table/Table";
+import Table, { ColumnDef } from "../../components/Table/Table";
 import { Download, Eye, Trash } from "lucide-react";
-import useCustomToast from "@/components/ToastCustom/CustomToast";
+import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
-
-export interface BackupFileInfo {
-  fileName: string;
-  sizeBytes: number;
-  createdAt: string;
-  modifiedAt: string;
-}
+import Lang from "@/lang/typeLang";
 
 const formatBytes = (bytes: number): string => {
   if (!bytes) return "0 B";
-  const k : number = 1024;
-  const sizes:  string[] = ["B", "KB", "MB", "GB", "TB"];
-  const i: number = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
 const formatDate = (iso: string): string =>
@@ -37,31 +31,41 @@ const formatDate = (iso: string): string =>
     minute: "2-digit",
   });
 
-const BackUpList: React.FC = (): JSX.Element => {
+interface BackupFileInfo {
+  fileName: string;
+  sizeBytes: number;
+  createdAt: string;
+  modifiedAt: string;
+}
+
+const BackUpList = (): React.ReactElement => {
+  
   const { data, loading, error, refetch } = useGetBackupsListQuery();
   const [generateBackup] = useGenerateDatabaseBackupMutation();
   const [deleteBackupFile] = useDeleteBackupFileMutation();
 
-  const { translations } = useLang();
-  const { showAlert } = useCustomToast();
-
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
 
-  const handleOpenDialog = (): void => setOpenDialog(true);
-  const handleCloseDialog = (): void => setOpenDialog(false);
+  const handleOpenDialog: () => void = () => setOpenDialog(true);
+  const handleCloseDialog: () => void = () => setOpenDialog(false);
 
-  const handleGenerateBackup = async (): Promise<void> => {
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
+
+  const { translations }: { translations: Lang } = useLang();
+
+  const handleGenerateBackup: () => Promise<void> = async () => {
     try {
-      const response = await generateBackup();
-      if (response.data?.generateDatabaseBackup.code === 200) {
+      const { data } = await generateBackup();
+      if (data?.generateDatabaseBackup.code === 200) {
         showAlert("success", translations.messagePageBackUpCreatedSuccess);
         await refetch();
       } else {
         showAlert("error", translations.messagePageBackUpCreatedError1);
       }
-    } catch {
+    } catch (error) {
       showAlert("error", translations.messagePageBackUpCreatedError2);
     } finally {
       setOpenDialog(false);
@@ -72,24 +76,19 @@ const BackUpList: React.FC = (): JSX.Element => {
     if (!selectedFileName) return;
 
     try {
-      const response = await deleteBackupFile({
-        variables: { fileName: selectedFileName },
-      });
-      if (response.data?.deleteBackupFile.code === 200) {
+      const { data } = await deleteBackupFile({ variables: { fileName: selectedFileName } });
+
+      if (data?.deleteBackupFile.code === 200) {
         showAlert("success", translations.messagePageBackUpDeletedSuccess);
         await refetch();
       } else {
-        showAlert(
-          "error",
-          response.data?.deleteBackupFile.message ||
-            translations.messagePageBackUpDeletedError1
-        );
+        showAlert("error", data?.deleteBackupFile.message || translations.messagePageBackUpDeletedError1);
       }
-    } catch {
+    } catch (error) {
       showAlert("error", translations.messagePageBackUpDeletedError2);
     } finally {
-      setSelectedFileName(null);
       setOpenDeleteDialog(false);
+      setSelectedFileName(null);
     }
   };
 
@@ -127,41 +126,33 @@ const BackUpList: React.FC = (): JSX.Element => {
     {
       header: translations.messagePageBackUpListAction,
       accessor: (row) => (
-        <div className="flex gap-2">
+        <>
           <a
             href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Eye className="h-4 w-4" />
+            <Eye className="h-4 w-4 text-text" />
           </a>
           <a
             href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-4 w-4 text-text" />
           </a>
           <button
             onClick={() => {
               setSelectedFileName(row.fileName);
               setOpenDeleteDialog(true);
             }}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
           >
-            <Trash className="h-4 w-4" />
+            <Trash className="h-4 w-4 text-text" />
           </button>
-          {/* <ButtonCustom
-              
-            text={<Trash className="h-4 w-4" />}
-            onClick={() => {
-              setSelectedFileName(row.fileName);
-              setOpenDeleteDialog(true);
-            }}
-          /> */}
-        </div>
+        </>
       ),
       headerClassName: "rounded-tr-2xl",
     },
@@ -171,9 +162,9 @@ const BackUpList: React.FC = (): JSX.Element => {
     <div className="space-y-10">
       <TextAdmin type="h1">{translations.messagePageBackUpListTitle}</TextAdmin>
       <ButtonCustom
-        text={translations.messagePageBackUpButtomCreated}
+        text="{translations.messagePageBackUpButtomCreated}"
         onClick={handleOpenDialog}
-        disable={false}
+        disable={false} 
         disableHover={false}
       />
       <Table columns={columns} data={backups} />
@@ -181,8 +172,8 @@ const BackUpList: React.FC = (): JSX.Element => {
         open={openDialog}
         title={translations.messagePageBackUpTitleConfirmCreated}
         description={translations.messagePageBackUpDescConfirmCreated}
-        confirmLabel={translations.messagePageBackUpMessageButtonValideCreated}
-        cancelLabel={translations.messagePageBackUpMessageButtonCancelCreated}
+        confirmLabel= {translations.messagePageBackUpMessageButtonValideCreated}
+        cancelLabel= {translations.messagePageBackUpMessageButtonCancelCreated}
         onConfirm={handleGenerateBackup}
         onCancel={handleCloseDialog}
       />
@@ -194,8 +185,8 @@ const BackUpList: React.FC = (): JSX.Element => {
         cancelLabel={translations.messagePageBackUpMessageButtonCancelDeleted}
         onConfirm={handleDeleteBackup}
         onCancel={() => {
-          setSelectedFileName(null);
           setOpenDeleteDialog(false);
+          setSelectedFileName(null);
         }}
       />
     </div>

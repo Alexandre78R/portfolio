@@ -261,7 +261,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
-  uploadCV: Scalars['Boolean']['output'];
+  uploadCV: UploadResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -558,6 +558,13 @@ export type UpdateSkillInput = {
   categoryId: Scalars['Int']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type User = {

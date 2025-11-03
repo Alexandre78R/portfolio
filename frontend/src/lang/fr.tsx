@@ -181,6 +181,15 @@ const fr: Lang = {
   messageCVNotFound: "CV non disponible pour le moment.",
   messageCVNotFetch: "CV non disponible pour le moment.",
   messageCVLoading: "Erreur lors de la récupération du CV, veuillez réessayer plus tard.",
+  messagePageCvUploading: "Upload en cours…",
+  messagePageCvButtonSelectFile: "Sélectionner un fichier PDF",
+  messagePageCvTitle: "Mettre à jour le CV",
+  messagePageCvUploadError: "Erreur lors de l’upload du CV",
+  messagePageCvUploadSuccess: "Le CV a été uploadé avec succès !",
+  messagePageCvConfirmTitle: "Confirmation d'upload",
+  messagePageCvConfirmDescription: "Êtes-vous sûr de vouloir uploader ce nouveau CV ?",
+  messagePageCvConfirmButtonYes: "Oui, uploader",
+  messagePageCvConfirmButtonNo: "Non, annuler",
 };
 
 export default fr;

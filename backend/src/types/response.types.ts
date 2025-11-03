@@ -194,3 +194,15 @@ export class PaginationArgs {
   @Field(() => String, { nullable: true })
   searchTerm?: string;
 }
+
+@ObjectType()
+export class UploadResponse {
+  @Field(() => Int)
+  code!: number;
+
+  @Field()
+  message!: string;
+
+  @Field({ nullable: true })
+  url?: string;
+}

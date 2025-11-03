@@ -264,7 +264,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
-  uploadCV: Scalars['Boolean']['output'];
+  uploadCV: UploadResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -563,6 +563,13 @@ export type UpdateSkillInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String']['output'];
@@ -604,7 +611,7 @@ export type ValidationResponse = {
 export type GenerateDatabaseBackupMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GenerateDatabaseBackupMutation = { __typename?: 'Mutation', generateDatabaseBackup: { __typename?: 'BackupResponse', code: number, message: string, path: string } };
+export type GenerateDatabaseBackupMutation = { __typename?: 'Mutation', generateDatabaseBackup: { __typename?: 'BackupResponse', path: string, message: string, code: number } };
 
 export type DeleteBackupFileMutationVariables = Exact<{
   fileName: Scalars['String']['input'];
@@ -612,6 +619,13 @@ export type DeleteBackupFileMutationVariables = Exact<{
 
 
 export type DeleteBackupFileMutation = { __typename?: 'Mutation', deleteBackupFile: { __typename?: 'Response', code: number, message: string } };
+
+export type UploadCvMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type UploadCvMutation = { __typename?: 'Mutation', uploadCV: { __typename?: 'UploadResponse', code: number, message: string, url?: string | null } };
 
 export type ValidateCaptchaMutationVariables = Exact<{
   challengeType: Scalars['String']['input'];
@@ -690,11 +704,11 @@ export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', rol
 
 
 export const GenerateDatabaseBackupDocument = gql`
-    mutation generateDatabaseBackup {
+    mutation GenerateDatabaseBackup {
   generateDatabaseBackup {
-    code
-    message
     path
+    message
+    code
   }
 }
     `;
@@ -757,6 +771,41 @@ export function useDeleteBackupFileMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteBackupFileMutationHookResult = ReturnType<typeof useDeleteBackupFileMutation>;
 export type DeleteBackupFileMutationResult = Apollo.MutationResult<DeleteBackupFileMutation>;
 export type DeleteBackupFileMutationOptions = Apollo.BaseMutationOptions<DeleteBackupFileMutation, DeleteBackupFileMutationVariables>;
+export const UploadCvDocument = gql`
+    mutation UploadCV($file: Upload!) {
+  uploadCV(file: $file) {
+    code
+    message
+    url
+  }
+}
+    `;
+export type UploadCvMutationFn = Apollo.MutationFunction<UploadCvMutation, UploadCvMutationVariables>;
+
+/**
+ * __useUploadCvMutation__
+ *
+ * To run a mutation, you first call `useUploadCvMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadCvMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadCvMutation, { data, loading, error }] = useUploadCvMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadCvMutation(baseOptions?: Apollo.MutationHookOptions<UploadCvMutation, UploadCvMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadCvMutation, UploadCvMutationVariables>(UploadCvDocument, options);
+      }
+export type UploadCvMutationHookResult = ReturnType<typeof useUploadCvMutation>;
+export type UploadCvMutationResult = Apollo.MutationResult<UploadCvMutation>;
+export type UploadCvMutationOptions = Apollo.BaseMutationOptions<UploadCvMutation, UploadCvMutationVariables>;
 export const ValidateCaptchaDocument = gql`
     mutation ValidateCaptcha($challengeType: String!, $selectedIndices: [Float!]!, $idCaptcha: String!) {
   validateCaptcha(
@@ -956,8 +1005,11 @@ export function useGetGlobalStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
         }
-export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>): Apollo.UseSuspenseQueryResult<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>;
+export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>): Apollo.UseSuspenseQueryResult<GetGlobalStatsQuery | undefined, GetGlobalStatsQueryVariables>;
+export function useGetGlobalStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetGlobalStatsQuery, GetGlobalStatsQueryVariables>(GetGlobalStatsDocument, options);
         }
 export type GetGlobalStatsQueryHookResult = ReturnType<typeof useGetGlobalStatsQuery>;
@@ -1002,8 +1054,11 @@ export function useGetBackupsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
         }
-export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetBackupsListQuery, GetBackupsListQueryVariables>;
+export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetBackupsListQuery | undefined, GetBackupsListQueryVariables>;
+export function useGetBackupsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBackupsListQuery, GetBackupsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetBackupsListQuery, GetBackupsListQueryVariables>(GetBackupsListDocument, options);
         }
 export type GetBackupsListQueryHookResult = ReturnType<typeof useGetBackupsListQuery>;
@@ -1052,8 +1107,11 @@ export function useGenerateCaptchaLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>(GenerateCaptchaDocument, options);
         }
-export function useGenerateCaptchaSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGenerateCaptchaSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>): Apollo.UseSuspenseQueryResult<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>;
+export function useGenerateCaptchaSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>): Apollo.UseSuspenseQueryResult<GenerateCaptchaQuery | undefined, GenerateCaptchaQueryVariables>;
+export function useGenerateCaptchaSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GenerateCaptchaQuery, GenerateCaptchaQueryVariables>(GenerateCaptchaDocument, options);
         }
 export type GenerateCaptchaQueryHookResult = ReturnType<typeof useGenerateCaptchaQuery>;
@@ -1089,8 +1147,11 @@ export function useCvLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CvQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CvQuery, CvQueryVariables>(CvDocument, options);
         }
-export function useCvSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CvQuery, CvQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useCvSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CvQuery, CvQueryVariables>): Apollo.UseSuspenseQueryResult<CvQuery, CvQueryVariables>;
+export function useCvSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CvQuery, CvQueryVariables>): Apollo.UseSuspenseQueryResult<CvQuery | undefined, CvQueryVariables>;
+export function useCvSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CvQuery, CvQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<CvQuery, CvQueryVariables>(CvDocument, options);
         }
 export type CvQueryHookResult = ReturnType<typeof useCvQuery>;
@@ -1146,8 +1207,11 @@ export function useGetEducationsListLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
         }
-export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetEducationsListQuery, GetEducationsListQueryVariables>;
+export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetEducationsListQuery | undefined, GetEducationsListQueryVariables>;
+export function useGetEducationsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetEducationsListQuery, GetEducationsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetEducationsListQuery, GetEducationsListQueryVariables>(GetEducationsListDocument, options);
         }
 export type GetEducationsListQueryHookResult = ReturnType<typeof useGetEducationsListQuery>;
@@ -1201,8 +1265,11 @@ export function useGetExperiencesListLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
         }
-export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
+export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetExperiencesListQuery | undefined, GetExperiencesListQueryVariables>;
+export function useGetExperiencesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetExperiencesListQuery, GetExperiencesListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetExperiencesListQuery, GetExperiencesListQueryVariables>(GetExperiencesListDocument, options);
         }
 export type GetExperiencesListQueryHookResult = ReturnType<typeof useGetExperiencesListQuery>;
@@ -1256,8 +1323,11 @@ export function useGetProjectsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
         }
-export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
+export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetProjectsListQuery | undefined, GetProjectsListQueryVariables>;
+export function useGetProjectsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetProjectsListQuery, GetProjectsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetProjectsListQuery, GetProjectsListQueryVariables>(GetProjectsListDocument, options);
         }
 export type GetProjectsListQueryHookResult = ReturnType<typeof useGetProjectsListQuery>;
@@ -1307,8 +1377,11 @@ export function useGetSkillsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
         }
-export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
+export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSkillsListQuery | undefined, GetSkillsListQueryVariables>;
+export function useGetSkillsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSkillsListQuery, GetSkillsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetSkillsListQuery, GetSkillsListQueryVariables>(GetSkillsListDocument, options);
         }
 export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQuery>;
@@ -1351,8 +1424,11 @@ export function useGetMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetM
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
         }
-export function useGetMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+// @ts-ignore
+export function useGetMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetMeQuery, GetMeQueryVariables>;
+export function useGetMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetMeQuery | undefined, GetMeQueryVariables>;
+export function useGetMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetMeQuery, GetMeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetMeQuery, GetMeQueryVariables>(GetMeDocument, options);
         }
 export type GetMeQueryHookResult = ReturnType<typeof useGetMeQuery>;

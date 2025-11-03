@@ -164,6 +164,15 @@ type Lang = {
   messageCVNotFound: string;
   messageCVNotFetch: string;
   messageCVLoading: string;
+  messagePageCvConfirmTitle: string;
+  messagePageCvConfirmDescription: string;
+  messagePageCvConfirmButtonYes : string;
+  messagePageCvConfirmButtonNo : string;
+  messagePageCvUploading : string;
+  messagePageCvButtonSelectFile: string;
+  messagePageCvTitle: string;
+  messagePageCvUploadError: string;
+  messagePageCvUploadSuccess: string;
 };
 
 export default Lang;

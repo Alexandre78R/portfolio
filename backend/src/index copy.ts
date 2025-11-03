@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import express, { Request, Response, NextFunction, Application, Express } from "express";
+import express, { Request, Response, NextFunction, Application, Express} from "express";
 import http, { Server } from "http";
 import cors from "cors";
 import path from "path";
@@ -45,33 +45,29 @@ app.use(
   })
 );
 
-// ❌ NE PAS mettre express.json() ici globalement
-// app.use(express.json());
+app.use(express.json());
+
+/* --- Routes REST --- */
+app.use("/api/badges", badgeRoutes);           // → /api/badges/…
+app.use("/api/backups", backupsRoutes);        // → /api/backups/…
+app.use("/api/dynamic-images", captchaRoutes);// → /api/dynamic-images/:id
+app.use("/api/upload", uploadRoutes);          // → /api/upload/:type/:filename
+app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));// → /api/upload/ cv
+
+/* --- Serve static files --- */
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"), {
+    maxAge: "7d",
+    immutable: true,
+  })
+);
 
 /* --- Démarrage serveur --- */
 (async (): Promise<void> => {
   try {
-    /* ▸ Monte GraphQL EN PREMIER (avant les routes REST) */
+    /* ▸ Monte GraphQL */
     await mountGraphQL(app);
-
-    /* ▸ MAINTENANT on peut ajouter express.json() pour les autres routes */
-    app.use(express.json());
-
-    /* --- Routes REST --- */
-    app.use("/api/badges", badgeRoutes);
-    app.use("/api/backups", backupsRoutes);
-    app.use("/api/dynamic-images", captchaRoutes);
-    app.use("/api/upload", uploadRoutes);
-    app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));
-
-    /* --- Serve static files --- */
-    app.use(
-      "/uploads",
-      express.static(path.join(__dirname, "../uploads"), {
-        maxAge: "7d",
-        immutable: true,
-      })
-    );
 
     /* ▸ Cleanup périodique captchas expirés */
     setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);
@@ -85,10 +81,7 @@ app.use(
       console.log(`✅  GraphQL ready→ http://localhost:${PORT}/graphql`);
     });
   } catch (err: unknown) {
-    console.error(
-      "❌ Erreur au démarrage du serveur :",
-      err instanceof Error ? err.message : err
-    );
+    console.error("❌ Erreur au démarrage du serveur :", err instanceof Error ? err.message : err);
     process.exit(1);
   }
 })();

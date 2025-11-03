@@ -181,6 +181,15 @@ const en: Lang = {
   messageCVNotFound: "CV not available at the moment.",
   messageCVNotFetch: "Error fetching CV, try again later.",
   messageCVLoading: "Please wait, loading CV...",
+  messagePageCvUploading: "Uploading…",
+  messagePageCvButtonSelectFile: "Select a PDF file",
+  messagePageCvTitle: "Update CV",
+  messagePageCvUploadError: "Error uploading CV",
+  messagePageCvUploadSuccess: "CV uploaded successfully!",
+  messagePageCvConfirmTitle: "Upload confirmation",
+  messagePageCvConfirmDescription: "Are you sure you want to upload this new CV?",
+  messagePageCvConfirmButtonYes: "Yes, upload",
+  messagePageCvConfirmButtonNo: "No, cancel",
 };
 
 export default en;
