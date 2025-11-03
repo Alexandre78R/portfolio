@@ -34,8 +34,8 @@ export class CVResolver {
     }
 
     const finalPath: string = CV_PATH;
+    const stream: NodeJS.ReadableStream = createReadStream();
 
-    const stream = createReadStream();
     await new Promise<void>((resolve, reject) => {
       const out: fs.WriteStream = fs.createWriteStream(finalPath);
       stream.pipe(out);
