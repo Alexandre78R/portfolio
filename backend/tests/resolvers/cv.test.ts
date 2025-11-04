@@ -16,33 +16,40 @@ describe("CVResolver", (): void => {
   const MOCK_CV_FILENAME: string = "Alexandre-Renard-CV.pdf";
   const MOCK_CV_PATH: string = path.join(MOCK_UPLOAD_DIR, MOCK_CV_FILENAME);
   const MOCK_CV_URL: string = `/api/uploads/cv/${MOCK_CV_FILENAME}`;
-  
-  const createMockWriteStream = (shouldError: boolean = false): WriteStream => {
-    const mockWriteStream = new Readable() as unknown as WriteStream;
-    
-    (mockWriteStream as any).writable = true;
-    (mockWriteStream as any).write = jest.fn();
-    (mockWriteStream as any).end = jest.fn();
-    (mockWriteStream as any).on = jest.fn((event: string, callback: (...args: any[]) => void) => {
-      if (shouldError && event === "error") {
-        setImmediate(() => callback(new Error("disk error")));
-      } else if (!shouldError && event === "finish") {
-        setImmediate(() => callback());
-      }
-      return mockWriteStream;
-    });
-    (mockWriteStream as any).once = jest.fn((event: string, callback: (...args: any[]) => void) => {
-      if (shouldError && event === "error") {
-        setImmediate(() => callback(new Error("disk error")));
-      } else if (!shouldError && event === "finish") {
-        setImmediate(() => callback());
-      }
-      return mockWriteStream;
-    });
-    (mockWriteStream as any).emit = jest.fn();
-    (mockWriteStream as any).pipe = jest.fn().mockReturnThis();
 
-    return mockWriteStream;
+  /**
+   * Creates a mock WriteStream for testing file upload scenarios
+   * @param shouldError - Whether the stream should emit an error event
+   * @returns Mocked WriteStream instance
+   */
+  const createMockWriteStream = (shouldError: boolean = false): WriteStream => {
+    const mockWriteStream = new Readable();
+    
+    Object.assign(mockWriteStream, {
+      writable: true,
+      write: jest.fn(),
+      end: jest.fn(),
+      on: jest.fn((event: string, callback: (error?: Error) => void): WriteStream => {
+        if (shouldError && event === "error") {
+          setImmediate(() => callback(new Error("disk error")));
+        } else if (!shouldError && event === "finish") {
+          setImmediate(() => callback());
+        }
+        return mockWriteStream as unknown as WriteStream;
+      }),
+      once: jest.fn((event: string, callback: (error?: Error) => void): WriteStream => {
+        if (shouldError && event === "error") {
+          setImmediate(() => callback(new Error("disk error")));
+        } else if (!shouldError && event === "finish") {
+          setImmediate(() => callback());
+        }
+        return mockWriteStream as unknown as WriteStream;
+      }),
+      emit: jest.fn(),
+      pipe: jest.fn().mockReturnThis(),
+    });
+
+    return mockWriteStream as unknown as WriteStream;
   };
 
   /**
@@ -59,14 +66,16 @@ describe("CVResolver", (): void => {
   ): FileUpload => {
     const mockReadStream = new Readable({ read(): void { this.push(null); } });
     
-    return {
+    const mockFile = {
       filename,
       mimetype,
       encoding,
       fieldName: "file",
-      capacitor: {} as any,
-      createReadStream: jest.fn(() => mockReadStream as any),
-    } as FileUpload;
+      capacitor: {} as unknown,
+      createReadStream: jest.fn(() => mockReadStream),
+    };
+
+    return mockFile as unknown as FileUpload;
   };
 
   beforeEach((): void => {
@@ -109,7 +118,7 @@ describe("CVResolver", (): void => {
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
 
         mockExistsSync.mockReturnValue(false);
-        mockMkdirSync.mockImplementation(jest.fn() as any);
+        mockMkdirSync.mockImplementation(jest.fn() as unknown as typeof fs.mkdirSync);
         mockCreateWriteStream.mockReturnValue(mockWriteStream);
 
         const result: UploadResponse = await cvResolver.uploadCV(mockFile);
@@ -135,7 +144,7 @@ describe("CVResolver", (): void => {
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
 
         mockExistsSync.mockReturnValue(true);
-        mockMkdirSync.mockImplementation(jest.fn() as any);
+        mockMkdirSync.mockImplementation(jest.fn() as unknown as typeof fs.mkdirSync);
         mockCreateWriteStream.mockReturnValue(mockWriteStream);
 
         const result: UploadResponse = await cvResolver.uploadCV(mockFile);
