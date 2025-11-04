@@ -31,7 +31,7 @@ const formatDate = (iso: string): string =>
     minute: "2-digit",
   });
 
-interface BackupFileInfo {
+export interface BackupFileInfo {
   fileName: string;
   sizeBytes: number;
   createdAt: string;
@@ -162,7 +162,7 @@ const BackUpList = (): React.ReactElement => {
     <div className="space-y-10">
       <TextAdmin type="h1">{translations.messagePageBackUpListTitle}</TextAdmin>
       <ButtonCustom
-        text="{translations.messagePageBackUpButtomCreated}"
+        text={translations.messagePageBackUpButtomCreated}
         onClick={handleOpenDialog}
         disable={false} 
         disableHover={false}
