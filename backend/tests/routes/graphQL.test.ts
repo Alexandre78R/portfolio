@@ -8,11 +8,11 @@ import { ApolloServer } from "@apollo/server";
 import type { ApolloServerOptions, BaseContext } from "@apollo/server";
 import { expressMiddleware, ExpressContextFunctionArgument } from "@apollo/server/express4";
 import * as TypeGraphQL from "type-graphql";
+import { GraphQLSchema } from "graphql";
 
-import { mountGraphQL, GraphQLContext } from "../../src/routes/graphql.routes";
+import { mountGraphQL, GraphQLContext, JwtPayloadExtended } from "../../src/routes/graphql.routes";
 import { checkApiKey } from "../../src/lib/checkApiKey";
 import { UserRole } from "../../src/entities/user.entity";
-import { GraphQLSchema } from "graphql";
 
 jest.mock("@apollo/server");
 jest.mock("@apollo/server/express4");
@@ -31,19 +31,16 @@ jest.mock("@prisma/client", () => {
 type MockedExpress = jest.Mocked<Express>;
 type MockedRequest = Partial<Request>;
 type MockedResponse = Partial<Response>;
-type MockedPrismaClient = {
+
+interface MockedPrismaClient {
   user: {
     findUnique: jest.Mock<Promise<PrismaUser | null>, [{ where: { id: number } }]>;
   };
-};
+}
 
 interface MockReqRes {
   req: Request;
   res: Response;
-}
-
-interface JwtVerifyResult {
-  payload: JWTPayload;
 }
 
 type ExpressMiddlewareOptions = {
@@ -68,9 +65,7 @@ const createMockApp = (): MockedExpress => {
 };
 
 const createMockReqRes = (): MockReqRes => {
-  const req: MockedRequest = {
-    headers: { "x-api-key": "valid-api-key" },
-  };
+  const req: MockedRequest = { headers: { "x-api-key": "valid-api-key" } };
   const res: MockedResponse = {};
   return { req: req as Request, res: res as Response };
 };
@@ -83,9 +78,10 @@ describe("mountGraphQL", () => {
   });
 
   it("should build the GraphQL schema with resolvers and auth checker", async () => {
+
     const app: MockedExpress = createMockApp();
     buildSchemaMock.mockResolvedValue({} as GraphQLSchema);
-    
+
     await mountGraphQL(app);
 
     expect(buildSchemaMock).toHaveBeenCalledTimes(1);
@@ -99,14 +95,13 @@ describe("mountGraphQL", () => {
   });
 
   it("should start Apollo Server and mount /graphql middleware", async () => {
+
     const app: MockedExpress = createMockApp();
     const startMock = jest.fn<Promise<void>, []>().mockResolvedValue(undefined);
 
     (ApolloServer as unknown as jest.Mock).mockImplementation(
-    (options: ApolloServerOptions<BaseContext>) =>
-        ({
-        start: startMock,
-        } as unknown as ApolloServer<BaseContext>)
+      (options: ApolloServerOptions<BaseContext>) =>
+        ({ start: startMock } as unknown as ApolloServer<BaseContext>)
     );
 
     buildSchemaMock.mockResolvedValue({} as GraphQLSchema);
@@ -119,28 +114,25 @@ describe("mountGraphQL", () => {
       "/graphql",
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
       expect.any(Function)
     );
   });
 
   it("should throw an error when x-api-key header is missing", async () => {
+
     const app: MockedExpress = createMockApp();
     buildSchemaMock.mockResolvedValue({} as GraphQLSchema);
 
     expressMiddlewareMock.mockImplementation(
       (_server: ApolloServer<GraphQLContext>, options: ExpressMiddlewareOptions): RequestHandler => {
-        const mockHandler: RequestHandler = (async (
-          req: Request,
-          res: Response,
-          next: NextFunction
-        ): Promise<void> => {
+        return (async (req: Request, res: Response) => {
           const request: Request = { headers: {} } as Request;
           const response: Response = {} as Response;
           await expect(options.context({ req: request, res: response })).rejects.toThrow(
             "Unauthorized: x-api-key header is missing."
           );
         }) as RequestHandler;
-        return mockHandler;
       }
     );
 
@@ -148,6 +140,7 @@ describe("mountGraphQL", () => {
   });
 
   it("should attach authenticated user to GraphQL context when JWT is valid", async () => {
+
     const app: MockedExpress = createMockApp();
 
     const prismaUser: PrismaUser = {
@@ -164,24 +157,19 @@ describe("mountGraphQL", () => {
     CookiesMock.prototype.get.mockReturnValue("jwt-token");
 
     jwtVerifyMock.mockResolvedValue({
-      payload: { id: prismaUser.id, role: prismaUser.role } as JWTPayload,
-    } as JwtVerifyResult as Awaited<ReturnType<typeof jwtVerify>>);
+      payload: { id: prismaUser.id, role: prismaUser.role } as JwtPayloadExtended,
+    } as unknown as Awaited<ReturnType<typeof jwtVerify>>);
 
     buildSchemaMock.mockResolvedValue({} as GraphQLSchema);
 
     expressMiddlewareMock.mockImplementation(
       (_server: ApolloServer<GraphQLContext>, options: ExpressMiddlewareOptions): RequestHandler => {
-        const mockHandler: RequestHandler = (async (
-          req: Request,
-          res: Response,
-          next: NextFunction
-        ): Promise<void> => {
-          const { req: request, res: response }: MockReqRes = createMockReqRes();
-          const context: GraphQLContext = await options.context({ req: request, res: response });
+        return (async (_req: Request, _res: Response) => {
+          const { req, res } = createMockReqRes();
+          const context: GraphQLContext = await options.context({ req, res });
           expect(context.user).not.toBeNull();
           expect(context.user?.email).toBe(prismaUser.email);
         }) as RequestHandler;
-        return mockHandler;
       }
     );
 
@@ -189,6 +177,7 @@ describe("mountGraphQL", () => {
   });
 
   it("should validate API key using checkApiKey", async () => {
+
     const app: MockedExpress = createMockApp();
     buildSchemaMock.mockResolvedValue({} as GraphQLSchema);
 
@@ -197,23 +186,15 @@ describe("mountGraphQL", () => {
     expressMiddlewareMock.mockImplementation(
       (_server: ApolloServer<GraphQLContext>, options: ExpressMiddlewareOptions): RequestHandler => {
         capturedContext = options.context;
-        const mockHandler: RequestHandler = (async (
-          req: Request,
-          res: Response,
-          next: NextFunction
-        ): Promise<void> => {
-        }) as RequestHandler;
-        return mockHandler;
+        return (async () => {}) as RequestHandler;
       }
     );
 
-    const { req, res }: MockReqRes = createMockReqRes();
+    const { req, res } = createMockReqRes();
 
     await mountGraphQL(app);
 
-    if (capturedContext) {
-      await capturedContext({ req, res });
-    }
+    if (capturedContext) await capturedContext({ req, res });
 
     expect(checkApiKeyMock).toHaveBeenCalledTimes(1);
     expect(checkApiKeyMock).toHaveBeenCalledWith("valid-api-key");

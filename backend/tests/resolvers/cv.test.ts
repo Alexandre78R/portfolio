@@ -1,95 +1,260 @@
 import "reflect-metadata";
 import fs from "fs";
-import { CVResolver } from "../../src/resolvers/cv.resolver";
+import path from "path";
+import { Readable } from "stream";
 import type { FileUpload } from "graphql-upload-ts";
-import type { ReadStream } from "fs";
+import type { WriteStream } from "fs";
+import { CVResolver } from "../../src/resolvers/cv.resolver";
+import type { UploadResponse } from "../../src/types/response.types";
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
 jest.mock("fs");
 
 describe("CVResolver", (): void => {
   let cvResolver: CVResolver;
+  const MOCK_UPLOAD_DIR: string = path.resolve(__dirname, "../../uploads/cv");
+  const MOCK_CV_FILENAME: string = "Alexandre-Renard-CV.pdf";
+  const MOCK_CV_PATH: string = path.join(MOCK_UPLOAD_DIR, MOCK_CV_FILENAME);
+  const MOCK_CV_URL: string = `/api/uploads/cv/${MOCK_CV_FILENAME}`;
+  
+  const createMockWriteStream = (shouldError: boolean = false): WriteStream => {
+    const mockWriteStream = new Readable() as unknown as WriteStream;
+    
+    (mockWriteStream as any).writable = true;
+    (mockWriteStream as any).write = jest.fn();
+    (mockWriteStream as any).end = jest.fn();
+    (mockWriteStream as any).on = jest.fn((event: string, callback: (...args: any[]) => void) => {
+      if (shouldError && event === "error") {
+        setImmediate(() => callback(new Error("disk error")));
+      } else if (!shouldError && event === "finish") {
+        setImmediate(() => callback());
+      }
+      return mockWriteStream;
+    });
+    (mockWriteStream as any).once = jest.fn((event: string, callback: (...args: any[]) => void) => {
+      if (shouldError && event === "error") {
+        setImmediate(() => callback(new Error("disk error")));
+      } else if (!shouldError && event === "finish") {
+        setImmediate(() => callback());
+      }
+      return mockWriteStream;
+    });
+    (mockWriteStream as any).emit = jest.fn();
+    (mockWriteStream as any).pipe = jest.fn().mockReturnThis();
+
+    return mockWriteStream;
+  };
+
+  /**
+   * Creates a mock FileUpload object for testing
+   * @param filename - Name of the file
+   * @param mimetype - MIME type of the file
+   * @param encoding - File encoding (default: "utf-8")
+   * @returns Mocked FileUpload instance
+   */
+  const createMockFileUpload = (
+    filename: string,
+    mimetype: string,
+    encoding: string = "utf-8"
+  ): FileUpload => {
+    const mockReadStream = new Readable({ read(): void { this.push(null); } });
+    
+    return {
+      filename,
+      mimetype,
+      encoding,
+      fieldName: "file",
+      capacitor: {} as any,
+      createReadStream: jest.fn(() => mockReadStream as any),
+    } as FileUpload;
+  };
 
   beforeEach((): void => {
     cvResolver = new CVResolver();
     jest.clearAllMocks();
   });
 
-  it("should return CV URL when CV file exists", (): void => {
-    const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-    mockExistsSync.mockReturnValue(true);
+  describe("cvUrl", (): void => {
+    it("should return CV URL when CV file exists", (): void => {
+      const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+      mockExistsSync.mockReturnValue(true);
 
-    const url: string = cvResolver.cvUrl();
-    
-    expect(url).toBe("/api/uploads/cv/Alexandre-Renard-CV.pdf");
-    expect(mockExistsSync).toHaveBeenCalled();
+      const url: string = cvResolver.cvUrl();
+
+      expect(url).toBe(MOCK_CV_URL);
+      expect(url).toMatch(/^\/api\/uploads\/cv\//);
+      expect(url).toContain(MOCK_CV_FILENAME);
+      expect(mockExistsSync).toHaveBeenCalledWith(MOCK_CV_PATH);
+      expect(mockExistsSync).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw an error when CV file does not exist", (): void => {
+      const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+      mockExistsSync.mockReturnValue(false);
+
+      expect(() => cvResolver.cvUrl()).toThrow("CV not found");
+      expect(() => cvResolver.cvUrl()).toThrow(Error);
+      expect(mockExistsSync).toHaveBeenCalledWith(MOCK_CV_PATH);
+    });
   });
 
-  it("should throw error when CV file does not exist", (): void => {
-    const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-    mockExistsSync.mockReturnValue(false);
+  describe("uploadCV", (): void => {
+    describe("successful upload scenarios", (): void => {
+      it("should upload a valid PDF file successfully when folder does not exist", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
-    expect((): string => cvResolver.cvUrl()).toThrow("CV not found");
-  });
+        const mockWriteStream: WriteStream = createMockWriteStream(false);
+        const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
 
-  it("should upload a valid PDF file successfully", async (): Promise<void> => {
-    const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-    const mockMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
-    const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        mockExistsSync.mockReturnValue(false);
+        mockMkdirSync.mockImplementation(jest.fn() as any);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
 
-    // Mock write stream
-    const writeStreamMock = {
-      on: jest.fn((event: string, callback: () => void) => {
-        if (event === "finish") {
-          callback();
-        }
-        return writeStreamMock;
-      }),
-      pipe: jest.fn().mockReturnThis(),
-    } as unknown as fs.WriteStream;
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
 
-    mockExistsSync.mockReturnValue(false);
-    mockMkdirSync.mockImplementation(jest.fn() as any);
-    mockCreateWriteStream.mockReturnValue(writeStreamMock);
+        expect(result).toBeDefined();
+        expect(result.code).toBe(200);
+        expect(result.message).toBe("CV uploaded successfully!");
+        expect(result.url).toBe(MOCK_CV_URL);
+        expect(result.url).toMatch(/^\/api\/uploads\/cv\//);
+        expect(mockExistsSync).toHaveBeenCalledWith(MOCK_UPLOAD_DIR);
+        expect(mockMkdirSync).toHaveBeenCalledWith(MOCK_UPLOAD_DIR, { recursive: true });
+        expect(mockMkdirSync).toHaveBeenCalledTimes(1);
+        expect(mockCreateWriteStream).toHaveBeenCalledWith(MOCK_CV_PATH);
+        expect(mockFile.createReadStream).toHaveBeenCalled();
+      });
 
-    // Mock read stream
-    const mockReadStream = {
-      pipe: jest.fn().mockReturnThis(),
-      on: jest.fn().mockReturnThis(),
-    } as unknown as ReadStream;
+      it("should upload a valid PDF file successfully when folder already exists", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
-    // Mock FileUpload
-    const mockFile = {
-      filename: "test.pdf",
-      mimetype: "application/pdf",
-      encoding: "utf-8",
-      createReadStream: jest.fn((): ReadStream => mockReadStream),
-    } as unknown as FileUpload;
+        const mockWriteStream: WriteStream = createMockWriteStream(false);
+        const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
 
-    const result: boolean = await cvResolver.uploadCV(mockFile);
-    
-    expect(result).toBe(true);
-    expect(mockExistsSync).toHaveBeenCalledWith(expect.any(String));
-    expect(mockMkdirSync).toHaveBeenCalledWith(expect.any(String), { recursive: true });
-    expect(mockCreateWriteStream).toHaveBeenCalledWith(expect.any(String));
-    expect(mockFile.createReadStream).toHaveBeenCalled();
-  });
+        mockExistsSync.mockReturnValue(true);
+        mockMkdirSync.mockImplementation(jest.fn() as any);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
 
-  it("should reject upload when file type is not PDF", async (): Promise<void> => {
-    const mockReadStream = {
-      pipe: jest.fn().mockReturnThis(),
-      on: jest.fn().mockReturnThis(),
-    } as unknown as ReadStream;
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
 
-    const mockFile = {
-      filename: "test.txt",
-      mimetype: "text/plain",
-      encoding: "utf-8",
-      createReadStream: jest.fn((): ReadStream => mockReadStream),
-    } as unknown as FileUpload;
+        expect(result).toBeDefined();
+        expect(result.code).toBe(200);
+        expect(result.message).toBe("CV uploaded successfully!");
+        expect(result.url).toBe(MOCK_CV_URL);
+        expect(mockExistsSync).toHaveBeenCalledWith(MOCK_UPLOAD_DIR);
+        expect(mockMkdirSync).not.toHaveBeenCalled();
+        expect(mockCreateWriteStream).toHaveBeenCalledWith(MOCK_CV_PATH);
+      });
+    });
 
-    await expect(cvResolver.uploadCV(mockFile)).rejects.toThrow(
-      "Invalid file type. Only PDF files are allowed."
-    );
+    describe("validation scenarios", (): void => {
+      it("should reject upload when file type is not PDF", async (): Promise<void> => {
+        const mockFile: FileUpload = createMockFileUpload("test.txt", "text/plain");
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result).toBeDefined();
+        expect(result.code).toBe(400);
+        expect(result.message).toBe("Invalid file type. Only PDF files are allowed.");
+        expect(result.url).toBeUndefined();
+        expect(mockFile.createReadStream).not.toHaveBeenCalled();
+      });
+
+      it("should reject upload when file type is application/json", async (): Promise<void> => {
+        const mockFile: FileUpload = createMockFileUpload("data.json", "application/json");
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result.code).toBe(400);
+        expect(result.message).toBe("Invalid file type. Only PDF files are allowed.");
+        expect(result.url).toBeUndefined();
+      });
+
+      it("should reject upload when file type is image/png", async (): Promise<void> => {
+        const mockFile: FileUpload = createMockFileUpload("image.png", "image/png");
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result.code).toBe(400);
+        expect(result.message).toBe("Invalid file type. Only PDF files are allowed.");
+        expect(result.url).toBeUndefined();
+      });
+    });
+
+    describe("error scenarios", (): void => {
+      it("should return 500 error if write stream fails", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+
+        const mockWriteStream: WriteStream = createMockWriteStream(true);
+        const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
+
+        mockExistsSync.mockReturnValue(true);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result).toBeDefined();
+        expect(result.code).toBe(500);
+        expect(result.message).toBe("Error saving CV file");
+        expect(result.url).toBeUndefined();
+        expect(mockFile.createReadStream).toHaveBeenCalled();
+      });
+
+      it("should handle stream pipe error gracefully", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+
+        const mockWriteStream: WriteStream = createMockWriteStream(true);
+        const mockFile: FileUpload = createMockFileUpload("corrupted.pdf", "application/pdf");
+
+        mockExistsSync.mockReturnValue(true);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result.code).toBe(500);
+        expect(result.message).toBe("Error saving CV file");
+        expect(result.url).toBeUndefined();
+      });
+    });
+
+    describe("edge cases", (): void => {
+      it("should handle PDF file with different encoding", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+
+        const mockWriteStream: WriteStream = createMockWriteStream(false);
+        const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf", "binary");
+
+        mockExistsSync.mockReturnValue(true);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result.code).toBe(200);
+        expect(result.message).toBe("CV uploaded successfully!");
+        expect(result.url).toBe(MOCK_CV_URL);
+      });
+
+      it("should handle PDF file with uppercase extension", async (): Promise<void> => {
+        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+
+        const mockWriteStream: WriteStream = createMockWriteStream(false);
+        const mockFile: FileUpload = createMockFileUpload("TEST.PDF", "application/pdf");
+
+        mockExistsSync.mockReturnValue(true);
+        mockCreateWriteStream.mockReturnValue(mockWriteStream);
+
+        const result: UploadResponse = await cvResolver.uploadCV(mockFile);
+
+        expect(result.code).toBe(200);
+        expect(result.message).toBe("CV uploaded successfully!");
+      });
+    });
   });
 });

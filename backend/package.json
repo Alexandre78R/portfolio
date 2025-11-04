@@ -13,7 +13,8 @@
     "db:clean": "ts-node src/prisma/scripts/clean.ts",
     "test": "jest --runInBand --watch",
     "test:onetest": "jest --runInBand --watch -- tests/resolvers/user/register.test.ts",
-    "test:ci": "jest --runInBand"
+    "test:ci": "jest --runInBand",
+    "test:safe": "jest --runInBand --no-cache"
   },
   "author": "Alexandre Renard",
   "license": "ISC",
