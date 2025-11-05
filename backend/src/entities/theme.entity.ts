@@ -8,7 +8,6 @@ export class Theme {
   @Field()
   name: string;
 
-  // Base colors
   @Field()
   body: string;
 
@@ -48,7 +47,6 @@ export class Theme {
   @Field()
   admin: string;
 
-  // Text colors
   @Field()
   textDefault: string;
 
@@ -64,7 +62,6 @@ export class Theme {
   @Field()
   textButton: string;
 
-  // Visibility
   @Field(() => Boolean)
   visible: boolean;
 }
