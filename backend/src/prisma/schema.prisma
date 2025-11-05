@@ -98,3 +98,32 @@ model User {
   role             Role    @default(view)
   isPasswordChange Boolean @default(false)
 }
+
+model Theme {
+  id                Int    @id @default(autoincrement())
+  name              String @unique
+  body              String
+  scrollHandle      String
+  scrollHandleHover String
+  primary           String
+  secondary         String
+  success           String
+  error             String
+  warn              String
+  info              String
+  grey              String
+  placeholder       String
+  footer            String
+  admin             String
+
+  // Couleurs du texte
+  textDefault String
+  text100     String
+  text200     String
+  text300     String
+  textButton  String
+
+  visible Boolean @default(false)
+
+  @@map("themes")
+}

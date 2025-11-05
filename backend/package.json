@@ -9,6 +9,8 @@
     "prisma": "prisma generate --schema=src/prisma/schema.prisma && prisma db push --schema=src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --name init --schema=src/prisma/schema.prisma",
     "prisma:update": "npx prisma format --schema=src/prisma/schema.prisma",
+    "prisma:manu": "npx prisma migrate dev --name Theme --create-only  --schema=src/prisma/schema.prisma",
+    "prisma:reset": "npx prisma migrate reset --schema=src/prisma/schema.prisma",
     "db:seed": "ts-node src/prisma/scripts/seed.ts",
     "db:clean": "ts-node src/prisma/scripts/clean.ts",
     "test": "jest --runInBand --watch",
