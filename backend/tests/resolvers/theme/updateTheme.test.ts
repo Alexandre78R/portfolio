@@ -5,22 +5,24 @@ import { PrismaClient, Theme as PrismaTheme } from "@prisma/client";
 import { UserRole } from "../../../src/entities/user.entity";
 import type { MyContext } from "../../../src";
 import type { ThemeResponse } from "../../../src/types/response.types";
-import type { CreateThemeInput } from "../../../src/entities/inputs/theme.input";
+import type { UpdateThemeInput } from "../../../src/entities/inputs/theme.input";
 
+// Mock types pour Prisma
 type MockPrismaTheme = {
   findUnique: jest.Mock<Promise<PrismaTheme | null>, [any?]>;
-  create: jest.Mock<Promise<PrismaTheme>, [any?]>;
+  update: jest.Mock<Promise<PrismaTheme>, [any?]>;
 };
 
-describe("ThemeResolver - createTheme", () => {
+describe("ThemeResolver - updateTheme", () => {
   let resolver: ThemeResolver;
   let mockDb: { theme: MockPrismaTheme };
 
   const adminCtx: MyContext = { user: { id: 1, role: UserRole.admin } } as MyContext;
   const userCtx: MyContext = { user: { id: 2, role: UserRole.editor } } as MyContext;
 
-  const fakeInput: CreateThemeInput = {
-    name: "newtheme",
+  const fakeExisting: PrismaTheme = {
+    id: 1,
+    name: "dark",
     body: "#000",
     scrollHandle: "",
     scrollHandleHover: "",
@@ -42,54 +44,56 @@ describe("ThemeResolver - createTheme", () => {
     visible: true,
   };
 
-  const fakeTheme: PrismaTheme = { ...fakeInput, id: 1 };
+  const updateInput: UpdateThemeInput = { id: 1, name: "dark-updated" };
+  const updatedTheme: PrismaTheme = { ...fakeExisting, ...updateInput };
 
   beforeEach(() => {
     mockDb = {
       theme: {
         findUnique: jest.fn<Promise<PrismaTheme | null>, [any?]>(),
-        create: jest.fn<Promise<PrismaTheme>, [any?]>(),
+        update: jest.fn<Promise<PrismaTheme>, [any?]>(),
       },
     };
 
     resolver = new ThemeResolver(mockDb as unknown as PrismaClient);
   });
 
-  it("should create theme for admin", async () => {
-    mockDb.theme.findUnique.mockResolvedValue(null);
-    mockDb.theme.create.mockResolvedValue(fakeTheme);
+  it("should update theme for admin", async () => {
+    mockDb.theme.findUnique.mockImplementation(async () => fakeExisting);
+    mockDb.theme.update.mockImplementation(async () => updatedTheme);
 
-    const result: ThemeResponse = await resolver.createTheme(fakeInput, adminCtx);
+    const result: ThemeResponse = await resolver.updateTheme(updateInput, adminCtx);
     expect(result.code).toBe(200);
-    expect(result.theme?.id).toBe(1);
-    expect(mockDb.theme.findUnique).toHaveBeenCalledWith({ where: { name: fakeInput.name } });
-    expect(mockDb.theme.create).toHaveBeenCalledWith({ data: fakeInput });
+    expect(result.theme?.name).toBe("dark-updated");
+    expect(mockDb.theme.update).toHaveBeenCalledWith({ where: { id: 1 }, data: updateInput });
   });
 
   it("should return 403 for non-admin user", async () => {
-    const result: ThemeResponse = await resolver.createTheme(fakeInput, userCtx);
+    const result: ThemeResponse = await resolver.updateTheme(updateInput, userCtx);
     expect(result.code).toBe(403);
     expect(result.theme).toBeUndefined();
   });
 
   it("should return 401 if no user", async () => {
-    const result: ThemeResponse = await resolver.createTheme(fakeInput, {} as MyContext);
+    const result: ThemeResponse = await resolver.updateTheme(updateInput, {} as MyContext);
     expect(result.code).toBe(401);
     expect(result.theme).toBeUndefined();
   });
 
-  it("should return 400 if theme already exists", async () => {
-    mockDb.theme.findUnique.mockResolvedValue(fakeTheme);
+  it("should return 404 if theme does not exist", async () => {
+    mockDb.theme.findUnique.mockImplementation(async () => null);
 
-    const result: ThemeResponse = await resolver.createTheme(fakeInput, adminCtx);
-    expect(result.code).toBe(400);
+    const result: ThemeResponse = await resolver.updateTheme(updateInput, adminCtx);
+    expect(result.code).toBe(404);
     expect(result.theme).toBeUndefined();
   });
 
-  it("should handle DB errors gracefully", async () => {
-    mockDb.theme.findUnique.mockRejectedValue(new Error("DB error"));
+  it("should handle database errors gracefully", async () => {
+    mockDb.theme.findUnique.mockImplementation(async () => {
+      throw new Error("DB error");
+    });
 
-    const result: ThemeResponse = await resolver.createTheme(fakeInput, adminCtx);
+    const result: ThemeResponse = await resolver.updateTheme(updateInput, adminCtx);
     expect(result.code).toBe(500);
     expect(result.theme).toBeUndefined();
   });
