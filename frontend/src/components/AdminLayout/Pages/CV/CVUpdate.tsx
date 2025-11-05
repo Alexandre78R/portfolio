@@ -78,8 +78,9 @@ const CVUpdate = (): JSX.Element => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col">
       <p className="text-primary text-lg font-semibold">{translations.messagePageCvTitle}</p>
+      <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
 
       <ButtonCustom
         text={translations.messagePageCvButtonSelectFile}
@@ -114,6 +115,7 @@ const CVUpdate = (): JSX.Element => {
         onCancel={handleCloseDialog}
       />
     </div>
+  </div>
   );
 };
 

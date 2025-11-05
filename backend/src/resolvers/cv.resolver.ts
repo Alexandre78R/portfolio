@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, ObjectType, Field, Int } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, } from "type-graphql";
 import fs from "fs";
 import path from "path";
 import { GraphQLUpload, FileUpload } from "graphql-upload-ts";
