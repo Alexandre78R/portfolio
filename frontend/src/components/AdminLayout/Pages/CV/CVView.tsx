@@ -37,7 +37,6 @@ const CVView = (): React.ReactElement => {
     <div className="flex flex-col">
       <p className="text-primary text-lg font-semibold">{translations["sideBarAdmin-cv/view"]}</p>
       <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-        {/* <TitleH3 title={translations.titleCV} /> */}
         <div className="mt-4">
           <ButtonCustom text={translations.buttonCV} onClick={handleOpenCV} />
         </div>
