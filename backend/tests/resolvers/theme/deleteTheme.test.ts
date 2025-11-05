@@ -6,7 +6,6 @@ import { UserRole } from "../../../src/entities/user.entity";
 import type { MyContext } from "../../../src";
 import type { ThemeResponse } from "../../../src/types/response.types";
 
-// Mock types pour Prisma
 type MockPrismaTheme = {
   findUnique: jest.Mock<Promise<PrismaTheme | null>, [any?]>;
   delete: jest.Mock<Promise<PrismaTheme>, [any?]>;
