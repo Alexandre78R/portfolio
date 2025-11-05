@@ -5,6 +5,7 @@ import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { Education } from "../entities/education.entity";
 import { Experience } from "../entities/experience.entity";
 import { User } from "../entities/user.entity";
+import { Theme } from "../entities/theme.entity";
 
 @ObjectType()
 export class Response {
@@ -205,4 +206,16 @@ export class UploadResponse {
 
   @Field({ nullable: true })
   url?: string;
+}
+
+@ObjectType()
+export class ThemeResponse extends Response {
+  @Field(() => Theme, { nullable: true })
+  theme?: Theme;
+}
+
+@ObjectType()
+export class ThemesResponse extends Response {
+  @Field(() => [Theme], { nullable: true })
+  themes?: Theme[];
 }
