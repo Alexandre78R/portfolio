@@ -1,10 +1,25 @@
-import { PrismaClient, SkillCategory, Skill, Project, ProjectSkill, Education, Experience, User } from '@prisma/client';
-import readline from 'readline';
-import { projectsData } from '../seed/projectsData';
-import { skillsData } from '../seed/skillsData';
-import { experiencesData } from '../seed/experiencesData';
-import { educationsData } from '../seed/educationsData';
- import { SkillCategoryData, SkillData , ProjectData, EducationData, ExperienceData} from '../../types/seed.types';
+import {
+  PrismaClient,
+  SkillCategory,
+  Skill,
+  Project,
+  Theme,
+} from "@prisma/client";
+import readline from "readline";
+
+import { projectsData } from "../seed/projectsData";
+import { skillsData } from "../seed/skillsData";
+import { experiencesData } from "../seed/experiencesData";
+import { educationsData } from "../seed/educationsData";
+import { themesData } from "../seed/themesData";
+
+import type {
+  SkillCategoryData,
+  SkillData,
+  ProjectData,
+  EducationData,
+  ExperienceData,
+} from "../../types/seed.types";
 
 // Prisma client
 const prisma: PrismaClient = new PrismaClient();
@@ -15,24 +30,66 @@ const rl: readline.Interface = readline.createInterface({
   output: process.stdout,
 });
 
-// Pose une question à l'utilisateur
+// Ask helper
 const ask = (q: string): Promise<string> =>
-  new Promise<string>((resolve: (answer: string) => void) => rl.question(q, resolve));
+  new Promise<string>((resolve) => rl.question(q, resolve));
 
-/**
- * Fonction principale pour seed la base
- */
+/* =========================
+ * Theme mapping
+ * ========================= */
+
+type ThemeSeedInput = Omit<Theme, "id">;
+
+const mapThemeToPrisma = (
+  theme: typeof themesData[keyof typeof themesData]
+): ThemeSeedInput => ({
+  name: theme.name,
+
+  body: theme.colors.body,
+  scrollHandle: theme.colors.scrollHandle,
+  scrollHandleHover: theme.colors.scrollHandleHover,
+  primary: theme.colors.primary,
+  secondary: theme.colors.secondary,
+  success: theme.colors.success,
+  error: theme.colors.error,
+  warn: theme.colors.warn,
+  info: theme.colors.info,
+  grey: theme.colors.grey,
+  placeholder: theme.colors.placeholder,
+  footer: theme.colors.footer,
+  admin: theme.colors.admin,
+
+  textDefault: theme.colors.text.default,
+  text100: theme.colors.text[100],
+  text200: theme.colors.text[200],
+  text300: theme.colors.text[300],
+  textButton: theme.colors.text.button,
+
+  visible: theme.colors.visible,
+});
+
+/* =========================
+ * Seed function
+ * ========================= */
+
 async function seed(): Promise<void> {
-  const answer: string = await ask("⚠️  This will reset and seed your database. Are you sure? (y/n): ");
-  if (answer.toLowerCase() !== 'y') {
+  const answer: string = await ask(
+    "⚠️  This will reset and seed your database. Are you sure? (y/n): "
+  );
+
+  if (answer.toLowerCase() !== "y") {
     console.log("❌ Seed cancelled.");
     rl.close();
     return;
   }
+
   console.log("⏳ Seeding database...");
 
   try {
-    // Vide les tables pivot et principales
+    /* =========================
+     * Cleanup
+     * ========================= */
+
     await prisma.projectSkill.deleteMany();
     await prisma.project.deleteMany();
     await prisma.skill.deleteMany();
@@ -40,11 +97,28 @@ async function seed(): Promise<void> {
     await prisma.education.deleteMany();
     await prisma.experience.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.theme.deleteMany();
 
-    // Seed des catégories et skills
+    /* =========================
+     * Themes
+     * ========================= */
+
+    for (const key of Object.keys(themesData) as (keyof typeof themesData)[]) {
+      const themeData = themesData[key];
+
+      const createdTheme: Theme = await prisma.theme.create({
+        data: mapThemeToPrisma(themeData),
+      });
+
+      console.log(`🎨 Theme seeded: ${createdTheme.name}`);
+    }
+
     for (const cat of skillsData as SkillCategoryData[]) {
       const catRec: SkillCategory = await prisma.skillCategory.create({
-        data: { categoryEN: cat.categoryEN, categoryFR: cat.categoryFR },
+        data: {
+          categoryEN: cat.categoryEN,
+          categoryFR: cat.categoryFR,
+        },
       });
 
       for (const sk of cat.skills as SkillData[]) {
@@ -58,7 +132,6 @@ async function seed(): Promise<void> {
       }
     }
 
-    // Seed des projets
     for (const proj of projectsData as ProjectData[]) {
       const projRec: Project = await prisma.project.create({
         data: {
@@ -72,23 +145,22 @@ async function seed(): Promise<void> {
       });
 
       for (const sk of proj.skills as SkillData[]) {
-        // Recherche de la skill
         let skillRec: Skill | null = await prisma.skill.findFirst({
           where: { name: sk.name },
         });
 
         if (!skillRec) {
-          // Création catégorie "Others" si manquante
-          let otherCat: SkillCategory | null = await prisma.skillCategory.findFirst({
-            where: { categoryEN: "Others" },
-          });
+          let otherCat: SkillCategory | null =
+            await prisma.skillCategory.findFirst({
+              where: { categoryEN: "Others" },
+            });
+
           if (!otherCat) {
             otherCat = await prisma.skillCategory.create({
               data: { categoryEN: "Others", categoryFR: "Autres" },
             });
           }
 
-          // Création de la skill
           skillRec = await prisma.skill.create({
             data: {
               name: sk.name,
@@ -96,10 +168,10 @@ async function seed(): Promise<void> {
               categoryId: otherCat.id,
             },
           });
+
           console.log(`ℹ️ Created missing skill: ${sk.name}`);
         }
 
-        // Création lien project–skill
         await prisma.projectSkill.create({
           data: {
             projectId: projRec.id,
@@ -109,7 +181,10 @@ async function seed(): Promise<void> {
       }
     }
 
-    // Seed des educations
+    /* =========================
+     * Educations
+     * ========================= */
+
     for (const edu of educationsData as EducationData[]) {
       await prisma.education.create({
         data: {
@@ -131,7 +206,10 @@ async function seed(): Promise<void> {
       });
     }
 
-    // Seed des experiences
+    /* =========================
+     * Experiences
+     * ========================= */
+
     for (const exp of experiencesData as ExperienceData[]) {
       await prisma.experience.create({
         data: {
@@ -164,7 +242,6 @@ async function seed(): Promise<void> {
   }
 }
 
-// Exécution
 seed().catch((e: unknown) => {
   if (e instanceof Error) {
     console.error(e.message);
