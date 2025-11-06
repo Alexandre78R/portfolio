@@ -32,12 +32,77 @@ jest.mock("@/context/Theme/ThemeContext", () => ({
 describe("Themes command component", () => {
   let toggleThemeMock: jest.Mock;
 
+  const mockThemes = {
+    dark: {
+      id: "1",
+      name: "dark",
+      nameEN: "Dark",
+      nameFR: "Sombre",
+      visible: true,
+      colors: {
+        body: "#01031B",
+        scrollHandle: "#19252E",
+        scrollHandleHover: "#162028",
+        primary: "#B45852",
+        secondary: "#DFBB5F",
+        success: "#1C8036",
+        error: "#AA2020",
+        warn: "#EBCC2A",
+        info: "#3B89FF",
+        grey: "#7F7F7F",
+        placeholder: "#A0AEC0",
+        footer: "#050F1A",
+        admin: "#080b2a",
+        text: {
+          default: "#F8F8FD",
+          100: "#cbd5e1",
+          200: "#B2BDCC",
+          300: "#64748b",
+          button: "white",
+        },
+      },
+    },
+    light: {
+      id: "2",
+      name: "light",
+      nameEN: "Light",
+      nameFR: "Claire",
+      visible: true,
+      colors: {
+        body: "#E8E8E8",
+        scrollHandle: "#C1C1C1",
+        scrollHandleHover: "#AAAAAA",
+        primary: "#008787",
+        secondary: "#FF9D00",
+        success: "#1C8036",
+        error: "#AA2020",
+        warn: "#EBCC2A",
+        info: "#3B89FF",
+        grey: "#7F7F7F",
+        placeholder: "#A0AEC0",
+        footer: "#34393E",
+        admin: "#34393E",
+        text: {
+          default: "#7BA5A4",
+          100: "#334155",
+          200: "#475569",
+          300: "#64748b",
+          button: "white",
+        },
+      },
+    },
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     toggleThemeMock = jest.fn();
 
     (useTheme as jest.Mock).mockReturnValue({
       toggleTheme: toggleThemeMock,
+      themes: mockThemes,
+      theme: "dark",
+      loading: false,
+      error: false,
     });
   });
 

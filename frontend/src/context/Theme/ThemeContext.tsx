@@ -40,8 +40,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 /* =======================
    Fallback (STATIC)
-   ⚠️ utilisé UNIQUEMENT
-   si erreur réseau
+   ⚠️ utilisé si erreur réseau
+   OU si 0 thème en BDD
 ======================= */
 
 const getDefaultThemes = (): Record<string, Theme> => {
@@ -76,7 +76,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const { data, loading, error } = useGetThemesListQuery({
     fetchPolicy: "cache-and-network",
   });
-  console.log("data", data);
 
   /* =======================
      Sync themes from backend
@@ -84,8 +83,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // ❌ Erreur réseau → fallback
-    if (error || !data?.themeList?.themes) {
-      console.warn("[ThemeContext] Using fallback themes");
+    if (error) {
+      console.warn("[ThemeContext] Using fallback themes due to error");
+      setThemes(getDefaultThemes());
+      setIsUsingFallback(true);
+      return;
+    }
+
+    // ❌ Pas de données → fallback
+    if (!data?.themeList?.themes) {
+      console.warn("[ThemeContext] Using fallback themes - no data");
       setThemes(getDefaultThemes());
       setIsUsingFallback(true);
       return;
@@ -97,13 +104,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       (t): t is NonNullable<typeof t> => !!t && t.visible === true
     );
 
-    // ✅ 0 thème en BDD = 0 thème en frontend
+    // ❌ 0 thème visible en BDD → fallback vers thèmes frontend
     if (visibleThemes.length === 0) {
-      setThemes({});
-      setIsUsingFallback(false);
+      console.warn("[ThemeContext] Using fallback themes - no visible themes in database");
+      setThemes(getDefaultThemes());
+      setIsUsingFallback(true);
       return;
     }
 
+    // ✅ Thèmes trouvés en BDD → les utiliser
     const themesObject: Record<string, Theme> = {};
 
     visibleThemes.forEach((themeData) => {

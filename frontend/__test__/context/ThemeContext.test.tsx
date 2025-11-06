@@ -4,13 +4,15 @@ import {
   screen,
   act,
   waitFor,
+  renderHook,
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { ThemeProvider, useTheme, ThemeContextType, ThemeProviderProps, ThemeKey } from "@/context/Theme/ThemeContext";
 import defaultThemes from "@/context/Theme/themes";
-import { gql } from "@apollo/client";
+import { ApolloError, gql } from "@apollo/client";
 import { LocalStorageMock } from "./context.types";
+import Error from "next/error";
 
 const GET_THEMES_LIST = gql`
   query GetThemesList {
@@ -24,6 +26,8 @@ const GET_THEMES_LIST = gql`
         id
         info
         name
+        nameEN
+        nameFR
         placeholder
         primary
         scrollHandle
@@ -86,8 +90,11 @@ const TestComponent: React.FC<TestComponentProps> = (): React.ReactElement => {
 const localStorageStore: Record<string, string> = {};
 
 const mockDarkThemeData = {
+  __typename: "Theme",
   id: "1",
   name: "dark",
+  nameEN: "Dark",
+  nameFR: "Sombre",
   visible: true,
   body: "#01031B",
   scrollHandle: "#19252E",
@@ -110,8 +117,11 @@ const mockDarkThemeData = {
 };
 
 const mockLightThemeData = {
+  __typename: "Theme",
   id: "2",
   name: "light",
+  nameEN: "Light",
+  nameFR: "Claire",
   visible: true,
   body: "#E8E8E8",
   scrollHandle: "#C1C1C1",
@@ -134,8 +144,11 @@ const mockLightThemeData = {
 };
 
 const mockUbuntuThemeData = {
+  __typename: "Theme",
   id: "3",
   name: "ubuntu",
+  nameEN: "Ubuntu",
+  nameFR: "Ubuntu",
   visible: true,
   body: "#2D0922",
   scrollHandle: "#F47845",
@@ -158,6 +171,7 @@ const mockUbuntuThemeData = {
 };
 
 const mockDarkThemeDataHidden = {
+  __typename: "Theme",
   ...mockDarkThemeData,
   visible: false,
 };
@@ -169,6 +183,7 @@ const mockSuccessResponse: MockedResponse = {
   result: {
     data: {
       themeList: {
+        __typename: "ThemeListResponse",
         themes: [mockDarkThemeData, mockLightThemeData, mockUbuntuThemeData],
         message: "Themes retrieved successfully",
         code: 200,
@@ -181,7 +196,7 @@ const mockErrorResponse: MockedResponse = {
   request: {
     query: GET_THEMES_LIST,
   },
-  error: new Error("Network error"),
+  error: new ApolloError({ errorMessage: "Network error" }),
 };
 
 const mockEmptyResponse: MockedResponse = {
@@ -191,7 +206,8 @@ const mockEmptyResponse: MockedResponse = {
   result: {
     data: {
       themeList: {
-        themes: [],
+        __typename: "ThemeListResponse",
+        themes: null,
         message: "No themes found",
         code: 200,
       },
@@ -206,6 +222,7 @@ const mockNoVisibleThemesResponse: MockedResponse = {
   result: {
     data: {
       themeList: {
+        __typename: "ThemeListResponse",
         themes: [mockDarkThemeDataHidden],
         message: "Themes retrieved successfully",
         code: 200,
@@ -249,7 +266,7 @@ afterEach((): void => {
 describe("ThemeContext with GraphQL", () => {
   it("should provide default theme and write it to localStorage on successful query", async (): Promise<void> => {
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -266,7 +283,7 @@ describe("ThemeContext with GraphQL", () => {
 
   it("should update theme and set CSS variables when toggleTheme is called", async (): Promise<void> => {
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -301,7 +318,7 @@ describe("ThemeContext with GraphQL", () => {
     mockSetItem("theme", "light");
 
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -318,7 +335,7 @@ describe("ThemeContext with GraphQL", () => {
     mockSetItem("theme", "invalid-theme");
 
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -337,7 +354,7 @@ describe("ThemeContext with GraphQL", () => {
     const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
 
     render(
-      <MockedProvider mocks={[mockErrorResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockErrorResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -355,6 +372,9 @@ describe("ThemeContext with GraphQL", () => {
       expect(themeSpan).toHaveTextContent("dark");
     });
 
+    // Vérifier que le message de fallback a été appelé (peut y avoir d'autres warnings d'Apollo)
+    const calls = consoleWarnSpy.mock.calls.map(call => call[0]);
+    expect(calls).toContain("[ThemeContext] Using fallback themes due to error");
     consoleWarnSpy.mockRestore();
   });
 
@@ -362,7 +382,7 @@ describe("ThemeContext with GraphQL", () => {
     const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
 
     render(
-      <MockedProvider mocks={[mockEmptyResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockEmptyResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -371,26 +391,7 @@ describe("ThemeContext with GraphQL", () => {
 
     await waitFor(() => {
       const themesCount: HTMLElement = screen.getByTestId("themes-count");
-      const expectedCount: string = Object.keys(defaultThemes).length.toString();
-      expect(themesCount).toHaveTextContent(expectedCount);
-    });
-
-    consoleWarnSpy.mockRestore();
-  });
-
-  it("should use default themes when no visible themes are available", async (): Promise<void> => {
-    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
-
-    render(
-      <MockedProvider mocks={[mockNoVisibleThemesResponse]} addTypename={false}>
-        <ThemeProvider>
-          <TestComponent />
-        </ThemeProvider>
-      </MockedProvider> as React.ReactElement<ThemeProviderProps>
-    );
-
-    await waitFor(() => {
-      const themesCount: HTMLElement = screen.getByTestId("themes-count");
+      // 0 thème en BDD → charge les thèmes par défaut frontend
       const expectedCount: string = Object.keys(defaultThemes).length.toString();
       expect(themesCount).toHaveTextContent(expectedCount);
     });
@@ -400,12 +401,70 @@ describe("ThemeContext with GraphQL", () => {
       expect(themeSpan).toHaveTextContent("dark");
     });
 
+    // Vérifier que le message de fallback a été appelé (peut y avoir d'autres warnings d'Apollo)
+    const calls = consoleWarnSpy.mock.calls.map(call => call[0]);
+    expect(calls).toContain("[ThemeContext] Using fallback themes - no data");
     consoleWarnSpy.mockRestore();
+  });
+
+  it("should use default themes when no visible themes are available", async (): Promise<void> => {
+    render(
+      <MockedProvider mocks={[mockNoVisibleThemesResponse]}>
+        <ThemeProvider>
+          <TestComponent />
+        </ThemeProvider>
+      </MockedProvider> as React.ReactElement<ThemeProviderProps>
+    );
+
+    await waitFor(() => {
+      const themesCount: HTMLElement = screen.getByTestId("themes-count");
+      // 0 thème visible en BDD → charge les thèmes par défaut frontend
+      const expectedCount: string = Object.keys(defaultThemes).length.toString();
+      expect(themesCount).toHaveTextContent(expectedCount);
+    });
+
+    await waitFor(() => {
+      const themeSpan: HTMLElement = screen.getByTestId("theme") as HTMLElement;
+      expect(themeSpan).toHaveTextContent("dark");
+    });
+  });
+
+  it("should handle empty array of themes from backend", async (): Promise<void> => {
+    const mockEmptyArrayResponse: MockedResponse = {
+      request: {
+        query: GET_THEMES_LIST,
+      },
+      result: {
+        data: {
+          themeList: {
+            __typename: "ThemeListResponse",
+            themes: [],
+            message: "No themes in database",
+            code: 200,
+          },
+        },
+      },
+    };
+
+    render(
+      <MockedProvider mocks={[mockEmptyArrayResponse]}>
+        <ThemeProvider>
+          <TestComponent />
+        </ThemeProvider>
+      </MockedProvider> as React.ReactElement<ThemeProviderProps>
+    );
+
+    await waitFor(() => {
+      const themesCount: HTMLElement = screen.getByTestId("themes-count");
+      // Tableau vide → 0 thèmes visibles → charge les thèmes par défaut frontend
+      const expectedCount: string = Object.keys(defaultThemes).length.toString();
+      expect(themesCount).toHaveTextContent(expectedCount);
+    });
   });
 
   it("should load only visible themes from backend", async (): Promise<void> => {
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -421,7 +480,7 @@ describe("ThemeContext with GraphQL", () => {
 
   it("should show loading state initially", (): void => {
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -434,7 +493,7 @@ describe("ThemeContext with GraphQL", () => {
 
   it("should not show error when using fallback themes", async (): Promise<void> => {
     render(
-      <MockedProvider mocks={[mockErrorResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockErrorResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -448,58 +507,58 @@ describe("ThemeContext with GraphQL", () => {
   });
 
   it("should handle theme toggle to non-existent theme gracefully", async (): Promise<void> => {
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+      const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
 
-    const TestComponentWithInvalidTheme: React.FC = (): React.ReactElement => {
-      const { theme, toggleTheme } = useTheme();
+      const TestComponentWithInvalidTheme: React.FC = (): React.ReactElement => {
+        const { theme, toggleTheme } = useTheme();
 
-      return (
-        <div>
-          <span data-testid="theme">{theme}</span>
-          <span data-testid="loading">loaded</span>
-          <button
-            type="button"
-            data-testid="set-invalid"
-            onClick={(): void => toggleTheme("non-existent-theme" as ThemeKey)}
-          >
-            Invalid Theme
-          </button>
-        </div>
+        return (
+          <div>
+            <span data-testid="theme">{theme}</span>
+            <span data-testid="loading">loaded</span>
+            <button
+              type="button"
+              data-testid="set-invalid"
+              onClick={(): void => toggleTheme("non-existent-theme" as ThemeKey)}
+            >
+              Invalid Theme
+            </button>
+          </div>
+        );
+      };
+
+      render(
+        <MockedProvider mocks={[mockSuccessResponse]}>
+          <ThemeProvider>
+            <TestComponentWithInvalidTheme />
+          </ThemeProvider>
+        </MockedProvider> as React.ReactElement<ThemeProviderProps>
       );
-    };
 
-    render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
-        <ThemeProvider>
-          <TestComponentWithInvalidTheme />
-        </ThemeProvider>
-      </MockedProvider> as React.ReactElement<ThemeProviderProps>
-    );
+      await waitFor(() => {
+        expect(screen.getByTestId("loading")).toHaveTextContent("loaded");
+      });
 
-    await waitFor(() => {
-      expect(screen.getByTestId("loading")).toHaveTextContent("loaded");
-    });
+      const currentTheme: string | null = screen.getByTestId("theme").textContent;
+      const invalidButton: HTMLButtonElement = screen.getByTestId("set-invalid") as HTMLButtonElement;
 
-    const currentTheme: string | null = screen.getByTestId("theme").textContent;
-    const invalidButton: HTMLButtonElement = screen.getByTestId("set-invalid") as HTMLButtonElement;
+      act(() => {
+        invalidButton.click();
+      });
 
-    act(() => {
-      invalidButton.click();
-    });
+      await waitFor(() => {
+        const themeSpan: HTMLElement = screen.getByTestId("theme");
+        expect(themeSpan).toHaveTextContent(currentTheme || "");
+      });
 
-    await waitFor(() => {
-      const themeSpan: HTMLElement = screen.getByTestId("theme");
-      expect(themeSpan).toHaveTextContent(currentTheme || "");
-    });
-
-    const expectedErrorMessage = 'Theme "non-existent-theme" not found';
-    expect(consoleErrorSpy).toHaveBeenCalledWith(expectedErrorMessage);
-    consoleErrorSpy.mockRestore();
+      const expectedWarnMessage = '[ThemeContext] Theme "non-existent-theme" not found';
+      expect(consoleWarnSpy).toHaveBeenCalledWith(expectedWarnMessage);
+      consoleWarnSpy.mockRestore();
   });
 
   it("should apply CSS variables correctly for all theme colors", async (): Promise<void> => {
     render(
-      <MockedProvider mocks={[mockSuccessResponse]} addTypename={false}>
+      <MockedProvider mocks={[mockSuccessResponse]}>
         <ThemeProvider>
           <TestComponent />
         </ThemeProvider>
@@ -536,11 +595,13 @@ describe("ThemeContext with GraphQL", () => {
   });
 
   it("should throw error when useTheme is used outside ThemeProvider", (): void => {
-    const renderOutsideProvider = (): void => {
-      render(<TestComponent />);
-    };
+      const TestComponentOutsideProvider: React.FC = () => {
+        useTheme();
+        return <div />;
+      };
 
-    const expectedErrorMessage = "useTheme must be used within a ThemeProvider";
-    expect(renderOutsideProvider).toThrow(expectedErrorMessage);
+      expect(() => render(<TestComponentOutsideProvider />)).toThrow(
+        "useTheme must be used within ThemeProvider"
+      );
   });
 });
