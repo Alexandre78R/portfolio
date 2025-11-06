@@ -130,6 +130,29 @@ export type CreateSkillInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreateThemeInput = {
+  admin: Scalars['String']['input'];
+  body: Scalars['String']['input'];
+  error: Scalars['String']['input'];
+  footer: Scalars['String']['input'];
+  grey: Scalars['String']['input'];
+  info: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  placeholder: Scalars['String']['input'];
+  primary: Scalars['String']['input'];
+  scrollHandle: Scalars['String']['input'];
+  scrollHandleHover: Scalars['String']['input'];
+  secondary: Scalars['String']['input'];
+  success: Scalars['String']['input'];
+  text100: Scalars['String']['input'];
+  text200: Scalars['String']['input'];
+  text300: Scalars['String']['input'];
+  textButton: Scalars['String']['input'];
+  textDefault: Scalars['String']['input'];
+  visible?: Scalars['Boolean']['input'];
+  warn: Scalars['String']['input'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   firstname: Scalars['String']['input'];
@@ -248,12 +271,14 @@ export type Mutation = {
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  createTheme: ThemeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteSkill: SubItemResponse;
+  deleteTheme: Response;
   generateDatabaseBackup: BackupResponse;
   login: LoginResponse;
   logout: Response;
@@ -264,6 +289,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
+  updateTheme: ThemeResponse;
   uploadCV: UploadResponse;
   validateCaptcha: ValidationResponse;
 };
@@ -305,6 +331,11 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationCreateThemeArgs = {
+  data: CreateThemeInput;
+};
+
+
 export type MutationDeleteBackupFileArgs = {
   fileName: Scalars['String']['input'];
 };
@@ -331,6 +362,11 @@ export type MutationDeleteProjectArgs = {
 
 
 export type MutationDeleteSkillArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteThemeArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -374,6 +410,11 @@ export type MutationUpdateProjectArgs = {
 export type MutationUpdateSkillArgs = {
   data: UpdateSkillInput;
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateThemeArgs = {
+  data: UpdateThemeInput;
 };
 
 
@@ -432,6 +473,8 @@ export type Query = {
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
   skillList: CategoryResponse;
+  themeById: ThemeResponse;
+  themeList: ThemesResponse;
   userList: UsersResponse;
 };
 
@@ -454,6 +497,11 @@ export type QueryExperienceByIdArgs = {
 
 
 export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryThemeByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -491,6 +539,45 @@ export type SubItemResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   subItems?: Maybe<Array<SkillSubItem>>;
+};
+
+export type Theme = {
+  __typename?: 'Theme';
+  admin: Scalars['String']['output'];
+  body: Scalars['String']['output'];
+  error: Scalars['String']['output'];
+  footer: Scalars['String']['output'];
+  grey: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  info: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  placeholder: Scalars['String']['output'];
+  primary: Scalars['String']['output'];
+  scrollHandle: Scalars['String']['output'];
+  scrollHandleHover: Scalars['String']['output'];
+  secondary: Scalars['String']['output'];
+  success: Scalars['String']['output'];
+  text100: Scalars['String']['output'];
+  text200: Scalars['String']['output'];
+  text300: Scalars['String']['output'];
+  textButton: Scalars['String']['output'];
+  textDefault: Scalars['String']['output'];
+  visible: Scalars['Boolean']['output'];
+  warn: Scalars['String']['output'];
+};
+
+export type ThemeResponse = {
+  __typename?: 'ThemeResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  theme?: Maybe<Theme>;
+};
+
+export type ThemesResponse = {
+  __typename?: 'ThemesResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  themes?: Maybe<Array<Theme>>;
 };
 
 export type TopSkillUsage = {
@@ -561,6 +648,30 @@ export type UpdateSkillInput = {
   categoryId: Scalars['Int']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateThemeInput = {
+  admin?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<Scalars['String']['input']>;
+  error?: InputMaybe<Scalars['String']['input']>;
+  footer?: InputMaybe<Scalars['String']['input']>;
+  grey?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  info?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  placeholder?: InputMaybe<Scalars['String']['input']>;
+  primary?: InputMaybe<Scalars['String']['input']>;
+  scrollHandle?: InputMaybe<Scalars['String']['input']>;
+  scrollHandleHover?: InputMaybe<Scalars['String']['input']>;
+  secondary?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['String']['input']>;
+  text100?: InputMaybe<Scalars['String']['input']>;
+  text200?: InputMaybe<Scalars['String']['input']>;
+  text300?: InputMaybe<Scalars['String']['input']>;
+  textButton?: InputMaybe<Scalars['String']['input']>;
+  textDefault?: InputMaybe<Scalars['String']['input']>;
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
+  warn?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UploadResponse = {
@@ -696,6 +807,11 @@ export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+
+export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetThemesListQuery = { __typename?: 'Query', themeList: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1388,6 +1504,72 @@ export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQue
 export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
 export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
 export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
+export const GetThemesListDocument = gql`
+    query GetThemesList {
+  themeList {
+    themes {
+      body
+      admin
+      error
+      footer
+      grey
+      id
+      info
+      name
+      placeholder
+      primary
+      scrollHandle
+      scrollHandleHover
+      secondary
+      success
+      text100
+      text200
+      text300
+      textButton
+      textDefault
+      visible
+      warn
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetThemesListQuery__
+ *
+ * To run a query within a React component, call `useGetThemesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetThemesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetThemesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetThemesListQuery(baseOptions?: Apollo.QueryHookOptions<GetThemesListQuery, GetThemesListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetThemesListQuery, GetThemesListQueryVariables>(GetThemesListDocument, options);
+      }
+export function useGetThemesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetThemesListQuery, GetThemesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetThemesListQuery, GetThemesListQueryVariables>(GetThemesListDocument, options);
+        }
+// @ts-ignore
+export function useGetThemesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetThemesListQuery, GetThemesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetThemesListQuery, GetThemesListQueryVariables>;
+export function useGetThemesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetThemesListQuery, GetThemesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetThemesListQuery | undefined, GetThemesListQueryVariables>;
+export function useGetThemesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetThemesListQuery, GetThemesListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetThemesListQuery, GetThemesListQueryVariables>(GetThemesListDocument, options);
+        }
+export type GetThemesListQueryHookResult = ReturnType<typeof useGetThemesListQuery>;
+export type GetThemesListLazyQueryHookResult = ReturnType<typeof useGetThemesListLazyQuery>;
+export type GetThemesListSuspenseQueryHookResult = ReturnType<typeof useGetThemesListSuspenseQuery>;
+export type GetThemesListQueryResult = Apollo.QueryResult<GetThemesListQuery, GetThemesListQueryVariables>;
 export const GetMeDocument = gql`
     query GetMe {
   me {

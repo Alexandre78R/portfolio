@@ -19,12 +19,14 @@ export interface ThemeColors {
   warn: string;
   info: string;
   admin: string;
+  footer: string;
 }
 
 export interface Theme {
   id: string;
   name: string;
   colors: ThemeColors & { text: ThemeColorsText };
+  visible?: boolean;
 }
 
 const themes = {
@@ -123,3 +125,4 @@ export const tabThemesName = (): ThemeName[] => {
 };
 
 export default themes;
+
