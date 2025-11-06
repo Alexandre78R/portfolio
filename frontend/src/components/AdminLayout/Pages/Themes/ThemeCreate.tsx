@@ -63,13 +63,13 @@ const ThemeCreate = (): ReactElement => {
       const response = res.data?.createTheme;
 
       if (response?.code === 200) {
-        showAlert("success", "Theme created successfully!");
+        showAlert("success", translations.messagePageAddNewThemesSucces);
       } else {
-        showAlert("error", response?.message || "Error creating theme.");
+        showAlert("error",  translations.messagePageAddNewThemesError);
       }
     } catch (err) {
       console.error(err);
-      showAlert("error", "Server error, please try again later.");
+      showAlert("error", translations.messageErrorServerOff);
     }
   };
 
@@ -96,14 +96,14 @@ const ThemeCreate = (): ReactElement => {
   ] as const;
 
   return (
-    <AuthFormLayout title={<TextAdmin type="h2">Create a new Theme</TextAdmin>}>
+    <AuthFormLayout title={<TextAdmin type="h2">{translations.messagePageAddNewThemesTitleH2}</TextAdmin>}>
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Nom du thème */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
             id="theme-name"
-            label="Theme Name"
-            placeholder="Enter theme name"
+            label={translations.messagePageAddNewThemesInputThemeName}
+            placeholder={translations.messagePageAddNewThemesInputThemeName}
             name="name"
             value={form.name}
             onChange={handleChange}
@@ -111,8 +111,8 @@ const ThemeCreate = (): ReactElement => {
           />
           <InputField
             id="theme-nameEN"
-            label="Name EN"
-            placeholder="Enter theme name in English"
+            label={translations.messagePageAddNewThemesInputThemeNameEN}
+            placeholder={translations.messagePageAddNewThemesInputThemeNameEN}
             name="nameEN"
             value={form.nameEN}
             onChange={handleChange}
@@ -120,8 +120,8 @@ const ThemeCreate = (): ReactElement => {
           />
           <InputField
             id="theme-nameFR"
-            label="Name FR"
-            placeholder="Enter theme name in French"
+            label={translations.messagePageAddNewThemesInputThemeNameFR}
+            placeholder={translations.messagePageAddNewThemesInputThemeNameFR}
             name="nameFR"
             value={form.nameFR}
             onChange={handleChange}
@@ -132,9 +132,9 @@ const ThemeCreate = (): ReactElement => {
         {/* Visible */}
         <InputBoolean
           id="theme-visible"
-          label="Visible"
+          label={translations.messagePageAddNewThemesTextVisible}
           labelType="h3"
-          name="visible"
+          name={translations.messagePageAddNewThemesTextVisible}
           value={form.visible}
           onChange={handleChange}
           className="text-primary my-4 w-1/3"
@@ -143,7 +143,7 @@ const ThemeCreate = (): ReactElement => {
         />
 
         {/* Colors */}
-        <TextAdmin type="h3" className="mt-4">Colors</TextAdmin>
+        <TextAdmin type="h3" className="mt-4">{translations.messagePageAddNewThemesTitleColors}</TextAdmin>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {colorFields.map(field => (
             <InputColor
@@ -160,7 +160,7 @@ const ThemeCreate = (): ReactElement => {
 
         <div className="flex justify-center mt-6">
           <ButtonCustom
-            text={loading ? "Creating..." : "Create Theme"}
+            text={loading ? translations.messagePageAddNewThemesButtonTextLoading : translations.messagePageAddNewThemesButtonTextSucces}
             onClick={handleSubmit}
           />
         </div>

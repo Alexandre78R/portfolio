@@ -9,7 +9,7 @@ export interface AuthFormLayoutProps {
 const AuthFormLayout = ({ title, children }: AuthFormLayoutProps): JSX.Element => {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <Box className="max-w-md w-full p-6 rounded shadow space-y-6 bg-body">
+      <Box className="max-w-md w-ful rounded shadow space-y-6 bg-body">
         <h2 className="text-2xl font-bold text-center mb-4 text-primary">
           {title}
         </h2>

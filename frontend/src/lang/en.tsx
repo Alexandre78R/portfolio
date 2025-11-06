@@ -190,6 +190,17 @@ const en: Lang = {
   messagePageCvConfirmDescription: "Are you sure you want to upload this new CV?",
   messagePageCvConfirmButtonYes: "Yes, upload",
   messagePageCvConfirmButtonNo: "No, cancel",
+  messagePageAddNewThemesTitleH2: "Create a new Theme",
+  messagePageAddNewThemesSucces: "Theme created successfully!",
+  messagePageAddNewThemesError: "Error creating theme.",
+  messagePageAddNewThemesInputThemeName: "Theme Name",
+  messagePageAddNewThemesInputThemeNameEN: "Name in English",
+  messagePageAddNewThemesInputThemeNameFR: "Name in French",
+  messagePageAddNewThemesTitleVisible: "Visible",
+  messagePageAddNewThemesTextVisible: "Visible",
+  messagePageAddNewThemesTitleColors: "Colors",
+  messagePageAddNewThemesButtonTextLoading: "Creating...",
+  messagePageAddNewThemesButtonTextSucces: "Create Theme",
 };
 
 export default en;

@@ -14,10 +14,10 @@ describe("AuthFormLayout", () => {
       </AuthFormLayout>
     );
 
-    titleElement = screen.getByText("Login" as string) as HTMLElement;
+    titleElement = screen.getByText("Login") as HTMLElement;
     expect(titleElement).toBeInTheDocument();
     expect(titleElement.tagName).toBe("H2");
-    expect(titleElement).toHaveClass("text-2xl", "font-bold", "text-center");
+    expect(titleElement).toHaveClass("text-2xl", "font-bold", "text-center", "mb-4", "text-primary");
   });
 
   it("renders children correctly", (): void => {
@@ -27,7 +27,7 @@ describe("AuthFormLayout", () => {
       </AuthFormLayout>
     );
 
-    childElement = screen.getByText("Submit" as string) as HTMLButtonElement;
+    childElement = screen.getByText("Submit") as HTMLButtonElement;
     expect(childElement).toBeInTheDocument();
     expect(childElement.tagName).toBe("BUTTON");
     expect(childElement).toHaveAttribute("type", "button");
@@ -51,7 +51,7 @@ describe("AuthFormLayout", () => {
 
     const boxDiv: HTMLElement | null = renderResult.container.querySelector(".max-w-md");
     expect(boxDiv).not.toBeNull();
-    expect(boxDiv).toHaveClass("w-full", "p-6", "rounded", "shadow", "space-y-6", "bg-body");
+    expect(boxDiv).toHaveClass("max-w-md", "w-ful", "rounded", "shadow", "space-y-6", "bg-body");
   });
 
   it("renders multiple children correctly", (): void => {

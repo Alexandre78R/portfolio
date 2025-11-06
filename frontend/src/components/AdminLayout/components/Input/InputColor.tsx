@@ -1,54 +1,46 @@
 import React, { ChangeEvent, ReactNode } from "react";
-import { TextField, TextFieldProps } from "@mui/material";
+import TextAdmin, { TextAdminType } from "../../components/Text/TextAdmin";
 
 export interface InputColorProps {
   id: string;
   label: string | ReactNode;
+  labelType?: TextAdminType;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   required?: boolean;
-  className?: string;
-  sx?: TextFieldProps["sx"];
+  className?: string; // wrapper global
 }
 
 const InputColor: React.FC<InputColorProps> = ({
   id,
   label,
+  labelType = "h3",
   value,
   onChange,
   name,
   required = true,
   className,
-  sx,
 }) => {
   return (
-    <TextField
-      id={id}
-      label={label}
-      type="color"
-      variant="outlined"
-      fullWidth
-      required={required}
-      value={value}
-      onChange={onChange}
-      name={name}
-      className={`border border-gray-300 rounded-md ${className ?? ""}`}
-      InputLabelProps={{
-        shrink: true, // label toujours visible pour input type color
-      }}
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          height: "3rem", // pour que le input color soit visible
-          padding: "0.2rem 0.5rem",
-        },
-        "& .MuiFormLabel-root": {
-          fontWeight: "bold",
-          color: "var(--primary-color)",
-        },
-        ...sx,
-      }}
-    />
+    <div className={`flex flex-col w-full ${className ?? ""}`}>
+      {/* Label via TextAdmin */}
+      <TextAdmin type={labelType} className="mb-2 text-primary">
+        {label}
+      </TextAdmin>
+
+      {/* Input HTML natif */}
+      <input
+        id={id}
+        name={name}
+        type="color"
+        value={value}
+        required={required}
+        onChange={onChange}
+        data-testid="color-input"
+        className="w-full h-10 rounded border border-gray-300"
+      />
+    </div>
   );
 };
 

@@ -173,6 +173,17 @@ type Lang = {
   messagePageCvTitle: string;
   messagePageCvUploadError: string;
   messagePageCvUploadSuccess: string;
+  messagePageAddNewThemesTitleH2: string;
+  messagePageAddNewThemesSucces: string;
+  messagePageAddNewThemesError: string;
+  messagePageAddNewThemesInputThemeName: string;
+  messagePageAddNewThemesInputThemeNameEN: string;
+  messagePageAddNewThemesInputThemeNameFR: string;
+  messagePageAddNewThemesTitleVisible: string;
+  messagePageAddNewThemesTextVisible: string;
+  messagePageAddNewThemesTitleColors: string;
+  messagePageAddNewThemesButtonTextLoading: string;
+  messagePageAddNewThemesButtonTextSucces: string;
 };
 
 export default Lang;
