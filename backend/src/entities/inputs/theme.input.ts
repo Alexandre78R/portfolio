@@ -2,8 +2,15 @@ import { InputType, Field, Int } from "type-graphql";
 
 @InputType()
 export class CreateThemeInput {
+
   @Field()
   name: string;
+
+  @Field()
+  nameEN: string;
+
+  @Field()
+  nameFR: string;
 
   @Field()
   body: string;
@@ -70,6 +77,12 @@ export class UpdateThemeInput {
 
   @Field({ nullable: true })
   name?: string;
+
+  @Field({ nullable: true })
+  nameEN?: string;
+
+  @Field({ nullable: true })
+  nameFR?: string;
 
   @Field({ nullable: true })
   body?: string;

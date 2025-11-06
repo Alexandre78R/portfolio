@@ -5,6 +5,8 @@ export const themesData = {
   dark: {
     id: "1",
     name: "dark",
+    nameEN: "Dark",
+    nameFR: "Sombre",
     colors: {
       body: "#01031B",
       scrollHandle: "#19252E",
@@ -32,6 +34,8 @@ export const themesData = {
   light: {
     id: "2",
     name: "light",
+    nameEN: "Dark",
+    nameFR: "Claire",
     colors: {
       body: "#E8E8E8",
       scrollHandle: "#C1C1C1",
@@ -59,6 +63,8 @@ export const themesData = {
   ubuntu: {
     id: "3",
     name: "ubuntu",
+    nameEN: "Ubuntu",
+    nameFR: "Ubuntu",
     colors: {
       body: "#2D0922",
       scrollHandle: "#F47845",

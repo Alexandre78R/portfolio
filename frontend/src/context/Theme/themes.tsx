@@ -25,6 +25,8 @@ export interface ThemeColors {
 export interface Theme {
   id: string;
   name: string;
+  nameEN?: string;
+  nameFR?: string;
   colors: ThemeColors & { text: ThemeColorsText };
   visible?: boolean;
 }
@@ -33,6 +35,8 @@ const themes = {
   dark: {
     id: "1",
     name: "dark",
+    nameEN: "Dark",
+    nameFR: "Sombre",
     colors: {
       body: "#01031B",
       scrollHandle: "#19252E",
@@ -59,6 +63,8 @@ const themes = {
   light: {
     id: "2",
     name: "light",
+    nameEN: "Light",
+    nameFR: "Claire",
     colors: {
       body: "#E8E8E8",
       scrollHandle: "#C1C1C1",
@@ -85,6 +91,8 @@ const themes = {
   ubuntu: {
     id: "3",
     name: "ubuntu",
+    nameEN: "Ubuntu",
+    nameFR: "Ubuntu",
     colors: {
       body: "#2D0922",
       scrollHandle: "#F47845",
@@ -108,7 +116,7 @@ const themes = {
       },
     },
   },
-} as const;
+};
 
 // 🔥 Types dérivés automatiquement
 export type ThemeKey = keyof typeof themes;

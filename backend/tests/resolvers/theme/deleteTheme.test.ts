@@ -21,6 +21,8 @@ describe("ThemeResolver - deleteTheme", () => {
   const fakeTheme: PrismaTheme = {
     id: 1,
     name: "dark",
+    nameFR: "newtheme",
+    nameEN: "newtheme",
     body: "#000",
     scrollHandle: "",
     scrollHandleHover: "",

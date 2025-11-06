@@ -135,6 +135,8 @@ export type CreateThemeInput = {
   grey: Scalars['String']['input'];
   info: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  nameEN: Scalars['String']['input'];
+  nameFR: Scalars['String']['input'];
   placeholder: Scalars['String']['input'];
   primary: Scalars['String']['input'];
   scrollHandle: Scalars['String']['input'];
@@ -548,6 +550,8 @@ export type Theme = {
   id: Scalars['ID']['output'];
   info: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  nameEN: Scalars['String']['output'];
+  nameFR: Scalars['String']['output'];
   placeholder: Scalars['String']['output'];
   primary: Scalars['String']['output'];
   scrollHandle: Scalars['String']['output'];
@@ -656,6 +660,8 @@ export type UpdateThemeInput = {
   id: Scalars['Int']['input'];
   info?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  nameEN?: InputMaybe<Scalars['String']['input']>;
+  nameFR?: InputMaybe<Scalars['String']['input']>;
   placeholder?: InputMaybe<Scalars['String']['input']>;
   primary?: InputMaybe<Scalars['String']['input']>;
   scrollHandle?: InputMaybe<Scalars['String']['input']>;

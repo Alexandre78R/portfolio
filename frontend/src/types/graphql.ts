@@ -138,6 +138,8 @@ export type CreateThemeInput = {
   grey: Scalars['String']['input'];
   info: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  nameEN: Scalars['String']['input'];
+  nameFR: Scalars['String']['input'];
   placeholder: Scalars['String']['input'];
   primary: Scalars['String']['input'];
   scrollHandle: Scalars['String']['input'];
@@ -551,6 +553,8 @@ export type Theme = {
   id: Scalars['ID']['output'];
   info: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  nameEN: Scalars['String']['output'];
+  nameFR: Scalars['String']['output'];
   placeholder: Scalars['String']['output'];
   primary: Scalars['String']['output'];
   scrollHandle: Scalars['String']['output'];
@@ -659,6 +663,8 @@ export type UpdateThemeInput = {
   id: Scalars['Int']['input'];
   info?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  nameEN?: InputMaybe<Scalars['String']['input']>;
+  nameFR?: InputMaybe<Scalars['String']['input']>;
   placeholder?: InputMaybe<Scalars['String']['input']>;
   primary?: InputMaybe<Scalars['String']['input']>;
   scrollHandle?: InputMaybe<Scalars['String']['input']>;
@@ -811,7 +817,7 @@ export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename
 export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetThemesListQuery = { __typename?: 'Query', themeList: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
+export type GetThemesListQuery = { __typename?: 'Query', themeList: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameFR: string, nameEN: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1516,6 +1522,8 @@ export const GetThemesListDocument = gql`
       id
       info
       name
+      nameFR
+      nameEN
       placeholder
       primary
       scrollHandle

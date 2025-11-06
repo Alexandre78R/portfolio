@@ -102,6 +102,8 @@ model User {
 model Theme {
   id                Int    @id @default(autoincrement())
   name              String @unique
+  nameEN            String
+  nameFR            String
   body              String
   scrollHandle      String
   scrollHandleHover String

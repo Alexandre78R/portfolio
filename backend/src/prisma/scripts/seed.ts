@@ -44,7 +44,8 @@ const mapThemeToPrisma = (
   theme: typeof themesData[keyof typeof themesData]
 ): ThemeSeedInput => ({
   name: theme.name,
-
+  nameEN: theme.nameEN,
+  nameFR: theme.nameFR,
   body: theme.colors.body,
   scrollHandle: theme.colors.scrollHandle,
   scrollHandleHover: theme.colors.scrollHandleHover,

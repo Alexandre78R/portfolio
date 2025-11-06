@@ -23,6 +23,8 @@ describe("ThemeResolver - updateTheme", () => {
   const fakeExisting: PrismaTheme = {
     id: 1,
     name: "dark",
+    nameFR: "newtheme",
+    nameEN: "newtheme",
     body: "#000",
     scrollHandle: "",
     scrollHandleHover: "",

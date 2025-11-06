@@ -12,14 +12,12 @@ import BurgerButton from "../Button/BurgerButton";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ModalCustom from "../ModalCustom/ModalCustom";
-import themes from "@/context/Theme/themes";
 
 const Navbar: React.FC = (): JSX.Element => {
-  
   const pathname: string = usePathname() ?? "/";
 
   const { lang, setLang, translations } = useLang();
-  const { toggleTheme } = useTheme();
+  const { toggleTheme, themes } = useTheme();
   const { selectedView } = useChoiceView();
 
   const {
@@ -39,16 +37,16 @@ const Navbar: React.FC = (): JSX.Element => {
   const handleOpen = (): void => setOpen(true);
   const handleClose = (): void => setOpen(false);
 
-  const toggleMenu = (): void => setMenuOpen((prev: boolean) => !prev);
+  const toggleMenu = (): void => setMenuOpen((prev) => !prev);
 
-  const handleChangeColorTheme = (newTheme: keyof typeof themes): void => {
-    toggleTheme(newTheme);
+  const handleChangeColorTheme = (themeKey: string): void => {
+    toggleTheme(themeKey);
     handleClose();
     setMenuOpen(false);
   };
 
   const toggleCheckedLang = (): void => {
-    setIsCheckedLang((prev: boolean) => !prev);
+    setIsCheckedLang((prev) => !prev);
     setLang(lang === "fr" ? "en" : "fr");
   };
 
@@ -57,14 +55,17 @@ const Navbar: React.FC = (): JSX.Element => {
     sectionRef: React.RefObject<HTMLDivElement>
   ): void => {
     event.preventDefault();
+
     if (sectionRef.current) {
-      const yOffset: number = -80;
-      const y: number =
+      const yOffset = -80;
+      const y =
         sectionRef.current.getBoundingClientRect().top +
         window.pageYOffset +
         yOffset;
+
       window.scrollTo({ top: y, behavior: "smooth" });
     }
+
     setMenuOpen(false);
   };
 
@@ -72,25 +73,31 @@ const Navbar: React.FC = (): JSX.Element => {
     setIsCheckedLang(translations.file === "en");
   }, [translations]);
 
+  const themeKeys: string[] = Object.keys(themes);
+
   return (
     <nav className="bg-body p-4 fixed top-0 left-0 w-full z-50">
       <section className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex-shrink-0">
-          <ButtonLinkNavBar
-            sectionRef={headerRef}
-            handleScrollToSection={handleScrollToSection}
-            className="hover:text-secondary text-text font-bold text-xl"
-          >
-            {translations.navbarTitle}
-          </ButtonLinkNavBar>
-          {pathname !== "/" && (
-            <Link href="/" className="hover:text-secondary text-text font-bold text-xl">
+          {pathname === "/" ? (
+            <ButtonLinkNavBar
+              sectionRef={headerRef}
+              handleScrollToSection={handleScrollToSection}
+              className="hover:text-secondary text-text font-bold text-xl"
+            >
+              {translations.navbarTitle}
+            </ButtonLinkNavBar>
+          ) : (
+            <Link
+              href="/"
+              className="hover:text-secondary text-text font-bold text-xl"
+            >
               {translations.navbarTitle}
             </Link>
           )}
         </div>
 
-        {/* Desktop Menu */}
+        {/* Desktop */}
         <menu className="hidden md:block">
           <ul className="flex space-x-5">
             {selectedView !== "terminal" ? (
@@ -108,11 +115,11 @@ const Navbar: React.FC = (): JSX.Element => {
                       handleScrollToSection={handleScrollToSection}
                       className="text-text hover:text-secondary"
                     >
-                      <span className="hidden md:inline">{label}</span>
-                      <span className="md:hidden">{label}</span>
+                      {label}
                     </ButtonLinkNavBar>
                   </li>
                 ))}
+
                 <li>
                   <ToggleButton
                     toggleChecked={toggleCheckedLang}
@@ -121,12 +128,13 @@ const Navbar: React.FC = (): JSX.Element => {
                     isChecked={isCheckedLang}
                   />
                 </li>
+
                 <li>{pathname === "/" && <ChoiceViewButton />}</li>
+
                 <li>
                   <ColorLensIcon
                     onClick={handleOpen}
-                    className="z-999 hover:text-secondary text-primary"
-                    fontSize="medium"
+                    className="cursor-pointer hover:text-secondary text-primary"
                   />
                 </li>
               </>
@@ -139,8 +147,7 @@ const Navbar: React.FC = (): JSX.Element => {
                     handleScrollToSection={handleScrollToSection}
                     className="text-text hover:text-secondary"
                   >
-                    <span className="hidden md:inline">{translations.navbarButtonTerminal}</span>
-                    <span className="md:hidden">{translations.navbarButtonTerminal}</span>
+                    {translations.navbarButtonTerminal}
                   </ButtonLinkNavBar>
                 </li>
               </>
@@ -148,7 +155,7 @@ const Navbar: React.FC = (): JSX.Element => {
           </ul>
         </menu>
 
-        {/* Mobile Burger */}
+        {/* Mobile */}
         <menu className="md:hidden">
           <BurgerButton open={menuOpen} toggleMenu={toggleMenu} />
         </menu>
@@ -156,7 +163,7 @@ const Navbar: React.FC = (): JSX.Element => {
 
       {/* Mobile Sidebar */}
       {menuOpen && (
-        <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6" data-testid="mobile-menu">
+        <menu className="md:hidden bg-body fixed inset-y-0 right-0 z-40 w-64 px-4 py-6">
           <ul className="flex flex-col space-y-4">
             {selectedView !== "terminal" ? (
               <>
@@ -166,7 +173,7 @@ const Navbar: React.FC = (): JSX.Element => {
                   { ref: projectRef, label: translations.navbarButtonProject },
                   { ref: educationRef, label: translations.navbarButtonCareer },
                 ].map(({ ref, label }, i) => (
-                  <li key={i} onClick={() => setMenuOpen(false)}>
+                  <li key={i}>
                     <ButtonLinkNavBar
                       sectionRef={ref}
                       handleScrollToSection={handleScrollToSection}
@@ -176,13 +183,15 @@ const Navbar: React.FC = (): JSX.Element => {
                     </ButtonLinkNavBar>
                   </li>
                 ))}
+
                 <li>
                   <ColorLensIcon
                     onClick={handleOpen}
-                    className="hover:text-secondary text-primary"
+                    className="cursor-pointer hover:text-secondary text-primary"
                   />
                 </li>
-                <li onClick={() => setMenuOpen(false)}>
+
+                <li>
                   <ToggleButton
                     toggleChecked={toggleCheckedLang}
                     option1="FR"
@@ -190,15 +199,12 @@ const Navbar: React.FC = (): JSX.Element => {
                     isChecked={isCheckedLang}
                   />
                 </li>
-                <li onClick={() => setMenuOpen(false)}>
-                  {pathname === "/" && <ChoiceViewButton />}
-                </li>
+
+                <li>{pathname === "/" && <ChoiceViewButton />}</li>
               </>
             ) : (
               <>
-                <li onClick={() => setMenuOpen(false)}>
-                  {pathname === "/" && <ChoiceViewButton />}
-                </li>
+                <li>{pathname === "/" && <ChoiceViewButton />}</li>
                 <li>
                   <ButtonLinkNavBar
                     sectionRef={terminalRef}
@@ -214,10 +220,23 @@ const Navbar: React.FC = (): JSX.Element => {
         </menu>
       )}
 
+      {/* Theme Modal */}
       <ModalCustom open={open} onClose={handleClose}>
-        <Button onClick={() => handleChangeColorTheme("dark")} text={translations.theme1!} />
-        <Button onClick={() => handleChangeColorTheme("light")} text={translations.theme2!} />
-        <Button onClick={() => handleChangeColorTheme("ubuntu")} text={translations.theme3!} />
+        {themeKeys.map((themeKey) => {
+          const theme = themes[themeKey];
+
+          return (
+            <Button
+              key={themeKey}
+              onClick={() => handleChangeColorTheme(themeKey)}
+              text={
+                lang === "fr"
+                  ? theme.nameFR ?? theme.name
+                  : theme.nameEN ?? theme.name
+              }
+            />
+          );
+        })}
       </ModalCustom>
     </nav>
   );

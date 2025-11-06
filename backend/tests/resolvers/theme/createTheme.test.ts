@@ -21,6 +21,8 @@ describe("ThemeResolver - createTheme", () => {
 
   const fakeInput: CreateThemeInput = {
     name: "newtheme",
+    nameFR: "newtheme",
+    nameEN: "newtheme",
     body: "#000",
     scrollHandle: "",
     scrollHandleHover: "",

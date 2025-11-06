@@ -9,6 +9,12 @@ export class Theme {
   name: string;
 
   @Field()
+  nameEN: string;
+
+  @Field()
+  nameFR: string;
+
+  @Field()
   body: string;
 
   @Field()

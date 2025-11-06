@@ -12,6 +12,8 @@ export const GET_THEMES_LIST = gql`
             id
             info
             name
+            nameFR
+            nameEN
             placeholder
             primary
             scrollHandle

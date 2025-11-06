@@ -53,7 +53,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
       messagePageDashBoardTittleSection2: "Top Skills",
       messagePageDashBoardTittleSection3: "Roles",
       messagePageDashBoardErreurData: "Error loading data",
-    },
+    } as Lang,
   }),
 }));
 

@@ -21,6 +21,8 @@ describe("ThemeResolver - themeList", () => {
     {
       id: 1,
       name: "dark",
+      nameFR: "newtheme",
+      nameEN: "newtheme",
       body: "#000",
       scrollHandle: "",
       scrollHandleHover: "",
@@ -44,6 +46,8 @@ describe("ThemeResolver - themeList", () => {
     {
       id: 2,
       name: "light",
+      nameFR: "newtheme2",
+      nameEN: "newthem521e",
       body: "#fff",
       scrollHandle: "",
       scrollHandleHover: "",

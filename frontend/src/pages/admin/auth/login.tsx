@@ -48,9 +48,6 @@ const LoginPage = (): React.ReactElement => {
 
   const handleLogin = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
-
-    console.log("varible NEXT_PUBLIC_JWT_SECRET -->", process.env.NEXT_PUBLIC_JWT_SECRET);
-
     try {
       const res = await login({
         variables: {
