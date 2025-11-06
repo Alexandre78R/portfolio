@@ -23,7 +23,7 @@ const Header = (): JSX.Element => {
             maxSize={1.5}
             particleDensity={100}
             className="w-full h-full bg-body"
-            particleColor={themes[theme].colors.primary}
+            particleColor={themes[theme]?.colors.primary}
           />
         </div>
 

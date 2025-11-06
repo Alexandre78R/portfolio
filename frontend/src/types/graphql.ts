@@ -774,6 +774,13 @@ export type MutationMutationVariables = Exact<{
 
 export type MutationMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token?: string | null, message: string, code: number } };
 
+export type CreateThemeMutationVariables = Exact<{
+  data: CreateThemeInput;
+}>;
+
+
+export type CreateThemeMutation = { __typename?: 'Mutation', createTheme: { __typename?: 'ThemeResponse', code: number, message: string, theme?: { __typename?: 'Theme', admin: string, body: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameEN: string, nameFR: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string } | null } };
+
 export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1068,6 +1075,65 @@ export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<Mut
 export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
 export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
 export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
+export const CreateThemeDocument = gql`
+    mutation CreateTheme($data: CreateThemeInput!) {
+  createTheme(data: $data) {
+    theme {
+      admin
+      body
+      error
+      footer
+      grey
+      id
+      info
+      name
+      nameEN
+      nameFR
+      placeholder
+      primary
+      scrollHandle
+      scrollHandleHover
+      secondary
+      success
+      text100
+      text200
+      text300
+      textButton
+      textDefault
+      visible
+      warn
+    }
+    code
+    message
+  }
+}
+    `;
+export type CreateThemeMutationFn = Apollo.MutationFunction<CreateThemeMutation, CreateThemeMutationVariables>;
+
+/**
+ * __useCreateThemeMutation__
+ *
+ * To run a mutation, you first call `useCreateThemeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateThemeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createThemeMutation, { data, loading, error }] = useCreateThemeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateThemeMutation(baseOptions?: Apollo.MutationHookOptions<CreateThemeMutation, CreateThemeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateThemeMutation, CreateThemeMutationVariables>(CreateThemeDocument, options);
+      }
+export type CreateThemeMutationHookResult = ReturnType<typeof useCreateThemeMutation>;
+export type CreateThemeMutationResult = Apollo.MutationResult<CreateThemeMutation>;
+export type CreateThemeMutationOptions = Apollo.BaseMutationOptions<CreateThemeMutation, CreateThemeMutationVariables>;
 export const GetGlobalStatsDocument = gql`
     query GetGlobalStats {
   getGlobalStats {

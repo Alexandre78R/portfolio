@@ -1,9 +1,9 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, ReactNode } from "react";
 import { TextField, TextFieldProps } from "@mui/material";
 
 export interface InputFieldProps {
   id: string;
-  label: string;
+  label: string | ReactNode;
   type?: string; // type limité aux types HTML valides
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -13,6 +13,7 @@ export interface InputFieldProps {
   required?: boolean; // ajouté pour plus de flexibilité
   className?: string; // optionnel pour override Tailwind classes
   sx?: TextFieldProps["sx"]; // permet d'étendre les styles MUI
+  placeholder?: string; 
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -27,6 +28,7 @@ const InputField: React.FC<InputFieldProps> = ({
   required = true,
   className,
   sx,
+  placeholder,
 }) => {
   const rowsProp = multiline && rows ? rows : undefined;
 
@@ -61,6 +63,7 @@ const InputField: React.FC<InputFieldProps> = ({
         },
         ...sx,
       }}
+      placeholder={placeholder}
     />
   );
 };

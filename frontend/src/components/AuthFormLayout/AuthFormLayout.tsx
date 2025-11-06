@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { Box } from "@mui/material";
 
 export interface AuthFormLayoutProps {
-  title: string;
+  title: string | ReactNode;
   children: ReactNode;
 }
 

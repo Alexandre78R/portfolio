@@ -14,10 +14,9 @@ const ModalCustom: React.FC<ModalCustomProps> = ({
   open,
   onClose,
   children,
-  width = 400,
+  width = "400px", // Par défaut, largeur fixe pour desktop
   className = "",
 }) => {
-
   return (
     <Modal
       open={open}
@@ -26,10 +25,21 @@ const ModalCustom: React.FC<ModalCustomProps> = ({
       aria-describedby="modal-modal-description"
     >
       <Box
-        className={`flex flex-row justify-center items-center gap-2 bg-body rounded shadow-lg absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 ${className}`}
+        className={`flex flex-col justify-center items-center gap-2 bg-body rounded shadow-lg p-6 ${className}`}
         sx={{
-          width,
+          width: {
+            xs: "90%", // Petit écran : 90% de la largeur
+            sm: "70%", // Petit/moyen écran : 70%
+            md: width, // Desktop : valeur par défaut
+          },
+          maxWidth: "600px", // Limite la largeur maximale
           border: `2px solid var(--body-color)`,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          overflowY: "auto", // Scroll si contenu trop grand
+          maxHeight: "90vh", // Limite la hauteur à l'écran
         }}
       >
         {children}

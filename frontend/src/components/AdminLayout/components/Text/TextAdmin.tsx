@@ -6,6 +6,7 @@ export type TextAdminType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "spa
 export interface TextAdminProps {
   type: TextAdminType;
   children: React.ReactNode;
+  className?: string;
 }
 
 const variantMap: Record<TextAdminType, "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "body1" | "body2"> = {
@@ -33,8 +34,8 @@ const fontSizeMap: Record<TextAdminType, string> = {
 const getColorForType = (type: TextAdminType): string =>
   type === "p" || type === "span" ? "var(--text-color)" : "var(--primary-color)";
 
-const TextAdmin: React.FC<TextAdminProps> = ({ type, children }): JSX.Element => (
-  <Box>
+const TextAdmin: React.FC<TextAdminProps> = ({ type, children, className }): JSX.Element => (
+  <Box className={className}>
     <Typography
       variant={variantMap[type]}
       component={type}
