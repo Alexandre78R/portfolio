@@ -8,7 +8,7 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 interface ThemeDeleteDialogProps {
   themeId: string | null;
   onClose: () => void;
-  onRefresh: () => Promise<void>; 
+  onRefresh: () => Promise<void | import('@apollo/client').ApolloQueryResult<GetThemesListQuery>>;
 }
 
 const ThemeDeleteDialog = ({
