@@ -34,8 +34,8 @@ export const themesData = {
   light: {
     id: "2",
     name: "light",
-    nameEN: "Dark",
-    nameFR: "Claire",
+    nameEN: "Light",
+    nameFR: "Lumière",
     colors: {
       body: "#E8E8E8",
       scrollHandle: "#C1C1C1",

@@ -201,6 +201,20 @@ const en: Lang = {
   messagePageAddNewThemesTitleColors: "Colors",
   messagePageAddNewThemesButtonTextLoading: "Creating...",
   messagePageAddNewThemesButtonTextSucces: "Create Theme",
+  messageAdminThemeListNotFound: "No themes found",
+  messageAdminThemeColumnName: "Name",
+  messageAdminThemeColumnNameEN: "Name (EN)",
+  messageAdminThemeColumnNameFR: "Name (FR)",
+  messageAdminThemeColumnAction: "Actions",
+  messageAdminThemeListTitle: "Themes",
+  messageAdminThemeDeleteTitle: "Delete theme",
+  messageAdminThemeDeleteDescription: "Are you sure you want to delete this theme? This action cannot be undone.",
+  messageAdminThemeDeleteConfirm: "Delete",
+  messageAdminThemeDeleteCancel: "Cancel",
+  messageAdminThemeEditTitle: "Edit theme",
+  messageAdminThemeEditSave: "Save",
+  messageAdminThemeEditCancel: "Cancel",
+
 };
 
 export default en;

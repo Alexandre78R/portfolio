@@ -184,6 +184,19 @@ type Lang = {
   messagePageAddNewThemesTitleColors: string;
   messagePageAddNewThemesButtonTextLoading: string;
   messagePageAddNewThemesButtonTextSucces: string;
+  messageAdminThemeListNotFound: string;
+  messageAdminThemeColumnName: string;
+  messageAdminThemeColumnNameEN: string;
+  messageAdminThemeColumnNameFR: string;
+  messageAdminThemeColumnAction: string;
+  messageAdminThemeListTitle: string;
+  messageAdminThemeDeleteTitle: string;
+  messageAdminThemeDeleteDescription: string;
+  messageAdminThemeDeleteConfirm: string;
+  messageAdminThemeDeleteCancel: string;
+  messageAdminThemeEditTitle: string;
+  messageAdminThemeEditCancel: string;
+  messageAdminThemeEditSave: string;
 };
 
 export default Lang;

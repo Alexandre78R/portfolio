@@ -201,6 +201,19 @@ const fr: Lang = {
   messagePageAddNewThemesTitleColors: "Couleurs",
   messagePageAddNewThemesButtonTextLoading: "Création en cours...",
   messagePageAddNewThemesButtonTextSucces: "Créer le thème",
+  messageAdminThemeListNotFound: "Aucun thème trouvé",
+  messageAdminThemeColumnName: "Nom",
+  messageAdminThemeColumnNameEN: "Nom (EN)",
+  messageAdminThemeColumnNameFR: "Nom (FR)",
+  messageAdminThemeColumnAction: "Actions",
+  messageAdminThemeListTitle: "Thèmes",
+  messageAdminThemeDeleteTitle: "Supprimer le thème",
+  messageAdminThemeDeleteDescription: "Êtes-vous sûr de vouloir supprimer ce thème ? Cette action est irréversible.",
+  messageAdminThemeDeleteConfirm: "Supprimer",
+  messageAdminThemeDeleteCancel: "Annuler",
+  messageAdminThemeEditTitle: "Modifier le thème",
+  messageAdminThemeEditSave: "Enregistrer",
+  messageAdminThemeEditCancel: "Annuler",
 };
 
 export default fr;
