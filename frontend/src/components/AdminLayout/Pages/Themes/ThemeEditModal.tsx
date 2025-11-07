@@ -8,90 +8,252 @@ import React, {
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import ButtonCustom from "@/components/Button/Button";
+import InputField from "@/components/InputField/InputField";
+import InputColor from "../../components/Input/InputColor";
+import InputBoolean from "../../components/Input/InputBoolean";
 import { X } from "lucide-react";
 import { ThemeRow } from "./ThemesList";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useUpdateThemeMutation, GetThemesListQuery, UpdateThemeInput} from "@/types/graphql";
 
 interface ThemeEditModalProps {
   theme: ThemeRow | null;
   onClose: () => void;
+  onRefresh: () => Promise<void | import('@apollo/client').ApolloQueryResult<GetThemesListQuery>>;
+}
+
+// Interface pour le formulaire avec tous les champs
+interface ThemeFormData {
+  id: string;
+  name: string;
+  nameEN: string;
+  nameFR: string;
+  visible: boolean;
+  body: string;
+  scrollHandle: string;
+  scrollHandleHover: string;
+  primary: string;
+  secondary: string;
+  success: string;
+  error: string;
+  warn: string;
+  info: string;
+  grey: string;
+  placeholder: string;
+  footer: string;
+  admin: string;
+  textDefault: string;
+  text100: string;
+  text200: string;
+  text300: string;
+  textButton: string;
 }
 
 const ThemeEditModal = ({
   theme,
   onClose,
+  onRefresh,
 }: ThemeEditModalProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const [form, setForm] = useState<ThemeRow | null>(theme);
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
+
+  const [form, setForm] = useState<ThemeFormData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [updateThemeMutation] = useUpdateThemeMutation();
 
   useEffect(() => {
-    setForm(theme);
+    if (theme) {
+      // Conversion de ThemeRow vers ThemeFormData avec valeurs par défaut
+      setForm({
+        id: theme.id,
+        name: theme.name,
+        nameEN: theme.nameEN,
+        nameFR: theme.nameFR,
+        visible: true,
+        body: "#FFFFFF",
+        scrollHandle: "#CCCCCC",
+        scrollHandleHover: "#999999",
+        primary: "#000000",
+        secondary: "#666666",
+        success: "#00FF00",
+        error: "#FF0000",
+        warn: "#FFA500",
+        info: "#0000FF",
+        grey: "#808080",
+        placeholder: "#CCCCCC",
+        footer: "#F5F5F5",
+        admin: "#000000",
+        textDefault: "#000000",
+        text100: "#1a1a1a",
+        text200: "#333333",
+        text300: "#666666",
+        textButton: "#FFFFFF",
+      });
+    } else {
+      setForm(null);
+    }
   }, [theme]);
 
   if (!form) return null;
 
+  // Champs couleurs disponibles
+  const colorFields = [
+    "body",
+    "scrollHandle",
+    "scrollHandleHover",
+    "primary",
+    "secondary",
+    "success",
+    "error",
+    "warn",
+    "info",
+    "grey",
+    "placeholder",
+    "footer",
+    "admin",
+    "textDefault",
+    "text100",
+    "text200",
+    "text300",
+    "textButton",
+  ] as const;
+
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      setForm(prev => prev ? { ...prev, [name]: (e.target as HTMLInputElement).checked } : prev);
+    } else {
+      setForm(prev => prev ? { ...prev, [name]: value } : prev);
+    }
   };
 
-  const handleSubmit = (
-    e: FormEvent<HTMLFormElement>
-  ): void => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Update theme:", form);
-    onClose();
+    if (!form) return;
+    setLoading(true);
+
+    try {
+      const updateData: UpdateThemeInput = {
+        id: Number(form.id),
+        name: form.name,
+        nameEN: form.nameEN,
+        nameFR: form.nameFR,
+        visible: form.visible,
+        body: form.body,
+        scrollHandle: form.scrollHandle,
+        scrollHandleHover: form.scrollHandleHover,
+        primary: form.primary,
+        secondary: form.secondary,
+        success: form.success,
+        error: form.error,
+        warn: form.warn,
+        info: form.info,
+        grey: form.grey,
+        placeholder: form.placeholder,
+        footer: form.footer,
+        admin: form.admin,
+        textDefault: form.textDefault,
+        text100: form.text100,
+        text200: form.text200,
+        text300: form.text300,
+        textButton: form.textButton,
+      };
+
+      const { data } = await updateThemeMutation({
+        variables: { data: updateData },
+      });
+
+      if (data?.updateTheme?.code === 200) {
+        showAlert("success", translations.messageAdminThemeEditSave);
+        await onRefresh();
+        onClose();
+      } else {
+        showAlert("error", translations.messageAdminThemeEditError);
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert("error", "Erreur serveur !");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <ModalCustom open={!!theme} onClose={onClose} width="520px">
+    <ModalCustom open={!!theme} onClose={onClose} width="600px">
       <div className="mb-4 flex w-full items-center justify-between">
         <TextAdmin type="h2">
           {translations.messageAdminThemeEditTitle}
         </TextAdmin>
-
         <button onClick={onClose}>
           <X className="h-5 w-5" />
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
-        <input
-          name="name"
-          value={form.name}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Nom du thème */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <InputField
+            id="theme-name"
+            label="Nom"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <InputField
+            id="theme-nameEN"
+            label="Nom EN"
+            name="nameEN"
+            value={form.nameEN}
+            onChange={handleChange}
+          />
+          <InputField
+            id="theme-nameFR"
+            label="Nom FR"
+            name="nameFR"
+            value={form.nameFR}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Visible */}
+        <InputBoolean
+          id="theme-visible"
+          label="Visible"
+          name="visible"
+          value={form.visible}
           onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-        <input
-          name="nameEN"
-          value={form.nameEN}
-          onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
-        />
-        <input
-          name="nameFR"
-          value={form.nameFR}
-          onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
         />
 
-        <div className="flex justify-end gap-3 pt-4">
+        {/* Couleurs */}
+        <TextAdmin type="h3" className="mt-4">Couleurs</TextAdmin>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {colorFields.map(field => (
+            <InputColor
+              key={field}
+              id={`theme-${field}`}
+              label={field}
+              name={field}
+              value={form[field]}
+              onChange={handleChange}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-end mt-6 gap-3">
           <ButtonCustom
             text={translations.messageAdminThemeEditCancel}
             onClick={onClose}
-            disable={false}
-            disableHover={false}
+            disable={loading}
           />
           <ButtonCustom
             text={translations.messageAdminThemeEditSave}
             type="submit"
-            disable={false}
-            disableHover={false}
+            disable={loading}
           />
         </div>
       </form>

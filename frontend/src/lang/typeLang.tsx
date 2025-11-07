@@ -188,6 +188,7 @@ type Lang = {
   messageAdminThemeColumnName: string;
   messageAdminThemeColumnNameEN: string;
   messageAdminThemeColumnNameFR: string;
+  messageAdminThemeColumnVisible: string;
   messageAdminThemeColumnAction: string;
   messageAdminThemeListTitle: string;
   messageAdminThemeDeleteTitle: string;
@@ -197,8 +198,10 @@ type Lang = {
   messageAdminThemeEditTitle: string;
   messageAdminThemeEditCancel: string;
   messageAdminThemeEditSave: string;
+  messageAdminThemeEditError: string;
   messageAdminThemeDeleteSuccess:string;
   messageAdminThemeDeleteError:string;
+  
 };
 
 export default Lang;

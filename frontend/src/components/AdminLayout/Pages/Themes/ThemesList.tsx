@@ -9,11 +9,13 @@ import Lang from "@/lang/typeLang";
 import ThemeDeleteDialog from "./ThemeDeleteDialog";
 import ThemeEditModal from "./ThemeEditModal";
 
+
 export interface ThemeRow {
   id: string;
   name: string;
   nameEN: string;
   nameFR: string;
+  visible: boolean,
 }
 
 const ThemeList = (): ReactElement => {
@@ -43,6 +45,7 @@ const ThemeList = (): ReactElement => {
       name: theme.name,
       nameEN: theme.nameEN ?? theme.name,
       nameFR: theme.nameFR ?? theme.name,
+      visible: theme.visible,
     }));
 
   const columns: ColumnDef<ThemeRow>[] = [
@@ -59,6 +62,10 @@ const ThemeList = (): ReactElement => {
     {
       header: translations.messageAdminThemeColumnNameFR,
       accessor: "nameFR",
+    },
+    {
+      header: "visible",
+      accessor: (row) => (row.visible ? "✅" : "❌"),
     },
     {
       header: translations.messageAdminThemeColumnAction,
@@ -95,6 +102,7 @@ const ThemeList = (): ReactElement => {
       <ThemeEditModal
         theme={editTheme}
         onClose={() => setEditTheme(null)}
+        onRefresh={refetch}
       />
 
       {/* DELETE */}

@@ -205,6 +205,7 @@ const en: Lang = {
   messageAdminThemeColumnName: "Name",
   messageAdminThemeColumnNameEN: "Name (EN)",
   messageAdminThemeColumnNameFR: "Name (FR)",
+  messageAdminThemeColumnVisible: "Visible",
   messageAdminThemeColumnAction: "Actions",
   messageAdminThemeListTitle: "Themes",
   messageAdminThemeDeleteTitle: "Delete theme",
@@ -213,9 +214,10 @@ const en: Lang = {
   messageAdminThemeDeleteCancel: "Cancel",
   messageAdminThemeEditTitle: "Edit theme",
   messageAdminThemeEditSave: "Save",
+  messageAdminThemeEditError: "Error during update!",
   messageAdminThemeEditCancel: "Cancel",
-  messageAdminThemeDeleteSuccess:"",
-  messageAdminThemeDeleteError:"",
+  messageAdminThemeDeleteSuccess: "Theme deleted!",
+  messageAdminThemeDeleteError: "Error deleting!",
 
 };
 
