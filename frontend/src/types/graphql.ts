@@ -781,6 +781,20 @@ export type CreateThemeMutationVariables = Exact<{
 
 export type CreateThemeMutation = { __typename?: 'Mutation', createTheme: { __typename?: 'ThemeResponse', code: number, message: string, theme?: { __typename?: 'Theme', admin: string, body: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameEN: string, nameFR: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string } | null } };
 
+export type UpdateThemeMutationVariables = Exact<{
+  data: UpdateThemeInput;
+}>;
+
+
+export type UpdateThemeMutation = { __typename?: 'Mutation', updateTheme: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', admin: string, body: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameEN: string, nameFR: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string } | null } };
+
+export type DeleteThemeMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteThemeMutation = { __typename?: 'Mutation', deleteTheme: { __typename?: 'Response', code: number, message: string } };
+
 export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1134,6 +1148,99 @@ export function useCreateThemeMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateThemeMutationHookResult = ReturnType<typeof useCreateThemeMutation>;
 export type CreateThemeMutationResult = Apollo.MutationResult<CreateThemeMutation>;
 export type CreateThemeMutationOptions = Apollo.BaseMutationOptions<CreateThemeMutation, CreateThemeMutationVariables>;
+export const UpdateThemeDocument = gql`
+    mutation UpdateTheme($data: UpdateThemeInput!) {
+  updateTheme(data: $data) {
+    theme {
+      admin
+      body
+      error
+      footer
+      grey
+      id
+      info
+      name
+      nameEN
+      nameFR
+      placeholder
+      primary
+      scrollHandle
+      scrollHandleHover
+      secondary
+      success
+      text100
+      text200
+      text300
+      textButton
+      textDefault
+      visible
+      warn
+    }
+    message
+    code
+  }
+}
+    `;
+export type UpdateThemeMutationFn = Apollo.MutationFunction<UpdateThemeMutation, UpdateThemeMutationVariables>;
+
+/**
+ * __useUpdateThemeMutation__
+ *
+ * To run a mutation, you first call `useUpdateThemeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateThemeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateThemeMutation, { data, loading, error }] = useUpdateThemeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateThemeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateThemeMutation, UpdateThemeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateThemeMutation, UpdateThemeMutationVariables>(UpdateThemeDocument, options);
+      }
+export type UpdateThemeMutationHookResult = ReturnType<typeof useUpdateThemeMutation>;
+export type UpdateThemeMutationResult = Apollo.MutationResult<UpdateThemeMutation>;
+export type UpdateThemeMutationOptions = Apollo.BaseMutationOptions<UpdateThemeMutation, UpdateThemeMutationVariables>;
+export const DeleteThemeDocument = gql`
+    mutation DeleteTheme($id: Int!) {
+  deleteTheme(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteThemeMutationFn = Apollo.MutationFunction<DeleteThemeMutation, DeleteThemeMutationVariables>;
+
+/**
+ * __useDeleteThemeMutation__
+ *
+ * To run a mutation, you first call `useDeleteThemeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteThemeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteThemeMutation, { data, loading, error }] = useDeleteThemeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteThemeMutation(baseOptions?: Apollo.MutationHookOptions<DeleteThemeMutation, DeleteThemeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteThemeMutation, DeleteThemeMutationVariables>(DeleteThemeDocument, options);
+      }
+export type DeleteThemeMutationHookResult = ReturnType<typeof useDeleteThemeMutation>;
+export type DeleteThemeMutationResult = Apollo.MutationResult<DeleteThemeMutation>;
+export type DeleteThemeMutationOptions = Apollo.BaseMutationOptions<DeleteThemeMutation, DeleteThemeMutationVariables>;
 export const GetGlobalStatsDocument = gql`
     query GetGlobalStats {
   getGlobalStats {
