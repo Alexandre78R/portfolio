@@ -1,9 +1,10 @@
-import React, { ReactElement } from "react";
-import { LucideIcon } from "lucide-react"; 
+import React from "react";
 import clsx from "clsx";
 
+type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+
 export interface ActionItem<T> {
-  icon: LucideIcon;
+  icon: IconComponent;
   label?: string;
   onClick: (row: T) => void;
   colorClass?: string;
@@ -15,7 +16,11 @@ interface ActionButtonProps<T> {
   gap?: string;
 }
 
-const ActionButton = <T,>({ row, actions, gap = "gap-2" }: ActionButtonProps<T>): ReactElement => {
+function ActionButton<T>({
+  row,
+  actions,
+  gap = "gap-2",
+}: ActionButtonProps<T>): React.ReactElement {
   return (
     <div className={clsx("flex items-center", gap)}>
       {actions.map((action, index) => {
@@ -23,6 +28,7 @@ const ActionButton = <T,>({ row, actions, gap = "gap-2" }: ActionButtonProps<T>)
         return (
           <button
             key={index}
+            type="button"
             onClick={() => action.onClick(row)}
             className={clsx(
               "inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-colors",
@@ -36,6 +42,6 @@ const ActionButton = <T,>({ row, actions, gap = "gap-2" }: ActionButtonProps<T>)
       })}
     </div>
   );
-};
+}
 
 export default ActionButton;
