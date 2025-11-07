@@ -13,6 +13,7 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import Lang from "@/lang/typeLang";
+import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
 
 const formatBytes = (bytes: number): string => {
   if (!bytes) return "0 B";
@@ -125,35 +126,30 @@ const BackUpList = (): React.ReactElement => {
     },
     {
       header: translations.messagePageBackUpListAction,
-      accessor: (row) => (
-        <>
-          <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
-          >
-            <Eye className="h-4 w-4 text-text" />
-          </a>
-          <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
-          >
-            <Download className="h-4 w-4 text-text" />
-          </a>
-          <button
-            onClick={() => {
+      accessor: (row) => {
+        const actions: ActionItem<BackupFileInfo>[] = [
+          {
+            icon: Eye,
+            label: "View",
+            onClick: () => window.open(`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`, "_blank")
+          },
+          {
+            icon: Download,
+            label: "Download",
+            onClick: () => window.open(`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`, "_blank")
+          },
+          {
+            icon: Trash,
+            label: "Delete",
+            onClick: () => {
               setSelectedFileName(row.fileName);
               setOpenDeleteDialog(true);
-            }}
-            className="inline-flex items-center gap-2 rounded-lg text-text bg-primary/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-primary hover:text-secondary transition-colors"
-          >
-            <Trash className="h-4 w-4 text-text" />
-          </button>
-        </>
-      ),
+            },
+            colorClass: "bg-red-500/90 hover:bg-red-500"
+          }
+        ];
+        return <ActionButton row={row} actions={actions} />;
+      },
       headerClassName: "rounded-tr-2xl",
     },
   ];

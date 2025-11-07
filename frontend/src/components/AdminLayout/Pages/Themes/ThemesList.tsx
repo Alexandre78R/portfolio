@@ -8,7 +8,7 @@ import { Pencil, Trash } from "lucide-react";
 import Lang from "@/lang/typeLang";
 import ThemeDeleteDialog from "./ThemeDeleteDialog";
 import ThemeEditModal from "./ThemeEditModal";
-
+import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
 
 export interface ThemeRow {
   id: string;
@@ -69,23 +69,13 @@ const ThemeList = (): ReactElement => {
     },
     {
       header: translations.messageAdminThemeColumnAction,
-      accessor: (row) => (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setEditTheme(row)}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white"
-          >
-            <Pencil className="h-4 w-4" />
-          </button>
-
-          <button
-            onClick={() => setDeleteThemeId(row.id)}
-            className="inline-flex items-center gap-2 rounded-lg bg-primary/90 px-3 py-1.5 text-xs font-medium text-white"
-          >
-            <Trash className="h-4 w-4" />
-          </button>
-        </div>
-      ),
+      accessor: (row) => {
+        const actions: ActionItem<ThemeRow>[] = [
+          { icon: Pencil, label: "Edit", onClick: () => setEditTheme(row) },
+          { icon: Trash, label: "Delete", onClick: () => setDeleteThemeId(row.id), colorClass: "bg-red-500/90 hover:bg-red-500" },
+        ];
+        return <ActionButton row={row} actions={actions} />;
+      },
       headerClassName: "rounded-tr-2xl",
     },
   ];
