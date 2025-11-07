@@ -63,7 +63,8 @@ const ThemeEditModal = ({
   onChange,
 }: ThemeEditModalProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
 
   const [form, setForm] = useState<ThemeFormData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -76,7 +77,7 @@ const ThemeEditModal = ({
   });
 
   useEffect(() => {
-    if (themeData?.themeById?.theme) {  // <-- Correction ici
+    if (themeData?.themeById?.theme) {
       const fullTheme = themeData.themeById.theme;
       const initialForm: ThemeFormData = {
         id: fullTheme.id,
@@ -141,15 +142,15 @@ const ThemeEditModal = ({
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  ): void => {
     const { name, value, type } = e.target;
     setForm(prev => {
       if (!prev) return prev;
-      const newForm = type === "checkbox"
-        ? { ...prev, [name]: (e.target as HTMLInputElement).checked } 
+      const updatedForm = type === "checkbox"
+        ? { ...prev, [name]: (e.target as HTMLInputElement).checked }
         : { ...prev, [name]: value };
-      onChange?.(newForm);
-      return newForm;
+      onChange?.(updatedForm);
+      return updatedForm;
     });
   };
 
