@@ -214,6 +214,8 @@ const en: Lang = {
   messageAdminThemeEditTitle: "Edit theme",
   messageAdminThemeEditSave: "Save",
   messageAdminThemeEditCancel: "Cancel",
+  messageAdminThemeDeleteSuccess:"",
+  messageAdminThemeDeleteError:"",
 
 };
 

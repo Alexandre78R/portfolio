@@ -17,7 +17,7 @@ export interface ThemeRow {
 }
 
 const ThemeList = (): ReactElement => {
-  const { data, loading, error } = useGetThemesListQuery({
+  const { data, loading, error, refetch } = useGetThemesListQuery({
     fetchPolicy: "cache-and-network",
   });
 
@@ -101,6 +101,7 @@ const ThemeList = (): ReactElement => {
       <ThemeDeleteDialog
         themeId={deleteThemeId}
         onClose={() => setDeleteThemeId(null)}
+        onRefresh={refetch}
       />
     </div>
   );

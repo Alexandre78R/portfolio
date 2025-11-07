@@ -197,6 +197,8 @@ type Lang = {
   messageAdminThemeEditTitle: string;
   messageAdminThemeEditCancel: string;
   messageAdminThemeEditSave: string;
+  messageAdminThemeDeleteSuccess:string;
+  messageAdminThemeDeleteError:string;
 };
 
 export default Lang;

@@ -214,6 +214,8 @@ const fr: Lang = {
   messageAdminThemeEditTitle: "Modifier le thème",
   messageAdminThemeEditSave: "Enregistrer",
   messageAdminThemeEditCancel: "Annuler",
+  messageAdminThemeDeleteSuccess: "Thème supprimé !",
+  messageAdminThemeDeleteError:"Erreur lors de la suppression !",
 };
 
 export default fr;
