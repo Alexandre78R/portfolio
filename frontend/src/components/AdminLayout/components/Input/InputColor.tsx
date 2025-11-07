@@ -9,7 +9,7 @@ export interface InputColorProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   required?: boolean;
-  className?: string; // wrapper global
+  className?: string; 
 }
 
 const InputColor: React.FC<InputColorProps> = ({

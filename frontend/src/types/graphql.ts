@@ -840,6 +840,13 @@ export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetThemesListQuery = { __typename?: 'Query', themeList: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameFR: string, nameEN: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
 
+export type GetThemeByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetThemeByIdQuery = { __typename?: 'Query', themeById: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', id: string, name: string, nameEN: string, nameFR: string, visible: boolean, body: string, scrollHandle: string, scrollHandleHover: string, primary: string, secondary: string, success: string, error: string, warn: string, info: string, grey: string, placeholder: string, footer: string, admin: string, textDefault: string, text100: string, text200: string, text300: string, textButton: string } | null } };
+
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1751,6 +1758,75 @@ export type GetThemesListQueryHookResult = ReturnType<typeof useGetThemesListQue
 export type GetThemesListLazyQueryHookResult = ReturnType<typeof useGetThemesListLazyQuery>;
 export type GetThemesListSuspenseQueryHookResult = ReturnType<typeof useGetThemesListSuspenseQuery>;
 export type GetThemesListQueryResult = Apollo.QueryResult<GetThemesListQuery, GetThemesListQueryVariables>;
+export const GetThemeByIdDocument = gql`
+    query GetThemeById($id: Int!) {
+  themeById(id: $id) {
+    theme {
+      id
+      name
+      nameEN
+      nameFR
+      visible
+      body
+      scrollHandle
+      scrollHandleHover
+      primary
+      secondary
+      success
+      error
+      warn
+      info
+      grey
+      placeholder
+      footer
+      admin
+      textDefault
+      text100
+      text200
+      text300
+      textButton
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetThemeByIdQuery__
+ *
+ * To run a query within a React component, call `useGetThemeByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetThemeByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetThemeByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetThemeByIdQuery(baseOptions: Apollo.QueryHookOptions<GetThemeByIdQuery, GetThemeByIdQueryVariables> & ({ variables: GetThemeByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetThemeByIdQuery, GetThemeByIdQueryVariables>(GetThemeByIdDocument, options);
+      }
+export function useGetThemeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetThemeByIdQuery, GetThemeByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetThemeByIdQuery, GetThemeByIdQueryVariables>(GetThemeByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetThemeByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetThemeByIdQuery, GetThemeByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetThemeByIdQuery, GetThemeByIdQueryVariables>;
+export function useGetThemeByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetThemeByIdQuery, GetThemeByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetThemeByIdQuery | undefined, GetThemeByIdQueryVariables>;
+export function useGetThemeByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetThemeByIdQuery, GetThemeByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetThemeByIdQuery, GetThemeByIdQueryVariables>(GetThemeByIdDocument, options);
+        }
+export type GetThemeByIdQueryHookResult = ReturnType<typeof useGetThemeByIdQuery>;
+export type GetThemeByIdLazyQueryHookResult = ReturnType<typeof useGetThemeByIdLazyQuery>;
+export type GetThemeByIdSuspenseQueryHookResult = ReturnType<typeof useGetThemeByIdSuspenseQuery>;
+export type GetThemeByIdQueryResult = Apollo.QueryResult<GetThemeByIdQuery, GetThemeByIdQueryVariables>;
 export const GetMeDocument = gql`
     query GetMe {
   me {
