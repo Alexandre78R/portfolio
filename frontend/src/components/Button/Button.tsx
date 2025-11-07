@@ -10,6 +10,7 @@ export interface ButtonCustomProps {
   className?: string; // classe supplémentaire optionnelle
   sx?: SxProps<Theme>; // styles supplémentaires optionnels
   "data-testid"?: string; // ajout pour tests
+  type?: "button" | "submit" | "reset"; 
 }
 
 const ButtonCustom: FC<ButtonCustomProps> = ({
@@ -20,6 +21,7 @@ const ButtonCustom: FC<ButtonCustomProps> = ({
   className,
   sx,
   "data-testid": dataTestId,
+  type,
 }): JSX.Element => {
   const buttonStyles: SxProps<Theme> = {
     fontSize: "12px",
@@ -46,7 +48,7 @@ const ButtonCustom: FC<ButtonCustomProps> = ({
       disabled={disable}
       className={className}
       sx={buttonStyles}
-      type="button"
+      type={type || "button"} 
       data-testid={dataTestId}
     >
       {text}
