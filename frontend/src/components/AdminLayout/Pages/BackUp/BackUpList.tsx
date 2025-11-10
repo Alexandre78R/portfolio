@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { 
+import {
   useGetBackupsListQuery,
   useGenerateDatabaseBackupMutation,
   useDeleteBackupFileMutation,
@@ -7,30 +7,11 @@ import {
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
-import Table, { ColumnDef } from "../../components/Table/Table";
-import { Download, Eye, Trash } from "lucide-react";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import Lang from "@/lang/typeLang";
-import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
-
-const formatBytes = (bytes: number): string => {
-  if (!bytes) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-};
-
-const formatDate = (iso: string): string =>
-  new Date(iso).toLocaleString("fr-FR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+import BackUpTable from "@/components/Backup/BackUpTable";
 
 export interface BackupFileInfo {
   fileName: string;
@@ -40,24 +21,27 @@ export interface BackupFileInfo {
 }
 
 const BackUpList = (): React.ReactElement => {
-  
   const { data, loading, error, refetch } = useGetBackupsListQuery();
   const [generateBackup] = useGenerateDatabaseBackupMutation();
   const [deleteBackupFile] = useDeleteBackupFileMutation();
 
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
-  const handleOpenDialog: () => void = () => setOpenDialog(true);
-  const handleCloseDialog: () => void = () => setOpenDialog(false);
-
-  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
-    CustomToast();
-
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
-  const handleGenerateBackup: () => Promise<void> = async () => {
+  const backups: BackupFileInfo[] =
+    data?.listBackupFiles?.files
+      ?.slice()
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
+      ) ?? [];
+
+  const handleGenerateBackup = async (): Promise<void> => {
     try {
       const { data } = await generateBackup();
       if (data?.generateDatabaseBackup.code === 200) {
@@ -66,10 +50,10 @@ const BackUpList = (): React.ReactElement => {
       } else {
         showAlert("error", translations.messagePageBackUpCreatedError1);
       }
-    } catch (error) {
+    } catch {
       showAlert("error", translations.messagePageBackUpCreatedError2);
     } finally {
-      setOpenDialog(false);
+      setOpenCreateDialog(false);
     }
   };
 
@@ -77,15 +61,21 @@ const BackUpList = (): React.ReactElement => {
     if (!selectedFileName) return;
 
     try {
-      const { data } = await deleteBackupFile({ variables: { fileName: selectedFileName } });
+      const { data } = await deleteBackupFile({
+        variables: { fileName: selectedFileName },
+      });
 
       if (data?.deleteBackupFile.code === 200) {
         showAlert("success", translations.messagePageBackUpDeletedSuccess);
         await refetch();
       } else {
-        showAlert("error", data?.deleteBackupFile.message || translations.messagePageBackUpDeletedError1);
+        showAlert(
+          "error",
+          data?.deleteBackupFile.message ??
+            translations.messagePageBackUpDeletedError1
+        );
       }
-    } catch (error) {
+    } catch {
       showAlert("error", translations.messagePageBackUpDeletedError2);
     } finally {
       setOpenDeleteDialog(false);
@@ -101,89 +91,54 @@ const BackUpList = (): React.ReactElement => {
       </p>
     );
 
-  const backups: BackupFileInfo[] = [...data.listBackupFiles.files].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
-
-  const columns: ColumnDef<BackupFileInfo>[] = [
-    {
-      header: translations.messagePageBackUpListFileName,
-      accessor: "fileName",
-      className: "font-mono text-xs",
-      headerClassName: "rounded-tl-2xl",
-    },
-    {
-      header: translations.messagePageBackUpListSize,
-      accessor: (row) => formatBytes(row.sizeBytes),
-    },
-    {
-      header: translations.messagePageBackUpListDateCreated,
-      accessor: (row) => formatDate(row.createdAt),
-    },
-    {
-      header: translations.messagePageBackUpListDateModified,
-      accessor: (row) => formatDate(row.modifiedAt),
-    },
-    {
-      header: translations.messagePageBackUpListAction,
-      accessor: (row) => {
-        const actions: ActionItem<BackupFileInfo>[] = [
-          {
-            icon: Eye,
-            label: "View",
-            onClick: () => window.open(`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`, "_blank")
-          },
-          {
-            icon: Download,
-            label: "Download",
-            onClick: () => window.open(`${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`, "_blank")
-          },
-          {
-            icon: Trash,
-            label: "Delete",
-            onClick: () => {
-              setSelectedFileName(row.fileName);
-              setOpenDeleteDialog(true);
-            },
-            colorClass: "bg-red-500/90 hover:bg-red-500"
-          }
-        ];
-        return <ActionButton row={row} actions={actions} />;
-      },
-      headerClassName: "rounded-tr-2xl",
-    },
-  ];
-
   return (
     <div className="space-y-10">
-      <TextAdmin type="h1">{translations.messagePageBackUpListTitle}</TextAdmin>
+      <TextAdmin type="h1">
+        {translations.messagePageBackUpListTitle}
+      </TextAdmin>
+
       <ButtonCustom
         text={translations.messagePageBackUpButtomCreated}
-        onClick={handleOpenDialog}
-        disable={false} 
+        onClick={() => setOpenCreateDialog(true)}
+        disable={false}
         disableHover={false}
       />
-      <Table columns={columns} data={backups} />
+
+      <BackUpTable
+        backups={backups}
+        translations={translations}
+        onDelete={(fileName) => {
+          setSelectedFileName(fileName);
+          setOpenDeleteDialog(true);
+        }}
+      />
+
       <ConfirmDialog
-        open={openDialog}
+        open={openCreateDialog}
         title={translations.messagePageBackUpTitleConfirmCreated}
         description={translations.messagePageBackUpDescConfirmCreated}
-        confirmLabel= {translations.messagePageBackUpMessageButtonValideCreated}
-        cancelLabel= {translations.messagePageBackUpMessageButtonCancelCreated}
+        confirmLabel={
+          translations.messagePageBackUpMessageButtonValideCreated
+        }
+        cancelLabel={
+          translations.messagePageBackUpMessageButtonCancelCreated
+        }
         onConfirm={handleGenerateBackup}
-        onCancel={handleCloseDialog}
+        onCancel={() => setOpenCreateDialog(false)}
       />
+
       <ConfirmDialog
         open={openDeleteDialog}
         title={translations.messagePageBackUpTitleConfirmDeleted}
         description={translations.messagePageBackUpDescConfirmDeleted}
-        confirmLabel={translations.messagePageBackUpMessageButtonValideDeleted}
-        cancelLabel={translations.messagePageBackUpMessageButtonCancelDeleted}
+        confirmLabel={
+          translations.messagePageBackUpMessageButtonValideDeleted
+        }
+        cancelLabel={
+          translations.messagePageBackUpMessageButtonCancelDeleted
+        }
         onConfirm={handleDeleteBackup}
-        onCancel={() => {
-          setOpenDeleteDialog(false);
-          setSelectedFileName(null);
-        }}
+        onCancel={() => setOpenDeleteDialog(false)}
       />
     </div>
   );
