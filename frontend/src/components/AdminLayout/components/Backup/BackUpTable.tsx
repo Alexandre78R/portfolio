@@ -1,7 +1,7 @@
 import React from "react";
-import Table, { ColumnDef } from "../AdminLayout/components/Table/Table";
+import Table, { ColumnDef } from "../Table/Table";
 import BackupActions from "./BackupActions";
-import { BackupFileInfo } from "../AdminLayout/Pages/BackUp/BackUpList";
+import { BackupFileInfo } from "../../Pages/BackUp/BackUpList";
 import Lang from "@/lang/typeLang";
 
 interface BackUpTableProps {

@@ -134,7 +134,7 @@ const ThemeCreate = (): ReactElement => {
           id="theme-visible"
           label={translations.messagePageAddNewThemesTextVisible}
           labelType="h3"
-          name={translations.messagePageAddNewThemesTextVisible}
+          name="visible" 
           value={form.visible}
           onChange={handleChange}
           className="text-primary my-4 w-1/3"

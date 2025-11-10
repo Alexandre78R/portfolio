@@ -1,11 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import BackUpTable, { formatBytes, formatDate } from "@/components/Backup/BackUpTable";
+import BackUpTable, { formatBytes, formatDate } from "@/components/AdminLayout/components/Backup/BackUpTable";
 import { BackupFileInfo } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
+import BackupActions from "@/components/AdminLayout/components/Backup/BackupActions";
 
-jest.mock("@/components/Backup/BackupActions", () => ({
+jest.mock("@/components/AdminLayout/components/Backup/BackupActions", () => ({
   __esModule: true,
   default: ({
     row,

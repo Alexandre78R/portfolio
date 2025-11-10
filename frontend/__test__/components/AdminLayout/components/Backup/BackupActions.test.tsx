@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import BackupActions from "@/components/Backup/BackupActions";
+import BackupActions from "@/components/AdminLayout/components/Backup/BackupActions";
 import { BackupFileInfo } from "@/components/AdminLayout/Pages/BackUp/BackUpList";
 
 jest.mock("@/components/AdminLayout/components/Button/ActionButton", () => {

@@ -11,7 +11,7 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import Lang from "@/lang/typeLang";
-import BackUpTable from "@/components/Backup/BackUpTable";
+import BackUpTable from "@/components/AdminLayout/components/Backup/BackUpTable";
 
 export interface BackupFileInfo {
   fileName: string;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Eye, Download, Trash } from "lucide-react";
-import ActionButton, { ActionItem } from "../AdminLayout/components/Button/ActionButton";
-import { BackupFileInfo } from "../AdminLayout/Pages/BackUp/BackUpList";
+import ActionButton, { ActionItem } from "../Button/ActionButton";
+import { BackupFileInfo } from "../../Pages/BackUp/BackUpList";
 
 interface BackupActionsProps {
   row: BackupFileInfo;
