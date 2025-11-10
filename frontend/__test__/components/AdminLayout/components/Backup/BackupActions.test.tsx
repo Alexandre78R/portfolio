@@ -1,126 +1,153 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import BackupActions from "@/components/Backup/BackupActions";
-import type { BackupFileInfo } from "@/components/AdminLayout/Pages/BackUp/BackUpList";
+import { BackupFileInfo } from "@/components/AdminLayout/Pages/BackUp/BackUpList";
 
-jest.mock(
-  "@/components/AdminLayout/components/Button/ActionButton",
-  () => ({
-    __esModule: true,
-    default: ({
-      actions,
-    }: {
-      actions: {
-        label: string;
-        onClick: () => void;
-      }[];
-    }): React.ReactElement => (
-      <div>
-        {actions.map((action) => (
-          <button
-            key={action.label}
-            onClick={action.onClick}
-            data-testid={`action-${action.label}`}
-          >
-            {action.label}
-          </button>
-        ))}
-      </div>
-    ),
-  })
-);
-
-jest.mock("lucide-react", () => ({
-  Eye: () => <span data-testid="icon-eye" />,
-  Download: () => <span data-testid="icon-download" />,
-  Trash: () => <span data-testid="icon-trash" />,
-}));
-
-const creerBackupFictif = (): BackupFileInfo => ({
-  fileName: "backup-test.sql",
-  sizeBytes: 1024,
-  createdAt: "2024-01-01T10:00:00.000Z",
-  modifiedAt: "2024-01-01T12:00:00.000Z",
+jest.mock("@/components/AdminLayout/components/Button/ActionButton", () => {
+  return ({
+    row,
+    actions,
+  }: {
+    row: BackupFileInfo;
+    actions: Array<{
+      label: string;
+      onClick: () => void;
+    }>;
+  }): ReactElement => (
+    <div>
+      {actions.map((action) => (
+        <button
+          key={action.label}
+          type="button"
+          data-testid={`action-${action.label}`}
+          onClick={action.onClick}
+        >
+          {action.label}
+        </button>
+      ))}
+    </div>
+  );
 });
 
-const creerProps = () => {
-  const fonctionOnDelete = jest.fn();
-  return {
-    ligne: creerBackupFictif(),
-    fonctionOnDelete,
+const creerSauvegardeFictive = (): BackupFileInfo => {
+  const sauvegardeFictive: BackupFileInfo = {
+    fileName: "sauvegarde-test.sql",
+    sizeBytes: 4096,
+    createdAt: "2024-01-01T10:00:00.000Z",
+    modifiedAt: "2024-01-01T12:00:00.000Z",
   };
+
+  return sauvegardeFictive;
+};
+
+const creerFonctionSuppressionMockee = (): jest.Mock<
+  void,
+  [string]
+> => {
+  const fonctionSuppressionMockee: jest.Mock<void, [string]> =
+    jest.fn<void, [string]>();
+
+  return fonctionSuppressionMockee;
+};
+
+const mockerOuvertureFenetre = (): jest.SpyInstance<Window | null> => {
+  const espionOuverture: jest.SpyInstance<Window | null> = jest
+    .spyOn(window, "open")
+    .mockImplementation((): Window | null => null);
+
+  return espionOuverture;
 };
 
 describe("BackupActions component", () => {
-  const ancienneWindowOpen = window.open;
+  test("should open a new tab when clicking on View action", () => {
+    const ligneSauvegarde: BackupFileInfo = creerSauvegardeFictive();
+    const fonctionSuppression: jest.Mock<
+      void,
+      [string]
+    > = creerFonctionSuppressionMockee();
 
-  beforeEach(() => {
-    window.open = jest.fn();
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  afterAll(() => {
-    window.open = ancienneWindowOpen;
-  });
-
-  test("should render all action buttons", () => {
-    const { ligne, fonctionOnDelete } = creerProps();
+    const espionOuverture: jest.SpyInstance<
+      Window | null,
+      [string, string]
+    > = mockerOuvertureFenetre();
 
     render(
-      <BackupActions row={ligne} onDelete={fonctionOnDelete} />
+      <BackupActions
+        row={ligneSauvegarde}
+        onDelete={fonctionSuppression}
+      />
     );
 
-    expect(screen.getByTestId("action-View")).toBeInTheDocument();
-    expect(screen.getByTestId("action-Download")).toBeInTheDocument();
-    expect(screen.getByTestId("action-Delete")).toBeInTheDocument();
-  });
+    const boutonVoir: HTMLElement =
+      screen.getByTestId("action-View");
 
-  test("should open the backup file in a new tab when clicking View", () => {
-    const { ligne, fonctionOnDelete } = creerProps();
+    fireEvent.click(boutonVoir);
 
-    render(
-      <BackupActions row={ligne} onDelete={fonctionOnDelete} />
-    );
-
-    fireEvent.click(screen.getByTestId("action-View"));
-
-    expect(window.open).toHaveBeenCalledTimes(1);
-    expect(window.open).toHaveBeenCalledWith(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/backups/${ligne.fileName}`,
+    expect(espionOuverture).toHaveBeenCalledTimes(1);
+    expect(espionOuverture).toHaveBeenCalledWith(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/backups/sauvegarde-test.sql`,
       "_blank"
     );
+
+    espionOuverture.mockRestore();
   });
 
-  test("should download the backup file when clicking Download", () => {
-    const { ligne, fonctionOnDelete } = creerProps();
+  test("should open a new tab when clicking on Download action", () => {
+    const ligneSauvegarde: BackupFileInfo = creerSauvegardeFictive();
+    const fonctionSuppression: jest.Mock<
+      void,
+      [string]
+    > = creerFonctionSuppressionMockee();
+
+    const espionOuverture: jest.SpyInstance<
+      Window | null,
+      [string, string]
+    > = mockerOuvertureFenetre();
 
     render(
-      <BackupActions row={ligne} onDelete={fonctionOnDelete} />
+      <BackupActions
+        row={ligneSauvegarde}
+        onDelete={fonctionSuppression}
+      />
     );
 
-    fireEvent.click(screen.getByTestId("action-Download"));
+    const boutonTelechargement: HTMLElement =
+      screen.getByTestId("action-Download");
 
-    expect(window.open).toHaveBeenCalledTimes(1);
-    expect(window.open).toHaveBeenCalledWith(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/backups/${ligne.fileName}/download`,
+    fireEvent.click(boutonTelechargement);
+
+    expect(espionOuverture).toHaveBeenCalledTimes(1);
+    expect(espionOuverture).toHaveBeenCalledWith(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/backups/sauvegarde-test.sql/download`,
       "_blank"
     );
+
+    espionOuverture.mockRestore();
   });
 
-  test("should call onDelete with the correct file name when clicking Delete", () => {
-    const { ligne, fonctionOnDelete } = creerProps();
+  test("should call delete callback with correct file name when clicking on Delete action", () => {
+    const ligneSauvegarde: BackupFileInfo = creerSauvegardeFictive();
+    const fonctionSuppression: jest.Mock<
+      void,
+      [string]
+    > = creerFonctionSuppressionMockee();
 
     render(
-      <BackupActions row={ligne} onDelete={fonctionOnDelete} />
+      <BackupActions
+        row={ligneSauvegarde}
+        onDelete={fonctionSuppression}
+      />
     );
 
-    fireEvent.click(screen.getByTestId("action-Delete"));
+    const boutonSuppression: HTMLElement =
+      screen.getByTestId("action-Delete");
 
-    expect(fonctionOnDelete).toHaveBeenCalledTimes(1);
-    expect(fonctionOnDelete).toHaveBeenCalledWith(ligne.fileName);
+    fireEvent.click(boutonSuppression);
+
+    expect(fonctionSuppression).toHaveBeenCalledTimes(1);
+    expect(fonctionSuppression).toHaveBeenCalledWith(
+      "sauvegarde-test.sql"
+    );
   });
 });
