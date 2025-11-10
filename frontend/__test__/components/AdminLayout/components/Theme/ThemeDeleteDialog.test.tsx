@@ -6,6 +6,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useDeleteThemeMutation, GetThemesListQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../../../../src/components/AdminLayout/components/ConfirmDialog/ConfirmDialog";
+import Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
@@ -16,7 +17,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
       messageAdminThemeDeleteCancel: "Cancel",
       messageAdminThemeDeleteSuccess: "Theme deleted successfully",
       messageAdminThemeDeleteError: "Failed to delete theme",
-    },
+    } as Lang,
   })),
 }));
 
