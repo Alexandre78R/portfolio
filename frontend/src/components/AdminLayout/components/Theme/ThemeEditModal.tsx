@@ -6,12 +6,12 @@ import React, {
   useEffect,
 } from "react";
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
-import TextAdmin from "../../components/Text/TextAdmin";
+import TextAdmin from "../Text/TextAdmin";
 import InputField from "@/components/InputField/InputField";
-import InputColor from "../../components/Input/InputColor";
-import InputBoolean from "../../components/Input/InputBoolean";
+import InputColor from "../Input/InputColor";
+import InputBoolean from "../Input/InputBoolean";
 import { X } from "lucide-react";
-import { ThemeRow } from "./ThemesList";
+import { ThemeRow } from "../../Pages/Themes/ThemesList";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";

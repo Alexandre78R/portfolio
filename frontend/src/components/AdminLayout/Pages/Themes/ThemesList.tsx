@@ -6,8 +6,8 @@ import { useLang } from "@/context/Lang/LangContext";
 import Table, { ColumnDef } from "../../components/Table/Table";
 import { Pencil, Trash } from "lucide-react";
 import Lang from "@/lang/typeLang";
-import ThemeDeleteDialog from "./ThemeDeleteDialog";
-import ThemeEditModal from "./ThemeEditModal";
+import ThemeDeleteDialog from "../../components/Theme/ThemeDeleteDialog";
+import ThemeEditModal from "../../components/Theme/ThemeEditModal";
 import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
 
 export interface ThemeRow {

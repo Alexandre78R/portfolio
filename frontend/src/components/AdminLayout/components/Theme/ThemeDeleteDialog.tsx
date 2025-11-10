@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import { useDeleteThemeMutation, GetThemesListQuery } from "@/types/graphql";
