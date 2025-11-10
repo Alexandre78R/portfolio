@@ -3,20 +3,10 @@ import { useGetThemesListQuery } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
-import Table, { ColumnDef } from "../../components/Table/Table";
-import { Pencil, Trash } from "lucide-react";
 import Lang from "@/lang/typeLang";
 import ThemeDeleteDialog from "../../components/Theme/ThemeDeleteDialog";
 import ThemeEditModal from "../../components/Theme/ThemeEditModal";
-import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
-
-export interface ThemeRow {
-  id: string;
-  name: string;
-  nameEN: string;
-  nameFR: string;
-  visible: boolean,
-}
+import ThemeTable, { ThemeRow } from "../../components/Theme/ThemeTable";
 
 const ThemeList = (): ReactElement => {
   const { data, loading, error, refetch } = useGetThemesListQuery({
@@ -48,45 +38,16 @@ const ThemeList = (): ReactElement => {
       visible: theme.visible,
     }));
 
-  const columns: ColumnDef<ThemeRow>[] = [
-    {
-      header: translations.messageAdminThemeColumnName,
-      accessor: "name",
-      className: "font-medium",
-      headerClassName: "rounded-tl-2xl",
-    },
-    {
-      header: translations.messageAdminThemeColumnNameEN,
-      accessor: "nameEN",
-    },
-    {
-      header: translations.messageAdminThemeColumnNameFR,
-      accessor: "nameFR",
-    },
-    {
-      header: "visible",
-      accessor: (row) => (row.visible ? "✅" : "❌"),
-    },
-    {
-      header: translations.messageAdminThemeColumnAction,
-      accessor: (row) => {
-        const actions: ActionItem<ThemeRow>[] = [
-          { icon: Pencil, label: "Edit", onClick: () => setEditTheme(row) },
-          { icon: Trash, label: "Delete", onClick: () => setDeleteThemeId(row.id), colorClass: "bg-red-500/90 hover:bg-red-500" },
-        ];
-        return <ActionButton row={row} actions={actions} />;
-      },
-      headerClassName: "rounded-tr-2xl",
-    },
-  ];
-
   return (
     <div className="space-y-10">
-      <TextAdmin type="h1">
-        {translations.messageAdminThemeListTitle}
-      </TextAdmin>
+      <TextAdmin type="h1">{translations.messageAdminThemeListTitle}</TextAdmin>
 
-      <Table columns={columns} data={themes} />
+      <ThemeTable
+        themes={themes}
+        translations={translations}
+        onEdit={(theme: ThemeRow) => setEditTheme(theme)}
+        onDelete={(id: string) => setDeleteThemeId(id)}
+      />
 
       {/* EDIT */}
       <ThemeEditModal
