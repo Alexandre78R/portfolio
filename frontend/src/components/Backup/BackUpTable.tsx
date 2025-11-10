@@ -10,7 +10,7 @@ interface BackUpTableProps {
   onDelete: (fileName: string) => void;
 }
 
-const formatBytes = (bytes: number): string => {
+export const formatBytes = (bytes: number): string => {
   if (!bytes) return "0 B";
   const k: number = 1024;
   const sizes: string[]  = ["B", "KB", "MB", "GB", "TB"];
@@ -18,7 +18,7 @@ const formatBytes = (bytes: number): string => {
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
 };
 
-const formatDate = (iso: string): string =>
+export const formatDate = (iso: string): string =>
   new Date(iso).toLocaleString("fr-FR", {
     year: "numeric",
     month: "2-digit",
