@@ -6,9 +6,6 @@ import ThemeList, { ThemeRow } from "@/components/AdminLayout/Pages/Themes/Theme
 import { useGetThemesListQuery, useDeleteThemeMutation } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 
-// ------------------ MOCKS ------------------
-
-// Mock LangContext
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
     translations: {
@@ -22,7 +19,6 @@ jest.mock("@/context/Lang/LangContext", () => ({
   })),
 }));
 
-// Mock ThemeEditModal
 jest.mock("@/components/AdminLayout/components/Theme/ThemeEditModal", () => ({
   __esModule: true,
   default: jest.fn(({ theme }: { theme: ThemeRow | null }) => (
@@ -30,7 +26,7 @@ jest.mock("@/components/AdminLayout/components/Theme/ThemeEditModal", () => ({
   )),
 }));
 
-// Mock ThemeDeleteDialog
+
 jest.mock("@/components/AdminLayout/components/Theme/ThemeDeleteDialog", () => ({
   __esModule: true,
   default: jest.fn(({ themeId }: { themeId: string | null }) => (
@@ -38,19 +34,15 @@ jest.mock("@/components/AdminLayout/components/Theme/ThemeDeleteDialog", () => (
   )),
 }));
 
-// Mock GraphQL hooks
 jest.mock("@/types/graphql", () => ({
   useGetThemesListQuery: jest.fn(),
   useDeleteThemeMutation: jest.fn(),
 }));
 
-// Mock LoadingCustom
 jest.mock("@/components/Loading/LoadingCustom", () => ({
   __esModule: true,
   default: jest.fn(() => <div data-testid="loading">Loading...</div>),
 }));
-
-// ------------------ TEST SUITE ------------------
 
 describe("ThemeList Component", () => {
   const mockRefetch: jest.Mock = jest.fn();
@@ -58,7 +50,6 @@ describe("ThemeList Component", () => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
-    // Mock delete mutation
     (useDeleteThemeMutation as jest.Mock).mockReturnValue([mockDelete, {}]);
   });
 
@@ -135,24 +126,20 @@ describe("ThemeList Component", () => {
       </MockedProvider>
     );
 
-    // Check that theme rows exist
     const themeCells: HTMLElement[] = screen.getAllByText(/Theme1|Theme2/);
     expect(themeCells.length).toBeGreaterThan(0);
 
-    // Check action buttons via title attribute
     const editButtons: HTMLElement[] = screen.getAllByTitle("Edit");
     const deleteButtons: HTMLElement[] = screen.getAllByTitle("Delete");
     expect(editButtons.length).toBe(2);
     expect(deleteButtons.length).toBe(2);
 
-    // Open edit modal for first theme
     fireEvent.click(editButtons[0]);
     await waitFor((): void => {
       const editModal: HTMLElement = screen.getByTestId("ThemeEditModal");
       expect(editModal).toHaveTextContent("Theme1");
     });
 
-    // Open delete dialog for second theme
     fireEvent.click(deleteButtons[1]);
     await waitFor((): void => {
       const deleteDialog: HTMLElement = screen.getByTestId("ThemeDeleteDialog");

@@ -17,8 +17,14 @@ const config: Config = {
   moduleDirectories: ["node_modules", "<rootDir>/src"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   transform: {
-    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.json" }],
+    "^.+\\.(ts|tsx)$": ["ts-jest", {
+      tsconfig: "<rootDir>/tsconfig.json",
+      astTransformers: { before: ["tsconfig-paths-jest"] }
+    }]
   },
+  // transform: {
+  //   "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.json" }],
+  // },
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
     "**/?(*.)+(spec|test).[tj]s?(x)",
