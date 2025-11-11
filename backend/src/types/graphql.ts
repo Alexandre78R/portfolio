@@ -474,6 +474,7 @@ export type Query = {
   skillList: CategoryResponse;
   themeById: ThemeResponse;
   themeList: ThemesResponse;
+  userById: UserResponse;
   userList: UsersResponse;
 };
 
@@ -501,6 +502,11 @@ export type QueryProjectByIdArgs = {
 
 
 export type QueryThemeByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryUserByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
