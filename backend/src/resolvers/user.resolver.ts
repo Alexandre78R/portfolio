@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Authorized, Ctx } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Authorized, Ctx, Int } from "type-graphql";
 import { PrismaClient, User as PrismaUser } from "@prisma/client";
 import { User } from "../entities/user.entity";
 import { UsersResponse, UserResponse, LoginResponse, Response } from "../types/response.types";
@@ -47,6 +47,50 @@ export class UserResolver {
     } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error fetching users", users: undefined };
+    }
+  }
+
+  @Authorized([UserRole.admin])
+  @Query(() => UserResponse)
+  async userById(
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
+  ): Promise<UserResponse> {
+    try {
+
+      const user: PrismaUser | null = await this.db.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        return {
+          code: 404,
+          message: "User not found",
+          user: undefined,
+        };
+      }
+
+      return {
+        code: 200,
+        message: "User found",
+        user: {
+          id: user.id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          role: user.role as UserRole,
+          isPasswordChange: user.isPasswordChange,
+        },
+      };
+    } catch (error: unknown) {
+      console.error(error);
+      return {
+        code: 500,
+        message: "Internal server error",
+        user: undefined,
+      };
     }
   }
 

@@ -64,7 +64,6 @@ describe("ThemeTable Component", (): void => {
   it("renders theme data correctly including visibility", (): void => {
     render(<ThemeTable themes={themes} translations={translations} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
-    // --- Theme names ---
     expect(screen.getByText("Theme1")).toBeInTheDocument();
     expect(screen.getByText("ThemeEN1")).toBeInTheDocument();
     expect(screen.getByText("ThemeFR1")).toBeInTheDocument();
@@ -72,7 +71,6 @@ describe("ThemeTable Component", (): void => {
     expect(screen.getByText("ThemeEN2")).toBeInTheDocument();
     expect(screen.getByText("ThemeFR2")).toBeInTheDocument();
 
-    // --- Visibility column ---
     expect(screen.getByText("✅")).toBeInTheDocument();
     expect(screen.getByText("❌")).toBeInTheDocument();
   });
