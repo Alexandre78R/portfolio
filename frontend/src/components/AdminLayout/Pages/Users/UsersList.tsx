@@ -5,6 +5,7 @@ import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import UserTable, { UserRow } from "../../components/User/UserTable";
+import UserDeleteDialog from "../../components/User/UserDeleteDialog";
 
 const UserList = (): ReactElement => {
   const { data, loading, error, refetch } = useGetUsersListQuery({
@@ -45,6 +46,13 @@ const UserList = (): ReactElement => {
         translations={translations}
         onEdit={(user: UserRow) => setEditUser(user)}
         onDelete={(id: string) => setDeleteUserId(id)}
+      />
+
+      {/* DELETE */}
+      <UserDeleteDialog
+        userId={deleteUserId}
+        onClose={() => setDeleteUserId(null)}
+        onRefresh={refetch}
       />
 
     </div>
