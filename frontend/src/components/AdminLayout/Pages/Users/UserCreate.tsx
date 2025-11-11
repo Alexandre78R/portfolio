@@ -52,18 +52,21 @@ const UserCreate = (): ReactElement => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const { data } = await createUserMutation({
+      const { data, errors } = await createUserMutation({
         variables: { data: form },
       });
 
-      if (data?.registerUser.code === 200) {
+      // console.log("data", data);
+
+      if (data?.registerUser.code === 201) {
         showAlert("success", translations.messageAdminUserCreateSuccess);
         setForm(defaultForm);
       } else {
         showAlert("error", translations.messageAdminUserCreateError);
+        // console.log("error",errors )
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       showAlert("error", translations.messageErrorServerOff);
     }
   };
