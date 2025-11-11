@@ -201,7 +201,23 @@ type Lang = {
   messageAdminThemeEditError: string;
   messageAdminThemeDeleteSuccess:string;
   messageAdminThemeDeleteError:string;
-  
+  messageAdminUserListTitle: string;
+  messageAdminUserListNotFound: string;
+  messageAdminUserColumnFirstname: string;
+  messageAdminUserColumnLastname: string;
+  messageAdminUserColumnEmail: string;
+  messageAdminUserColumnRole: string;
+  messageAdminUserColumnAction: string;
+  messageAdminUserDeleteTitle: string;
+  messageAdminUserDeleteDescription: string;
+  messageAdminUserDeleteConfirm: string;
+  messageAdminUserDeleteCancel: string;
+  messageAdminUserDeleteSuccess: string;
+  messageAdminUserDeleteError: string;
+  messageAdminUserEditTitle: string;
+  messageAdminUserEditSave: string;
+  messageAdminUserEditError: string;
+  messageAdminUserEditCancel: string;
 };
 
 export default Lang;

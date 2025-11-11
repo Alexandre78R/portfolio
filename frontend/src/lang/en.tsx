@@ -218,7 +218,26 @@ const en: Lang = {
   messageAdminThemeEditCancel: "Cancel",
   messageAdminThemeDeleteSuccess: "Theme deleted!",
   messageAdminThemeDeleteError: "Error deleting!",
-
+  messageAdminUserListTitle: "User list",
+  messageAdminUserListNotFound: "No users found",
+  messageAdminUserColumnFirstname: "First name",
+  messageAdminUserColumnLastname: "Last name",
+  messageAdminUserColumnEmail: "Email",
+  messageAdminUserColumnRole: "Role",
+  messageAdminUserColumnAction: "Actions",
+  messageAdminUserDeleteTitle: "Delete user",
+  messageAdminUserDeleteDescription:
+    "Are you sure you want to delete this user? This action cannot be undone.",
+  messageAdminUserDeleteConfirm: "Delete",
+  messageAdminUserDeleteCancel: "Cancel",
+  messageAdminUserDeleteSuccess: "User deleted successfully",
+  messageAdminUserDeleteError:
+    "An error occurred while deleting the user",
+  messageAdminUserEditTitle: "Edit user",
+  messageAdminUserEditSave: "User updated successfully",
+  messageAdminUserEditError:
+    "An error occurred while updating the user",
+  messageAdminUserEditCancel: "Cancel",
 };
 
 export default en;

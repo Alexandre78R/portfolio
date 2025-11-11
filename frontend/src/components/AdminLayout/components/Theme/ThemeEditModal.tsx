@@ -11,7 +11,7 @@ import InputField from "@/components/InputField/InputField";
 import InputColor from "../Input/InputColor";
 import InputBoolean from "../Input/InputBoolean";
 import { X } from "lucide-react";
-import { ThemeRow } from "../../Pages/Themes/ThemesList";
+import { ThemeRow } from "../../components/Theme/ThemeTable";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";

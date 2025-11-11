@@ -894,6 +894,18 @@ export type GetThemeByIdQueryVariables = Exact<{
 
 export type GetThemeByIdQuery = { __typename?: 'Query', themeById: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', id: string, name: string, nameEN: string, nameFR: string, visible: boolean, body: string, scrollHandle: string, scrollHandleHover: string, primary: string, secondary: string, success: string, error: string, warn: string, info: string, grey: string, placeholder: string, footer: string, admin: string, textDefault: string, text100: string, text200: string, text300: string, textButton: string } | null } };
 
+export type GetUsersListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersListQuery = { __typename?: 'Query', userList: { __typename?: 'UsersResponse', message: string, code: number, users?: Array<{ __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean }> | null } };
+
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetUserByIdQuery = { __typename?: 'Query', userById: { __typename?: 'UserResponse', message: string, code: number, user?: { __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean } | null } };
+
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2002,6 +2014,109 @@ export type GetThemeByIdQueryHookResult = ReturnType<typeof useGetThemeByIdQuery
 export type GetThemeByIdLazyQueryHookResult = ReturnType<typeof useGetThemeByIdLazyQuery>;
 export type GetThemeByIdSuspenseQueryHookResult = ReturnType<typeof useGetThemeByIdSuspenseQuery>;
 export type GetThemeByIdQueryResult = Apollo.QueryResult<GetThemeByIdQuery, GetThemeByIdQueryVariables>;
+export const GetUsersListDocument = gql`
+    query GetUsersList {
+  userList {
+    users {
+      id
+      firstname
+      lastname
+      email
+      role
+      isPasswordChange
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetUsersListQuery__
+ *
+ * To run a query within a React component, call `useGetUsersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersListQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersListQuery, GetUsersListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersListQuery, GetUsersListQueryVariables>(GetUsersListDocument, options);
+      }
+export function useGetUsersListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersListQuery, GetUsersListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersListQuery, GetUsersListQueryVariables>(GetUsersListDocument, options);
+        }
+// @ts-ignore
+export function useGetUsersListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUsersListQuery, GetUsersListQueryVariables>): Apollo.UseSuspenseQueryResult<GetUsersListQuery, GetUsersListQueryVariables>;
+export function useGetUsersListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUsersListQuery, GetUsersListQueryVariables>): Apollo.UseSuspenseQueryResult<GetUsersListQuery | undefined, GetUsersListQueryVariables>;
+export function useGetUsersListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUsersListQuery, GetUsersListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUsersListQuery, GetUsersListQueryVariables>(GetUsersListDocument, options);
+        }
+export type GetUsersListQueryHookResult = ReturnType<typeof useGetUsersListQuery>;
+export type GetUsersListLazyQueryHookResult = ReturnType<typeof useGetUsersListLazyQuery>;
+export type GetUsersListSuspenseQueryHookResult = ReturnType<typeof useGetUsersListSuspenseQuery>;
+export type GetUsersListQueryResult = Apollo.QueryResult<GetUsersListQuery, GetUsersListQueryVariables>;
+export const GetUserByIdDocument = gql`
+    query GetUserById($id: Int!) {
+  userById(id: $id) {
+    user {
+      id
+      firstname
+      lastname
+      email
+      role
+      isPasswordChange
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetUserByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables> & ({ variables: GetUserByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+      }
+export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetUserByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
+export function useGetUserByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetUserByIdQuery | undefined, GetUserByIdQueryVariables>;
+export function useGetUserByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        }
+export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
+export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
+export type GetUserByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserByIdSuspenseQuery>;
+export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const GetMeDocument = gql`
     query GetMe {
   me {

@@ -218,6 +218,26 @@ const fr: Lang = {
   messageAdminThemeEditCancel: "Annuler",
   messageAdminThemeDeleteSuccess: "Thème supprimé !",
   messageAdminThemeDeleteError:"Erreur lors de la suppression !",
+  messageAdminUserListTitle: "Liste des utilisateurs",
+  messageAdminUserListNotFound: "Aucun utilisateur trouvé",
+  messageAdminUserColumnFirstname: "Prénom",
+  messageAdminUserColumnLastname: "Nom",
+  messageAdminUserColumnEmail: "Email",
+  messageAdminUserColumnRole: "Rôle",
+  messageAdminUserColumnAction: "Actions",
+  messageAdminUserDeleteTitle: "Supprimer l'utilisateur",
+  messageAdminUserDeleteDescription:
+    "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.",
+  messageAdminUserDeleteConfirm: "Supprimer",
+  messageAdminUserDeleteCancel: "Annuler",
+  messageAdminUserDeleteSuccess: "Utilisateur supprimé avec succès",
+  messageAdminUserDeleteError:
+    "Une erreur est survenue lors de la suppression de l'utilisateur",
+  messageAdminUserEditTitle: "Modifier l'utilisateur",
+  messageAdminUserEditSave: "Utilisateur mis à jour avec succès",
+  messageAdminUserEditError:
+    "Une erreur est survenue lors de la mise à jour de l'utilisateur",
+  messageAdminUserEditCancel: "Annuler",
 };
 
 export default fr;
