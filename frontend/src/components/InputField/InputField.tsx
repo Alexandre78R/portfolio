@@ -14,6 +14,7 @@ export interface InputFieldProps {
   className?: string; // optionnel pour override Tailwind classes
   sx?: TextFieldProps["sx"]; // permet d'étendre les styles MUI
   placeholder?: string; 
+  
 }
 
 const InputField: React.FC<InputFieldProps> = ({

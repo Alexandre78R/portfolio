@@ -6,6 +6,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import UserTable, { UserRow } from "../../components/User/UserTable";
 import UserDeleteDialog from "../../components/User/UserDeleteDialog";
+import UserEditModal from "../../components/User/UserEditModal";
 
 const UserList = (): ReactElement => {
   const { data, loading, error, refetch } = useGetUsersListQuery({
@@ -46,6 +47,13 @@ const UserList = (): ReactElement => {
         translations={translations}
         onEdit={(user: UserRow) => setEditUser(user)}
         onDelete={(id: string) => setDeleteUserId(id)}
+      />
+
+      {/* EDIT */}
+      <UserEditModal
+        user={editUser}
+        onClose={() => setEditUser(null)}
+        onRefresh={refetch}
       />
 
       {/* DELETE */}
