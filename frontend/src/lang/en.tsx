@@ -238,6 +238,15 @@ const en: Lang = {
   messageAdminUserEditError:
     "An error occurred while updating the user",
   messageAdminUserEditCancel: "Cancel",
+  messageAdminUserEditSuccess : "Save",
+  messageAdminUserCreateTitle: "Create New User",
+  messageAdminUserCreateSuccess: "User created successfully!",
+  messageAdminUserCreateError: "Error creating user.",
+  messageAdminUserCreateLoading: "Creating…",
+  messageAdminUserCreateButton: "Create User",
+  messageAdminUserRoleOptionsAdmin: "Administrator",
+  messageAdminUserRoleOptionsEditor: "Editor",
+  messageAdminUserRoleOptionsView: "Read-only",
 };
 
 export default en;

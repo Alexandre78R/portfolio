@@ -238,6 +238,15 @@ const fr: Lang = {
   messageAdminUserEditError:
     "Une erreur est survenue lors de la mise à jour de l'utilisateur",
   messageAdminUserEditCancel: "Annuler",
+  messageAdminUserEditSuccess : "Sauvegarder",
+  messageAdminUserCreateTitle: "Créer un nouvel utilisateur",
+  messageAdminUserCreateSuccess: "Utilisateur créé avec succès !",
+  messageAdminUserCreateError: "Erreur lors de la création de l'utilisateur.",
+  messageAdminUserCreateLoading: "Création en cours…",
+  messageAdminUserCreateButton: "Créer l'utilisateur",
+  messageAdminUserRoleOptionsAdmin : "Administrateur",
+  messageAdminUserRoleOptionsEditor : "Éditeur",
+  messageAdminUserRoleOptionsView : "Lecture seule",
 };
 
 export default fr;

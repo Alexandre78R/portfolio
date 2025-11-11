@@ -218,6 +218,15 @@ type Lang = {
   messageAdminUserEditSave: string;
   messageAdminUserEditError: string;
   messageAdminUserEditCancel: string;
+  messageAdminUserEditSuccess: string;
+  messageAdminUserCreateTitle: string;
+  messageAdminUserCreateSuccess: string;
+  messageAdminUserCreateError: string;
+  messageAdminUserCreateLoading: string;
+  messageAdminUserCreateButton: string;
+  messageAdminUserRoleOptionsAdmin: string;
+  messageAdminUserRoleOptionsEditor: string;
+  messageAdminUserRoleOptionsView: string;
 };
 
 export default Lang;

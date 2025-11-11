@@ -16,31 +16,7 @@ import {
 } from "@/types/graphql";
 import { UserRow } from "./UserTable";
 import SelectField from "../Input/SelectField";
-
-export enum UserRole {
-  admin = "admin",
-  editor = "editor",
-  view = "view",
-}
-
-const USER_ROLE_OPTIONS = [
-  { label: "Administrateur", value: UserRole.admin },
-  { label: "Éditeur", value: UserRole.editor },
-  { label: "Lecture seule", value: UserRole.view },
-] as const;
-
-export const mapRoleToUserRole = (role: Role): UserRole => {
-  switch (role) {
-    case "admin":
-      return UserRole.admin;
-    case "editor":
-      return UserRole.editor;
-    case "view":
-      return UserRole.view;
-    default:
-      return UserRole.view;
-  }
-};
+import { SelectOption, UserRole, getUserRoleOptions, mapRoleToUserRole } from "../../Pages/Users/user.type";
 
 interface UserEditModalProps {
   user: UserRow | null;
@@ -54,7 +30,7 @@ const UserEditModal = ({
   onRefresh,
 }: UserEditModalProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
   const [form, setForm] = useState<{
     firstname: string;
@@ -71,6 +47,8 @@ const UserEditModal = ({
     skip: !user?.id,
     fetchPolicy: "network-only",
   });
+
+  const USER_ROLE_OPTIONS: SelectOption<UserRole>[] = getUserRoleOptions(translations);
 
   useEffect(() => {
     if (userData?.userById?.user) {
@@ -159,7 +137,7 @@ const UserEditModal = ({
 
         <div className="flex justify-end gap-3 pt-4">
           <ButtonCustom text={translations.messageAdminUserEditCancel} onClick={onClose} disable={loading} />
-          <ButtonCustom text={translations.messageAdminUserEditSave} type="submit" disable={loading} />
+          <ButtonCustom text={translations.messageAdminUserEditSuccess} type="submit" disable={loading} />
         </div>
       </form>
     </ModalCustom>
