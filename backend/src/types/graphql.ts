@@ -278,6 +278,7 @@ export type Mutation = {
   deleteProject: Response;
   deleteSkill: SubItemResponse;
   deleteTheme: Response;
+  deleteUser: Response;
   generateDatabaseBackup: BackupResponse;
   login: LoginResponse;
   logout: Response;
@@ -289,6 +290,7 @@ export type Mutation = {
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
   updateTheme: ThemeResponse;
+  updateUser: UserResponse;
   uploadCV: UploadResponse;
   validateCaptcha: ValidationResponse;
 };
@@ -370,6 +372,11 @@ export type MutationDeleteThemeArgs = {
 };
 
 
+export type MutationDeleteUserArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationLoginArgs = {
   data: LoginInput;
 };
@@ -414,6 +421,15 @@ export type MutationUpdateSkillArgs = {
 
 export type MutationUpdateThemeArgs = {
   data: UpdateThemeInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  firstname?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  lastname?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
 };
 
 
