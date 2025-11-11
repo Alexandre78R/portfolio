@@ -240,4 +240,126 @@ export class UserResolver {
       return { code: 500, message: "An error occurred during logout." };
     }
   }
+
+  @Authorized([UserRole.admin])
+  @Mutation(() => Response)
+  async deleteUser(
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
+  ): Promise<Response> {
+    try {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required." };
+
+      const user: PrismaUser | null = await this.db.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        return {
+          code: 404,
+          message: "User not found",
+        };
+      }
+
+      if (user.id === ctx.user.id) {
+        return {
+          code: 400,
+          message: "You cannot delete your own account.",
+        };
+      }
+
+      await this.db.user.delete({
+        where: { id },
+      });
+
+      return {
+        code: 200,
+        message: "User deleted successfully.",
+      };
+    } catch (error: unknown) {
+      console.error("Error in deleteUser:", error);
+      return {
+        code: 500,
+        message: "Internal server error while deleting user.",
+      };
+    }
+  }
+
+  @Authorized([UserRole.admin])
+  @Mutation(() => UserResponse)
+  async updateUser(
+    @Arg("id", () => Int) id: number,
+    @Arg("firstname", { nullable: true }) firstname?: string,
+    @Arg("lastname", { nullable: true }) lastname?: string,
+    @Arg("email", { nullable: true }) email?: string,
+    @Arg("role", { nullable: true }) role?: UserRole,
+    @Ctx() ctx?: MyContext
+  ): Promise<UserResponse> {
+    try {
+      if (!ctx?.user) return { code: 401, message: "Authentication required.", user: undefined };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", user: undefined };
+
+      const user: PrismaUser | null = await this.db.user.findUnique({
+        where: { id },
+      });
+
+      if (!user) {
+        return {
+          code: 404,
+          message: "User not found",
+          user: undefined,
+        };
+      }
+
+      if (email && email !== user.email) {
+        if (!checkRegex(emailRegex, email)) {
+          return { code: 400, message: "You have entered an invalid email address.", user: undefined };
+        }
+
+        const existingEmail: PrismaUser | null = await this.db.user.findUnique({
+          where: { email },
+        });
+
+        if (existingEmail) {
+          return {
+            code: 409,
+            message: "Email already exists",
+            user: undefined,
+          };
+        }
+      }
+      
+      const updateData: any = {};
+      if (firstname !== undefined) updateData.firstname = firstname;
+      if (lastname !== undefined) updateData.lastname = lastname;
+      if (email !== undefined) updateData.email = email;
+      if (role !== undefined) updateData.role = role;
+
+      const updatedUser: PrismaUser = await this.db.user.update({
+        where: { id },
+        data: updateData,
+      });
+
+      return {
+        code: 200,
+        message: "User updated successfully.",
+        user: {
+          id: updatedUser.id,
+          firstname: updatedUser.firstname,
+          lastname: updatedUser.lastname,
+          email: updatedUser.email,
+          role: updatedUser.role as UserRole,
+          isPasswordChange: updatedUser.isPasswordChange,
+        },
+      };
+    } catch (error: unknown) {
+      console.error("Error in updateUser:", error);
+      return {
+        code: 500,
+        message: "Internal server error while updating user.",
+        user: undefined,
+      };
+    }
+  }
 }
