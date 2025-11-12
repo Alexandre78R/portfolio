@@ -3,62 +3,71 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserTable, { UserRow } from "@/components/AdminLayout/components/User/UserTable";
 import Lang from "@/lang/typeLang";
+import { ColumnDef } from "@/components/AdminLayout/components/Table/Table";
+import ActionButton, { ActionItem } from "@/components/AdminLayout/components/Button/ActionButton";
 
-// Mock du composant Table
 jest.mock("@/components/AdminLayout/components/Table/Table", () => ({
   __esModule: true,
-  default: jest.fn(({ columns, data }: { columns: any[]; data: any[] }) => (
+  default: ({ columns, data }: { columns: ColumnDef<UserRow>[]; data: UserRow[] }) => (
     <table data-testid="user-table">
       <thead>
         <tr>
-          {columns.map((col: any, idx: number) => (
+          {columns.map((col: ColumnDef<UserRow>, idx: number) => (
             <th key={idx} className={col.headerClassName}>
-              {col.header}
+              {col.header as string}
             </th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {data.map((row: any, rowIdx: number) => (
+        {data.map((row: UserRow, rowIdx: number) => (
           <tr key={rowIdx}>
-            {columns.map((col: any, colIdx: number) => (
+            {columns.map((col: ColumnDef<UserRow>, colIdx: number) => (
               <td key={colIdx} className={col.className}>
-                {typeof col.accessor === "function" ? col.accessor(row) : row[col.accessor]}
+                {typeof col.accessor === "function"
+                  ? col.accessor(row)
+                  : row[col.accessor as keyof UserRow]}
               </td>
             ))}
           </tr>
         ))}
       </tbody>
     </table>
-  )),
+  ),
 }));
 
-// Mock du composant ActionButton
 jest.mock("@/components/AdminLayout/components/Button/ActionButton", () => ({
   __esModule: true,
-  default: jest.fn(({ actions }: { actions: any[] }) => (
+  default: ({
+    actions,
+    row,
+  }: {
+    actions: ActionItem<UserRow>[];
+    row: UserRow;
+  }) => (
     <div data-testid="action-button">
-      {actions.map((action: any, idx: number) => (
-        <button
-          key={idx}
-          data-testid={`action-${action.label.toLowerCase()}`}
-          onClick={() => action.onClick()}
-          className={action.colorClass}
-        >
-          {action.label}
-        </button>
-      ))}
+      {actions.map((action: ActionItem<UserRow>, idx: number) => {
+        const label: string = action.label ?? "action";
+        return (
+          <button
+            key={idx}
+            data-testid={`action-${label.toLowerCase()}`}
+            className={action.colorClass}
+            onClick={() => action.onClick(row)}
+          >
+            {label}
+          </button>
+        );
+      })}
     </div>
-  )),
+  ),
 }));
 
-// Mock des icônes Lucide
 jest.mock("lucide-react", () => ({
   Pencil: () => <span data-testid="pencil-icon">Pencil</span>,
   Trash: () => <span data-testid="trash-icon">Trash</span>,
 }));
 
-// Translations mock
 const mockTranslations: Lang = {
   messageAdminUserColumnFirstname: "First Name",
   messageAdminUserColumnLastname: "Last Name",
@@ -67,16 +76,15 @@ const mockTranslations: Lang = {
   messageAdminUserColumnAction: "Actions",
 } as unknown as Lang;
 
-// Exemple d'utilisateurs
 const sampleUsers: UserRow[] = [
   { id: "1", firstname: "John", lastname: "Doe", email: "john.doe@example.com", role: "admin" },
   { id: "2", firstname: "Jane", lastname: "Smith", email: "jane.smith@example.com", role: "user" },
   { id: "3", firstname: "Bob", lastname: "Johnson", email: "bob.johnson@example.com", role: "view" },
 ];
 
-describe("UserTable Component - Essential Tests", (): void => {
-  const mockOnEdit: jest.Mock = jest.fn();
-  const mockOnDelete: jest.Mock = jest.fn();
+describe("UserTable Component - Fully Typed", (): void => {
+  const mockOnEdit: jest.Mock<(user: UserRow) => void> = jest.fn();
+  const mockOnDelete: jest.Mock<(id: string) => void> = jest.fn();
 
   beforeEach((): void => {
     jest.clearAllMocks();
@@ -124,8 +132,7 @@ describe("UserTable Component - Essential Tests", (): void => {
 
   test("renders empty table when no users provided", (): void => {
     render(<UserTable users={[]} translations={mockTranslations} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
-    const table: HTMLElement = screen.getByTestId("user-table");
-    expect(table).toBeInTheDocument();
+    expect(screen.getByTestId("user-table")).toBeInTheDocument();
     expect(screen.getByText("First Name")).toBeInTheDocument();
     expect(screen.getByText("Actions")).toBeInTheDocument();
     expect(screen.queryByTestId("action-button")).not.toBeInTheDocument();
