@@ -247,6 +247,25 @@ const en: Lang = {
   messageAdminUserRoleOptionsAdmin: "Administrator",
   messageAdminUserRoleOptionsEditor: "Editor",
   messageAdminUserRoleOptionsView: "Read-only",
+  "messageAdminEducationListTitle": "Education list",
+  "messageAdminEducationListNotFound": "No education found.",
+  "messageAdminEducationColumnSchool": "School",
+  "messageAdminEducationColumnTitle": "Title",
+  "messageAdminEducationColumnDiploma": "Diploma",
+  "messageAdminEducationColumnYear": "Period",
+  "messageAdminEducationColumnAction": "Actions",
+  "messageAdminEducationEditTitle": "Edit education",
+  "messageAdminEducationEditSuccess": "The education has been successfully updated.",
+  "messageAdminEducationEditError": "An error occurred while updating the education.",
+  "messageAdminEducationDeleteTitle": "Delete education",
+  "messageAdminEducationDeleteDescription": "Are you sure you want to delete this education? This action cannot be undone.",
+  "messageAdminEducationDeleteConfirm": "Delete",
+  "messageAdminEducationDeleteCancel": "Cancel",
+  "messageAdminEducationDeleteSuccess": "The education has been successfully deleted.",
+  "messageAdminEducationDeleteError": "An error occurred while deleting the education.",
+  "messageAdminEducationCreateTitle": "Add education",
+  "messageAdminEducationCreateSuccess": "The education has been successfully created.",
+  "messageAdminEducationCreateError": "An error occurred while creating the education."
 };
 
 export default en;

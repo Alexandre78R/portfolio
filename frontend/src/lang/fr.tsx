@@ -247,6 +247,25 @@ const fr: Lang = {
   messageAdminUserRoleOptionsAdmin : "Administrateur",
   messageAdminUserRoleOptionsEditor : "Éditeur",
   messageAdminUserRoleOptionsView : "Lecture seule",
+  "messageAdminEducationListTitle": "Liste des formations",
+  "messageAdminEducationListNotFound": "Aucune formation trouvée.",
+  "messageAdminEducationColumnSchool": "Établissement",
+  "messageAdminEducationColumnTitle": "Intitulé",
+  "messageAdminEducationColumnDiploma": "Diplôme",
+  "messageAdminEducationColumnYear": "Période",
+  "messageAdminEducationColumnAction": "Actions",
+  "messageAdminEducationEditTitle": "Modifier la formation",
+  "messageAdminEducationEditSuccess": "La formation a été mise à jour avec succès.",
+  "messageAdminEducationEditError": "Une erreur est survenue lors de la mise à jour de la formation.",
+  "messageAdminEducationDeleteTitle": "Supprimer la formation",
+  "messageAdminEducationDeleteDescription": "Êtes-vous sûr de vouloir supprimer cette formation ? Cette action est irréversible.",
+  "messageAdminEducationDeleteConfirm": "Supprimer",
+  "messageAdminEducationDeleteCancel": "Annuler",
+  "messageAdminEducationDeleteSuccess": "La formation a été supprimée avec succès.",
+  "messageAdminEducationDeleteError": "Une erreur est survenue lors de la suppression de la formation.",
+  "messageAdminEducationCreateTitle": "Ajouter une formation",
+  "messageAdminEducationCreateSuccess": "La formation a été créée avec succès.",
+  "messageAdminEducationCreateError": "Une erreur est survenue lors de la création de la formation."
 };
 
 export default fr;

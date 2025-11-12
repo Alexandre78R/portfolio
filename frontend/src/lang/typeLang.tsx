@@ -227,6 +227,25 @@ type Lang = {
   messageAdminUserRoleOptionsAdmin: string;
   messageAdminUserRoleOptionsEditor: string;
   messageAdminUserRoleOptionsView: string;
+  messageAdminEducationListTitle: string;
+  messageAdminEducationListNotFound: string;
+  messageAdminEducationColumnSchool: string;
+  messageAdminEducationColumnTitle: string;
+  messageAdminEducationColumnDiploma: string;
+  messageAdminEducationColumnYear: string;
+  messageAdminEducationColumnAction: string;
+  messageAdminEducationEditTitle: string;
+  messageAdminEducationEditSuccess: string;
+  messageAdminEducationEditError: string;
+  messageAdminEducationDeleteTitle: string;
+  messageAdminEducationDeleteDescription: string;
+  messageAdminEducationDeleteConfirm: string;
+  messageAdminEducationDeleteCancel: string;
+  messageAdminEducationDeleteSuccess: string;
+  messageAdminEducationDeleteError: string;
+  messageAdminEducationCreateTitle: string;
+  messageAdminEducationCreateSuccess: string;
+  messageAdminEducationCreateError: string;
 };
 
 export default Lang;
