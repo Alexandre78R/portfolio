@@ -49,24 +49,20 @@ const UserCreate = (): ReactElement => {
     }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     try {
-      const { data, errors } = await createUserMutation({
-        variables: { data: form },
-      });
-
-      // console.log("data", data);
+      const { data } = await createUserMutation({ variables: { data: form } });
 
       if (data?.registerUser.code === 201) {
         showAlert("success", translations.messageAdminUserCreateSuccess);
         setForm(defaultForm);
       } else {
         showAlert("error", translations.messageAdminUserCreateError);
-        // console.log("error",errors )
       }
     } catch (err) {
-      // console.error(err);
       showAlert("error", translations.messageErrorServerOff);
     }
   };
