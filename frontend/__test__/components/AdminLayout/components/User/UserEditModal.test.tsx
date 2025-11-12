@@ -2,10 +2,7 @@ import React, { ChangeEvent, FormEvent } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserEditModal from "@/components/AdminLayout/components/User/UserEditModal";
-import { useLang } from "@/context/Lang/LangContext";
-import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useUpdateUserMutation,
   useGetUserByIdQuery,
 } from "@/types/graphql";
 import { UserRow } from "@/components/AdminLayout/components/User/UserTable";
