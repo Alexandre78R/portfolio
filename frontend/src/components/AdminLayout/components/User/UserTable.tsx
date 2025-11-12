@@ -3,6 +3,7 @@ import Table, { ColumnDef } from "../../components/Table/Table";
 import { Pencil, Trash } from "lucide-react";
 import ActionButton, { ActionItem } from "../../components/Button/ActionButton";
 import Lang from "@/lang/typeLang";
+import { UserRole } from "../../Pages/Users/user.type";
 
 export interface UserRow {
   id: string;
