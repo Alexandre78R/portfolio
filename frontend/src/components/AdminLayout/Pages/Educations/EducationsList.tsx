@@ -7,9 +7,10 @@ import Lang from "@/lang/typeLang";
 import EducationTable, {
   EducationRow,
 } from "../../components/Education/EducationTable";
+import EducationDeleteDialog from "../../components/Education/EducationDeleteDialog";
 
 const EducationList = (): ReactElement => {
-  const { data, loading, error } = useGetEducationsListQuery({
+  const { data, loading, error, refetch } = useGetEducationsListQuery({
     fetchPolicy: "cache-and-network",
   });
 
@@ -33,7 +34,7 @@ const EducationList = (): ReactElement => {
   const educations: EducationRow[] = data.educationList.educations
     .filter((edu): edu is NonNullable<typeof edu> => !!edu)
     .map((edu) => ({
-      id: Number(edu.id), // 👈 FIX ICI
+      id: Number(edu.id),
       school: edu.school,
       location: edu.location,
       titleFR: edu.titleFR,
@@ -57,6 +58,13 @@ const EducationList = (): ReactElement => {
         translations={translations}
         onEdit={(education) => setEditEducation(education)}
         onDelete={(id) => setDeleteEducationId(id)}
+      />
+
+      {/* DELETE */}
+      <EducationDeleteDialog
+        educationId={deleteEducationId}
+        onClose={() => setDeleteEducationId(null)}
+        onRefresh={refetch}
       />
     </div>
   );
