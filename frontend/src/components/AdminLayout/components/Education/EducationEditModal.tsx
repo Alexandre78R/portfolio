@@ -169,49 +169,53 @@ const EducationEditModal = ({
         <InputField id="titleEN" label="Title EN" name="titleEN" value={form.titleEN} onChange={handleChange} />
 
         <div className="grid grid-cols-2 gap-4">
-        <InputField
-            id="startDateFR"
-            label="Start date (FR)"
-            name="startDateFR"
-            value={form.startDateFR}
-            onChange={(val) =>
-            setForm((prev) => (prev ? { ...prev, startDateFR: val as string } : prev))
-            }
-            picker="date"
-        />
+            <InputField
+                id="startDateFR"
+                label="Start date (FR)"
+                name="startDateFR"
+                value={form.startDateFR}
+                onChange={(val) =>
+                setForm((prev) => (prev ? { ...prev, startDateFR: val as string } : prev))
+                }
+                picker="date"
+                locale="fr"
+            />
 
-        <InputField
-            id="startDateEN"
-            label="Start date (EN)"
-            name="startDateEN"
-            value={form.startDateEN}
-            onChange={(val) =>
-            setForm((prev) => (prev ? { ...prev, startDateEN: val as string } : prev))
-            }
-            picker="date"
-        />
+            <InputField
+                id="startDateEN"
+                label="Start date (EN)"
+                name="startDateEN"
+                value={form.startDateEN}
+                onChange={(val) =>
+                setForm((prev) => (prev ? { ...prev, startDateEN: val as string } : prev))
+                }
+                picker="date"
+                locale="en"
+            />
 
-        <InputField
-            id="endDateFR"
-            label="End date (FR)"
-            name="endDateFR"
-            value={form.endDateFR}
-            onChange={(val) =>
-            setForm((prev) => (prev ? { ...prev, endDateFR: val as string } : prev))
-            }
-            picker="date"
-        />
+            <InputField
+                id="endDateFR"
+                label="End date (FR)"
+                name="endDateFR"
+                value={form.endDateFR}
+                onChange={(val) =>
+                setForm((prev) => (prev ? { ...prev, endDateFR: val as string } : prev))
+                }
+                picker="date"
+                locale="fr"
+            />
 
-        <InputField
-            id="endDateEN"
-            label="End date (EN)"
-            name="endDateEN"
-            value={form.endDateEN}
-            onChange={(val) =>
-            setForm((prev) => (prev ? { ...prev, endDateEN: val as string } : prev))
-            }
-            picker="date"
-        />
+            <InputField
+                id="endDateEN"
+                label="End date (EN)"
+                name="endDateEN"
+                value={form.endDateEN}
+                onChange={(val) =>
+                setForm((prev) => (prev ? { ...prev, endDateEN: val as string } : prev))
+                }
+                picker="date"
+                locale="en"
+            />
         </div>
         <div className="flex justify-end gap-3 mt-6">
           <ButtonCustom text={translations.messageAdminEducationEditCancel} onClick={onClose} />

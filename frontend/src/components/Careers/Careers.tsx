@@ -21,6 +21,8 @@ const Careers: FC = (): React.ReactElement => {
       return new Date(`${month} 1, ${year}`).getTime();
     };
 
+    console.log("dataEducations", dataEducations);
+
     return combined.sort((a, b) => {
       const dateAStart = parseDate(a.startDateEN);
       const dateBStart = parseDate(b.startDateEN);
