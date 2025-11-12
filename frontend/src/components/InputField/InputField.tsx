@@ -7,15 +7,12 @@ import dayjs, { Dayjs } from "dayjs";
 import 'dayjs/locale/fr';
 
 type Locale = "fr" | "en";
-
 type MonthMapType = Record<string, string>;
 
-export interface InputFieldProps {
+interface BaseDatePickerProps {
   id: string;
   label: string | ReactNode;
-  type?: string;
   value: string;
-  onChange: (value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   multiline?: boolean;
   rows?: number;
   name?: string;
@@ -23,9 +20,23 @@ export interface InputFieldProps {
   className?: string;
   sx?: TextFieldProps["sx"];
   placeholder?: string;
-  picker?: "date";
-  locale?: Locale;
 }
+
+interface DatePickerProps extends BaseDatePickerProps {
+  picker: "date";
+  locale?: Locale;
+  type?: never;
+  onChange: (value: string) => void;
+}
+
+interface TextFieldInputProps extends BaseDatePickerProps {
+  picker?: never;
+  locale?: never;
+  type?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+}
+
+export type InputFieldProps = DatePickerProps | TextFieldInputProps;
 
 const MONTH_MAP: Readonly<MonthMapType> = {
   'Janvier': 'January',
@@ -47,7 +58,6 @@ const parseDate = (value: string): Dayjs | null => {
 
   let parseValue = value;
   
-  // Convertir les mois français en anglais
   Object.entries(MONTH_MAP).forEach(([fr, en]: [string, string]) => {
     if (value.includes(fr)) {
       parseValue = value.replace(fr, en);
@@ -64,23 +74,22 @@ const formatDate = (date: Dayjs, locale: Locale): string => {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
-const InputField: React.FC<InputFieldProps> = ({
-  id,
-  label,
-  type = "text",
-  value,
-  onChange,
-  multiline = false,
-  rows,
-  name,
-  required = true,
-  className = "",
-  sx,
-  placeholder,
-  picker,
-  locale = "en",
-}) => {
-  if (picker === "date") {
+const InputField: React.FC<InputFieldProps> = (props) => {
+  const {
+    id,
+    label,
+    value,
+    multiline = false,
+    rows,
+    name,
+    required = true,
+    className = "",
+    sx,
+    placeholder,
+  } = props;
+
+  if (props.picker === "date") {
+    const { locale = "en", onChange } = props;
     const dateValue = parseDate(value);
 
     const handleDateChange = (newValue: Dayjs | null): void => {
@@ -127,8 +136,10 @@ const InputField: React.FC<InputFieldProps> = ({
     );
   }
 
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    onChange(e);
+  const { type = "text", onChange } = props;
+
+  const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    onChange(e as ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>);
   };
 
   return (
@@ -140,7 +151,7 @@ const InputField: React.FC<InputFieldProps> = ({
       fullWidth
       required={required}
       value={value}
-      onChange={handleTextChange}
+      onChange={handleTextFieldChange}
       multiline={multiline}
       rows={multiline && rows ? rows : undefined}
       name={name}

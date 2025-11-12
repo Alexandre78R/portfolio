@@ -109,8 +109,8 @@ const EducationEditModal = ({
 //   };
 
   const handleChange = (
-    e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ): void => {
+    e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ): void => {
     if (typeof e === "string") {
         return;
     } else {
