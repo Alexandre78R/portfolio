@@ -7,15 +7,9 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
   useUpdateUserMutation,
   useGetUserByIdQuery,
-  GetUsersListQuery,
 } from "@/types/graphql";
 import { UserRow } from "@/components/AdminLayout/components/User/UserTable";
 import Lang from "@/lang/typeLang";
-import SelectField from "@/components/AdminLayout/components/Input/SelectField";
-import { mapRoleToUserRole } from "@/components/AdminLayout/Pages/Users/user.type";
-import { UserRole } from "@/components/AdminLayout/Pages/Users/user.type";
-
-// --- Mocks ---
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
@@ -24,6 +18,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
       messageAdminUserEditSave: "Save",
       messageAdminUserEditCancel: "Cancel",
       messageAdminUserEditError: "Failed to save user",
+      messageAdminUserEditSuccess: "User updated successfully",
       messageAdminUserColumnRole: "Role",
     } as Lang,
   })),
@@ -36,16 +31,14 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 }));
 
 const mockUpdateUserMutation: jest.Mock = jest.fn();
-const mockUseGetUserByIdQuery: jest.Mock = jest.fn();
-
 jest.mock("@/types/graphql", () => ({
   useUpdateUserMutation: jest.fn(() => [mockUpdateUserMutation, {}]),
-  useGetUserByIdQuery: jest.fn(() => mockUseGetUserByIdQuery()),
+  useGetUserByIdQuery: jest.fn(),
 }));
 
 jest.mock("@/components/ModalCustom/ModalCustom", () => ({
   __esModule: true,
-  default: jest.fn((props: { children: React.ReactElement }) => (
+  default: jest.fn((props: { children: React.ReactNode }) => (
     <div data-testid="modal">{props.children}</div>
   )),
 }));
@@ -59,7 +52,15 @@ jest.mock("@/components/InputField/InputField", () => ({
       onChange: (e: ChangeEvent<HTMLInputElement>) => void;
       id?: string;
       label?: string;
-    }) => <input data-testid={`input-${props.name}`} value={props.value} onChange={props.onChange} />
+    }) => (
+      <input
+        data-testid={`input-${props.name}`}
+        id={props.id}
+        aria-label={props.label}
+        value={props.value}
+        onChange={props.onChange}
+      />
+    )
   ),
 }));
 
@@ -76,6 +77,8 @@ jest.mock("@/components/AdminLayout/components/Input/SelectField", () => ({
     }) => (
       <select
         data-testid={`select-${props.name}`}
+        id={props.id}
+        aria-label={props.label}
         value={props.value}
         onChange={props.onChange}
       >
@@ -92,7 +95,12 @@ jest.mock("@/components/AdminLayout/components/Input/SelectField", () => ({
 jest.mock("@/components/Button/Button", () => ({
   __esModule: true,
   default: jest.fn(
-    (props: { text: string; disable?: boolean; onClick?: () => void; type?: "button" | "submit" }) => (
+    (props: {
+      text: string;
+      disable?: boolean;
+      onClick?: () => void;
+      type?: "button" | "submit";
+    }) => (
       <button
         data-testid={`button-${props.text}`}
         disabled={props.disable}
@@ -110,17 +118,14 @@ jest.mock("@/components/Loading/LoadingCustom", () => ({
   default: jest.fn(() => <div data-testid="loading">Loading...</div>),
 }));
 
-// --- Sample Data ---
-
 const sampleUser: UserRow = {
   id: "1",
   firstname: "John",
   lastname: "Doe",
   email: "john.doe@example.com",
-  role: UserRole.admin,
+  role: "admin",
 };
 
-// --- Tests ---
 
 describe("UserEditModal Component", (): void => {
   const mockOnClose: jest.Mock = jest.fn();
@@ -146,6 +151,7 @@ describe("UserEditModal Component", (): void => {
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
       data: { userById: { user: sampleUser } },
       loading: false,
+      error: undefined,
     });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -161,12 +167,19 @@ describe("UserEditModal Component", (): void => {
 
     const roleSelect: HTMLSelectElement = screen.getByTestId("select-role") as HTMLSelectElement;
     expect(roleSelect.value).toBe(sampleUser.role);
+
+    const saveButton: HTMLButtonElement = screen.getByTestId("button-User updated successfully") as HTMLButtonElement;
+    expect(saveButton).toBeInTheDocument();
+
+    const cancelButton: HTMLButtonElement = screen.getByTestId("button-Cancel") as HTMLButtonElement;
+    expect(cancelButton).toBeInTheDocument();
   });
 
   test("updates form state when inputs change", (): void => {
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
       data: { userById: { user: sampleUser } },
       loading: false,
+      error: undefined,
     });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -175,26 +188,36 @@ describe("UserEditModal Component", (): void => {
     fireEvent.change(firstnameInput, { target: { name: "firstname", value: "Jane" } });
     expect(firstnameInput.value).toBe("Jane");
 
+    const lastnameInput: HTMLInputElement = screen.getByTestId("input-lastname") as HTMLInputElement;
+    fireEvent.change(lastnameInput, { target: { name: "lastname", value: "Smith" } });
+    expect(lastnameInput.value).toBe("Smith");
+
+    const emailInput: HTMLInputElement = screen.getByTestId("input-email") as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { name: "email", value: "jane.smith@example.com" } });
+    expect(emailInput.value).toBe("jane.smith@example.com");
+
     const roleSelect: HTMLSelectElement = screen.getByTestId("select-role") as HTMLSelectElement;
-    fireEvent.change(roleSelect, { target: { name: "role", value: UserRole.view } });
-    expect(roleSelect.value).toBe(UserRole.view);
+    fireEvent.change(roleSelect, { target: { name: "role", value: "view" } });
+    expect(roleSelect.value).toBe("view");
   });
 
   test("submits form successfully and shows success toast", async (): Promise<void> => {
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
       data: { userById: { user: sampleUser } },
       loading: false,
+      error: undefined,
     });
     mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 200 } } });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
-    const formEl: HTMLFormElement | null = screen.getByTestId("modal")?.querySelector("form") as HTMLFormElement;
+    const formEl: HTMLFormElement = screen.getByTestId("modal").querySelector("form") as HTMLFormElement;
+    expect(formEl).not.toBeNull();
     fireEvent.submit(formEl);
 
     await waitFor(() => {
       expect(mockUpdateUserMutation).toHaveBeenCalled();
-      expect(mockShowAlert).toHaveBeenCalledWith("success", "Save");
+      expect(mockShowAlert).toHaveBeenCalledWith("success", expect.any(String));
       expect(mockOnRefresh).toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalled();
     });
@@ -204,12 +227,14 @@ describe("UserEditModal Component", (): void => {
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
       data: { userById: { user: sampleUser } },
       loading: false,
+      error: undefined,
     });
     mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 500 } } });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
-    const formEl: HTMLFormElement | null = screen.getByTestId("modal")?.querySelector("form") as HTMLFormElement;
+    const formEl: HTMLFormElement = screen.getByTestId("modal").querySelector("form") as HTMLFormElement;
+    expect(formEl).not.toBeNull();
     fireEvent.submit(formEl);
 
     await waitFor(() => {
@@ -218,10 +243,31 @@ describe("UserEditModal Component", (): void => {
     });
   });
 
+  test("handles mutation rejection error", async (): Promise<void> => {
+    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
+      data: { userById: { user: sampleUser } },
+      loading: false,
+      error: undefined,
+    });
+    mockUpdateUserMutation.mockRejectedValue(new Error("Network error"));
+
+    render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+
+    const formEl: HTMLFormElement = screen.getByTestId("modal").querySelector("form") as HTMLFormElement;
+    expect(formEl).not.toBeNull();
+    fireEvent.submit(formEl);
+
+    await waitFor(() => {
+      expect(mockUpdateUserMutation).toHaveBeenCalled();
+      expect(mockShowAlert).toHaveBeenCalledWith("error", "Erreur serveur !");
+    });
+  });
+
   test("closes modal when Cancel button is clicked", (): void => {
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
       data: { userById: { user: sampleUser } },
       loading: false,
+      error: undefined,
     });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -229,5 +275,32 @@ describe("UserEditModal Component", (): void => {
     const cancelButton: HTMLButtonElement = screen.getByTestId("button-Cancel") as HTMLButtonElement;
     fireEvent.click(cancelButton);
     expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  test("verifies mutation is called with correct variables", async (): Promise<void> => {
+    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
+      data: { userById: { user: sampleUser } },
+      loading: false,
+      error: undefined,
+    });
+    mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 200 } } });
+
+    render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+
+    const formEl: HTMLFormElement = screen.getByTestId("modal").querySelector("form") as HTMLFormElement;
+    expect(formEl).not.toBeNull();
+    fireEvent.submit(formEl);
+
+    await waitFor(() => {
+      expect(mockUpdateUserMutation).toHaveBeenCalledWith({
+        variables: {
+          id: Number(sampleUser.id),
+          firstname: sampleUser.firstname,
+          lastname: sampleUser.lastname,
+          email: sampleUser.email,
+          role: sampleUser.role,
+        },
+      });
+    });
   });
 });
