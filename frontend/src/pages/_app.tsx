@@ -33,6 +33,8 @@ import type {
   GraphQLRequest,
   DefaultContext,
 } from "@apollo/client/core";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export type ApolloClientState = ApolloClient<NormalizedCacheObject> | null;
 
@@ -106,7 +108,8 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
   }
 
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={client}>      
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ReduxProvider>
         <UserProvider>
           <SectionRefsProvider>
@@ -122,6 +125,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
           </SectionRefsProvider>
         </UserProvider>
       </ReduxProvider>
+      </LocalizationProvider>
     </ApolloProvider>
   );
 };

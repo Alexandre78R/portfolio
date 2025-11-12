@@ -265,7 +265,9 @@ const fr: Lang = {
   "messageAdminEducationDeleteError": "Une erreur est survenue lors de la suppression de la formation.",
   "messageAdminEducationCreateTitle": "Ajouter une formation",
   "messageAdminEducationCreateSuccess": "La formation a été créée avec succès.",
-  "messageAdminEducationCreateError": "Une erreur est survenue lors de la création de la formation."
+  "messageAdminEducationCreateError": "Une erreur est survenue lors de la création de la formation.",
+  "messageAdminEducationEditConfirm": "Modifier",
+  "messageAdminEducationEditCancel": "Annuler",
 };
 
 export default fr;

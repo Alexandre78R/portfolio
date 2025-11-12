@@ -2,6 +2,12 @@
 
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: [
+    '@mui/x-date-pickers',
+    '@mui/material',
+    '@mui/system',
+    '@mui/icons-material',
+  ],
   // webpackDevMiddleware: (config) => {
   //   if (process.env.NEXT_DISABLE_HMR === 'true') {
   //     config.watchOptions = {

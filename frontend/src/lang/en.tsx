@@ -265,7 +265,9 @@ const en: Lang = {
   "messageAdminEducationDeleteError": "An error occurred while deleting the education.",
   "messageAdminEducationCreateTitle": "Add education",
   "messageAdminEducationCreateSuccess": "The education has been successfully created.",
-  "messageAdminEducationCreateError": "An error occurred while creating the education."
+  "messageAdminEducationCreateError": "An error occurred while creating the education.",
+  "messageAdminEducationEditConfirm": "Edit",
+  "messageAdminEducationEditCancel": "Cancel",
 };
 
 export default en;

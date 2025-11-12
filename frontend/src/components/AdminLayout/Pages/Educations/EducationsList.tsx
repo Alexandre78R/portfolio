@@ -8,6 +8,7 @@ import EducationTable, {
   EducationRow,
 } from "../../components/Education/EducationTable";
 import EducationDeleteDialog from "../../components/Education/EducationDeleteDialog";
+import EducationEditModal from "../../components/Education/EducationEditModal";
 
 const EducationList = (): ReactElement => {
   const { data, loading, error, refetch } = useGetEducationsListQuery({
@@ -58,6 +59,13 @@ const EducationList = (): ReactElement => {
         translations={translations}
         onEdit={(education) => setEditEducation(education)}
         onDelete={(id) => setDeleteEducationId(id)}
+      />
+
+      {/* EDIT */}
+      <EducationEditModal
+        education={editEducation}
+        onClose={() => setEditEducation(null)}
+        onRefresh={refetch}
       />
 
       {/* DELETE */}
