@@ -25,3 +25,28 @@ export const GET_EDUCATIONS_LIST = gql`
     }
   }
 `;
+
+export const GET_EDUCATION_BY_ID = gql`
+  query GetEducationById($id: Int!) {
+    educationById(id: $id) {
+      education {
+        id
+        school
+        location
+        diplomaLevelFR
+        diplomaLevelEN
+        titleFR
+        titleEN
+        typeFR
+        typeEN
+        startDateFR
+        startDateEN
+        endDateFR
+        endDateEN
+        month
+        year
+      }
+      code
+    }
+  }
+`;

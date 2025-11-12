@@ -38,11 +38,10 @@ describe("user.type.ts", (): void => {
   });
 
   describe("mapRoleToUserRole function", (): void => {
-    // Use GraphQL enum Role
     const roleAdmin: Role = Role.Admin;
     const roleEditor: Role = Role.Editor;
     const roleView: Role = Role.View;
-    const unknownRole: string = "unknown"; // still need cast for testing default case
+    const unknownRole: string = "unknown";
 
     it("should map Role.Admin to UserRole.admin", (): void => {
       const result: UserRole = mapRoleToUserRole(roleAdmin);
