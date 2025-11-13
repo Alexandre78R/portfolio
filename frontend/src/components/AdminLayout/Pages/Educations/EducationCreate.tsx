@@ -41,15 +41,13 @@ const defaultForm: CreateEducationInput = {
 
 const EducationCreate = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
 
   const [form, setForm] = useState<CreateEducationInput>(defaultForm);
   const [createEducationMutation, { loading }] =
     useCreateEducationMutation();
 
-  /**
-   * Handles text / number inputs
-   */
   const handleChange = (
     e:
       | string

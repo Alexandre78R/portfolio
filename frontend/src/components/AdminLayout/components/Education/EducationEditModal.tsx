@@ -54,7 +54,8 @@ const EducationEditModal = ({
   onRefresh,
 }: EducationEditModalProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+  CustomToast();
 
   const [form, setForm] = useState<EducationFormData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
