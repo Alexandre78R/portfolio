@@ -268,6 +268,8 @@ const en: Lang = {
   "messageAdminEducationCreateError": "An error occurred while creating the education.",
   "messageAdminEducationEditConfirm": "Edit",
   "messageAdminEducationEditCancel": "Cancel",
+  messageAdminEducationCreateLoading: "Education creation in progress…",
+  messageAdminEducationCreateConfirm: "Validate creation",
 };
 
 export default en;

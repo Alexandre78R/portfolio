@@ -248,6 +248,8 @@ type Lang = {
   messageAdminEducationCreateError: string;
   messageAdminEducationEditConfirm: string;
   messageAdminEducationEditCancel: string;
+  messageAdminEducationCreateLoading: string;
+  messageAdminEducationCreateConfirm: string;
 };
 
 export default Lang;

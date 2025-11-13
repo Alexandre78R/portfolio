@@ -268,6 +268,8 @@ const fr: Lang = {
   "messageAdminEducationCreateError": "Une erreur est survenue lors de la création de la formation.",
   "messageAdminEducationEditConfirm": "Modifier",
   "messageAdminEducationEditCancel": "Annuler",
+  messageAdminEducationCreateLoading: "Création de la formation en cours…",
+  messageAdminEducationCreateConfirm: "Valider la création",
 };
 
 export default fr;
