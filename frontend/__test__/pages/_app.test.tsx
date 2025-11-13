@@ -1,107 +1,101 @@
-import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import React, { FC, ReactElement } from "react";
+import { render, screen, waitFor, RenderResult } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import App from "@/pages/_app";
 import type { AppProps } from "next/app";
-import type { Router } from "next/router";
+import type { NextRouter } from "next/router";
+import { ApolloLink } from "@apollo/client";
 
+// ------------------- ENV -------------------
 beforeAll((): void => {
   process.env.NEXT_PUBLIC_API_TOKEN = "test-token";
 });
 
+// ------------------- TYPES -------------------
+type ProviderProps = { children: React.ReactNode };
+
+// ------------------- MOCK APOLLO LINK -------------------
+class MockApolloLink extends ApolloLink {
+  public request = jest.fn();
+  public concat(next: ApolloLink): ApolloLink {
+    return this;
+  }
+}
+
+// ------------------- MOCK COMPONENTS -------------------
 jest.mock("@/components/Loading/LoadingCustom", () => {
-  const Loading = (): React.ReactElement => (
-    <div data-testid="loading">Loading...</div>
-  );
+  const Loading: FC = (): ReactElement => <div data-testid="loading">Loading...</div>;
   Loading.displayName = "LoadingCustom";
   return { __esModule: true, default: jest.fn(Loading) };
 });
 
 jest.mock("@/components/NavBar/NavBar", () => {
-  const NavBar = (): React.ReactElement => <nav data-testid="navbar">Navbar</nav>;
+  const NavBar: FC = (): ReactElement => <nav data-testid="navbar">Navbar</nav>;
   NavBar.displayName = "NavBar";
   return { __esModule: true, default: jest.fn(NavBar) };
 });
 
-type ProviderProps = { children: React.ReactNode };
+jest.mock("@/context/Theme/ThemeContext", () => ({ ThemeProvider: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/context/Lang/LangContext", () => ({ LangProvider: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/context/SectionRefs/SectionRefsContext", () => ({ SectionRefsProvider: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/context/ChoiceView/ChoiceViewContext", () => ({ ChoiceViewProvider: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/context/UserContext/UserContext", () => ({ UserProvider: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/store/provider", () => ({ __esModule: true, default: ({ children }: ProviderProps) => <>{children}</> }));
+jest.mock("@/components/ToastCustom/ToastProvider", () => ({ __esModule: true, default: ({ children }: ProviderProps) => <>{children}</> }));
 
-jest.mock("@/context/Theme/ThemeContext", () => ({
-  ThemeProvider: ({ children }: ProviderProps) => <>{children}</>,
-}));
-
-jest.mock("@/context/Lang/LangContext", () => ({
-  LangProvider: ({ children }: ProviderProps) => <>{children}</>,
-}));
-
-jest.mock("@/context/SectionRefs/SectionRefsContext", () => ({
-  SectionRefsProvider: ({ children }: ProviderProps) => <>{children}</>,
-}));
-
-jest.mock("@/context/ChoiceView/ChoiceViewContext", () => ({
-  ChoiceViewProvider: ({ children }: ProviderProps) => <>{children}</>,
-}));
-
-jest.mock("@/context/UserContext/UserContext", () => ({
-  UserProvider: ({ children }: ProviderProps) => <>{children}</>,
-}));
-
-jest.mock("@/store/provider", () => {
-  const ReduxProvider = ({ children }: ProviderProps) => <>{children}</>;
-  ReduxProvider.displayName = "StoreProvider";
-  return { __esModule: true, default: ReduxProvider };
+// ------------------- MOCK MUI DATEPICKER -------------------
+jest.mock("@mui/x-date-pickers/LocalizationProvider", () => {
+  const LocalizationProvider: FC<{ children: React.ReactNode; dateAdapter: new () => unknown }> = ({ children, dateAdapter }) => (
+    <div data-testid="localization-provider" data-adapter={dateAdapter?.name || "unknown"}>{children}</div>
+  );
+  return { LocalizationProvider: jest.fn(LocalizationProvider) };
 });
 
-jest.mock("@/components/ToastCustom/ToastProvider", () => {
-  const ToastProvider = ({ children }: ProviderProps) => <>{children}</>;
-  ToastProvider.displayName = "ToastProvider";
-  return { __esModule: true, default: ToastProvider };
+jest.mock("@mui/x-date-pickers/AdapterDayjs", () => {
+  class AdapterDayjsMock { public name: string = "AdapterDayjs"; }
+  return { AdapterDayjs: AdapterDayjsMock };
 });
 
-import { ApolloClient, ApolloProvider, InMemoryCache, ApolloLink } from "@apollo/client";
-
-type ApolloClientInstance = {
-  query: jest.Mock;
-  mutate: jest.Mock;
-  cache: { reset: jest.Mock };
-};
-
+// ------------------- MOCK APOLLO -------------------
 jest.mock("@apollo/client", () => {
   const actual = jest.requireActual("@apollo/client");
   return {
     ...actual,
-    ApolloClient: jest.fn<ApolloClientInstance, any[]>(() => ({
+    ApolloClient: jest.fn().mockImplementation(() => ({
       query: jest.fn(),
       mutate: jest.fn(),
-      cache: { reset: jest.fn() },
+      cache: {
+        reset: jest.fn(),
+        read: jest.fn(),
+        write: jest.fn(),
+        evict: jest.fn(),
+        modify: jest.fn(),
+      },
+      link: new MockApolloLink(),
     })),
     ApolloProvider: ({ children }: ProviderProps) => <>{children}</>,
     InMemoryCache: jest.fn(() => ({})),
-    ApolloLink: jest.fn(),
     setContext: jest.fn(() => new actual.ApolloLink()),
   };
 });
 
-class MockApolloLink {
-  request = jest.fn();
-  concat = jest.fn(() => this);
-}
-
+// ------------------- MOCK UPLOAD -------------------
 jest.mock("apollo-upload-client", () => ({
   createUploadLink: jest.fn(() => new MockApolloLink()),
 }));
 
-
+// ------------------- MOCK NEXT ROUTER -------------------
 const mockRouter = {
   basePath: "",
   pathname: "/",
   route: "/",
   query: {},
   asPath: "/",
-  push: jest.fn(),
-  replace: jest.fn(),
+  push: jest.fn<Promise<boolean>, [string, string?, unknown?]>(),
+  replace: jest.fn<Promise<boolean>, [string, string?, unknown?]>(),
   reload: jest.fn(),
   back: jest.fn(),
-  prefetch: jest.fn().mockResolvedValue(undefined),
+  prefetch: jest.fn<Promise<void>, [string]>(),
   beforePopState: jest.fn(),
   isFallback: false,
   isReady: true,
@@ -109,62 +103,96 @@ const mockRouter = {
   isLocaleDomain: false,
   isPreview: false,
   forward: jest.fn(),
-} as unknown as Router;
+} as any as NextRouter;
 
-describe("App component with Apollo Upload", () => {
-  const MockPage = (): React.ReactElement => <div data-testid="page-component">Page</div>;
+// ------------------- TEST -------------------
+describe("App component with Apollo Upload", (): void => {
+  const MockPage: FC = (): ReactElement => <div data-testid="page-component">Page</div>;
 
-  const appProps: AppProps = {
-    Component: MockPage,
-    pageProps: {},
-    router: mockRouter,
-  };
+  const appProps: AppProps = { Component: MockPage, pageProps: {}, router: mockRouter as any };
 
-  it("should eventually render content after loading", async () => {
-    const { queryByTestId, getByTestId } = render(<App {...appProps} />);
+  let renderResult: RenderResult;
 
-    await waitFor(() => {
-      expect(getByTestId("navbar")).toBeInTheDocument();
-      expect(getByTestId("page-component")).toBeInTheDocument();
-    });
-
-    expect(queryByTestId("loading")).not.toBeInTheDocument();
+  beforeEach((): void => {
+    jest.clearAllMocks();
   });
 
-  it("should render Navbar and page component", async () => {
-    render(<App {...appProps} />);
-    await waitFor(() => {
-      expect(screen.getByTestId("navbar")).toBeInTheDocument();
-      expect(screen.getByTestId("page-component")).toBeInTheDocument();
+  it("should eventually render content after loading", async (): Promise<void> => {
+    renderResult = render(<App {...appProps} />);
+    const { queryByTestId, getByTestId } = renderResult;
+
+    await waitFor((): void => {
+      const navbar: HTMLElement = getByTestId("navbar");
+      const page: HTMLElement = getByTestId("page-component");
+      expect(navbar).toBeInTheDocument();
+      expect(page).toBeInTheDocument();
+    });
+
+    const loading: HTMLElement | null = queryByTestId("loading");
+    expect(loading).not.toBeInTheDocument();
+  });
+
+  it("should render Navbar and page component", async (): Promise<void> => {
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
+      const navbar: HTMLElement = screen.getByTestId("navbar");
+      const page: HTMLElement = screen.getByTestId("page-component");
+      expect(navbar).toBeInTheDocument();
+      expect(page).toBeInTheDocument();
     });
   });
 
-  it("should create ApolloClient with upload link", async () => {
+  it("should render LocalizationProvider", async (): Promise<void> => {
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
+      const localizationProvider: HTMLElement = screen.getByTestId("localization-provider");
+      expect(localizationProvider).toBeInTheDocument();
+    });
+  });
+
+  it("should wrap app with LocalizationProvider and AdapterDayjs", async (): Promise<void> => {
+    const { LocalizationProvider } = require("@mui/x-date-pickers/LocalizationProvider");
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
+      expect(LocalizationProvider).toHaveBeenCalled();
+      expect(LocalizationProvider).toHaveBeenCalledWith(
+        expect.objectContaining({ dateAdapter: expect.any(Function), children: expect.anything() }),
+        expect.anything()
+      );
+    });
+  });
+
+  it("should create ApolloClient with upload link", async (): Promise<void> => {
     const { ApolloClient } = await import("@apollo/client");
     const { createUploadLink } = await import("apollo-upload-client");
-
-    render(<App {...appProps} />);
-
-    await waitFor(() => {
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
       expect(createUploadLink).toHaveBeenCalled();
       expect(ApolloClient).toHaveBeenCalled();
     });
   });
 
-  it("should include API token in headers", async () => {
+  it("should include API token in headers", async (): Promise<void> => {
     const { ApolloClient } = await import("@apollo/client");
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
+      expect(ApolloClient).toHaveBeenCalledWith(expect.objectContaining({
+        cache: expect.any(Object),
+        link: expect.objectContaining({ concat: expect.any(Function) }),
+        credentials: "include",
+      }));
+    });
+  });
 
-    render(<App {...appProps} />);
-    await waitFor(() => {
-      expect(ApolloClient).toHaveBeenCalledWith(
-        expect.objectContaining({
-          cache: expect.any(Object),
-          link: expect.objectContaining({
-            concat: expect.any(Function),
-          }),
-          credentials: "include",
-        })
-      );
+  it("should have correct provider hierarchy", async (): Promise<void> => {
+    renderResult = render(<App {...appProps} />);
+    await waitFor((): void => {
+      const localizationProvider: HTMLElement = screen.getByTestId("localization-provider");
+      const navbar: HTMLElement = screen.getByTestId("navbar");
+      const page: HTMLElement = screen.getByTestId("page-component");
+      expect(localizationProvider).toBeInTheDocument();
+      expect(localizationProvider).toContainElement(navbar);
+      expect(localizationProvider).toContainElement(page);
     });
   });
 });
