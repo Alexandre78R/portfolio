@@ -810,6 +810,27 @@ export type DeleteEducationMutationVariables = Exact<{
 
 export type DeleteEducationMutation = { __typename?: 'Mutation', deleteEducation: { __typename?: 'EducationResponse', message: string, code: number } };
 
+export type CreateExperienceMutationVariables = Exact<{
+  data: CreateExperienceInput;
+}>;
+
+
+export type CreateExperienceMutation = { __typename?: 'Mutation', createExperience: { __typename?: 'ExperienceResponse', code: number, message: string, experience?: { __typename?: 'Experience', id: string, jobFR: string, jobEN: string, business: string, typeFR: string, typeEN: string, employmentContractFR: string, employmentContractEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month: number } | null } };
+
+export type UpdateExperienceMutationVariables = Exact<{
+  data: UpdateExperienceInput;
+}>;
+
+
+export type UpdateExperienceMutation = { __typename?: 'Mutation', updateExperience: { __typename?: 'ExperienceResponse', code: number, message: string, experience?: { __typename?: 'Experience', id: string, jobFR: string, jobEN: string, business: string, typeFR: string, typeEN: string, employmentContractFR: string, employmentContractEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month: number } | null } };
+
+export type DeleteExperienceMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteExperienceMutation = { __typename?: 'Mutation', deleteExperience: { __typename?: 'ExperienceResponse', code: number, message: string } };
+
 export type MutationMutationVariables = Exact<{
   data: LoginInput;
 }>;
@@ -899,6 +920,13 @@ export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN: string, business: string, employmentContractFR: string, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month: number, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
+
+export type GetExperienceByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetExperienceByIdQuery = { __typename?: 'Query', experienceById: { __typename?: 'ExperienceResponse', code: number, message: string, experience?: { __typename?: 'Experience', id: string, jobFR: string, jobEN: string, business: string, typeFR: string, typeEN: string, employmentContractFR: string, employmentContractEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month: number } | null } };
 
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1283,6 +1311,138 @@ export function useDeleteEducationMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteEducationMutationHookResult = ReturnType<typeof useDeleteEducationMutation>;
 export type DeleteEducationMutationResult = Apollo.MutationResult<DeleteEducationMutation>;
 export type DeleteEducationMutationOptions = Apollo.BaseMutationOptions<DeleteEducationMutation, DeleteEducationMutationVariables>;
+export const CreateExperienceDocument = gql`
+    mutation CreateExperience($data: CreateExperienceInput!) {
+  createExperience(data: $data) {
+    code
+    message
+    experience {
+      id
+      jobFR
+      jobEN
+      business
+      typeFR
+      typeEN
+      employmentContractFR
+      employmentContractEN
+      startDateFR
+      startDateEN
+      endDateFR
+      endDateEN
+      month
+    }
+  }
+}
+    `;
+export type CreateExperienceMutationFn = Apollo.MutationFunction<CreateExperienceMutation, CreateExperienceMutationVariables>;
+
+/**
+ * __useCreateExperienceMutation__
+ *
+ * To run a mutation, you first call `useCreateExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExperienceMutation, { data, loading, error }] = useCreateExperienceMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateExperienceMutation(baseOptions?: Apollo.MutationHookOptions<CreateExperienceMutation, CreateExperienceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateExperienceMutation, CreateExperienceMutationVariables>(CreateExperienceDocument, options);
+      }
+export type CreateExperienceMutationHookResult = ReturnType<typeof useCreateExperienceMutation>;
+export type CreateExperienceMutationResult = Apollo.MutationResult<CreateExperienceMutation>;
+export type CreateExperienceMutationOptions = Apollo.BaseMutationOptions<CreateExperienceMutation, CreateExperienceMutationVariables>;
+export const UpdateExperienceDocument = gql`
+    mutation UpdateExperience($data: UpdateExperienceInput!) {
+  updateExperience(data: $data) {
+    code
+    message
+    experience {
+      id
+      jobFR
+      jobEN
+      business
+      typeFR
+      typeEN
+      employmentContractFR
+      employmentContractEN
+      startDateFR
+      startDateEN
+      endDateFR
+      endDateEN
+      month
+    }
+  }
+}
+    `;
+export type UpdateExperienceMutationFn = Apollo.MutationFunction<UpdateExperienceMutation, UpdateExperienceMutationVariables>;
+
+/**
+ * __useUpdateExperienceMutation__
+ *
+ * To run a mutation, you first call `useUpdateExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateExperienceMutation, { data, loading, error }] = useUpdateExperienceMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateExperienceMutation(baseOptions?: Apollo.MutationHookOptions<UpdateExperienceMutation, UpdateExperienceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateExperienceMutation, UpdateExperienceMutationVariables>(UpdateExperienceDocument, options);
+      }
+export type UpdateExperienceMutationHookResult = ReturnType<typeof useUpdateExperienceMutation>;
+export type UpdateExperienceMutationResult = Apollo.MutationResult<UpdateExperienceMutation>;
+export type UpdateExperienceMutationOptions = Apollo.BaseMutationOptions<UpdateExperienceMutation, UpdateExperienceMutationVariables>;
+export const DeleteExperienceDocument = gql`
+    mutation DeleteExperience($id: Int!) {
+  deleteExperience(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteExperienceMutationFn = Apollo.MutationFunction<DeleteExperienceMutation, DeleteExperienceMutationVariables>;
+
+/**
+ * __useDeleteExperienceMutation__
+ *
+ * To run a mutation, you first call `useDeleteExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteExperienceMutation, { data, loading, error }] = useDeleteExperienceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteExperienceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteExperienceMutation, DeleteExperienceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteExperienceMutation, DeleteExperienceMutationVariables>(DeleteExperienceDocument, options);
+      }
+export type DeleteExperienceMutationHookResult = ReturnType<typeof useDeleteExperienceMutation>;
+export type DeleteExperienceMutationResult = Apollo.MutationResult<DeleteExperienceMutation>;
+export type DeleteExperienceMutationOptions = Apollo.BaseMutationOptions<DeleteExperienceMutation, DeleteExperienceMutationVariables>;
 export const MutationDocument = gql`
     mutation Mutation($data: LoginInput!) {
   login(data: $data) {
@@ -1988,6 +2148,65 @@ export type GetExperiencesListQueryHookResult = ReturnType<typeof useGetExperien
 export type GetExperiencesListLazyQueryHookResult = ReturnType<typeof useGetExperiencesListLazyQuery>;
 export type GetExperiencesListSuspenseQueryHookResult = ReturnType<typeof useGetExperiencesListSuspenseQuery>;
 export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
+export const GetExperienceByIdDocument = gql`
+    query GetExperienceById($id: Int!) {
+  experienceById(id: $id) {
+    code
+    message
+    experience {
+      id
+      jobFR
+      jobEN
+      business
+      typeFR
+      typeEN
+      employmentContractFR
+      employmentContractEN
+      startDateFR
+      startDateEN
+      endDateFR
+      endDateEN
+      month
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetExperienceByIdQuery__
+ *
+ * To run a query within a React component, call `useGetExperienceByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetExperienceByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetExperienceByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetExperienceByIdQuery(baseOptions: Apollo.QueryHookOptions<GetExperienceByIdQuery, GetExperienceByIdQueryVariables> & ({ variables: GetExperienceByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>(GetExperienceByIdDocument, options);
+      }
+export function useGetExperienceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>(GetExperienceByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetExperienceByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>;
+export function useGetExperienceByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetExperienceByIdQuery | undefined, GetExperienceByIdQueryVariables>;
+export function useGetExperienceByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>(GetExperienceByIdDocument, options);
+        }
+export type GetExperienceByIdQueryHookResult = ReturnType<typeof useGetExperienceByIdQuery>;
+export type GetExperienceByIdLazyQueryHookResult = ReturnType<typeof useGetExperienceByIdLazyQuery>;
+export type GetExperienceByIdSuspenseQueryHookResult = ReturnType<typeof useGetExperienceByIdSuspenseQuery>;
+export type GetExperienceByIdQueryResult = Apollo.QueryResult<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>;
 export const GetProjectsListDocument = gql`
     query GetProjectsList {
   projectList {
