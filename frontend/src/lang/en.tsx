@@ -270,6 +270,28 @@ const en: Lang = {
   "messageAdminEducationEditCancel": "Cancel",
   messageAdminEducationCreateLoading: "Education creation in progress…",
   messageAdminEducationCreateConfirm: "Validate creation",
+  "messageAdminExperienceListTitle": "Experience List",
+  "messageAdminExperienceCreateTitle": "Create Experience",
+  "messageAdminExperienceCreateConfirm": "Create",
+  "messageAdminExperienceCreateLoading": "Creating...",
+  "messageAdminExperienceCreateSuccess": "Experience created successfully",
+  "messageAdminExperienceCreateError": "Error creating experience",
+  "messageAdminExperienceEditTitle": "Edit Experience",
+  "messageAdminExperienceEditConfirm": "Confirm",
+  "messageAdminExperienceEditCancel": "Cancel",
+  "messageAdminExperienceEditSuccess": "Experience updated successfully",
+  "messageAdminExperienceEditError": "Error updating experience",
+  "messageAdminExperienceDeleteTitle": "Delete Experience",
+  "messageAdminExperienceDeleteDescription": "Are you sure you want to delete this experience?",
+  "messageAdminExperienceDeleteConfirm": "Delete",
+  "messageAdminExperienceDeleteCancel": "Cancel",
+  "messageAdminExperienceDeleteSuccess": "Experience deleted successfully",
+  "messageAdminExperienceDeleteError": "Error deleting experience",
+  "messageAdminExperienceColumnJob": "Job",
+  "messageAdminExperienceColumnBusiness": "Business",
+  "messageAdminExperienceColumnContract": "Contract",
+  "messageAdminExperienceColumnYear": "Year",
+  "messageAdminExperienceColumnAction": "Actions"
 };
 
 export default en;

@@ -270,6 +270,28 @@ const fr: Lang = {
   "messageAdminEducationEditCancel": "Annuler",
   messageAdminEducationCreateLoading: "Création de la formation en cours…",
   messageAdminEducationCreateConfirm: "Valider la création",
+  "messageAdminExperienceListTitle": "Liste des expériences",
+  "messageAdminExperienceCreateTitle": "Créer une expérience",
+  "messageAdminExperienceCreateConfirm": "Créer",
+  "messageAdminExperienceCreateLoading": "Création...",
+  "messageAdminExperienceCreateSuccess": "Expérience créée avec succès",
+  "messageAdminExperienceCreateError": "Erreur lors de la création de l'expérience",
+  "messageAdminExperienceEditTitle": "Modifier l'expérience",
+  "messageAdminExperienceEditConfirm": "Valider",
+  "messageAdminExperienceEditCancel": "Annuler",
+  "messageAdminExperienceEditSuccess": "Expérience modifiée avec succès",
+  "messageAdminExperienceEditError": "Erreur lors de la modification de l'expérience",
+  "messageAdminExperienceDeleteTitle": "Supprimer l'expérience",
+  "messageAdminExperienceDeleteDescription": "Êtes-vous sûr de vouloir supprimer cette expérience ?",
+  "messageAdminExperienceDeleteConfirm": "Supprimer",
+  "messageAdminExperienceDeleteCancel": "Annuler",
+  "messageAdminExperienceDeleteSuccess": "Expérience supprimée avec succès",
+  "messageAdminExperienceDeleteError": "Erreur lors de la suppression de l'expérience",
+  "messageAdminExperienceColumnJob": "Poste",
+  "messageAdminExperienceColumnBusiness": "Entreprise",
+  "messageAdminExperienceColumnContract": "Contrat",
+  "messageAdminExperienceColumnYear": "Année",
+  "messageAdminExperienceColumnAction": "Actions"
 };
 
 export default fr;

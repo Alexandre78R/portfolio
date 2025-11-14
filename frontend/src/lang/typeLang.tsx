@@ -250,6 +250,28 @@ type Lang = {
   messageAdminEducationEditCancel: string;
   messageAdminEducationCreateLoading: string;
   messageAdminEducationCreateConfirm: string;
+  messageAdminExperienceListTitle: string;
+  messageAdminExperienceCreateTitle: string;
+  messageAdminExperienceCreateConfirm: string;
+  messageAdminExperienceCreateLoading: string;
+  messageAdminExperienceCreateSuccess: string;
+  messageAdminExperienceCreateError: string;
+  messageAdminExperienceEditTitle: string;
+  messageAdminExperienceEditConfirm: string;
+  messageAdminExperienceEditCancel: string;
+  messageAdminExperienceEditSuccess: string;
+  messageAdminExperienceEditError: string;
+  messageAdminExperienceDeleteTitle: string;
+  messageAdminExperienceDeleteDescription: string;
+  messageAdminExperienceDeleteConfirm: string;
+  messageAdminExperienceDeleteCancel: string;
+  messageAdminExperienceDeleteSuccess: string;
+  messageAdminExperienceDeleteError: string;
+  messageAdminExperienceColumnJob: string;
+  messageAdminExperienceColumnBusiness: string;
+  messageAdminExperienceColumnContract: string;
+  messageAdminExperienceColumnYear: string;
+  messageAdminExperienceColumnAction: string;
 };
 
 export default Lang;
