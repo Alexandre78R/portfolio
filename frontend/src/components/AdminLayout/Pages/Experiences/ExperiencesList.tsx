@@ -7,6 +7,7 @@ import Lang from "@/lang/typeLang";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import ExperienceDeleteDialog from "../../components/Experience/ExperienceDeleteDialog";
+import ExperienceEditModal from "../../components/Experience/ExperienceEditModal";
 
 const ExperienceList = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
@@ -50,14 +51,17 @@ const ExperienceList = (): ReactElement => {
         onDelete={(id) => setExperienceToDeleteId(id)}
       />
 
-      {experienceToDeleteId && (
-        <ExperienceDeleteDialog
-          experienceId={experienceToDeleteId}
-          onClose={() => setExperienceToDeleteId(null)}
+        <ExperienceEditModal
+          experience={selectedExperience}
+          onClose={() => setSelectedExperience(null)}
           onRefresh={refetch}
         />
-      )}
 
+      <ExperienceDeleteDialog
+        experienceId={experienceToDeleteId}
+        onClose={() => setExperienceToDeleteId(null)}
+        onRefresh={refetch}
+      />
     </div>
   );
 };
