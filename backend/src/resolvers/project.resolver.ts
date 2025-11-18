@@ -132,6 +132,63 @@ export class ProjectResolver {
     }
   }
 
+  // @Authorized([UserRole.admin, UserRole.editor])
+  // @Mutation(() => ProjectResponse)
+  // async updateProject(
+  //   @Arg("data") data: UpdateProjectInput,
+  //   @Ctx() ctx: MyContext
+  // ): Promise<ProjectResponse> {
+  //   try {
+  //     if (!ctx.user) return { code: 401, message: "Authentication required.", project: undefined };
+  //     if (![UserRole.admin, UserRole.editor].includes(ctx.user.role))
+  //       return { code: 403, message: "Access denied. Admin or Editor role required.", project: undefined };
+
+  //     const { id, skillIds, ...rest } = data;
+
+  //     const existingProject: (PrismaProject & { skills: PrismaProjectSkill[] }) | null =
+  //       await this.db.project.findUnique({ where: { id }, include: { skills: true } });
+  //     if (!existingProject) return { code: 404, message: "Project not found", project: undefined };
+
+  //     if (skillIds) {
+  //       const validSkills = await this.db.skill.findMany({ where: { id: { in: skillIds } } });
+  //       if (validSkills.length !== skillIds.length) {
+  //         return { code: 400, message: "One or more skill IDs are invalid.", project: undefined };
+  //       }
+  //       await this.db.projectSkill.deleteMany({ where: { projectId: id } });
+  //     }
+
+  //     const updatedProject: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } =
+  //       await this.db.project.update({
+  //         where: { id },
+  //         data: { ...rest, skills: skillIds ? { create: skillIds.map((skillId) => ({ skill: { connect: { id: skillId } } })) } : undefined },
+  //         include: { skills: { include: { skill: true } } },
+  //       });
+
+  //     return {
+  //       code: 200,
+  //       message: "Project updated successfully",
+  //       project: {
+  //         id: updatedProject.id,
+  //         title: updatedProject.title,
+  //         descriptionFR: updatedProject.descriptionFR,
+  //         descriptionEN: updatedProject.descriptionEN,
+  //         typeDisplay: updatedProject.typeDisplay,
+  //         github: updatedProject.github ?? null,
+  //         contentDisplay: updatedProject.contentDisplay,
+  //         skills: updatedProject.skills.map((ps) => ({
+  //           id: ps.skill.id,
+  //           name: ps.skill.name,
+  //           image: ps.skill.image,
+  //           categoryId: ps.skill.categoryId,
+  //         })),
+  //       },
+  //     };
+  //   } catch (error: unknown) {
+  //     console.error(error);
+  //     return { code: 500, message: "Internal server error", project: undefined };
+  //   }
+  // }
+
   @Authorized([UserRole.admin, UserRole.editor])
   @Mutation(() => ProjectResponse)
   async updateProject(
@@ -147,21 +204,41 @@ export class ProjectResolver {
 
       const existingProject: (PrismaProject & { skills: PrismaProjectSkill[] }) | null =
         await this.db.project.findUnique({ where: { id }, include: { skills: true } });
+
       if (!existingProject) return { code: 404, message: "Project not found", project: undefined };
 
+      let toAdd: number[] = [];
+      let toRemove: number[] = [];
+
       if (skillIds) {
+        const existingSkillIds = existingProject.skills.map(ps => ps.skillId);
+
+        toAdd = skillIds.filter(sid => !existingSkillIds.includes(sid));
+        toRemove = existingSkillIds.filter(sid => !skillIds.includes(sid));
+
         const validSkills = await this.db.skill.findMany({ where: { id: { in: skillIds } } });
         if (validSkills.length !== skillIds.length) {
           return { code: 400, message: "One or more skill IDs are invalid.", project: undefined };
         }
-        await this.db.projectSkill.deleteMany({ where: { projectId: id } });
       }
 
       const updatedProject: PrismaProject & { skills: (PrismaProjectSkill & { skill: PrismaSkill })[] } =
-        await this.db.project.update({
-          where: { id },
-          data: { ...rest, skills: skillIds ? { create: skillIds.map((skillId) => ({ skill: { connect: { id: skillId } } })) } : undefined },
-          include: { skills: { include: { skill: true } } },
+        await this.db.$transaction(async (tx) => {
+          if (toRemove.length) {
+            await tx.projectSkill.deleteMany({ where: { projectId: id, skillId: { in: toRemove } } });
+          }
+
+          if (toAdd.length) {
+            await tx.projectSkill.createMany({
+              data: toAdd.map(skillId => ({ projectId: id, skillId })),
+            });
+          }
+
+          return await tx.project.update({
+            where: { id },
+            data: { ...rest },
+            include: { skills: { include: { skill: true } } },
+          });
         });
 
       return {
@@ -175,7 +252,7 @@ export class ProjectResolver {
           typeDisplay: updatedProject.typeDisplay,
           github: updatedProject.github ?? null,
           contentDisplay: updatedProject.contentDisplay,
-          skills: updatedProject.skills.map((ps) => ({
+          skills: updatedProject.skills.map(ps => ({
             id: ps.skill.id,
             name: ps.skill.name,
             image: ps.skill.image,
