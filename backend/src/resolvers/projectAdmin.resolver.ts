@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { Resolver, Mutation, Arg, Authorized, Ctx, Int } from "type-graphql";
 import { GraphQLUpload, FileUpload } from "graphql-upload-ts";
-import { PrismaClient, Prisma, ProjectSkill, Skill } from "@prisma/client";
-import fs from "fs";
+import { PrismaClient, Prisma, Project as PrismaProject, ProjectSkill, Skill } from "@prisma/client";
+import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 
 import { Project } from "../entities/project.entity";
@@ -10,103 +11,210 @@ import { Response, ProjectResponse } from "../types/response.types";
 import { CreateProjectInput, UpdateProjectInput } from "../entities/inputs/project.input";
 import { MyContext } from "..";
 import { UserRole } from "../entities/user.entity";
-import prisma from "../lib/prisma"; // singleton Prisma
-import { mapProject } from "../lib/mapProject";
+import prisma from "../lib/prisma";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 
-const UPLOAD_BASE = path.resolve(__dirname, "../../uploads");
-const IMAGE_DIR = "images/projects";
-const VIDEO_DIR = "videos/projects";
+const UPLOAD_BASE: string = path.resolve(__dirname, "../../uploads");
+const IMAGE_DIR: string = "images/projects";
+const VIDEO_DIR: string = "videos/projects";
+
+type PrismaProjectWithSkills = PrismaProject & {
+  skills: Array<ProjectSkill & { skill: Skill }>;
+};
+
+type MediaType = "image" | "video";
+
+interface ValidationResult {
+  isValid: boolean;
+  message?: string;
+}
+
+interface FileUploadResult {
+  filename: string;
+  type: MediaType;
+}
 
 @Resolver(() => Project)
 @Authorized([UserRole.admin, UserRole.editor])
 export class ProjectAdminResolver {
   private readonly db: PrismaClient = prisma;
 
-  /* ================= CREATE ================= */
+  /**
+   * Creates a new project with associated skills
+   * @param data - Project creation data including skill IDs
+   * @param ctx - GraphQL context containing user information
+   * @returns ProjectResponse with created project or error
+   */
   @Mutation(() => ProjectResponse)
   async createProject(
     @Arg("data") data: CreateProjectInput,
     @Ctx() ctx: MyContext
   ): Promise<ProjectResponse> {
     try {
-      if (!ctx.user) return { code: 401, message: "Authentication required" };
+      if (!ctx.user) {
+        return { 
+          code: 401, 
+          message: "Authentication required" 
+        };
+      }
 
-      // Validate skills
-      await this.validateSkills(data.skillIds);
+      const skillValidation: ValidationResult = await this.validateSkills(data.skillIds);
+      if (!skillValidation.isValid) {
+        return { 
+          code: 400, 
+          message: skillValidation.message || "Invalid skill IDs" 
+        };
+      }
 
-      const project = await this.db.project.create({
+      const projectPrisma: PrismaProjectWithSkills = await this.db.project.create({
         data: {
-          ...data,
-          skills: { create: data.skillIds.map((id) => ({ skill: { connect: { id } } })) },
+          title: data.title,
+          descriptionEN: data.descriptionEN,
+          descriptionFR: data.descriptionFR,
+          typeDisplay: data.typeDisplay,
+          github: data.github || null,
+          contentDisplay: data.contentDisplay,
+          skills: {
+            create: data.skillIds.map((skillId: number) => ({
+              skill: { connect: { id: skillId } }
+            }))
+          }
         },
-        include: { skills: { include: { skill: true } } },
+        include: {
+          skills: {
+            include: {
+              skill: true
+            }
+          }
+        }
       });
 
-      const skills: SkillSubItem[] = project.skills.map((ps: ProjectSkill & { skill: Skill }) => ({
-        id: ps.skill.id,
-        name: ps.skill.name,
-        image: ps.skill.image,
-        categoryId: ps.skill.categoryId,
-      }));
+      const project: Project = this.transformProject(projectPrisma);
 
-      return { code: 200, message: "Project created", project: { ...project, skills } };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: "Server error" };
+      return { 
+        code: 200, 
+        message: "Project created successfully", 
+        project 
+      };
+    } catch (err: unknown) {
+      console.error("Create project error:", err);
+      const errorMessage: string = err instanceof Error ? err.message : "Server error";
+      return { 
+        code: 500, 
+        message: errorMessage 
+      };
     }
   }
 
-  /* ================= UPDATE ================= */
+  /**
+   * Updates an existing project and optionally its skills
+   * @param data - Update data including optional skill IDs
+   * @param ctx - GraphQL context containing user information
+   * @returns ProjectResponse with updated project or error
+   */
   @Mutation(() => ProjectResponse)
   async updateProject(
     @Arg("data") data: UpdateProjectInput,
     @Ctx() ctx: MyContext
   ): Promise<ProjectResponse> {
     try {
-      if (!ctx.user) return { code: 401, message: "Authentication required" };
-      if (![UserRole.admin, UserRole.editor].includes(ctx.user.role)) return { code: 403, message: "Forbidden" };
-
-      const { id, skillIds, ...rest } = data;
-
-      const existing = await this.db.project.findUnique({ where: { id }, include: { skills: true } });
-      if (!existing) return { code: 404, message: "Project not found" };
-
-      if (skillIds) {
-        const validSkills = await this.db.skill.findMany({ where: { id: { in: skillIds } } });
-        if (validSkills.length !== skillIds.length) return { code: 400, message: "Invalid skill IDs" };
+      if (!ctx.user) {
+        return { 
+          code: 401, 
+          message: "Authentication required" 
+        };
       }
 
-      // Transaction for updating skills and project fields
-      await this.db.$transaction(async (tx: Prisma.TransactionClient) => {
+      const hasPermission: boolean = [UserRole.admin, UserRole.editor].includes(ctx.user.role);
+      if (!hasPermission) {
+        return { 
+          code: 403, 
+          message: "Forbidden" 
+        };
+      }
+
+      const { id, skillIds, ...updateData } = data;
+
+      const existing: (PrismaProject & { skills: ProjectSkill[] }) | null = 
+        await this.db.project.findUnique({
+          where: { id },
+          include: { skills: true }
+        });
+
+      if (!existing) {
+        return { 
+          code: 404, 
+          message: "Project not found" 
+        };
+      }
+
+      if (skillIds) {
+        const skillValidation: ValidationResult = await this.validateSkills(skillIds);
+        if (!skillValidation.isValid) {
+          return { 
+            code: 400, 
+            message: skillValidation.message || "Invalid skill IDs" 
+          };
+        }
+      }
+
+      await this.db.$transaction(async (tx: Prisma.TransactionClient): Promise<void> => {
         if (skillIds) {
           await this.syncSkills(tx, id, skillIds, existing.skills);
         }
-        await tx.project.update({ where: { id }, data: rest });
+
+        const hasUpdateData: boolean = Object.keys(updateData).length > 0;
+        if (hasUpdateData) {
+          await tx.project.update({
+            where: { id },
+            data: updateData
+          });
+        }
       });
 
-      const updated = await this.db.project.findUnique({
-        where: { id },
-        include: { skills: { include: { skill: true } } },
-      });
+      const updatedPrisma: PrismaProjectWithSkills | null = 
+        await this.db.project.findUnique({
+          where: { id },
+          include: {
+            skills: {
+              include: {
+                skill: true
+              }
+            }
+          }
+        });
 
-      if (!updated) return { code: 404, message: "Project not found after update" };
+      if (!updatedPrisma) {
+        return { 
+          code: 404, 
+          message: "Project not found after update" 
+        };
+      }
 
-      const skills: SkillSubItem[] = updated.skills.map((ps: ProjectSkill & { skill: Skill }) => ({
-        id: ps.skill.id,
-        name: ps.skill.name,
-        image: ps.skill.image,
-        categoryId: ps.skill.categoryId,
-      }));
+      const project: Project = this.transformProject(updatedPrisma);
 
-      return { code: 200, message: "Project updated", project: { ...updated, skills } };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: "Server error" };
+      return { 
+        code: 200, 
+        message: "Project updated successfully", 
+        project 
+      };
+    } catch (err: unknown) {
+      console.error("Update project error:", err);
+      const errorMessage: string = err instanceof Error ? err.message : "Server error";
+      return { 
+        code: 500, 
+        message: errorMessage 
+      };
     }
   }
 
-  /* ================= UPLOAD MEDIA ================= */
+  /**
+   * Uploads an image or video file for a project
+   * @param projectId - ID of the project to upload media for
+   * @param file - File upload from GraphQL
+   * @param ctx - GraphQL context containing user information
+   * @returns ProjectResponse with updated project or error
+   */
   @Mutation(() => ProjectResponse)
   async uploadProjectMedia(
     @Arg("projectId", () => Int) projectId: number,
@@ -114,137 +222,395 @@ export class ProjectAdminResolver {
     @Ctx() ctx: MyContext
   ): Promise<ProjectResponse> {
     try {
-      if (!ctx.user) return { code: 401, message: "Authentication required" };
-
-      const project = await this.db.project.findUnique({ where: { id: projectId } });
-      if (!project) return { code: 404, message: "Project not found" };
-
-      const { createReadStream, filename, mimetype } = file;
-      const isImage = mimetype.startsWith("image/");
-      const isVideo = mimetype.startsWith("video/");
-
-      if (!isImage && !isVideo) return { code: 400, message: "Invalid file type" };
-
-      const folder = isImage ? IMAGE_DIR : VIDEO_DIR;
-      const uploadDir = path.join(UPLOAD_BASE, folder);
-      fs.mkdirSync(uploadDir, { recursive: true });
-
-      // Delete old file if exists
-      if (project.contentDisplay && project.typeDisplay) {
-        const oldFolder = project.typeDisplay === "image" ? IMAGE_DIR : VIDEO_DIR;
-        const oldPath = path.join(UPLOAD_BASE, oldFolder, project.contentDisplay);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      if (!ctx.user) {
+        return { 
+          code: 401, 
+          message: "Authentication required" 
+        };
       }
 
-      const finalName = `project-${projectId}-${Date.now()}${path.extname(filename)}`;
-      const filePath = path.join(uploadDir, finalName);
-
-      await new Promise<void>((resolve, reject) => {
-        const stream = createReadStream();
-        const out = fs.createWriteStream(filePath);
-        stream.pipe(out);
-        out.on("finish", resolve);
-        out.on("error", reject);
+      const project: PrismaProject | null = await this.db.project.findUnique({
+        where: { id: projectId }
       });
 
-      const updated = await this.db.project.update({
+      if (!project) {
+        return { 
+          code: 404, 
+          message: "Project not found" 
+        };
+      }
+
+      const { createReadStream, filename, mimetype }: FileUpload = file;
+
+      const fileValidation: ValidationResult = this.validateFileType(mimetype);
+      if (!fileValidation.isValid) {
+        return { 
+          code: 400, 
+          message: fileValidation.message || "Invalid file type" 
+        };
+      }
+
+      const isImage: boolean = mimetype.startsWith("image/");
+      const mediaType: MediaType = isImage ? "image" : "video";
+      const folder: string = isImage ? IMAGE_DIR : VIDEO_DIR;
+      const uploadDir: string = path.join(UPLOAD_BASE, folder);
+
+      await fs.mkdir(uploadDir, { recursive: true });
+
+      const hasOldMedia: boolean = Boolean(project.contentDisplay && project.typeDisplay);
+      if (hasOldMedia) {
+        await this.deleteMediaFile(
+          project.contentDisplay, 
+          project.typeDisplay as MediaType
+        );
+      }
+
+      const uploadResult: FileUploadResult = await this.saveUploadedFile(
+        createReadStream,
+        filename,
+        uploadDir,
+        projectId
+      );
+
+      // Update project in database
+      const updatedPrisma: PrismaProjectWithSkills = await this.db.project.update({
         where: { id: projectId },
-        data: { contentDisplay: finalName, typeDisplay: isImage ? "image" : "video" },
-        include: { skills: { include: { skill: true } } },
+        data: {
+          contentDisplay: uploadResult.filename,
+          typeDisplay: uploadResult.type
+        },
+        include: {
+          skills: {
+            include: {
+              skill: true
+            }
+          }
+        }
       });
 
-      const skills: SkillSubItem[] = updated.skills.map((ps: ProjectSkill & { skill: Skill }) => ({
-        id: ps.skill.id,
-        name: ps.skill.name,
-        image: ps.skill.image,
-        categoryId: ps.skill.categoryId,
-      }));
+      const updatedProject: Project = this.transformProject(updatedPrisma);
 
-      return { code: 200, message: "Media uploaded", project: { ...updated, skills } };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: "Server error" };
+      return { 
+        code: 200, 
+        message: "Media uploaded successfully", 
+        project: updatedProject 
+      };
+    } catch (err: unknown) {
+      console.error("Upload media error:", err);
+      const errorMessage: string = err instanceof Error ? err.message : "Server error";
+      return { 
+        code: 500, 
+        message: errorMessage 
+      };
     }
   }
 
   /* ================= DELETE MEDIA ================= */
-    @Mutation(() => ProjectResponse)
-    async deleteProjectMedia(
+  /**
+   * Deletes the media file associated with a project
+   * @param projectId - ID of the project to delete media from
+   * @param ctx - GraphQL context containing user information
+   * @returns ProjectResponse with updated project or error
+   */
+  @Mutation(() => ProjectResponse)
+  async deleteProjectMedia(
     @Arg("projectId", () => Int) projectId: number,
     @Ctx() ctx: MyContext
-    ): Promise<ProjectResponse> {
+  ): Promise<ProjectResponse> {
     try {
-        if (!ctx.user) return { code: 401, message: "Authentication required" };
+      if (!ctx.user) {
+        return { 
+          code: 401, 
+          message: "Authentication required" 
+        };
+      }
 
-        const project = await this.db.project.findUnique({ 
-        where: { id: projectId }, 
-        include: { skills: { include: { skill: true } } } 
+      const project: PrismaProjectWithSkills | null = 
+        await this.db.project.findUnique({
+          where: { id: projectId },
+          include: {
+            skills: {
+              include: {
+                skill: true
+              }
+            }
+          }
         });
-        if (!project) return { code: 404, message: "Project not found" };
 
-        if (project.contentDisplay && project.typeDisplay) {
-        const folder = project.typeDisplay === "image" ? IMAGE_DIR : VIDEO_DIR;
-        const filePath = path.join(UPLOAD_BASE, folder, project.contentDisplay);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-        }
+      if (!project) {
+        return { 
+          code: 404, 
+          message: "Project not found" 
+        };
+      }
 
-        const updated = await this.db.project.update({
+      const hasMedia: boolean = Boolean(project.contentDisplay && project.typeDisplay);
+      if (hasMedia) {
+        await this.deleteMediaFile(
+          project.contentDisplay, 
+          project.typeDisplay as MediaType
+        );
+      }
+
+      const updatedPrisma: PrismaProjectWithSkills = await this.db.project.update({
         where: { id: projectId },
-        data: { contentDisplay: "", typeDisplay: "" }, // ne plus utiliser null
-        include: { skills: { include: { skill: true } } }, // inclure les skills
-        });
+        data: {
+          contentDisplay: "",
+          typeDisplay: ""
+        },
+        include: {
+          skills: {
+            include: {
+              skill: true
+            }
+          }
+        }
+      });
 
-        const skills: SkillSubItem[] = updated.skills.map((ps: ProjectSkill & { skill: Skill }) => ({
-        id: ps.skill.id,
-        name: ps.skill.name,
-        image: ps.skill.image,
-        categoryId: ps.skill.categoryId,
-        }));
+      const updatedProject: Project = this.transformProject(updatedPrisma);
 
-        return { code: 200, message: "Media deleted", project: { ...updated, skills } };
-    } catch (err) {
-        console.error(err);
-        return { code: 500, message: "Server error" };
+      return { 
+        code: 200, 
+        message: "Media deleted successfully", 
+        project: updatedProject 
+      };
+    } catch (err: unknown) {
+      console.error("Delete media error:", err);
+      const errorMessage: string = err instanceof Error ? err.message : "Server error";
+      return { 
+        code: 500, 
+        message: errorMessage 
+      };
     }
-    }
+  }
 
   /* ================= DELETE PROJECT ================= */
+  /**
+   * Deletes a project and its associated media
+   * Only accessible to admin users
+   * @param id - ID of the project to delete
+   * @param ctx - GraphQL context containing user information
+   * @returns Response indicating success or error
+   */
   @Authorized([UserRole.admin])
   @Mutation(() => Response)
-  async deleteProject(@Arg("id", () => Int) id: number): Promise<Response> {
+  async deleteProject(
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
+  ): Promise<Response> {
     try {
-      const project = await this.db.project.findUnique({ where: { id } });
-      if (!project) return { code: 404, message: "Project not found" };
+      if (!ctx.user) {
+        return { 
+          code: 401, 
+          message: "Authentication required" 
+        };
+      }
 
-      await this.db.$transaction([
-        this.db.projectSkill.deleteMany({ where: { projectId: id } }),
-        this.db.project.delete({ where: { id } }),
-      ]);
+      const project: PrismaProject | null = await this.db.project.findUnique({
+        where: { id }
+      });
 
-      return { code: 200, message: "Project deleted" };
-    } catch (err) {
-      console.error(err);
-      return { code: 500, message: "Server error" };
+      if (!project) {
+        return { 
+          code: 404, 
+          message: "Project not found" 
+        };
+      }
+
+      const hasMedia: boolean = Boolean(project.contentDisplay && project.typeDisplay);
+      if (hasMedia) {
+        await this.deleteMediaFile(
+          project.contentDisplay, 
+          project.typeDisplay as MediaType
+        );
+      }
+
+      await this.db.project.delete({
+        where: { id }
+      });
+
+      return { 
+        code: 200, 
+        message: "Project deleted successfully" 
+      };
+    } catch (err: unknown) {
+      console.error("Delete project error:", err);
+      const errorMessage: string = err instanceof Error ? err.message : "Server error";
+      return { 
+        code: 500, 
+        message: errorMessage 
+      };
     }
   }
 
-  /* ================= HELPERS ================= */
-  private async validateSkills(skillIds: number[]): Promise<void> {
-    const count = await this.db.skill.count({ where: { id: { in: skillIds } } });
-    if (count !== skillIds.length) throw new Error("Invalid skill IDs");
+  /**
+   * Validates that all provided skill IDs exist in the database
+   * @param skillIds - Array of skill IDs to validate
+   * @returns ValidationResult indicating if all skills are valid
+   */
+  private async validateSkills(skillIds: number[]): Promise<ValidationResult> {
+    try {
+      const count: number = await this.db.skill.count({
+        where: { id: { in: skillIds } }
+      });
+
+      const isValid: boolean = count === skillIds.length;
+
+      if (!isValid) {
+        return {
+          isValid: false,
+          message: `Found ${count} valid skills out of ${skillIds.length} provided`
+        };
+      }
+
+      return { isValid: true };
+    } catch (err: unknown) {
+      console.error("Validate skills error:", err);
+      return {
+        isValid: false,
+        message: "Error validating skills"
+      };
+    }
   }
 
+  /**
+   * Validates that a file mimetype is either image or video
+   * @param mimetype - MIME type of the uploaded file
+   * @returns ValidationResult indicating if file type is valid
+   */
+  private validateFileType(mimetype: string): ValidationResult {
+    const isImage: boolean = mimetype.startsWith("image/");
+    const isVideo: boolean = mimetype.startsWith("video/");
+    const isValid: boolean = isImage || isVideo;
+
+    if (!isValid) {
+      return {
+        isValid: false,
+        message: "Only images and videos are allowed"
+      };
+    }
+
+    return { isValid: true };
+  }
+
+  /**
+   * Synchronizes project skills by adding new ones and removing old ones
+   * @param tx - Prisma transaction client
+   * @param projectId - ID of the project
+   * @param newSkillIds - Array of new skill IDs to associate
+   * @param existingSkills - Current project skills
+   */
   private async syncSkills(
     tx: Prisma.TransactionClient,
     projectId: number,
-    newIds: number[],
-    existing: ProjectSkill[]
+    newSkillIds: number[],
+    existingSkills: ProjectSkill[]
   ): Promise<void> {
-    const existingIds = existing.map((ps) => ps.skillId);
-    const toAdd = newIds.filter((id) => !existingIds.includes(id));
-    const toRemove = existingIds.filter((id) => !newIds.includes(id));
+    const existingIds: number[] = existingSkills.map((ps: ProjectSkill): number => ps.skillId);
+    const toAdd: number[] = newSkillIds.filter((id: number): boolean => !existingIds.includes(id));
+    const toRemove: number[] = existingIds.filter((id: number): boolean => !newSkillIds.includes(id));
 
-    if (toRemove.length) await tx.projectSkill.deleteMany({ where: { projectId, skillId: { in: toRemove } } });
-    if (toAdd.length) await tx.projectSkill.createMany({ data: toAdd.map((skillId) => ({ projectId, skillId })) });
+    const hasSkillsToRemove: boolean = toRemove.length > 0;
+    if (hasSkillsToRemove) {
+      await tx.projectSkill.deleteMany({
+        where: {
+          projectId,
+          skillId: { in: toRemove }
+        }
+      });
+    }
+
+    const hasSkillsToAdd: boolean = toAdd.length > 0;
+    if (hasSkillsToAdd) {
+      await tx.projectSkill.createMany({
+        data: toAdd.map((skillId: number) => ({
+          projectId,
+          skillId
+        }))
+      });
+    }
+  }
+
+
+  private transformProject(projectPrisma: PrismaProjectWithSkills): Project {
+    const skills: SkillSubItem[] = projectPrisma.skills.map(
+      (ps: ProjectSkill & { skill: Skill }): SkillSubItem => ({
+        id: ps.skill.id,
+        name: ps.skill.name,
+        image: ps.skill.image,
+        categoryId: ps.skill.categoryId
+      })
+    );
+
+    const project: Project = {
+      id: projectPrisma.id,
+      title: projectPrisma.title,
+      descriptionEN: projectPrisma.descriptionEN,
+      descriptionFR: projectPrisma.descriptionFR,
+      typeDisplay: projectPrisma.typeDisplay,
+      github: projectPrisma.github,
+      contentDisplay: projectPrisma.contentDisplay,
+      skills
+    };
+
+    return project;
+  }
+
+  private async saveUploadedFile(
+    createReadStream: () => NodeJS.ReadableStream,
+    originalFilename: string,
+    uploadDir: string,
+    projectId: number
+  ): Promise<FileUploadResult> {
+    return new Promise<FileUploadResult>(
+      (
+        resolve: (value: FileUploadResult) => void, 
+        reject: (reason: Error) => void
+      ): void => {
+        try {
+          const ext: string = path.extname(originalFilename);
+          const timestamp: number = Date.now();
+          const finalName: string = `project-${projectId}-${timestamp}${ext}`;
+          const filePath: string = path.join(uploadDir, finalName);
+
+          const stream: NodeJS.ReadableStream = createReadStream();
+          const writeStream: fsSync.WriteStream = fsSync.createWriteStream(filePath);
+
+          stream.pipe(writeStream);
+
+          writeStream.on("finish", (): void => {
+            const isImage: boolean = /\.(jpg|jpeg|png|gif|webp)$/i.test(ext);
+            const type: MediaType = isImage ? "image" : "video";
+            resolve({ filename: finalName, type });
+          });
+
+          writeStream.on("error", (err: Error): void => {
+            reject(new Error(`Failed to write file: ${err.message}`));
+          });
+
+          stream.on("error", (err: Error): void => {
+            reject(new Error(`Failed to read stream: ${err.message}`));
+          });
+        } catch (err: unknown) {
+          const errorMessage: string = err instanceof Error ? err.message : "Unknown error";
+          reject(new Error(`File save error: ${errorMessage}`));
+        }
+      }
+    );
+  }
+
+
+  private async deleteMediaFile(filename: string, type: MediaType): Promise<void> {
+    try {
+      const folder: string = type === "image" ? IMAGE_DIR : VIDEO_DIR;
+      const filePath: string = path.join(UPLOAD_BASE, folder, filename);
+
+      const fileExists: boolean = fsSync.existsSync(filePath);
+      if (fileExists) {
+        await fs.unlink(filePath);
+      }
+    } catch (err: unknown) {
+      console.error("Error deleting file:", err);
+    }
   }
 }
