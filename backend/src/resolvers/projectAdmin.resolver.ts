@@ -15,8 +15,10 @@ import prisma from "../lib/prisma";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 
 const UPLOAD_BASE: string = path.resolve(__dirname, "../../uploads");
-const IMAGE_DIR: string = "images/projects";
-const VIDEO_DIR: string = "videos/projects";
+const IMAGE_DIR: string = "images";
+const VIDEO_DIR: string = "videos";
+// const IMAGE_DIR: string = "images/projects";
+// const VIDEO_DIR: string = "videos/projects";
 
 type PrismaProjectWithSkills = PrismaProject & {
   skills: Array<ProjectSkill & { skill: Skill }>;
