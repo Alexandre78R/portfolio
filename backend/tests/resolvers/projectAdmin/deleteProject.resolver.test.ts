@@ -1,0 +1,193 @@
+import "reflect-metadata";
+import { ProjectAdminResolver } from "../../../src/resolvers/projectAdmin.resolver";
+import { MyContext } from "../../../src";
+import { UserRole } from "../../../src/entities/user.entity";
+import * as fs from "fs";
+import * as fsPromises from "fs/promises";
+
+jest.mock("fs");
+jest.mock("fs/promises");
+
+describe("ProjectAdminResolver - deleteProject", () => {
+  let resolver: ProjectAdminResolver;
+  let mockPrisma: any;
+  let mockCtx: MyContext;
+
+  beforeEach(() => {
+    resolver = new ProjectAdminResolver();
+    
+    mockCtx = {
+      user: {
+        id: 1,
+        firstname: "John",
+        lastname: "Doe",
+        email: "john@example.com",
+        role: UserRole.admin,
+        isPasswordChange: false,
+      },
+      req: {} as any,
+      res: {} as any,
+      cookies: {} as any,
+      token: "mock-token",
+    };
+
+    mockPrisma = {
+      project: {
+        findUnique: jest.fn(),
+        delete: jest.fn(),
+      },
+    };
+
+    Object.defineProperty(resolver, "db", {
+      value: mockPrisma,
+      writable: true,
+    });
+
+    // Mock fs.existsSync to return false (no files to delete)
+    (fs.existsSync as jest.Mock).mockReturnValue(false);
+    
+    // Mock fs.promises.unlink
+    (fsPromises.unlink as jest.Mock).mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return 401 when user not authenticated", async () => {
+    const result = await resolver.deleteProject(1, {
+      user: null,
+      req: {} as any,
+      res: {} as any,
+      cookies: {} as any,
+      token: "",
+    } as any);
+
+    expect(result).toEqual({
+      code: 401,
+      message: "Authentication required",
+    });
+  });
+
+  it("should return 404 when project not found", async () => {
+    mockPrisma.project.findUnique.mockResolvedValue(null);
+
+    const result = await resolver.deleteProject(1, mockCtx);
+
+    expect(result).toEqual({
+      code: 404,
+      message: "Project not found",
+    });
+  });
+
+  it("should delete project successfully without media", async () => {
+    const mockProject = {
+      id: 1,
+      title: "Test Project",
+      descriptionEN: "Test EN",
+      descriptionFR: "Test FR",
+      contentDisplay: "",
+      typeDisplay: "",
+      github: null,
+    };
+
+    mockPrisma.project.findUnique.mockResolvedValue(mockProject);
+    mockPrisma.project.delete.mockResolvedValue(mockProject);
+
+    const result = await resolver.deleteProject(1, mockCtx);
+
+    expect(mockPrisma.project.findUnique).toHaveBeenCalledWith({
+      where: { id: 1 },
+    });
+    expect(mockPrisma.project.delete).toHaveBeenCalledWith({
+      where: { id: 1 },
+    });
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Project deleted successfully");
+  });
+
+  it("should delete project and its media file", async () => {
+    const mockProject = {
+      id: 1,
+      title: "Test Project",
+      descriptionEN: "Test EN",
+      descriptionFR: "Test FR",
+      contentDisplay: "project-1-123456.mp4",
+      typeDisplay: "video",
+      github: null,
+    };
+
+    mockPrisma.project.findUnique.mockResolvedValue(mockProject);
+    mockPrisma.project.delete.mockResolvedValue(mockProject);
+    // Mock that file exists and can be deleted
+    (fs.existsSync as jest.Mock).mockReturnValue(true);
+    (fsPromises.unlink as jest.Mock).mockResolvedValue(undefined);
+
+    const result = await resolver.deleteProject(1, mockCtx);
+
+    expect(mockPrisma.project.delete).toHaveBeenCalledWith({
+      where: { id: 1 },
+    });
+    expect((fsPromises.unlink as jest.Mock)).toHaveBeenCalled();
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Project deleted successfully");
+  });
+
+  it("should delete project even if media file does not exist", async () => {
+    const mockProject = {
+      id: 1,
+      title: "Test Project",
+      descriptionEN: "Test EN",
+      descriptionFR: "Test FR",
+      contentDisplay: "project-1-123456.png",
+      typeDisplay: "image",
+      github: null,
+    };
+
+    mockPrisma.project.findUnique.mockResolvedValue(mockProject);
+    mockPrisma.project.delete.mockResolvedValue(mockProject);
+    // Mock that file does not exist
+    (fs.existsSync as jest.Mock).mockReturnValue(false);
+
+    const result = await resolver.deleteProject(1, mockCtx);
+
+    expect(result.code).toBe(200);
+    expect(result.message).toBe("Project deleted successfully");
+    expect(mockPrisma.project.delete).toHaveBeenCalledWith({
+      where: { id: 1 },
+    });
+    // unlink should not be called since file doesn't exist
+    expect((fsPromises.unlink as jest.Mock)).not.toHaveBeenCalled();
+  });
+
+  it("should return 500 on database delete error", async () => {
+    const mockProject = {
+      id: 1,
+      title: "Test Project",
+      descriptionEN: "Test EN",
+      descriptionFR: "Test FR",
+      contentDisplay: "",
+      typeDisplay: "",
+      github: null,
+    };
+
+    mockPrisma.project.findUnique.mockResolvedValue(mockProject);
+    mockPrisma.project.delete.mockRejectedValueOnce(
+      new Error("Database connection error")
+    );
+
+    const result = await resolver.deleteProject(1, mockCtx);
+
+    expect(result.code).toBe(500);
+    expect(result.message).toContain("Database connection error");
+  });
+
+  it("should verify project existence before deletion", async () => {
+    mockPrisma.project.findUnique.mockResolvedValue(null);
+
+    const result = await resolver.deleteProject(99, mockCtx);
+
+    expect(mockPrisma.project.delete).not.toHaveBeenCalled();
+    expect(result.code).toBe(404);
+  });
+});
