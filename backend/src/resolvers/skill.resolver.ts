@@ -252,19 +252,49 @@ export class SkillResolver {
       if (!ctx.user) return { code: 401, message: "Authentication required.", categories: undefined };
       if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", categories: undefined };
 
-      const existing = await this.db.skillCategory.findUnique({ where: { id } });
+      const existing: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({
+        where: { id },
+      });
+
       if (!existing) return { code: 404, message: "Category not found", categories: undefined };
 
-      const skills = await this.db.skill.findMany({ where: { categoryId: id }, select: { id: true } });
-      const skillIds = skills.map((s) => s.id);
-      if (skillIds.length) await this.db.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
+      try {
+        const skillsInCategory: Array<{ readonly id: number }> = await this.db.skill.findMany({
+          where: { categoryId: id },
+          select: { id: true },
+        });
 
-      await this.db.skill.deleteMany({ where: { categoryId: id } });
-      await this.db.skillCategory.delete({ where: { id } });
+        const skillIds: number[] = skillsInCategory.map(
+          (s: { readonly id: number }): number => s.id
+        );
 
-      return { code: 200, message: "Category and related skills deleted" };
+        if (skillIds.length > 0) {
+          const deletedProjectSkills: { count: number } = await this.db.projectSkill.deleteMany({
+            where: { skillId: { in: skillIds } },
+          });
+
+          console.log(`Deleted ${deletedProjectSkills.count} project-skill associations`);
+
+          const deletedSkills: { count: number } = await this.db.skill.deleteMany({
+            where: { categoryId: id },
+          });
+
+          console.log(`Deleted ${deletedSkills.count} skills from category ${id}`);
+        }
+
+        // Finally delete the category
+        await this.db.skillCategory.delete({ where: { id } });
+
+        return {
+          code: 200,
+          message: `Category and ${skillIds.length} associated skills deleted successfully`,
+        };
+      } catch (error: unknown) {
+        console.error("Error during category deletion process:", error);
+        return { code: 500, message: "Error deleting category and related skills", categories: undefined };
+      }
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Error in deleteCategory:", error);
       return { code: 500, message: "Error deleting category", categories: undefined };
     }
   }
