@@ -279,6 +279,7 @@ export type Mutation = {
   deleteEducation: EducationResponse;
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
+  deleteProjectMedia: ProjectResponse;
   deleteSkill: SubItemResponse;
   deleteTheme: Response;
   deleteUser: Response;
@@ -295,6 +296,7 @@ export type Mutation = {
   updateTheme: ThemeResponse;
   updateUser: UserResponse;
   uploadCV: UploadResponse;
+  uploadProjectMedia: ProjectResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -362,6 +364,11 @@ export type MutationDeleteExperienceArgs = {
 
 export type MutationDeleteProjectArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteProjectMediaArgs = {
+  projectId: Scalars['Int']['input'];
 };
 
 
@@ -441,6 +448,12 @@ export type MutationUploadCvArgs = {
 };
 
 
+export type MutationUploadProjectMediaArgs = {
+  file: Scalars['Upload']['input'];
+  projectId: Scalars['Int']['input'];
+};
+
+
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
   idCaptcha: Scalars['String']['input'];
@@ -490,6 +503,8 @@ export type Query = {
   me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
+  skillById: SubItemResponse;
+  skillCategoryById: CategoryResponse;
   skillList: CategoryResponse;
   themeById: ThemeResponse;
   themeList: ThemesResponse;
@@ -516,6 +531,16 @@ export type QueryExperienceByIdArgs = {
 
 
 export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySkillByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySkillCategoryByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -838,6 +863,50 @@ export type MutationMutationVariables = Exact<{
 
 export type MutationMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', token?: string | null, message: string, code: number } };
 
+export type CreateCategoryMutationVariables = Exact<{
+  data: CreateCategoryInput;
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryFR: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+
+export type CreateSkillMutationVariables = Exact<{
+  data: CreateSkillInput;
+}>;
+
+
+export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+
+export type UpdateCategoryMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  data: UpdateCategoryInput;
+}>;
+
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> | null } };
+
+export type UpdateSkillMutationVariables = Exact<{
+  data: UpdateSkillInput;
+  updateSkillId: Scalars['Int']['input'];
+}>;
+
+
+export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+
+export type DeleteCategoryMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'CategoryResponse', code: number, message: string } };
+
+export type DeleteSkillMutationVariables = Exact<{
+  deleteSkillId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteSkillMutation = { __typename?: 'Mutation', deleteSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+
 export type CreateThemeMutationVariables = Exact<{
   data: CreateThemeInput;
 }>;
@@ -937,6 +1006,20 @@ export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+
+export type SkillByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type SkillByIdQuery = { __typename?: 'Query', skillById: { __typename?: 'SubItemResponse', code: number, message: string, subItems?: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> | null } };
+
+export type SkillCategoryByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type SkillCategoryByIdQuery = { __typename?: 'Query', skillCategoryById: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> | null } };
 
 export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1478,6 +1561,252 @@ export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<Mut
 export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
 export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
 export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
+export const CreateCategoryDocument = gql`
+    mutation CreateCategory($data: CreateCategoryInput!) {
+  createCategory(data: $data) {
+    categories {
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      id
+      categoryFR
+      categoryEN
+    }
+    code
+    message
+  }
+}
+    `;
+export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+
+/**
+ * __useCreateCategoryMutation__
+ *
+ * To run a mutation, you first call `useCreateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCategoryMutation, { data, loading, error }] = useCreateCategoryMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, options);
+      }
+export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
+export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
+export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const CreateSkillDocument = gql`
+    mutation CreateSkill($data: CreateSkillInput!) {
+  createSkill(data: $data) {
+    subItems {
+      name
+      image
+      id
+      categoryId
+    }
+    message
+    code
+  }
+}
+    `;
+export type CreateSkillMutationFn = Apollo.MutationFunction<CreateSkillMutation, CreateSkillMutationVariables>;
+
+/**
+ * __useCreateSkillMutation__
+ *
+ * To run a mutation, you first call `useCreateSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSkillMutation, { data, loading, error }] = useCreateSkillMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSkillMutation(baseOptions?: Apollo.MutationHookOptions<CreateSkillMutation, CreateSkillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSkillMutation, CreateSkillMutationVariables>(CreateSkillDocument, options);
+      }
+export type CreateSkillMutationHookResult = ReturnType<typeof useCreateSkillMutation>;
+export type CreateSkillMutationResult = Apollo.MutationResult<CreateSkillMutation>;
+export type CreateSkillMutationOptions = Apollo.BaseMutationOptions<CreateSkillMutation, CreateSkillMutationVariables>;
+export const UpdateCategoryDocument = gql`
+    mutation UpdateCategory($id: Int!, $data: UpdateCategoryInput!) {
+  updateCategory(id: $id, data: $data) {
+    categories {
+      id
+      categoryEN
+      categoryFR
+      skills {
+        id
+        name
+        image
+        categoryId
+      }
+    }
+    code
+    message
+  }
+}
+    `;
+export type UpdateCategoryMutationFn = Apollo.MutationFunction<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+
+/**
+ * __useUpdateCategoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCategoryMutation, { data, loading, error }] = useUpdateCategoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UpdateCategoryDocument, options);
+      }
+export type UpdateCategoryMutationHookResult = ReturnType<typeof useUpdateCategoryMutation>;
+export type UpdateCategoryMutationResult = Apollo.MutationResult<UpdateCategoryMutation>;
+export type UpdateCategoryMutationOptions = Apollo.BaseMutationOptions<UpdateCategoryMutation, UpdateCategoryMutationVariables>;
+export const UpdateSkillDocument = gql`
+    mutation UpdateSkill($data: UpdateSkillInput!, $updateSkillId: Int!) {
+  updateSkill(data: $data, id: $updateSkillId) {
+    subItems {
+      name
+      image
+      id
+      categoryId
+    }
+    message
+    code
+  }
+}
+    `;
+export type UpdateSkillMutationFn = Apollo.MutationFunction<UpdateSkillMutation, UpdateSkillMutationVariables>;
+
+/**
+ * __useUpdateSkillMutation__
+ *
+ * To run a mutation, you first call `useUpdateSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSkillMutation, { data, loading, error }] = useUpdateSkillMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      updateSkillId: // value for 'updateSkillId'
+ *   },
+ * });
+ */
+export function useUpdateSkillMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSkillMutation, UpdateSkillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSkillMutation, UpdateSkillMutationVariables>(UpdateSkillDocument, options);
+      }
+export type UpdateSkillMutationHookResult = ReturnType<typeof useUpdateSkillMutation>;
+export type UpdateSkillMutationResult = Apollo.MutationResult<UpdateSkillMutation>;
+export type UpdateSkillMutationOptions = Apollo.BaseMutationOptions<UpdateSkillMutation, UpdateSkillMutationVariables>;
+export const DeleteCategoryDocument = gql`
+    mutation DeleteCategory($id: Int!) {
+  deleteCategory(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+
+/**
+ * __useDeleteCategoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCategoryMutation, { data, loading, error }] = useDeleteCategoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCategoryMutation, DeleteCategoryMutationVariables>(DeleteCategoryDocument, options);
+      }
+export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
+export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
+export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export const DeleteSkillDocument = gql`
+    mutation DeleteSkill($deleteSkillId: Int!) {
+  deleteSkill(id: $deleteSkillId) {
+    subItems {
+      name
+      image
+      id
+      categoryId
+    }
+    message
+    code
+  }
+}
+    `;
+export type DeleteSkillMutationFn = Apollo.MutationFunction<DeleteSkillMutation, DeleteSkillMutationVariables>;
+
+/**
+ * __useDeleteSkillMutation__
+ *
+ * To run a mutation, you first call `useDeleteSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSkillMutation, { data, loading, error }] = useDeleteSkillMutation({
+ *   variables: {
+ *      deleteSkillId: // value for 'deleteSkillId'
+ *   },
+ * });
+ */
+export function useDeleteSkillMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSkillMutation, DeleteSkillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSkillMutation, DeleteSkillMutationVariables>(DeleteSkillDocument, options);
+      }
+export type DeleteSkillMutationHookResult = ReturnType<typeof useDeleteSkillMutation>;
+export type DeleteSkillMutationResult = Apollo.MutationResult<DeleteSkillMutation>;
+export type DeleteSkillMutationOptions = Apollo.BaseMutationOptions<DeleteSkillMutation, DeleteSkillMutationVariables>;
 export const CreateThemeDocument = gql`
     mutation CreateTheme($data: CreateThemeInput!) {
   createTheme(data: $data) {
@@ -2319,6 +2648,111 @@ export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQue
 export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
 export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
 export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
+export const SkillByIdDocument = gql`
+    query SkillById($id: Int!) {
+  skillById(id: $id) {
+    code
+    message
+    subItems {
+      id
+      name
+      image
+      categoryId
+    }
+  }
+}
+    `;
+
+/**
+ * __useSkillByIdQuery__
+ *
+ * To run a query within a React component, call `useSkillByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSkillByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSkillByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSkillByIdQuery(baseOptions: Apollo.QueryHookOptions<SkillByIdQuery, SkillByIdQueryVariables> & ({ variables: SkillByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SkillByIdQuery, SkillByIdQueryVariables>(SkillByIdDocument, options);
+      }
+export function useSkillByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SkillByIdQuery, SkillByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SkillByIdQuery, SkillByIdQueryVariables>(SkillByIdDocument, options);
+        }
+// @ts-ignore
+export function useSkillByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SkillByIdQuery, SkillByIdQueryVariables>): Apollo.UseSuspenseQueryResult<SkillByIdQuery, SkillByIdQueryVariables>;
+export function useSkillByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SkillByIdQuery, SkillByIdQueryVariables>): Apollo.UseSuspenseQueryResult<SkillByIdQuery | undefined, SkillByIdQueryVariables>;
+export function useSkillByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SkillByIdQuery, SkillByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SkillByIdQuery, SkillByIdQueryVariables>(SkillByIdDocument, options);
+        }
+export type SkillByIdQueryHookResult = ReturnType<typeof useSkillByIdQuery>;
+export type SkillByIdLazyQueryHookResult = ReturnType<typeof useSkillByIdLazyQuery>;
+export type SkillByIdSuspenseQueryHookResult = ReturnType<typeof useSkillByIdSuspenseQuery>;
+export type SkillByIdQueryResult = Apollo.QueryResult<SkillByIdQuery, SkillByIdQueryVariables>;
+export const SkillCategoryByIdDocument = gql`
+    query SkillCategoryById($id: Int!) {
+  skillCategoryById(id: $id) {
+    code
+    message
+    categories {
+      id
+      categoryEN
+      categoryFR
+      skills {
+        id
+        name
+        image
+        categoryId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSkillCategoryByIdQuery__
+ *
+ * To run a query within a React component, call `useSkillCategoryByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSkillCategoryByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSkillCategoryByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useSkillCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables> & ({ variables: SkillCategoryByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>(SkillCategoryByIdDocument, options);
+      }
+export function useSkillCategoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>(SkillCategoryByIdDocument, options);
+        }
+// @ts-ignore
+export function useSkillCategoryByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>): Apollo.UseSuspenseQueryResult<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>;
+export function useSkillCategoryByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>): Apollo.UseSuspenseQueryResult<SkillCategoryByIdQuery | undefined, SkillCategoryByIdQueryVariables>;
+export function useSkillCategoryByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>(SkillCategoryByIdDocument, options);
+        }
+export type SkillCategoryByIdQueryHookResult = ReturnType<typeof useSkillCategoryByIdQuery>;
+export type SkillCategoryByIdLazyQueryHookResult = ReturnType<typeof useSkillCategoryByIdLazyQuery>;
+export type SkillCategoryByIdSuspenseQueryHookResult = ReturnType<typeof useSkillCategoryByIdSuspenseQuery>;
+export type SkillCategoryByIdQueryResult = Apollo.QueryResult<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>;
 export const GetThemesListDocument = gql`
     query GetThemesList {
   themeList {
