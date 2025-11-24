@@ -18,7 +18,6 @@ export function mapProject(
       id: ps.skill.id,
       name: ps.skill.name,
       image: ps.skill.image,
-      categoryId: ps.skill.categoryId,
     })),
   };
 }

@@ -540,7 +540,7 @@ export class ProjectAdminResolver {
         id: ps.skill.id,
         name: ps.skill.name,
         image: ps.skill.image,
-        categoryId: ps.skill.categoryId
+        categoryId: 0, // categoryId is no longer directly on Skill - it's managed via junction table
       })
     );
 

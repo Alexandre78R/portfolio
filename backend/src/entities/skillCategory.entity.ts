@@ -3,20 +3,20 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { SkillSubItem } from "./skillSubItem.entity";
 
 /**
- * Skill entity - Represents an individual skill
- * Now independent from categories, linked via SkillCategorySkill join table
+ * SkillCategory entity - Represents a skill category
+ * Linked to skills via SkillCategorySkill junction table
  */
 @ObjectType()
 @Entity()
-export class Skill {
+export class SkillCategory {
   @Field(() => ID)
   readonly id: number;
 
   @Field()
-  readonly name: string;
+  readonly categoryEN: string;
 
   @Field()
-  readonly image: string;
+  readonly categoryFR: string;
 
   @Field(() => [SkillSubItem])
   readonly skills: SkillSubItem[];

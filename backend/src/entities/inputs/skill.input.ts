@@ -15,13 +15,13 @@ export class CreateCategoryInput {
 @InputType()
 export class CreateSkillInput {
   @Field()
-  name: string;
+  readonly name: string;
 
   @Field()
-  image: string;
+  readonly image: string;
 
-  @Field(() => Int)
-  categoryId: number;
+  @Field(() => Int, { nullable: true })
+  readonly categoryId?: number;
 }
 
 @InputType()
@@ -39,11 +39,11 @@ export class UpdateCategoryInput {
 @InputType()
 export class UpdateSkillInput {
   @Field({ nullable: true })
-  name?: string;
+  readonly name?: string;
 
   @Field({ nullable: true })
-  image?: string;
+  readonly image?: string;
 
-  @Field(() => Int)
-  categoryId?: number;
+  @Field(() => Int, { nullable: true })
+  readonly categoryId?: number;
 }

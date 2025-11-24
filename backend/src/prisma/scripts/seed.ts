@@ -4,6 +4,7 @@ import {
   Skill,
   Project,
   Theme,
+  SkillCategorySkill,
 } from "@prisma/client";
 import readline from "readline";
 
@@ -114,6 +115,10 @@ async function seed(): Promise<void> {
       console.log(`🎨 Theme seeded: ${createdTheme.name}`);
     }
 
+    /* =========================
+     * Skills and Categories
+     * ========================= */
+
     for (const cat of skillsData as SkillCategoryData[]) {
       const catRec: SkillCategory = await prisma.skillCategory.create({
         data: {
@@ -123,11 +128,18 @@ async function seed(): Promise<void> {
       });
 
       for (const sk of cat.skills as SkillData[]) {
-        await prisma.skill.create({
+        const skillRec: Skill = await prisma.skill.create({
           data: {
             name: sk.name,
             image: sk.image,
+          },
+        });
+
+        // Create junction table record to link skill to category
+        await prisma.skillCategorySkill.create({
+          data: {
             categoryId: catRec.id,
+            skillId: skillRec.id,
           },
         });
       }
@@ -151,6 +163,14 @@ async function seed(): Promise<void> {
         });
 
         if (!skillRec) {
+          skillRec = await prisma.skill.create({
+            data: {
+              name: sk.name,
+              image: sk.image,
+            },
+          });
+
+          // Link to "Others" category
           let otherCat: SkillCategory | null =
             await prisma.skillCategory.findFirst({
               where: { categoryEN: "Others" },
@@ -162,11 +182,10 @@ async function seed(): Promise<void> {
             });
           }
 
-          skillRec = await prisma.skill.create({
+          await prisma.skillCategorySkill.create({
             data: {
-              name: sk.name,
-              image: sk.image,
               categoryId: otherCat.id,
+              skillId: skillRec.id,
             },
           });
 

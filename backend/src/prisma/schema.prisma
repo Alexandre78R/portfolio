@@ -24,20 +24,29 @@ model Project {
   skills         ProjectSkill[]
 }
 
-model SkillCategory {
-  id         Int     @id @default(autoincrement())
-  categoryEN String
-  categoryFR String
-  skills     Skill[]
-}
-
 model Skill {
-  id         Int            @id @default(autoincrement())
+  id         Int                  @id @default(autoincrement())
   name       String
   image      String
-  categoryId Int
-  category   SkillCategory  @relation(fields: [categoryId], references: [id])
+  categories SkillCategorySkill[] // N:N relation to categories
   projects   ProjectSkill[]
+}
+
+model SkillCategory {
+  id         Int                  @id @default(autoincrement())
+  categoryEN String
+  categoryFR String
+  skills     SkillCategorySkill[] // N:N relation to skills
+}
+
+model SkillCategorySkill {
+  categoryId Int
+  skillId    Int
+  category   SkillCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  skill      Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, skillId])
+  @@index([skillId])
 }
 
 model ProjectSkill {

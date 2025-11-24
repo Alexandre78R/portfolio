@@ -32,6 +32,7 @@ const cleanDatabase = async (): Promise<void> => {
     console.log("🗑️ Deleting data...");
 
     await prisma.projectSkill.deleteMany();
+    await prisma.skillCategorySkill.deleteMany();
     await prisma.project.deleteMany();
     await prisma.skill.deleteMany();
     await prisma.skillCategory.deleteMany();
@@ -50,6 +51,9 @@ const cleanDatabase = async (): Promise<void> => {
       "ALTER TABLE `SkillCategory` AUTO_INCREMENT = 1;"
     );
     await prisma.$executeRawUnsafe("ALTER TABLE `Skill` AUTO_INCREMENT = 1;");
+    await prisma.$executeRawUnsafe(
+      "ALTER TABLE `SkillCategorySkill` AUTO_INCREMENT = 1;"
+    );
     await prisma.$executeRawUnsafe(
       "ALTER TABLE `Education` AUTO_INCREMENT = 1;"
     );

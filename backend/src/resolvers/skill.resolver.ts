@@ -1,11 +1,20 @@
 import { Resolver, Query, Mutation, Arg, Int, Authorized, Ctx } from "type-graphql";
-import { Skill } from "../entities/skill.entity";
+import { SkillCategoryWithSkillsDTO } from "../entities/skillCategoryWithSkillsDTO.entity";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { CategoryResponse, SubItemResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
-import { PrismaClient, Skill as PrismaSkill, SkillCategory as PrismaSkillCategory } from "@prisma/client";
+import {
+  PrismaClient,
+  Skill as PrismaSkill,
+  SkillCategory as PrismaSkillCategory,
+  SkillCategorySkill as PrismaSkillCategorySkill,
+} from "@prisma/client";
+
+type SkillCategoryWithSkills = PrismaSkillCategory & {
+  skills: (PrismaSkillCategorySkill & { skill: PrismaSkill })[];
+};
 
 @Resolver()
 export class SkillResolver {
@@ -14,20 +23,24 @@ export class SkillResolver {
   @Query(() => CategoryResponse)
   async skillList(): Promise<CategoryResponse> {
     try {
-      const categories: (PrismaSkillCategory & { skills: PrismaSkill[] })[] = await this.db.skillCategory.findMany({
-        include: { skills: true },
+      const categories: SkillCategoryWithSkills[] = await this.db.skillCategory.findMany({
+        include: {
+          skills: {
+            include: { skill: true },
+          },
+        },
         orderBy: { id: "asc" },
       });
 
-      const dto: Skill[] = categories.map((cat) => ({
+      const dto: SkillCategoryWithSkillsDTO[] = categories.map((cat) => ({
         id: cat.id,
         categoryEN: cat.categoryEN,
         categoryFR: cat.categoryFR,
-        skills: cat.skills.map((s) => ({
-          id: s.id,
-          name: s.name,
-          image: s.image,
-          categoryId: s.categoryId,
+        skills: cat.skills.map((junction) => ({
+          id: junction.skill.id,
+          name: junction.skill.name,
+          image: junction.skill.image,
+          categoryId: cat.id,
         })),
       }));
 
@@ -50,7 +63,15 @@ export class SkillResolver {
 
       if (!skill) return { code: 404, message: "Skill not found", subItems: [] };
 
-      const dto: SkillSubItem = { id: skill.id, name: skill.name, image: skill.image, categoryId: skill.categoryId };
+      // Find all categories this skill belongs to (use the first one for categoryId in response)
+      const skillCategories = await this.db.skillCategorySkill.findMany({
+        where: { skillId: id },
+        include: { category: true },
+      });
+
+      const categoryId = skillCategories.length > 0 ? skillCategories[0].categoryId : 0;
+
+      const dto: SkillSubItem = { id: skill.id, name: skill.name, image: skill.image, categoryId };
       return { code: 200, message: "Skill fetched successfully", subItems: [dto] };
     } catch (error: unknown) {
       console.error("Error fetching skill:", error);
@@ -61,22 +82,26 @@ export class SkillResolver {
   @Query(() => CategoryResponse)
   async skillCategoryById(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
     try {
-      const category: (PrismaSkillCategory & { skills: PrismaSkill[] }) | null = await this.db.skillCategory.findUnique({
+      const category: SkillCategoryWithSkills | null = await this.db.skillCategory.findUnique({
         where: { id },
-        include: { skills: true },
+        include: {
+          skills: {
+            include: { skill: true },
+          },
+        },
       });
 
       if (!category) return { code: 404, message: "Category not found", categories: [] };
 
-      const dto: Skill = {
+      const dto: SkillCategoryWithSkillsDTO = {
         id: category.id,
         categoryEN: category.categoryEN,
         categoryFR: category.categoryFR,
-        skills: category.skills.map((s) => ({
-          id: s.id,
-          name: s.name,
-          image: s.image,
-          categoryId: s.categoryId,
+        skills: category.skills.map((junction) => ({
+          id: junction.skill.id,
+          name: junction.skill.name,
+          image: junction.skill.image,
+          categoryId: category.id,
         })),
       };
 
@@ -98,56 +123,70 @@ export class SkillResolver {
       if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", categories: undefined };
 
       const category: PrismaSkillCategory = await this.db.skillCategory.create({
-        data: { 
-          categoryEN: data.categoryEN, 
-          categoryFR: data.categoryFR 
+        data: {
+          categoryEN: data.categoryEN,
+          categoryFR: data.categoryFR,
         },
       });
 
-      let skills: PrismaSkill[] = [];
+      let createdJunctions: PrismaSkillCategorySkill[] = [];
+
       if (data.skillIds && data.skillIds.length > 0) {
         try {
-          const skillsToDuplicate: PrismaSkill[] = await this.db.skill.findMany({
+          // Verify all skills exist
+          const existingSkills: PrismaSkill[] = await this.db.skill.findMany({
             where: { id: { in: data.skillIds } },
           });
 
-          if (skillsToDuplicate.length !== data.skillIds.length) {
+          if (existingSkills.length !== data.skillIds.length) {
             await this.db.skillCategory.delete({ where: { id: category.id } });
             return { code: 400, message: "One or more skills not found", categories: undefined };
           }
 
-          const createdSkills: PrismaSkill[] = await Promise.all(
-            skillsToDuplicate.map((skill: PrismaSkill): Promise<PrismaSkill> =>
-              this.db.skill.create({
+          // Create junction table records to link skills to category
+          createdJunctions = await Promise.all(
+            data.skillIds.map((skillId: number): Promise<PrismaSkillCategorySkill> =>
+              this.db.skillCategorySkill.create({
                 data: {
-                  name: skill.name,
-                  image: skill.image,
                   categoryId: category.id,
+                  skillId: skillId,
                 },
               })
             )
           );
-
-          skills = createdSkills;
         } catch (error: unknown) {
-          console.error("Error creating skills for category:", error);
+          console.error("Error linking skills to category:", error);
           await this.db.skillCategory.delete({ where: { id: category.id } });
-          return { code: 500, message: "Failed to create skills for category", categories: undefined };
+          return { code: 500, message: "Failed to link skills to category", categories: undefined };
         }
       }
 
-      const dto: Skill = { 
-        id: category.id, 
-        categoryEN: category.categoryEN, 
-        categoryFR: category.categoryFR, 
-        skills: skills.map((s: PrismaSkill) => ({
-          id: s.id,
-          name: s.name,
-          image: s.image,
-          categoryId: s.categoryId,
+      // Fetch the complete category with skills for response
+      const completeCategory: SkillCategoryWithSkills | null = await this.db.skillCategory.findUnique({
+        where: { id: category.id },
+        include: {
+          skills: {
+            include: { skill: true },
+          },
+        },
+      });
+
+      if (!completeCategory) {
+        return { code: 500, message: "Failed to retrieve created category", categories: undefined };
+      }
+
+      const dto: SkillCategoryWithSkillsDTO = {
+        id: completeCategory.id,
+        categoryEN: completeCategory.categoryEN,
+        categoryFR: completeCategory.categoryFR,
+        skills: completeCategory.skills.map((junction) => ({
+          id: junction.skill.id,
+          name: junction.skill.name,
+          image: junction.skill.image,
+          categoryId: completeCategory.id,
         })),
       };
-      
+
       return { code: 200, message: "Category created successfully", categories: [dto] };
     } catch (error: unknown) {
       console.error("Error creating category:", error);
@@ -165,14 +204,38 @@ export class SkillResolver {
       if (!ctx.user) return { code: 401, message: "Authentication required.", subItems: undefined };
       if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", subItems: undefined };
 
-      const category = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
-      if (!category) return { code: 400, message: "Category not found", subItems: undefined };
-
-      const subItem: PrismaSkill = await this.db.skill.create({
-        data: { name: data.name, image: data.image, categoryId: data.categoryId },
+      // Create skill as standalone (no longer directly linked to category)
+      const skill: PrismaSkill = await this.db.skill.create({
+        data: {
+          name: data.name,
+          image: data.image,
+        },
       });
 
-      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId: subItem.categoryId };
+      // If categoryId provided, create junction record to link skill to category
+      if (data.categoryId) {
+        const category = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        if (!category) {
+          // Delete the skill if category doesn't exist
+          await this.db.skill.delete({ where: { id: skill.id } });
+          return { code: 400, message: "Category not found", subItems: undefined };
+        }
+
+        await this.db.skillCategorySkill.create({
+          data: {
+            categoryId: data.categoryId,
+            skillId: skill.id,
+          },
+        });
+      }
+
+      const dto: SkillSubItem = {
+        id: skill.id,
+        name: skill.name,
+        image: skill.image,
+        categoryId: data.categoryId || 0,
+      };
+
       return { code: 200, message: "Skill created successfully", subItems: [dto] };
     } catch (error: unknown) {
       console.error(error);
@@ -199,6 +262,7 @@ export class SkillResolver {
       if (!existing) return { code: 404, message: "Category not found", categories: undefined };
 
       try {
+        // Update category labels
         const cat: PrismaSkillCategory = await this.db.skillCategory.update({
           where: { id },
           data: {
@@ -207,16 +271,17 @@ export class SkillResolver {
           },
         });
 
-        let updatedSkills: PrismaSkill[] = [];
-
+        // Manage skill associations via junction table
         if (data.skillIds !== undefined) {
-          const currentSkills: PrismaSkill[] = await this.db.skill.findMany({
+          // Get current skill associations
+          const currentJunctions: PrismaSkillCategorySkill[] = await this.db.skillCategorySkill.findMany({
             where: { categoryId: id },
           });
 
-          const currentSkillIds: number[] = currentSkills.map((s: PrismaSkill): number => s.id);
+          const currentSkillIds: number[] = currentJunctions.map((j) => j.skillId);
           const newSkillIds: number[] = data.skillIds;
 
+          // Determine which skills to add/remove
           const skillsToRemove: number[] = currentSkillIds.filter(
             (skillId: number): boolean => !newSkillIds.includes(skillId)
           );
@@ -225,71 +290,78 @@ export class SkillResolver {
             (skillId: number): boolean => !currentSkillIds.includes(skillId)
           );
 
+          // Remove junction records for skills no longer in category
           if (skillsToRemove.length > 0) {
             try {
-              const deletedProjectSkills: { count: number } = await this.db.projectSkill.deleteMany({
-                where: { skillId: { in: skillsToRemove } },
+              const deletedJunctions: { count: number } = await this.db.skillCategorySkill.deleteMany({
+                where: {
+                  categoryId: id,
+                  skillId: { in: skillsToRemove },
+                },
               });
 
-              console.log(`Deleted ${deletedProjectSkills.count} project-skill associations`);
-
-              const deletedSkills: { count: number } = await this.db.skill.deleteMany({
-                where: { id: { in: skillsToRemove } },
-              });
-
-              console.log(`Deleted ${deletedSkills.count} skills from category`);
+              console.log(`Removed ${deletedJunctions.count} skill associations from category`);
             } catch (error: unknown) {
               console.error("Error removing skills from category:", error);
               return { code: 500, message: "Failed to remove skills from category", categories: undefined };
             }
           }
 
+          // Add junction records for new skills
           if (skillsToAdd.length > 0) {
             try {
-              const skillsToDuplicate: PrismaSkill[] = await this.db.skill.findMany({
+              // Verify all skills exist
+              const skillsToLink: PrismaSkill[] = await this.db.skill.findMany({
                 where: { id: { in: skillsToAdd } },
               });
 
-              if (skillsToDuplicate.length !== skillsToAdd.length) {
+              if (skillsToLink.length !== skillsToAdd.length) {
                 return { code: 400, message: "One or more skills to add were not found", categories: undefined };
               }
 
-              const createdSkills: PrismaSkill[] = await Promise.all(
-                skillsToDuplicate.map((skill: PrismaSkill): Promise<PrismaSkill> =>
-                  this.db.skill.create({
+              // Create junction records
+              await Promise.all(
+                skillsToAdd.map((skillId: number): Promise<PrismaSkillCategorySkill> =>
+                  this.db.skillCategorySkill.create({
                     data: {
-                      name: skill.name,
-                      image: skill.image,
                       categoryId: id,
+                      skillId: skillId,
                     },
                   })
                 )
               );
 
-              updatedSkills = [...currentSkills.filter((s: PrismaSkill): boolean => !skillsToRemove.includes(s.id)), ...createdSkills];
+              console.log(`Added ${skillsToAdd.length} skills to category`);
             } catch (error: unknown) {
               console.error("Error adding skills to category:", error);
               return { code: 500, message: "Failed to add skills to category", categories: undefined };
             }
-          } else {
-            updatedSkills = currentSkills.filter((s: PrismaSkill): boolean => !skillsToRemove.includes(s.id));
           }
-        } else {
-          const currentSkills: PrismaSkill[] = await this.db.skill.findMany({
-            where: { categoryId: id },
-          });
-          updatedSkills = currentSkills;
         }
 
-        const dto: Skill = {
-          id: cat.id,
-          categoryEN: cat.categoryEN,
-          categoryFR: cat.categoryFR,
-          skills: updatedSkills.map((s: PrismaSkill) => ({
-            id: s.id,
-            name: s.name,
-            image: s.image,
-            categoryId: s.categoryId,
+        // Fetch updated category with skills
+        const updatedCategory: SkillCategoryWithSkills | null = await this.db.skillCategory.findUnique({
+          where: { id },
+          include: {
+            skills: {
+              include: { skill: true },
+            },
+          },
+        });
+
+        if (!updatedCategory) {
+          return { code: 500, message: "Failed to retrieve updated category", categories: undefined };
+        }
+
+        const dto: SkillCategoryWithSkillsDTO = {
+          id: updatedCategory.id,
+          categoryEN: updatedCategory.categoryEN,
+          categoryFR: updatedCategory.categoryFR,
+          skills: updatedCategory.skills.map((junction) => ({
+            id: junction.skill.id,
+            name: junction.skill.name,
+            image: junction.skill.image,
+            categoryId: updatedCategory.id,
           })),
         };
 
@@ -319,21 +391,29 @@ export class SkillResolver {
       const existing = await this.db.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
 
+      // Validate category if provided
       if (data.categoryId) {
         const validCat = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!validCat) return { code: 400, message: "Invalid category", subItems: undefined };
       }
 
+      // Update skill properties
       const subItem: PrismaSkill = await this.db.skill.update({
         where: { id },
         data: {
           name: data.name ?? existing.name,
           image: data.image ?? existing.image,
-          categoryId: data.categoryId ?? existing.categoryId,
         },
       });
 
-      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId: subItem.categoryId };
+      // Get first category this skill belongs to (if any)
+      const skillCategory = await this.db.skillCategorySkill.findFirst({
+        where: { skillId: id },
+      });
+
+      const categoryId = skillCategory?.categoryId || 0;
+
+      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId };
       return { code: 200, message: "Skill updated", subItems: [dto] };
     } catch (error: unknown) {
       console.error(error);
@@ -355,38 +435,23 @@ export class SkillResolver {
       if (!existing) return { code: 404, message: "Category not found", categories: undefined };
 
       try {
-        const skillsInCategory: Array<{ readonly id: number }> = await this.db.skill.findMany({
+        // Delete junction records (cascade is handled by DB, but explicit is safer)
+        const deletedJunctions: { count: number } = await this.db.skillCategorySkill.deleteMany({
           where: { categoryId: id },
-          select: { id: true },
         });
 
-        const skillIds: number[] = skillsInCategory.map(
-          (s: { readonly id: number }): number => s.id
-        );
+        console.log(`Deleted ${deletedJunctions.count} skill associations from category`);
 
-        if (skillIds.length > 0) {
-          const deletedProjectSkills: { count: number } = await this.db.projectSkill.deleteMany({
-            where: { skillId: { in: skillIds } },
-          });
-
-          console.log(`Deleted ${deletedProjectSkills.count} project-skill associations`);
-
-          const deletedSkills: { count: number } = await this.db.skill.deleteMany({
-            where: { categoryId: id },
-          });
-
-          console.log(`Deleted ${deletedSkills.count} skills from category ${id}`);
-        }
-
+        // Delete the category itself
         await this.db.skillCategory.delete({ where: { id } });
 
         return {
           code: 200,
-          message: `Category and ${skillIds.length} associated skills deleted successfully`,
+          message: `Category and ${deletedJunctions.count} skill associations deleted successfully`,
         };
       } catch (error: unknown) {
         console.error("Error during category deletion process:", error);
-        return { code: 500, message: "Error deleting category and related skills", categories: undefined };
+        return { code: 500, message: "Error deleting category and related associations", categories: undefined };
       }
     } catch (error: unknown) {
       console.error("Error in deleteCategory:", error);
@@ -404,10 +469,32 @@ export class SkillResolver {
       const existing = await this.db.skill.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
 
-      await this.db.projectSkill.deleteMany({ where: { skillId: id } });
-      await this.db.skill.delete({ where: { id } });
+      try {
+        // Delete project-skill associations
+        const deletedProjectSkills: { count: number } = await this.db.projectSkill.deleteMany({
+          where: { skillId: id },
+        });
 
-      return { code: 200, message: "Skill and related sub-items deleted" };
+        console.log(`Deleted ${deletedProjectSkills.count} project-skill associations`);
+
+        // Delete skill-category associations (junction table)
+        const deletedJunctions: { count: number } = await this.db.skillCategorySkill.deleteMany({
+          where: { skillId: id },
+        });
+
+        console.log(`Deleted ${deletedJunctions.count} category-skill associations`);
+
+        // Delete the skill itself
+        await this.db.skill.delete({ where: { id } });
+
+        return {
+          code: 200,
+          message: `Skill deleted along with ${deletedProjectSkills.count} project associations and ${deletedJunctions.count} category associations`,
+        };
+      } catch (error: unknown) {
+        console.error("Error during skill deletion:", error);
+        return { code: 500, message: "Error deleting skill", subItems: undefined };
+      }
     } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error deleting skill", subItems: undefined };

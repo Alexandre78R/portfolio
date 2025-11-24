@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, Float, ArgsType } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import { Skill } from "../entities/skill.entity";
+import { SkillCategoryWithSkillsDTO } from "../entities/skillCategoryWithSkillsDTO.entity";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { Education } from "../entities/education.entity";
 import { Experience } from "../entities/experience.entity";
@@ -42,8 +43,8 @@ export class ProjectsResponse {
 
 @ObjectType()
 export class CategoryResponse extends Response {
-  @Field(() => [Skill], { nullable: true })
-  categories?: Skill[];
+  @Field(() => [SkillCategoryWithSkillsDTO], { nullable: true })
+  categories?: SkillCategoryWithSkillsDTO[];
 }
 
 @ObjectType()
