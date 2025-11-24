@@ -3,10 +3,13 @@ import { InputType, Field, Int } from "type-graphql";
 @InputType()
 export class CreateCategoryInput {
   @Field()
-  categoryEN: string;
+  readonly categoryEN: string;
 
   @Field()
-  categoryFR: string;
+  readonly categoryFR: string;
+
+  @Field(() => [Int], { nullable: true })
+  readonly skillIds?: number[];
 }
 
 @InputType()

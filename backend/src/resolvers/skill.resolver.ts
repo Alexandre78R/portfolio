@@ -98,13 +98,59 @@ export class SkillResolver {
       if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", categories: undefined };
 
       const category: PrismaSkillCategory = await this.db.skillCategory.create({
-        data: { categoryEN: data.categoryEN, categoryFR: data.categoryFR },
+        data: { 
+          categoryEN: data.categoryEN, 
+          categoryFR: data.categoryFR 
+        },
       });
 
-      const dto: Skill = { id: category.id, categoryEN: category.categoryEN, categoryFR: category.categoryFR, skills: [] };
+      let skills: PrismaSkill[] = [];
+      if (data.skillIds && data.skillIds.length > 0) {
+        try {
+          const skillsToDuplicate: PrismaSkill[] = await this.db.skill.findMany({
+            where: { id: { in: data.skillIds } },
+          });
+
+          if (skillsToDuplicate.length !== data.skillIds.length) {
+            await this.db.skillCategory.delete({ where: { id: category.id } });
+            return { code: 400, message: "One or more skills not found", categories: undefined };
+          }
+
+          const createdSkills: PrismaSkill[] = await Promise.all(
+            skillsToDuplicate.map((skill: PrismaSkill): Promise<PrismaSkill> =>
+              this.db.skill.create({
+                data: {
+                  name: skill.name,
+                  image: skill.image,
+                  categoryId: category.id,
+                },
+              })
+            )
+          );
+
+          skills = createdSkills;
+        } catch (error: unknown) {
+          console.error("Error creating skills for category:", error);
+          await this.db.skillCategory.delete({ where: { id: category.id } });
+          return { code: 500, message: "Failed to create skills for category", categories: undefined };
+        }
+      }
+
+      const dto: Skill = { 
+        id: category.id, 
+        categoryEN: category.categoryEN, 
+        categoryFR: category.categoryFR, 
+        skills: skills.map((s: PrismaSkill) => ({
+          id: s.id,
+          name: s.name,
+          image: s.image,
+          categoryId: s.categoryId,
+        })),
+      };
+      
       return { code: 200, message: "Category created successfully", categories: [dto] };
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Error creating category:", error);
       return { code: 500, message: "Failed to create category", categories: undefined };
     }
   }
