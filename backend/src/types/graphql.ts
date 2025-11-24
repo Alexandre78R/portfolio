@@ -276,6 +276,7 @@ export type Mutation = {
   deleteEducation: EducationResponse;
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
+  deleteProjectMedia: ProjectResponse;
   deleteSkill: SubItemResponse;
   deleteTheme: Response;
   deleteUser: Response;
@@ -292,6 +293,7 @@ export type Mutation = {
   updateTheme: ThemeResponse;
   updateUser: UserResponse;
   uploadCV: UploadResponse;
+  uploadProjectMedia: ProjectResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -359,6 +361,11 @@ export type MutationDeleteExperienceArgs = {
 
 export type MutationDeleteProjectArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteProjectMediaArgs = {
+  projectId: Scalars['Int']['input'];
 };
 
 
@@ -435,6 +442,12 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUploadCvArgs = {
   file: Scalars['Upload']['input'];
+};
+
+
+export type MutationUploadProjectMediaArgs = {
+  file: Scalars['Upload']['input'];
+  projectId: Scalars['Int']['input'];
 };
 
 

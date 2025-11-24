@@ -140,6 +140,8 @@ const en: Lang = {
   "sideBarAdmin-cv": "Resume",
   "sideBarAdmin-cv/view": "View CV",
   "sideBarAdmin-cv/update": "Edit CV",
+  "sideBarAdmin-socials/list": "View social networks",
+  "sideBarAdmin-socials/create": "Create a social network",
   messagePageDashBoardTitle : "Dashboard",
   messagePageDashBoardErreurData : "Error loading statistics data.",
   messagePageDashBoardCardStatsProject : "Projects",

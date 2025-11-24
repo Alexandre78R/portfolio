@@ -78,6 +78,7 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Voir les skills', key: 'skills/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'skills' },
       { name: 'Créer un skill', key: 'skills/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills' },
+      { name: 'Créer une catégorie de skill', key: 'skills/categories/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills' },
     ],
   },
   {
@@ -95,6 +96,16 @@ const navigation: NavItem[] = [
     key: 'backup/list',
     icon: DatabaseBackup,
     roles: ['admin', 'editor', 'view'],
+  },
+  {
+    name: 'Socials',
+    key: 'socials',
+    icon: PanelsTopLeft,
+    roles: ['admin', 'editor'],
+    children: [
+      { name: 'Voir les socials', key: 'socials/list', icon: Eye, roles: ['admin'], parentKey: 'socials' },
+      { name: 'Créer un social', key: 'socials/create', icon: FolderPlus, roles: ['admin'], parentKey: 'socials' },
+    ],
   },
   // {
   //   name: 'Sauvegarde',

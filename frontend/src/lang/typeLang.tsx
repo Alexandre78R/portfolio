@@ -114,6 +114,7 @@ type Lang = {
   "sideBarAdmin-skills": string;
   "sideBarAdmin-skills/list": string;
   "sideBarAdmin-skills/create": string;
+  "sideBarAdmin-skills/categories/create": string;
   "sideBarAdmin-theme-colors": string;
   "sideBarAdmin-theme-colors/list": string;
   "sideBarAdmin-theme-colors/create": string;
@@ -123,6 +124,8 @@ type Lang = {
   "sideBarAdmin-cv": string;
   "sideBarAdmin-cv/view": string;
   "sideBarAdmin-cv/update": string;
+  "sideBarAdmin-socials/list": string;
+  "sideBarAdmin-socials/create": string;
   messagePageDashBoardTitle : string;
   messagePageDashBoardErreurData : string;
   messagePageDashBoardCardStatsProject : string;
