@@ -500,6 +500,8 @@ export type Query = {
   me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
+  skillById: SubItemResponse;
+  skillCategoryById: CategoryResponse;
   skillList: CategoryResponse;
   themeById: ThemeResponse;
   themeList: ThemesResponse;
@@ -526,6 +528,16 @@ export type QueryExperienceByIdArgs = {
 
 
 export type QueryProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySkillByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySkillCategoryByIdArgs = {
   id: Scalars['Int']['input'];
 };
 

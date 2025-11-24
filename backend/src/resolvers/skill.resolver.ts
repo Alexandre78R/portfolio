@@ -38,6 +38,55 @@ export class SkillResolver {
     }
   }
 
+  @Query(() => SubItemResponse)
+  async skillById(@Arg("id", () => Int) id: number): Promise<SubItemResponse> {
+    try {
+      console.log("Fetching skill with id:", id);
+      const skill: PrismaSkill | null = await this.db.skill.findUnique({
+        where: { id },
+      });
+
+      console.log("Skill found:", skill);
+
+      if (!skill) return { code: 404, message: "Skill not found", subItems: [] };
+
+      const dto: SkillSubItem = { id: skill.id, name: skill.name, image: skill.image, categoryId: skill.categoryId };
+      return { code: 200, message: "Skill fetched successfully", subItems: [dto] };
+    } catch (error: unknown) {
+      console.error("Error fetching skill:", error);
+      return { code: 500, message: "Failed to fetch skill", subItems: [] };
+    }
+  }
+
+  @Query(() => CategoryResponse)
+  async skillCategoryById(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
+    try {
+      const category: (PrismaSkillCategory & { skills: PrismaSkill[] }) | null = await this.db.skillCategory.findUnique({
+        where: { id },
+        include: { skills: true },
+      });
+
+      if (!category) return { code: 404, message: "Category not found", categories: [] };
+
+      const dto: Skill = {
+        id: category.id,
+        categoryEN: category.categoryEN,
+        categoryFR: category.categoryFR,
+        skills: category.skills.map((s) => ({
+          id: s.id,
+          name: s.name,
+          image: s.image,
+          categoryId: s.categoryId,
+        })),
+      };
+
+      return { code: 200, message: "Category fetched successfully", categories: [dto] };
+    } catch (error: unknown) {
+      console.error(error);
+      return { code: 500, message: "Failed to fetch category", categories: [] };
+    }
+  }
+
   @Authorized([UserRole.admin])
   @Mutation(() => CategoryResponse)
   async createCategory(
