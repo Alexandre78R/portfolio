@@ -275,6 +275,11 @@ type Lang = {
   messageAdminExperienceColumnContract: string;
   messageAdminExperienceColumnYear: string;
   messageAdminExperienceColumnAction: string;
+  messageAdminSkillCategoryCreateTitle: string;
+  messageAdminSkillCategoryCreateSuccess: string;
+  messageAdminSkillCategoryCreateError: string;
+  messageAdminSkillCategoryCreateLoading: string;
+  messageAdminSkillCategoryCreateConfirm: string;
 };
 
 export default Lang;

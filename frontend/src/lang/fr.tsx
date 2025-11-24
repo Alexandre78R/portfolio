@@ -294,7 +294,12 @@ const fr: Lang = {
   "messageAdminExperienceColumnBusiness": "Entreprise",
   "messageAdminExperienceColumnContract": "Contrat",
   "messageAdminExperienceColumnYear": "Année",
-  "messageAdminExperienceColumnAction": "Actions"
+  "messageAdminExperienceColumnAction": "Actions",
+  "messageAdminSkillCategoryCreateTitle": "Créer une catégorie de compétence",
+  "messageAdminSkillCategoryCreateSuccess": "La catégorie de compétence a été créée avec succès",
+  "messageAdminSkillCategoryCreateError": "Erreur lors de la création de la catégorie de compétence",
+  messageAdminSkillCategoryCreateLoading: "Création de la catégorie en cours…",
+  messageAdminSkillCategoryCreateConfirm: "Créer",
 };
 
 export default fr;

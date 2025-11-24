@@ -293,7 +293,12 @@ const en: Lang = {
   "messageAdminExperienceColumnBusiness": "Business",
   "messageAdminExperienceColumnContract": "Contract",
   "messageAdminExperienceColumnYear": "Year",
-  "messageAdminExperienceColumnAction": "Actions"
+  "messageAdminExperienceColumnAction": "Actions",
+  "messageAdminSkillCategoryCreateTitle": "Create Skill Category",
+  "messageAdminSkillCategoryCreateSuccess": "Skill category created successfully",
+  "messageAdminSkillCategoryCreateError": "Error creating skill category",
+  messageAdminSkillCategoryCreateLoading: "Creating category...",
+  messageAdminSkillCategoryCreateConfirm: "Create",
 };
 
 export default en;
