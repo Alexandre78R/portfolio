@@ -27,10 +27,13 @@ export class CreateSkillInput {
 @InputType()
 export class UpdateCategoryInput {
   @Field({ nullable: true })
-  categoryEN?: string;
+  readonly categoryEN?: string;
 
   @Field({ nullable: true })
-  categoryFR?: string;
+  readonly categoryFR?: string;
+
+  @Field(() => [Int], { nullable: true })
+  readonly skillIds?: number[];
 }
 
 @InputType()

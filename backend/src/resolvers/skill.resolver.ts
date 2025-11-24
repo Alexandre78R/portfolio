@@ -192,18 +192,114 @@ export class SkillResolver {
       if (![UserRole.admin, UserRole.editor].includes(ctx.user.role))
         return { code: 403, message: "Access denied. Admin or Editor role required.", categories: undefined };
 
-      const existing = await this.db.skillCategory.findUnique({ where: { id } });
-      if (!existing) return { code: 404, message: "Category not found", categories: undefined };
-
-      const cat = await this.db.skillCategory.update({
+      const existing: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({
         where: { id },
-        data: { categoryEN: data.categoryEN ?? existing.categoryEN, categoryFR: data.categoryFR ?? existing.categoryFR },
       });
 
-      const dto: Skill = { id: cat.id, categoryEN: cat.categoryEN, categoryFR: cat.categoryFR, skills: [] };
-      return { code: 200, message: "Category updated", categories: [dto] };
+      if (!existing) return { code: 404, message: "Category not found", categories: undefined };
+
+      try {
+        const cat: PrismaSkillCategory = await this.db.skillCategory.update({
+          where: { id },
+          data: {
+            categoryEN: data.categoryEN ?? existing.categoryEN,
+            categoryFR: data.categoryFR ?? existing.categoryFR,
+          },
+        });
+
+        let updatedSkills: PrismaSkill[] = [];
+
+        if (data.skillIds !== undefined) {
+          const currentSkills: PrismaSkill[] = await this.db.skill.findMany({
+            where: { categoryId: id },
+          });
+
+          const currentSkillIds: number[] = currentSkills.map((s: PrismaSkill): number => s.id);
+          const newSkillIds: number[] = data.skillIds;
+
+          const skillsToRemove: number[] = currentSkillIds.filter(
+            (skillId: number): boolean => !newSkillIds.includes(skillId)
+          );
+
+          const skillsToAdd: number[] = newSkillIds.filter(
+            (skillId: number): boolean => !currentSkillIds.includes(skillId)
+          );
+
+          if (skillsToRemove.length > 0) {
+            try {
+              const deletedProjectSkills: { count: number } = await this.db.projectSkill.deleteMany({
+                where: { skillId: { in: skillsToRemove } },
+              });
+
+              console.log(`Deleted ${deletedProjectSkills.count} project-skill associations`);
+
+              const deletedSkills: { count: number } = await this.db.skill.deleteMany({
+                where: { id: { in: skillsToRemove } },
+              });
+
+              console.log(`Deleted ${deletedSkills.count} skills from category`);
+            } catch (error: unknown) {
+              console.error("Error removing skills from category:", error);
+              return { code: 500, message: "Failed to remove skills from category", categories: undefined };
+            }
+          }
+
+          if (skillsToAdd.length > 0) {
+            try {
+              const skillsToDuplicate: PrismaSkill[] = await this.db.skill.findMany({
+                where: { id: { in: skillsToAdd } },
+              });
+
+              if (skillsToDuplicate.length !== skillsToAdd.length) {
+                return { code: 400, message: "One or more skills to add were not found", categories: undefined };
+              }
+
+              const createdSkills: PrismaSkill[] = await Promise.all(
+                skillsToDuplicate.map((skill: PrismaSkill): Promise<PrismaSkill> =>
+                  this.db.skill.create({
+                    data: {
+                      name: skill.name,
+                      image: skill.image,
+                      categoryId: id,
+                    },
+                  })
+                )
+              );
+
+              updatedSkills = [...currentSkills.filter((s: PrismaSkill): boolean => !skillsToRemove.includes(s.id)), ...createdSkills];
+            } catch (error: unknown) {
+              console.error("Error adding skills to category:", error);
+              return { code: 500, message: "Failed to add skills to category", categories: undefined };
+            }
+          } else {
+            updatedSkills = currentSkills.filter((s: PrismaSkill): boolean => !skillsToRemove.includes(s.id));
+          }
+        } else {
+          const currentSkills: PrismaSkill[] = await this.db.skill.findMany({
+            where: { categoryId: id },
+          });
+          updatedSkills = currentSkills;
+        }
+
+        const dto: Skill = {
+          id: cat.id,
+          categoryEN: cat.categoryEN,
+          categoryFR: cat.categoryFR,
+          skills: updatedSkills.map((s: PrismaSkill) => ({
+            id: s.id,
+            name: s.name,
+            image: s.image,
+            categoryId: s.categoryId,
+          })),
+        };
+
+        return { code: 200, message: "Category updated successfully", categories: [dto] };
+      } catch (error: unknown) {
+        console.error("Error in category update process:", error);
+        return { code: 500, message: "Error updating category", categories: undefined };
+      }
     } catch (error: unknown) {
-      console.error(error);
+      console.error("Error in updateCategory:", error);
       return { code: 500, message: "Error updating category", categories: undefined };
     }
   }
@@ -282,7 +378,6 @@ export class SkillResolver {
           console.log(`Deleted ${deletedSkills.count} skills from category ${id}`);
         }
 
-        // Finally delete the category
         await this.db.skillCategory.delete({ where: { id } });
 
         return {
