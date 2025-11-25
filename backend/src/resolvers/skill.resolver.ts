@@ -22,7 +22,7 @@ export class SkillResolver {
         return { code: 404, message: "Skill not found", subItems: [] };
       }
 
-      const skillCategories = await this.db.skillCategorySkill.findMany({
+      const skillCategories: PrismaSkillCategorySkill[] = await this.db.skillCategorySkill.findMany({
         where: { skillId: id },
         include: { category: true },
       });
@@ -30,7 +30,7 @@ export class SkillResolver {
 
       const dto: SkillSubItem = { id: skill.id, name: skill.name, image: skill.image, categoryId };
       return { code: 200, message: "Skill fetched successfully", subItems: [dto] };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Error fetching skill:", errorMessage);
       return { code: 500, message: "Failed to fetch skill", subItems: [] };
@@ -49,7 +49,7 @@ export class SkillResolver {
       });
 
       if (data.categoryId) {
-        const category = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        const category: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!category) {
           await this.db.skill.delete({ where: { id: skill.id } });
           return { code: 400, message: "Category not found", subItems: undefined };
@@ -67,7 +67,7 @@ export class SkillResolver {
         categoryId: data.categoryId || 0,
       };
       return { code: 200, message: "Skill created successfully", subItems: [dto] };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Error creating skill:", errorMessage);
       return { code: 500, message: "Failed to create skill", subItems: undefined };
@@ -90,7 +90,7 @@ export class SkillResolver {
       if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
 
       if (data.categoryId) {
-        const validCat = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        const validCat: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!validCat) return { code: 400, message: "Invalid category", subItems: undefined };
       }
 
@@ -102,12 +102,12 @@ export class SkillResolver {
         },
       });
 
-      const skillCategory = await this.db.skillCategorySkill.findFirst({ where: { skillId: id } });
+      const skillCategory: PrismaSkillCategorySkill | null = await this.db.skillCategorySkill.findFirst({ where: { skillId: id } });
       const categoryId: number = skillCategory?.categoryId || 0;
 
       const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId };
       return { code: 200, message: "Skill updated", subItems: [dto] };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Error updating skill:", errorMessage);
       return { code: 500, message: "Error updating skill", subItems: undefined };
@@ -139,12 +139,12 @@ export class SkillResolver {
           message: successMessage,
           subItems: [],
         };
-      } catch (deleteError: unknown) {
+      } catch (deleteError: Error | unknown) {
         const deleteErrorMessage: string = deleteError instanceof Error ? deleteError.message : "Unknown error occurred";
         console.error("Error during skill deletion:", deleteErrorMessage);
         return { code: 500, message: "Error deleting skill", subItems: undefined };
       }
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Error in deleteSkill:", errorMessage);
       return { code: 500, message: "Error deleting skill", subItems: undefined };
