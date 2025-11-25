@@ -40,13 +40,6 @@ interface FileUploadResult {
 @Authorized([UserRole.admin, UserRole.editor])
 export class ProjectAdminResolver {
   private readonly db: PrismaClient = prisma;
-
-  /**
-   * Creates a new project with associated skills
-   * @param data - Project creation data including skill IDs
-   * @param ctx - GraphQL context containing user information
-   * @returns ProjectResponse with created project or error
-   */
   @Mutation(() => ProjectResponse)
   async createProject(
     @Arg("data") data: CreateProjectInput,
@@ -98,7 +91,7 @@ export class ProjectAdminResolver {
         message: "Project created successfully", 
         project 
       };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Create project error:", err);
       const errorMessage: string = err instanceof Error ? err.message : "Server error";
       return { 
@@ -107,13 +100,6 @@ export class ProjectAdminResolver {
       };
     }
   }
-
-  /**
-   * Updates an existing project and optionally its skills
-   * @param data - Update data including optional skill IDs
-   * @param ctx - GraphQL context containing user information
-   * @returns ProjectResponse with updated project or error
-   */
   @Mutation(() => ProjectResponse)
   async updateProject(
     @Arg("data") data: UpdateProjectInput,
@@ -200,7 +186,7 @@ export class ProjectAdminResolver {
         message: "Project updated successfully", 
         project 
       };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Update project error:", err);
       const errorMessage: string = err instanceof Error ? err.message : "Server error";
       return { 
@@ -210,13 +196,6 @@ export class ProjectAdminResolver {
     }
   }
 
-  /**
-   * Uploads an image or video file for a project
-   * @param projectId - ID of the project to upload media for
-   * @param file - File upload from GraphQL
-   * @param ctx - GraphQL context containing user information
-   * @returns ProjectResponse with updated project or error
-   */
   @Mutation(() => ProjectResponse)
   async uploadProjectMedia(
     @Arg("projectId", () => Int) projectId: number,
@@ -274,7 +253,6 @@ export class ProjectAdminResolver {
         projectId
       );
 
-      // Update project in database
       const updatedPrisma: PrismaProjectWithSkills = await this.db.project.update({
         where: { id: projectId },
         data: {
@@ -297,7 +275,7 @@ export class ProjectAdminResolver {
         message: "Media uploaded successfully", 
         project: updatedProject 
       };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Upload media error:", err);
       const errorMessage: string = err instanceof Error ? err.message : "Server error";
       return { 
@@ -307,13 +285,6 @@ export class ProjectAdminResolver {
     }
   }
 
-  /* ================= DELETE MEDIA ================= */
-  /**
-   * Deletes the media file associated with a project
-   * @param projectId - ID of the project to delete media from
-   * @param ctx - GraphQL context containing user information
-   * @returns ProjectResponse with updated project or error
-   */
   @Mutation(() => ProjectResponse)
   async deleteProjectMedia(
     @Arg("projectId", () => Int) projectId: number,
@@ -376,7 +347,7 @@ export class ProjectAdminResolver {
         message: "Media deleted successfully", 
         project: updatedProject 
       };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Delete media error:", err);
       const errorMessage: string = err instanceof Error ? err.message : "Server error";
       return { 
@@ -386,14 +357,6 @@ export class ProjectAdminResolver {
     }
   }
 
-  /* ================= DELETE PROJECT ================= */
-  /**
-   * Deletes a project and its associated media
-   * Only accessible to admin users
-   * @param id - ID of the project to delete
-   * @param ctx - GraphQL context containing user information
-   * @returns Response indicating success or error
-   */
   @Authorized([UserRole.admin])
   @Mutation(() => Response)
   async deleteProject(
@@ -435,7 +398,7 @@ export class ProjectAdminResolver {
         code: 200, 
         message: "Project deleted successfully" 
       };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Delete project error:", err);
       const errorMessage: string = err instanceof Error ? err.message : "Server error";
       return { 
@@ -445,11 +408,6 @@ export class ProjectAdminResolver {
     }
   }
 
-  /**
-   * Validates that all provided skill IDs exist in the database
-   * @param skillIds - Array of skill IDs to validate
-   * @returns ValidationResult indicating if all skills are valid
-   */
   private async validateSkills(skillIds: number[]): Promise<ValidationResult> {
     try {
       const count: number = await this.db.skill.count({
@@ -466,7 +424,7 @@ export class ProjectAdminResolver {
       }
 
       return { isValid: true };
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Validate skills error:", err);
       return {
         isValid: false,
@@ -475,11 +433,6 @@ export class ProjectAdminResolver {
     }
   }
 
-  /**
-   * Validates that a file mimetype is either image or video
-   * @param mimetype - MIME type of the uploaded file
-   * @returns ValidationResult indicating if file type is valid
-   */
   private validateFileType(mimetype: string): ValidationResult {
     const isImage: boolean = mimetype.startsWith("image/");
     const isVideo: boolean = mimetype.startsWith("video/");
@@ -495,13 +448,6 @@ export class ProjectAdminResolver {
     return { isValid: true };
   }
 
-  /**
-   * Synchronizes project skills by adding new ones and removing old ones
-   * @param tx - Prisma transaction client
-   * @param projectId - ID of the project
-   * @param newSkillIds - Array of new skill IDs to associate
-   * @param existingSkills - Current project skills
-   */
   private async syncSkills(
     tx: Prisma.TransactionClient,
     projectId: number,
@@ -540,7 +486,7 @@ export class ProjectAdminResolver {
         id: ps.skill.id,
         name: ps.skill.name,
         image: ps.skill.image,
-        categoryId: 0, // categoryId is no longer directly on Skill - it's managed via junction table
+        categoryId: 0,
       })
     );
 
@@ -593,7 +539,7 @@ export class ProjectAdminResolver {
           stream.on("error", (err: Error): void => {
             reject(new Error(`Failed to read stream: ${err.message}`));
           });
-        } catch (err: unknown) {
+        } catch (err: Error | unknown) {
           const errorMessage: string = err instanceof Error ? err.message : "Unknown error";
           reject(new Error(`File save error: ${errorMessage}`));
         }
@@ -611,7 +557,7 @@ export class ProjectAdminResolver {
       if (fileExists) {
         await fs.unlink(filePath);
       }
-    } catch (err: unknown) {
+    } catch (err: Error | unknown) {
       console.error("Error deleting file:", err);
     }
   }
