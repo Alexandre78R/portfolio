@@ -12,19 +12,10 @@ import { CategoryResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import type { MyContext } from "..";
 
-/**
- * Type interne pour représenter une catégorie avec ses compétences
- * Intersection de PrismaSkillCategory et tableau de jonctions avec compétences associées
- */
 type SkillCategoryWithSkills = PrismaSkillCategory & {
   skills: (PrismaSkillCategorySkill & { skill: PrismaSkill })[];
 };
 
-/**
- * SkillCategoryResolver
- * Gère les requêtes et mutations GraphQL pour les catégories de compétences
- * et leurs associations via la table de jonction
- */
 @Resolver()
 export class SkillCategoryResolver {
   private readonly db: PrismaClient;
@@ -33,10 +24,6 @@ export class SkillCategoryResolver {
     this.db = prismaClient ?? new PrismaClient();
   }
 
-  /**
-   * Récupère toutes les catégories avec leurs compétences associées
-   * @returns Promise<CategoryResponse> - Liste complète des catégories avec compétences
-   */
   @Query(() => CategoryResponse)
   async skillList(): Promise<CategoryResponse> {
     try {
@@ -64,7 +51,7 @@ export class SkillCategoryResolver {
       );
 
       return { code: 200, message: "Categories fetched successfully", categories: dtoList };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Error fetching categories:", errorMessage);
       return { code: 500, message: "Failed to fetch categories", categories: undefined };
@@ -98,7 +85,7 @@ export class SkillCategoryResolver {
       };
 
       return { code: 200, message: "Category fetched successfully", categories: [dto] };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       console.error(error);
       return { code: 500, message: "Failed to fetch category", categories: [] };
     }
@@ -143,8 +130,8 @@ export class SkillCategoryResolver {
                 },
               })
             )
-          );
-        } catch (error: unknown) {
+            );
+            } catch (error: Error | unknown) {
           console.error("Error linking skills to category:", error);
           await this.db.skillCategory.delete({ where: { id: category.id } });
           return { code: 500, message: "Failed to link skills to category", categories: undefined };
@@ -177,7 +164,7 @@ export class SkillCategoryResolver {
       };
 
       return { code: 200, message: "Category created successfully", categories: [dto] };
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       console.error("Error creating category:", error);
       return { code: 500, message: "Failed to create category", categories: undefined };
     }
@@ -297,13 +284,50 @@ export class SkillCategoryResolver {
         };
 
         return { code: 200, message: "Category updated successfully", categories: [dto] };
-      } catch (error: unknown) {
+      } catch (error: Error | unknown) {
         console.error("Error in category update process:", error);
         return { code: 500, message: "Error updating category", categories: undefined };
       }
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       console.error("Error in updateCategory:", error);
       return { code: 500, message: "Error updating category", categories: undefined };
+    }
+  }
+
+  @Authorized([UserRole.admin])
+  @Mutation(() => CategoryResponse)
+  async deleteCategory(
+    @Arg("id", () => Int) id: number,
+    @Ctx() ctx: MyContext
+  ): Promise<CategoryResponse> {
+    try {
+      if (!ctx.user) return { code: 401, message: "Authentication required.", categories: undefined };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", categories: undefined };
+
+      const existing: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Category not found", categories: undefined };
+
+      try {
+        const deletedJunctionsResult: { count: number } = await this.db.skillCategorySkill.deleteMany({
+          where: { categoryId: id },
+        });
+        await this.db.skillCategory.delete({ where: { id } });
+
+        const successMessage: string = `Category deleted successfully`;
+        return {
+          code: 200,
+          message: successMessage,
+          categories: [],
+        };
+      } catch (deleteError: Error | unknown) {
+        const deleteErrorMessage: string = deleteError instanceof Error ? deleteError.message : "Unknown error occurred";
+        console.error("Error during category deletion:", deleteErrorMessage);
+        return { code: 500, message: "Error deleting category", categories: undefined };
+      }
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error in deleteCategory:", errorMessage);
+      return { code: 500, message: "Error deleting category", categories: undefined };
     }
   }
 }
