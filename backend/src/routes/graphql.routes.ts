@@ -16,6 +16,7 @@ import { User, UserRole } from "../entities/user.entity";
 import { ContactResolver } from "../resolvers/contact.resolver";
 import { CaptchaResolver } from "../resolvers/captcha.resolver";
 import { SkillResolver } from "../resolvers/skill.resolver";
+import { SkillCategoryResolver } from "../resolvers/skillCategory.resolver";
 import { ProjectResolver } from "../resolvers/project.resolver";
 import { ExperienceResolver } from "../resolvers/experience.resolver";
 import { EducationResolver } from "../resolvers/education.resolver";
@@ -53,6 +54,7 @@ export async function mountGraphQL(app: Express) {
       ContactResolver,
       CaptchaResolver,
       SkillResolver,
+    SkillCategoryResolver,
       ProjectResolver,
       ExperienceResolver,
       EducationResolver,
