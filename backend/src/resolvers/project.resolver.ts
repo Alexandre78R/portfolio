@@ -10,7 +10,7 @@ export class ProjectResolver {
 
   @Query(() => ProjectsResponse)
   async projectList(): Promise<ProjectsResponse> {
-    const projects = await this.db.project.findMany({
+    const projects: PrismaProject[] = await this.db.project.findMany({
       include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
     });
@@ -26,7 +26,7 @@ export class ProjectResolver {
   async projectById(
     @Arg("id", () => Int) id: number
   ): Promise<ProjectResponse> {
-    const project = await this.db.project.findUnique({
+    const project: PrismaProject | null = await this.db.project.findUnique({
       where: { id },
       include: { skills: { include: { skill: true } } },
     });
