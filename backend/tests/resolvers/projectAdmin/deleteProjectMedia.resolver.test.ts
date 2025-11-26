@@ -25,9 +25,9 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         role: UserRole.admin,
         isPasswordChange: false,
       },
-      req: {} as any,
-      res: {} as any,
-      cookies: {} as any,
+      req: {} as MyContext["req"],
+      res: {} as MyContext["res"],
+      cookies: {} as MyContext["cookies"],
       token: "mock-token",
     };
 
@@ -43,7 +43,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       writable: true,
     });
 
-    (resolver as any).transformProject = jest
+    (resolver as unknown).transformProject = jest
       .fn()
       .mockImplementation((project) => ({
         id: project.id,
@@ -56,7 +56,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         skills: project.skills || [],
       }));
 
-    (resolver as any).deleteMediaFile = jest
+    (resolver as unknown).deleteMediaFile = jest
       .fn()
       .mockResolvedValue(undefined);
   });
@@ -66,13 +66,13 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
   });
 
   it("should return 401 when user not authenticated", async () => {
-    const result = await resolver.deleteProjectMedia(1, {
+    const result: ProjectResponse = await resolver.deleteProjectMedia(1, {
       user: null,
-      req: {} as any,
-      res: {} as any,
-      cookies: {} as any,
+      req: {} as MyContext["req"],
+      res: {} as MyContext["res"],
+      cookies: {} as MyContext["cookies"],
       token: "",
-    } as any);
+    } as MyContext);
 
     expect(result).toEqual({
       code: 401,
@@ -83,7 +83,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
   it("should return 404 when project not found", async () => {
     mockPrisma.project.findUnique.mockResolvedValue(null);
 
-    const result = await resolver.deleteProjectMedia(1, mockCtx);
+    const result: ProjectResponse = await resolver.deleteProjectMedia(1, mockCtx);
 
     expect(result).toEqual({
       code: 404,
@@ -92,7 +92,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
   });
 
   it("should delete media file and update project", async () => {
-    const mockProject = {
+    const mockProject: ProjectResponse["project"] = {
       id: 1,
       title: "Test Project",
       descriptionEN: "Test EN",
@@ -111,9 +111,9 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       typeDisplay: "",
     });
 
-    const result = await resolver.deleteProjectMedia(1, mockCtx);
+    const result: ProjectResponse = await resolver.deleteProjectMedia(1, mockCtx);
 
-    expect((resolver as any).deleteMediaFile).toHaveBeenCalledWith(
+    expect((resolver as ).deleteMediaFile).toHaveBeenCalledWith(
       "video.mp4",
       "VIDEO"
     );
@@ -131,13 +131,13 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         },
       },
     });
-    expect((resolver as any).transformProject).toHaveBeenCalled();
+    expect((resolver as unknown).transformProject).toHaveBeenCalled();
     expect(result.code).toBe(200);
     expect(result.message).toBe("Media deleted successfully");
   });
 
   it("should handle deletion when no media file exists", async () => {
-    const mockProject = {
+    const mockProject: ProjectResponse["project"] = {
       id: 1,
       title: "Test Project",
       descriptionEN: "Test EN",
@@ -152,9 +152,9 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
     mockPrisma.project.findUnique.mockResolvedValue(mockProject);
     mockPrisma.project.update.mockResolvedValue(mockProject);
 
-    const result = await resolver.deleteProjectMedia(1, mockCtx);
+    const result: ProjectResponse = await resolver.deleteProjectMedia(1, mockCtx);
 
-    expect((resolver as any).deleteMediaFile).not.toHaveBeenCalled();
+    expect((resolver as unknown).deleteMediaFile).not.toHaveBeenCalled();
     expect(result.code).toBe(200);
     expect(result.message).toBe("Media deleted successfully");
   });
