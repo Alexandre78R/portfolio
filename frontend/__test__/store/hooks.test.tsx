@@ -7,6 +7,7 @@ import { setSkills, Skill } from "@/store/slices/skillsSlice";
 import { setEducations, EducationType } from "@/store/slices/educationsSlice";
 import { setExperiences, ExperienceType } from "@/store/slices/experiencesSlice";
 import { setProjects, Project, SkillsProject } from "@/store/slices/projectsSlice";
+import { setSocials, Social } from "@/store/slices/socialsSlice";
 
 const TestHooksComponent: FC = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ const TestHooksComponent: FC = () => {
   const educations: EducationType[] = useAppSelector((state) => state.educations.dataEducations);
   const experiences: ExperienceType[] = useAppSelector((state) => state.experiences.dataExperiences);
   const projects: Project[] = useAppSelector((state) => state.projects.dataProjects);
+  const socials: Social[] = useAppSelector((state) => state.socials.dataSocials);
 
   const handleAddSkill = (): void => {
     const newSkill: Skill = {
@@ -78,6 +80,16 @@ const TestHooksComponent: FC = () => {
     dispatch(setProjects([newProj]));
   };
 
+  const handleAddSocial = (): void => {
+    const newSocial: Social = {
+      id: 1,
+      title: "GitHub",
+      url: "https://github.com",
+      tab: 3,
+    };
+    dispatch(setSocials([newSocial]));
+  };
+
   return (
     <div>
       <div>
@@ -96,12 +108,16 @@ const TestHooksComponent: FC = () => {
         <span data-testid="projects-count">{projects.length}</span>
         <button type="button" onClick={handleAddProject}>add-project</button>
       </div>
+      <div>
+        <span data-testid="socials-count">{socials.length}</span>
+        <button type="button" onClick={handleAddSocial}>add-social</button>
+      </div>
     </div>
   );
 };
 
 describe("Redux Hooks - all slices", () => {
-  it("should select and dispatch correctly for skills, educations, experiences and projects", () => {
+  it("should select and dispatch correctly for skills, educations, experiences, projects and socials", () => {
     render(
       <Provider store={store}>
         <TestHooksComponent />
@@ -112,27 +128,32 @@ describe("Redux Hooks - all slices", () => {
     const eduCount: HTMLElement = screen.getByTestId("education-count");
     const expCount: HTMLElement = screen.getByTestId("experience-count");
     const projCount: HTMLElement = screen.getByTestId("projects-count");
+    const socialsCount: HTMLElement = screen.getByTestId("socials-count");
 
     expect(skillsCount.textContent).toBe("0");
     expect(eduCount.textContent).toBe("0");
     expect(expCount.textContent).toBe("0");
     expect(projCount.textContent).toBe("0");
+    expect(socialsCount.textContent).toBe("0");
 
     const skillsButton: HTMLButtonElement = screen.getByText("add-skill") as HTMLButtonElement;
     const eduButton: HTMLButtonElement = screen.getByText("add-education") as HTMLButtonElement;
     const expButton: HTMLButtonElement = screen.getByText("add-experience") as HTMLButtonElement;
     const projButton: HTMLButtonElement = screen.getByText("add-project") as HTMLButtonElement;
+    const socialsButton: HTMLButtonElement = screen.getByText("add-social") as HTMLButtonElement;
 
     act(() => {
       fireEvent.click(skillsButton);
       fireEvent.click(eduButton);
       fireEvent.click(expButton);
       fireEvent.click(projButton);
+      fireEvent.click(socialsButton);
     });
 
     expect(skillsCount.textContent).toBe("1");
     expect(eduCount.textContent).toBe("1");
     expect(expCount.textContent).toBe("1");
     expect(projCount.textContent).toBe("1");
+    expect(socialsCount.textContent).toBe("1");
   });
 });
