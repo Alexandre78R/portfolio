@@ -7,6 +7,7 @@ import { Education } from "../entities/education.entity";
 import { Experience } from "../entities/experience.entity";
 import { User } from "../entities/user.entity";
 import { Theme } from "../entities/theme.entity";
+import { Social } from "../entities/social.entity";
 
 @ObjectType()
 export class Response {
@@ -214,7 +215,17 @@ export class ThemeResponse extends Response {
   @Field(() => Theme, { nullable: true })
   theme?: Theme;
 }
+@ObjectType()
+export class SocialResponse extends Response {
+  @Field(() => Social, { nullable: true })
+  social?: Social;
+}
 
+@ObjectType()
+export class SocialsResponse extends Response {
+  @Field(() => [Social], { nullable: true })
+  socials?: Social[];
+}
 @ObjectType()
 export class ThemesResponse extends Response {
   @Field(() => [Theme], { nullable: true })

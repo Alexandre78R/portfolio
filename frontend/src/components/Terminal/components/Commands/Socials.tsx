@@ -39,12 +39,11 @@ const Socials = (): React.ReactNode => {
     if (checkRedirect(rerender, currentCommand, "socials")) {
       socials.forEach(({ id, url }) => {
         id === parseInt(arg[1]) && window.open(url, "_blank");
-        // id === parseInt(arg[1]) && console.log("ttoto");
       });
     }
   }, [arg, rerender, currentCommand]);
 
-  const checkArg = () :  React.ReactElement | null =>
+  const checkArg = (): React.ReactElement | null =>
     isArgInvalid(arg, "go", ["1", "2"]) ? <Usage cmd="socials" /> : null;
 
   return arg.length > 0 || arg.length > 2 ? (

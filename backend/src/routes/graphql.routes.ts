@@ -25,6 +25,7 @@ import { AdminResolver } from "../resolvers/admin.resolver";
 import { CVResolver } from "../resolvers/cv.resolver";
 import { ThemeResolver } from "../resolvers/theme.resolver";
 import { ProjectAdminResolver } from "../resolvers/projectAdmin.resolver";
+import { SocialResolver } from "../resolvers/social.resolver";
 
 /* --- Types context GraphQL --- */
 
@@ -63,6 +64,7 @@ export async function mountGraphQL(app: Express) {
       CVResolver,
       ThemeResolver,
       ProjectAdminResolver,
+      SocialResolver,
     ],
     validate: false,
     authChecker: customAuthChecker,

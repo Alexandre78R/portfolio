@@ -5,6 +5,7 @@ import {
   Project,
   Theme,
   SkillCategorySkill,
+  Social,
 } from "@prisma/client";
 import readline from "readline";
 
@@ -13,6 +14,7 @@ import { skillsData } from "../seed/skillsData";
 import { experiencesData } from "../seed/experiencesData";
 import { educationsData } from "../seed/educationsData";
 import { themesData } from "../seed/themesData";
+import { socialsData } from "../seed/socialsData";
 
 import type {
   SkillCategoryData,
@@ -100,6 +102,7 @@ async function seed(): Promise<void> {
     await prisma.experience.deleteMany();
     await prisma.user.deleteMany();
     await prisma.theme.deleteMany();
+    await prisma.social.deleteMany();
 
     /* =========================
      * Themes
@@ -247,6 +250,21 @@ async function seed(): Promise<void> {
           typeFR: exp.typeFR,
         },
       });
+    }
+
+    /* =========================
+     * Socials
+     * ========================= */
+
+    for (const social of socialsData) {
+      const createdSocial: Social = await prisma.social.create({
+        data: {
+          title: social.title,
+          url: social.url,
+          tab: social.tab,
+        },
+      });
+      console.log(`🔗 Social seeded: ${createdSocial.title}`);
     }
 
     console.log("✅ Database seeded successfully.");
