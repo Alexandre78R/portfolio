@@ -11,12 +11,14 @@ import { setSkills, updateSkillCategories } from "@/store/slices/skillsSlice";
 import { setProjects, updateProjectDescriptions } from "@/store/slices/projectsSlice";
 import { setEducations, updateEducationsTitle } from "@/store/slices/educationsSlice";
 import { setExperiences, updateExperiences } from "@/store/slices/experiencesSlice";
+import { setSocials } from "@/store/slices/socialsSlice";
 
 // Types Redux
 import type { Skill } from "@/store/slices/skillsSlice";
 import type { Project } from "@/store/slices/projectsSlice";
 import type { EducationType } from "@/store/slices/educationsSlice";
 import type { ExperienceType } from "@/store/slices/experiencesSlice";
+import type { Social } from "@/store/slices/socialsSlice";
 
 // GraphQL hooks
 import {
@@ -25,6 +27,8 @@ import {
   useGetEducationsListQuery,
   useGetExperiencesListQuery,
 } from "@/types/graphql";
+import { useQuery } from "@apollo/client";
+import { GET_SOCIALS_LIST } from "@/requetes/queries/socials.queries";
 
 // Composants
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
@@ -42,6 +46,7 @@ const Home: React.FC = (): ReactElement => {
   const { data: skillsData } = useGetSkillsListQuery();
   const { data: educationsData } = useGetEducationsListQuery();
   const { data: experiencesData } = useGetExperiencesListQuery();
+  const { data: socialsData } = useQuery(GET_SOCIALS_LIST);
 
   const { translations }: LangContextType = useLang();
   const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef }: SectionRefsContextProps = useSectionRefs();
@@ -52,6 +57,7 @@ const Home: React.FC = (): ReactElement => {
   const dataProjects: Project[] = useAppSelector((state: any) => state.projects.dataProjects);
   const dataEducations: EducationType[] = useAppSelector((state: any) => state.educations.dataEducations);
   const dataExperiences: ExperienceType[] = useAppSelector((state: any) => state.experiences.dataExperiences);
+  const dataSocials: Social[] = useAppSelector((state: any) => state.socials.dataSocials);
 
   useEffect(() => {
     const projectList = projectsData?.projectList;
@@ -164,6 +170,22 @@ const Home: React.FC = (): ReactElement => {
     
     dispatch(setExperiences(formattedExperiences));
   }, [experiencesData, dataExperiences.length, dispatch, translations.file]);
+
+  useEffect(() => {
+    const socialList = socialsData?.socialList;
+    if (!socialList || dataSocials.length > 0) {
+      return;
+    }
+
+    const formattedSocials: Social[] = socialList.map((social: any) => ({
+      id: Number(social.id),
+      title: social.title,
+      url: social.url,
+      tab: Number(social.tab),
+    }));
+    
+    dispatch(setSocials(formattedSocials));
+  }, [socialsData, dataSocials.length, dispatch]);
 
   useEffect(() => {
     dispatch(updateSkillCategories(translations.file));
