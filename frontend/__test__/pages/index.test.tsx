@@ -9,6 +9,7 @@ import * as skillsSlice from "@/store/slices/skillsSlice";
 import * as projectsSlice from "@/store/slices/projectsSlice";
 import * as educationsSlice from "@/store/slices/educationsSlice";
 import * as experiencesSlice from "@/store/slices/experiencesSlice";
+import * as socialsSlice from "@/store/slices/socialsSlice";
 import {
   useGetProjectsListQuery,
   useGetSkillsListQuery,
@@ -20,12 +21,18 @@ import {
   Experience,
 } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
+import { Social } from "@/store/slices/socialsSlice";
+import { useQuery } from "@apollo/client";
 
 jest.mock("@/context/Lang/LangContext");
 jest.mock("@/context/SectionRefs/SectionRefsContext");
 jest.mock("@/context/ChoiceView/ChoiceViewContext");
 jest.mock("@/store/hook");
 jest.mock("@/types/graphql");
+jest.mock("@apollo/client", () => ({
+  ...jest.requireActual("@apollo/client"),
+  useQuery: jest.fn(),
+}));
 
 jest.mock("@/components/Seo/Seo", () => {
   const MockSeo = (): ReactElement => <div>SeoComponent</div>;
@@ -135,6 +142,7 @@ describe("Home Component", (): void => {
         projects: { dataProjects: [] },
         educations: { dataEducations: [] },
         experiences: { dataExperiences: [] },
+        socials: { dataSocials: [] },
       })
     );
 
@@ -142,6 +150,8 @@ describe("Home Component", (): void => {
     (useGetSkillsListQuery as jest.Mock).mockReturnValue({ data: { skillList: { code: 200, categories: [] as Skill[] } } });
     (useGetEducationsListQuery as jest.Mock).mockReturnValue({ data: { educationList: { code: 200, educations: [] as Education[] } } });
     (useGetExperiencesListQuery as jest.Mock).mockReturnValue({ data: { experienceList: { code: 200, experiences: [] as Experience[] } } });
+    
+    (useQuery as jest.Mock).mockReturnValue({ data: { socialList: [] as Social[] } });
   });
 
   it("renders all main components", async (): Promise<void> => {
@@ -161,10 +171,10 @@ describe("Home Component", (): void => {
     expect(screen.getByText("FooterComponent")).toBeInTheDocument();
   });
 
-  it("dispatches skill, project, education, experience updates", async (): Promise<void> => {
+  it("dispatches skill, project, education, experience and socials updates", async (): Promise<void> => {
     render(<Home />);
     await waitFor((): void => {
-      expect(dispatchMock).toHaveBeenCalledTimes(8);
+      expect(dispatchMock).toHaveBeenCalledTimes(9);
     });
   });
 
@@ -227,6 +237,34 @@ describe("Home Component", (): void => {
       expect(dispatchMock).toHaveBeenCalledWith(projectsSlice.updateProjectDescriptions("fr"));
       expect(dispatchMock).toHaveBeenCalledWith(educationsSlice.updateEducationsTitle("fr"));
       expect(dispatchMock).toHaveBeenCalledWith(experiencesSlice.updateExperiences("fr"));
+    });
+  });
+
+  it("formats and dispatches social data correctly", async (): Promise<void> => {
+    const mockSocials: Social[] = [
+      { id: 1, title: "GitHub", url: "https://github.com/Alexandre78R", tab: 3 },
+      { id: 2, title: "LinkedIn", url: "https://www.linkedin.com/in/alexandrerenard/", tab: 3 },
+    ];
+
+    (useQuery as jest.Mock).mockReturnValue({
+      data: { socialList: mockSocials },
+    });
+
+    render(<Home />);
+
+    await waitFor((): void => {
+      expect(dispatchMock).toHaveBeenCalledWith(
+        socialsSlice.setSocials(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: 1,
+              title: "GitHub",
+              url: "https://github.com/Alexandre78R",
+              tab: 3,
+            }),
+          ])
+        )
+      );
     });
   });
 });

@@ -173,7 +173,7 @@ const Home: React.FC = (): ReactElement => {
 
   useEffect(() => {
     const socialList = socialsData?.socialList;
-    if (!socialList || dataSocials.length > 0) {
+    if (!Array.isArray(socialList) || dataSocials.length > 0) {
       return;
     }
 

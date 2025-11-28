@@ -4,7 +4,8 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import Footer from "@/components/Footer/Footer";
 import Lang  from "@/lang/typeLang";
-import { socialsReducer } from "@/store/slices/socialsSlice";
+import { Social } from "@/store/slices/socialsSlice";
+import socialsReducer from "@/store/slices/socialsSlice";
 
 const translationsMock: Lang = {
   footerTitle: "Footer Test" as string,
@@ -27,7 +28,7 @@ jest.mock("@mui/icons-material/LinkedIn", () => ({
   default: (props: any) => <div data-testid="linkedin-icon" {...props} />,
 }));
 
-const createMockStore = (initialState: any) => {
+const createMockStore = (initialState: any): ReturnType<typeof configureStore> => {
   return configureStore({
     reducer: {
       socials: socialsReducer,
@@ -44,7 +45,7 @@ describe("Footer component", () => {
   ];
 
   it("renders the footer title", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: mockSocials } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: mockSocials } });
     render(
       <Provider store={store}>
         <Footer />
@@ -54,7 +55,7 @@ describe("Footer component", () => {
   });
 
   it("renders the admin link with correct text", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: mockSocials } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: mockSocials } });
     render(
       <Provider store={store}>
         <Footer />
@@ -66,7 +67,7 @@ describe("Footer component", () => {
   });
 
   it("renders the networks section with GitHub and LinkedIn icons from Redux", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: mockSocials } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: mockSocials } });
     render(
       <Provider store={store}>
         <Footer />
@@ -78,7 +79,7 @@ describe("Footer component", () => {
   });
 
   it("renders the copyright with current year", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: mockSocials } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: mockSocials } });
     const currentYear: number = new Date().getFullYear();
     render(
       <Provider store={store}>
@@ -91,7 +92,7 @@ describe("Footer component", () => {
   });
 
   it("has correct links for GitHub and LinkedIn from Redux data", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: mockSocials } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: mockSocials } });
     render(
       <Provider store={store}>
         <Footer />
@@ -110,7 +111,7 @@ describe("Footer component", () => {
   });
 
   it("renders nothing when dataSocials is empty", () => {
-    const store: ReturnType<typeof createMockStore> = createMockStore({ socials: { dataSocials: [] } });
+    const store: ReturnType<typeof configureStore> = createMockStore({ socials: { dataSocials: [] } });
     render(
       <Provider store={store}>
         <Footer />
