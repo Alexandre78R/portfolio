@@ -2,10 +2,25 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useLang, LangKey } from "@/context/Lang/LangContext";
 import type LangType from "@/lang/typeLang";
+import { useAppSelector } from "@/store/hook";
+import { Social } from "@/store/slices/socialsSlice";
+import Lang from "@/lang/typeLang";
 
 const Footer = (): JSX.Element => {
-  const { translations } = useLang() as { translations: LangType; lang: LangKey };
+  const { translations }: { translations: Lang } = useLang();
   const currentYear: number = new Date().getFullYear();
+  const dataSocials: Social[] = useAppSelector((state) => state.socials.dataSocials);
+
+  const getIconComponent = (title: string): JSX.Element | null => {
+    switch (title.toLowerCase()) {
+      case "github":
+        return <GitHubIcon className="text-text hover:text-secondary" />;
+      case "linkedin":
+        return <LinkedInIcon className="text-text hover:text-secondary" />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <footer className="mt-10 bg-footer text-text py-4">
@@ -24,22 +39,22 @@ const Footer = (): JSX.Element => {
         <div className="flex flex-col items-center mx-4 mb-4 md:mb-0 lg:mx-25 flex-1">
           <p className="text-lg font-bold mb-2">{translations.footerNetworks}</p>
           <div className="flex space-x-4">
-            <a
-              href="https://github.com/Alexandre78R"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Github"
-            >
-              <GitHubIcon className="text-text hover:text-secondary" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/alexandrerenard/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Linkedin"
-            >
-              <LinkedInIcon className="text-text hover:text-secondary" />
-            </a>
+            {dataSocials.map((social: Social) => {
+              const icon: JSX.Element | null = getIconComponent(social.title);
+              if (!icon) return null;
+              
+              return (
+                <a
+                  key={social.id}
+                  href={social.url}
+                  target={social.tab === 3 ? "_blank" : "_self"}
+                  rel={social.tab === 3 ? "noopener noreferrer" : undefined}
+                  title={social.title}
+                >
+                  {icon}
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
