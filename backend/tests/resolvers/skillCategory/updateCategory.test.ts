@@ -6,6 +6,7 @@ import type { User } from "../../../src/entities/user.entity";
 import { UserRole } from "../../../src/entities/user.entity";
 import type { UpdateCategoryInput } from "../../../src/entities/inputs/skill.input";
 import { CategoryResponse } from "../../../src/types/response.types";
+import type { SkillCategoryWithSkillsDTO } from "../../../src/entities/skillCategoryWithSkillsDTO.entity";
 import { mockDeep } from "jest-mock-extended";
 import type { DeepMockProxy } from "jest-mock-extended";
 import type { Request, Response } from "express";
@@ -126,7 +127,7 @@ describe("SkillCategoryResolver - updateCategory", (): void => {
     expect(result.categories).toBeDefined();
     expect(result.categories?.length).toBe(1);
 
-    const updatedCat: PrismaSkillCategory & { skills: (PrismaSkillCategorySkill & { skill: PrismaSkill })[] } = result.categories?.[0];
+    const updatedCat: SkillCategoryWithSkillsDTO | undefined = result.categories?.[0];
     expect(updatedCat?.id).toBe(1);
     expect(updatedCat?.categoryEN).toBe("Frontend Development");
     expect(updatedCat?.categoryFR).toBe("Développement Frontend");

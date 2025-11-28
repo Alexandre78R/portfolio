@@ -4,7 +4,7 @@ import { CreateSkillInput, UpdateSkillInput } from "../entities/inputs/skill.inp
 import { SubItemResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
-import { PrismaClient, Skill as PrismaSkill, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
+import { PrismaClient, Skill as PrismaSkill, SkillCategory, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
 
 @Resolver()
 export class SkillResolver {
@@ -49,7 +49,7 @@ export class SkillResolver {
       });
 
       if (data.categoryId) {
-        const category: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        const category: SkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!category) {
           await this.db.skill.delete({ where: { id: skill.id } });
           return { code: 400, message: "Category not found", subItems: undefined };
@@ -90,7 +90,7 @@ export class SkillResolver {
       if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
 
       if (data.categoryId) {
-        const validCat: PrismaSkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        const validCat: SkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
         if (!validCat) return { code: 400, message: "Invalid category", subItems: undefined };
       }
 

@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { ProjectAdminResolver } from "../../../src/resolvers/projectAdmin.resolver";
 import { MyContext } from "../../../src";
 import { UserRole } from "../../../src/entities/user.entity";
+import { ProjectResponse } from "../../../src/types/response.types";
+import Cookies from "cookies";
 import * as fs from "fs";
 import * as fsPromises from "fs/promises";
 
@@ -43,7 +45,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       writable: true,
     });
 
-    (resolver as unknown).transformProject = jest
+    (resolver as any).transformProject = jest
       .fn()
       .mockImplementation((project) => ({
         id: project.id,
@@ -56,7 +58,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         skills: project.skills || [],
       }));
 
-    (resolver as unknown).deleteMediaFile = jest
+    (resolver as any).deleteMediaFile = jest
       .fn()
       .mockResolvedValue(undefined);
   });
@@ -97,7 +99,6 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       title: "Test Project",
       descriptionEN: "Test EN",
       descriptionFR: "Test FR",
-      userId: 1,
       contentDisplay: "video.mp4",
       typeDisplay: "VIDEO",
       github: null,
@@ -113,7 +114,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
 
     const result: ProjectResponse = await resolver.deleteProjectMedia(1, mockCtx);
 
-    expect((resolver as ).deleteMediaFile).toHaveBeenCalledWith(
+    expect((resolver as any).deleteMediaFile).toHaveBeenCalledWith(
       "video.mp4",
       "VIDEO"
     );
@@ -131,7 +132,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         },
       },
     });
-    expect((resolver as unknown).transformProject).toHaveBeenCalled();
+    expect((resolver as any).transformProject).toHaveBeenCalled();
     expect(result.code).toBe(200);
     expect(result.message).toBe("Media deleted successfully");
   });
@@ -142,7 +143,6 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       title: "Test Project",
       descriptionEN: "Test EN",
       descriptionFR: "Test FR",
-      userId: 1,
       contentDisplay: "",
       typeDisplay: "",
       github: null,
@@ -154,7 +154,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
 
     const result: ProjectResponse = await resolver.deleteProjectMedia(1, mockCtx);
 
-    expect((resolver as unknown).deleteMediaFile).not.toHaveBeenCalled();
+    expect((resolver as any).deleteMediaFile).not.toHaveBeenCalled();
     expect(result.code).toBe(200);
     expect(result.message).toBe("Media deleted successfully");
   });

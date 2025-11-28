@@ -6,6 +6,7 @@ import type { User } from "../../../src/entities/user.entity";
 import { UserRole } from "../../../src/entities/user.entity";
 import type { CreateSkillInput } from "../../../src/entities/inputs/skill.input";
 import { SubItemResponse } from "../../../src/types/response.types";
+import type { SkillSubItem } from "../../../src/entities/skillSubItem.entity";
 import { mockDeep } from "jest-mock-extended";
 import type { DeepMockProxy } from "jest-mock-extended";
 import type { Request, Response } from "express";
@@ -103,7 +104,7 @@ describe("SkillResolver - createSkill", (): void => {
     expect(result.subItems).toBeDefined();
     expect(result.subItems?.length).toBe(1);
 
-    const createdSkill: PrismaSkill = result.subItems?.[0];
+    const createdSkill: SkillSubItem | undefined = result.subItems?.[0];
     expect(createdSkill?.id).toBe(100);
     expect(createdSkill?.name).toBe("React");
     expect(createdSkill?.image).toBe("react.png");
@@ -134,7 +135,7 @@ describe("SkillResolver - createSkill", (): void => {
     expect(result.message).toBe("Skill created successfully");
     expect(result.subItems?.length).toBe(1);
 
-    const createdSkill: PrismaSkill = result.subItems?.[0];
+    const createdSkill: SkillSubItem | undefined = result.subItems?.[0];
     expect(createdSkill?.categoryId).toBe(0);
 
     expect(prismaMock.skill.create).toHaveBeenCalledTimes(1);

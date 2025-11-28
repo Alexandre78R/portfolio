@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { SkillResolver } from "../../../src/resolvers/skill.resolver";
 import { prismaMock } from "../../singleton";
 import { SubItemResponse } from "../../../src/types/response.types";
+import type { SkillSubItem } from "../../../src/entities/skillSubItem.entity";
 import type { Skill as PrismaSkill, SkillCategorySkill as PrismaSkillCategorySkill, SkillCategory as PrismaSkillCategory } from "@prisma/client";
 
 describe("SkillResolver - skillById", (): void => {
@@ -49,7 +50,7 @@ describe("SkillResolver - skillById", (): void => {
     expect(result.subItems).toBeDefined();
     expect(result.subItems?.length).toBe(1);
 
-    const fetchedSkill: PrismaSkill = result.subItems?.[0];
+    const fetchedSkill: SkillSubItem | undefined = result.subItems?.[0];
     expect(fetchedSkill?.id).toBe(1);
     expect(fetchedSkill?.name).toBe("JavaScript");
     expect(fetchedSkill?.image).toBe("js.png");
@@ -73,7 +74,7 @@ describe("SkillResolver - skillById", (): void => {
     expect(result.message).toBe("Skill fetched successfully");
     expect(result.subItems?.length).toBe(1);
 
-    const fetchedSkill: PrismaSkill = result.subItems?.[0];
+    const fetchedSkill: SkillSubItem | undefined = result.subItems?.[0];
     expect(fetchedSkill?.id).toBe(2);
     expect(fetchedSkill?.name).toBe("Design");
     expect(fetchedSkill?.categoryId).toBe(0);

@@ -26,11 +26,11 @@ type PrismaProjectWithBasicSkills = PrismaProject & {
 describe("ProjectAdminResolver - updateProject", (): void => {
   let resolver: ProjectAdminResolver;
   let mockContext: MyContext;
-  let mockPrisma: DeepMockProxy<unknown>;
-  let mockTransactionClient: DeepMockProxy<unknown>;
+  let mockPrisma: any;
+  let mockTransactionClient: any;
 
   beforeEach((): void => {
-    mockPrisma = mockDeep<unknown>({
+    mockPrisma = mockDeep<any>({
       project: {
         findUnique: jest.fn(),
         update: jest.fn(),
@@ -58,7 +58,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
       writable: true
     });
 
-    (resolver as unknown).transformProject = jest.fn().mockImplementation(
+    (resolver as any).transformProject = jest.fn().mockImplementation(
       (projectPrisma: PrismaProjectWithSkills): { id: number; title: string; descriptionEN: string; descriptionFR: string; typeDisplay: string; github: string | null; contentDisplay: string; skills: Array<{ id: number; name: string; image: string }> } => {
         const skills: Array<{ id: number; name: string; image: string }> = (projectPrisma.skills || []).map(
           (ps: ProjectSkill & { skill: Skill }): { id: number; name: string; image: string } => ({

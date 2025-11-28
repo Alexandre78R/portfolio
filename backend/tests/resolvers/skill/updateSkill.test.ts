@@ -5,8 +5,7 @@ import { MyContext } from "../../../src";
 import type { User } from "../../../src/entities/user.entity";
 import { UserRole } from "../../../src/entities/user.entity";
 import type { UpdateSkillInput } from "../../../src/entities/inputs/skill.input";
-import { SubItemResponse } from "../../../src/types/response.types";
-import { mockDeep } from "jest-mock-extended";
+import { SubItemResponse } from "../../../src/types/response.types";import type { SkillSubItem } from "../../../src/entities/skillSubItem.entity";import { mockDeep } from "jest-mock-extended";
 import type { DeepMockProxy } from "jest-mock-extended";
 import type { Request, Response } from "express";
 import Cookies from "cookies";
@@ -116,7 +115,7 @@ describe("SkillResolver - updateSkill", (): void => {
     expect(result.subItems).toBeDefined();
     expect(result.subItems?.length).toBe(1);
 
-    const updatedSkillDTO: PrismaSkill = result.subItems?.[0];
+    const updatedSkillDTO: SkillSubItem | undefined = result.subItems?.[0];
     expect(updatedSkillDTO?.id).toBe(1);
     expect(updatedSkillDTO?.name).toBe("JavaScript Advanced");
     expect(updatedSkillDTO?.image).toBe("js-advanced.png");

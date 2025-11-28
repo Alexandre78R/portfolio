@@ -26,26 +26,26 @@ const createMockFileUpload = (filename: string, mimetype: string): FileUpload =>
   mimetype,
   encoding: "7bit",
   fieldName: "file",
-  capacitor: null as unknown,
+  capacitor: null as any,
   createReadStream: jest.fn().mockReturnValue({
     pipe: jest.fn(),
     on: jest.fn().mockImplementation((event: string, cb?: () => void) => {
       if (event === "finish" && cb) setImmediate(cb);
       return { pipe: jest.fn(), on: jest.fn() };
     })
-  } as unknown)
+  } as any)
 });
 
 describe("ProjectAdminResolver.uploadProjectMedia", (): void => {
   let resolver: ProjectAdminResolver;
   let mockContext: MyContext;
-  let mockDbProject: DeepMockProxy<unknown>;
+  let mockDbProject: any;
 
   beforeEach((): void => {
     resolver = new ProjectAdminResolver();
     
     // ✅ Mock DB with explicit types
-    mockDbProject = mockDeep<unknown>({
+    mockDbProject = mockDeep<any>({
       findUnique: jest.fn(),
       update: jest.fn()
     });
@@ -58,8 +58,8 @@ describe("ProjectAdminResolver.uploadProjectMedia", (): void => {
     });
 
     // ✅ Mock private methods with explicit types
-    (resolver as unknown).deleteMediaFile = jest.fn().mockResolvedValue(undefined);
-    (resolver as unknown).transformProject = jest.fn((project: TestProject): TestProject => ({
+    (resolver as any).deleteMediaFile = jest.fn().mockResolvedValue(undefined);
+    (resolver as any).transformProject = jest.fn((project: TestProject): TestProject => ({
       ...project
     }));
 
@@ -82,17 +82,17 @@ describe("ProjectAdminResolver.uploadProjectMedia", (): void => {
       token: "mock-token"
     };
 
-    jest.spyOn(fs, "mkdir").mockResolvedValue(undefined as unknown);
-    jest.spyOn(fs, "unlink").mockResolvedValue(undefined as unknown);
+    jest.spyOn(fs, "mkdir").mockResolvedValue(undefined as any);
+    jest.spyOn(fs, "unlink").mockResolvedValue(undefined as any);
     jest.spyOn(fsSync, "existsSync").mockReturnValue(false);
     
-    const mockWriteStream: { on: jest.Mock<unknown, unknown> } = {
-      on: jest.fn().mockImplementation((event: string, cb?: () => void): { on: jest.Mock<unknown, unknown> } => {
+    const mockWriteStream: { on: jest.Mock<any, any> } = {
+      on: jest.fn().mockImplementation((event: string, cb?: () => void): { on: jest.Mock<any, any> } => {
         if (event === "finish" && cb) setImmediate(cb);
         return mockWriteStream;
       })
     };
-    (fsSync as unknown).createWriteStream = jest.fn().mockReturnValue(mockWriteStream);
+    (fsSync as any).createWriteStream = jest.fn().mockReturnValue(mockWriteStream);
   });
 
   afterEach((): void => {
@@ -158,7 +158,7 @@ describe("ProjectAdminResolver.uploadProjectMedia", (): void => {
         mockContext
       );
 
-      expect((resolver as unknown).deleteMediaFile).toHaveBeenCalledWith(oldFile, "image");
+      expect((resolver as any).deleteMediaFile).toHaveBeenCalledWith(oldFile, "image");
     });
   });
 

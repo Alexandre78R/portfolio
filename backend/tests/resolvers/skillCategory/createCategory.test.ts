@@ -6,6 +6,7 @@ import type { User } from "../../../src/entities/user.entity";
 import { UserRole } from "../../../src/entities/user.entity";
 import type { CreateCategoryInput } from "../../../src/entities/inputs/skill.input";
 import { CategoryResponse } from "../../../src/types/response.types";
+import type { SkillCategoryWithSkillsDTO } from "../../../src/entities/skillCategoryWithSkillsDTO.entity";
 import Cookies from "cookies";
 import { mockDeep } from "jest-mock-extended";
 import type { DeepMockProxy } from "jest-mock-extended";
@@ -99,7 +100,7 @@ describe("SkillCategoryResolver - createCategory", (): void => {
     expect(result.categories).toBeDefined();
     expect(result.categories?.length).toBe(1);
 
-    const createdCategory: PrismaSkillCategory = result.categories?.[0];
+    const createdCategory: SkillCategoryWithSkillsDTO | undefined = result.categories?.[0];
     expect(createdCategory?.id).toBe(100);
     expect(createdCategory?.categoryEN).toBe("Frontend Development");
     expect(createdCategory?.categoryFR).toBe("Développement Frontend");

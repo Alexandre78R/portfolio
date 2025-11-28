@@ -1,8 +1,20 @@
 import { Resolver, Query, Arg, Int } from "type-graphql";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Project as PrismaProject } from "@prisma/client";
 import { Project } from "../entities/project.entity";
 import { ProjectResponse, ProjectsResponse } from "../types/response.types";
 import { mapProject } from "../lib/mapProject";
+
+type PrismaProjectWithSkills = PrismaProject & {
+  skills: Array<{
+    projectId: number;
+    skillId: number;
+    skill: {
+      id: number;
+      name: string;
+      image: string;
+    };
+  }>;
+};
 
 @Resolver(() => Project)
 export class ProjectResolver {
@@ -10,7 +22,7 @@ export class ProjectResolver {
 
   @Query(() => ProjectsResponse)
   async projectList(): Promise<ProjectsResponse> {
-    const projects: PrismaProject[] = await this.db.project.findMany({
+    const projects: PrismaProjectWithSkills[] = await this.db.project.findMany({
       include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
     });
@@ -26,7 +38,7 @@ export class ProjectResolver {
   async projectById(
     @Arg("id", () => Int) id: number
   ): Promise<ProjectResponse> {
-    const project: PrismaProject | null = await this.db.project.findUnique({
+    const project: PrismaProjectWithSkills | null = await this.db.project.findUnique({
       where: { id },
       include: { skills: { include: { skill: true } } },
     });

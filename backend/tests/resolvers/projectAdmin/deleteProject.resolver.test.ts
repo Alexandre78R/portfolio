@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { ProjectAdminResolver } from "../../../src/resolvers/projectAdmin.resolver";
 import { MyContext } from "../../../src";
 import { UserRole } from "../../../src/entities/user.entity";
+import { ProjectResponse } from "../../../src/types/response.types";
+import Cookies from "cookies";
 import * as fs from "fs";
 import * as fsPromises from "fs/promises";
 
@@ -10,7 +12,7 @@ jest.mock("fs/promises");
 
 describe("ProjectAdminResolver - deleteProject", () => {
   let resolver: ProjectAdminResolver;
-  let mockPrisma: unknown;
+  let mockPrisma: any;
   let mockCtx: MyContext;
 
   beforeEach(() => {
@@ -87,6 +89,7 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "",
       typeDisplay: "",
       github: null,
+      skills: [],
     };
 
     mockPrisma.project.findUnique.mockResolvedValue(mockProject);
@@ -113,6 +116,7 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "project-1-123456.mp4",
       typeDisplay: "video",
       github: null,
+      skills: [],
     };
 
     mockPrisma.project.findUnique.mockResolvedValue(mockProject);
@@ -140,6 +144,7 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "project-1-123456.png",
       typeDisplay: "image",
       github: null,
+      skills: [],
     };
 
     mockPrisma.project.findUnique.mockResolvedValue(mockProject);
@@ -166,6 +171,7 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "",
       typeDisplay: "",
       github: null,
+      skills: [],
     };
 
     mockPrisma.project.findUnique.mockResolvedValue(mockProject);

@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { SkillCategoryResolver } from "../../../src/resolvers/skillCategory.resolver";
 import { prismaMock } from "../../singleton";
 import { CategoryResponse } from "../../../src/types/response.types";
+import type { SkillCategoryWithSkillsDTO } from "../../../src/entities/skillCategoryWithSkillsDTO.entity";
 import type { Skill as PrismaSkill, SkillCategory as PrismaSkillCategory, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
 
 describe("SkillCategoryResolver - skillList", (): void => {
@@ -69,13 +70,13 @@ describe("SkillCategoryResolver - skillList", (): void => {
     expect(result.categories).toBeDefined();
     expect(result.categories?.length).toBe(3);
 
-    const firstCategory: PrismaSkillCategory & { skills: (PrismaSkillCategorySkill & { skill: PrismaSkill })[] } = result.categories?.[0];
+    const firstCategory: SkillCategoryWithSkillsDTO | undefined = result.categories?.[0];
     expect(firstCategory?.id).toBe(1);
     expect(firstCategory?.categoryEN).toBe("Programming");
     expect(firstCategory?.categoryFR).toBe("Programmation");
-    expect(firstCategory?.skills.length).toBe(2);
-    expect(firstCategory?.skills[0].name).toBe("JavaScript");
-    expect(firstCategory?.skills[1].name).toBe("TypeScript");
+    expect(firstCategory?.skills?.length).toBe(2);
+    expect(firstCategory?.skills?.[0]?.name).toBe("JavaScript");
+    expect(firstCategory?.skills?.[1]?.name).toBe("TypeScript");
 
     expect(prismaMock.skillCategory.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.findMany).toHaveBeenCalledWith({
