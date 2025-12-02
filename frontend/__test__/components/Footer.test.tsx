@@ -28,6 +28,11 @@ jest.mock("@mui/icons-material/LinkedIn", () => ({
   default: (props: any) => <div data-testid="linkedin-icon" {...props} />,
 }));
 
+jest.mock("@mui/icons-material/Link", () => ({
+  __esModule: true,
+  default: (props: any) => <div data-testid="link-icon" {...props} />,
+}));
+
 const createMockStore = (initialState: any): ReturnType<typeof configureStore> => {
   return configureStore({
     reducer: {
@@ -37,7 +42,6 @@ const createMockStore = (initialState: any): ReturnType<typeof configureStore> =
   });
 };
 
-// ----- Tests -----
 describe("Footer component", () => {
   const mockSocials: Social[] = [
     { id: 1, title: "GitHub", url: "https://github.com/Alexandre78R", tab: 3 },
@@ -119,5 +123,23 @@ describe("Footer component", () => {
     );
     expect(screen.queryByTestId("github-icon")).not.toBeInTheDocument();
     expect(screen.queryByTestId("linkedin-icon")).not.toBeInTheDocument();
+  });
+
+  it("renders default link icon for unknown social types", () => {
+    const store: ReturnType<typeof configureStore> = createMockStore({
+      socials: {
+        dataSocials: [
+          { id: 1, title: "Twitter", url: "https://twitter.com/example", tab: 3 },
+        ],
+      },
+    });
+    render(
+      <Provider store={store}>
+        <Footer />
+      </Provider>
+    );
+    expect(screen.getByTestId("link-icon")).toBeInTheDocument();
+    const link: HTMLElement = screen.getByTitle("Twitter");
+    expect(link).toHaveAttribute("href", "https://twitter.com/example");
   });
 });

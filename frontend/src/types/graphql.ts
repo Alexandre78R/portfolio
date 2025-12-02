@@ -60,7 +60,7 @@ export type CaptchaResponse = {
 
 export type CategoryResponse = {
   __typename?: 'CategoryResponse';
-  categories?: Maybe<Array<Skill>>;
+  categories?: Maybe<Array<SkillCategoryWithSkillsDto>>;
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
 };
@@ -80,6 +80,7 @@ export type ContactFrom = {
 export type CreateCategoryInput = {
   categoryEN: Scalars['String']['input'];
   categoryFR: Scalars['String']['input'];
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type CreateEducationInput = {
@@ -125,9 +126,15 @@ export type CreateProjectInput = {
 };
 
 export type CreateSkillInput = {
-  categoryId: Scalars['Int']['input'];
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
   image: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+export type CreateSocialInput = {
+  tab: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  url: Scalars['String']['input'];
 };
 
 export type CreateThemeInput = {
@@ -273,6 +280,7 @@ export type Mutation = {
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  createSocial: SocialResponse;
   createTheme: ThemeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
@@ -281,6 +289,7 @@ export type Mutation = {
   deleteProject: Response;
   deleteProjectMedia: ProjectResponse;
   deleteSkill: SubItemResponse;
+  deleteSocial: SocialResponse;
   deleteTheme: Response;
   deleteUser: Response;
   generateDatabaseBackup: BackupResponse;
@@ -293,6 +302,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
+  updateSocial: SocialResponse;
   updateTheme: ThemeResponse;
   updateUser: UserResponse;
   uploadCV: UploadResponse;
@@ -337,6 +347,11 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationCreateSocialArgs = {
+  data: CreateSocialInput;
+};
+
+
 export type MutationCreateThemeArgs = {
   data: CreateThemeInput;
 };
@@ -373,6 +388,11 @@ export type MutationDeleteProjectMediaArgs = {
 
 
 export type MutationDeleteSkillArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSocialArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -425,6 +445,12 @@ export type MutationUpdateProjectArgs = {
 
 export type MutationUpdateSkillArgs = {
   data: UpdateSkillInput;
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateSocialArgs = {
+  data: UpdateSocialInput;
   id: Scalars['Int']['input'];
 };
 
@@ -506,6 +532,8 @@ export type Query = {
   skillById: SubItemResponse;
   skillCategoryById: CategoryResponse;
   skillList: CategoryResponse;
+  socialById: SocialResponse;
+  socialList: Array<Social>;
   themeById: ThemeResponse;
   themeList: ThemesResponse;
   userById: UserResponse;
@@ -545,6 +573,11 @@ export type QuerySkillCategoryByIdArgs = {
 };
 
 
+export type QuerySocialByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryThemeByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -567,8 +600,8 @@ export enum Role {
   View = 'view'
 }
 
-export type Skill = {
-  __typename?: 'Skill';
+export type SkillCategoryWithSkillsDto = {
+  __typename?: 'SkillCategoryWithSkillsDTO';
   categoryEN: Scalars['String']['output'];
   categoryFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -577,10 +610,25 @@ export type Skill = {
 
 export type SkillSubItem = {
   __typename?: 'SkillSubItem';
-  categoryId: Scalars['Float']['output'];
+  categoryId?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type Social = {
+  __typename?: 'Social';
+  id: Scalars['ID']['output'];
+  tab: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type SocialResponse = {
+  __typename?: 'SocialResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  social?: Maybe<Social>;
 };
 
 export type SubItemResponse = {
@@ -648,6 +696,7 @@ export type TopSkillsResponse = {
 export type UpdateCategoryInput = {
   categoryEN?: InputMaybe<Scalars['String']['input']>;
   categoryFR?: InputMaybe<Scalars['String']['input']>;
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type UpdateEducationInput = {
@@ -696,9 +745,15 @@ export type UpdateProjectInput = {
 };
 
 export type UpdateSkillInput = {
-  categoryId: Scalars['Int']['input'];
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSocialInput = {
+  tab?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateThemeInput = {
@@ -868,14 +923,14 @@ export type CreateCategoryMutationVariables = Exact<{
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryFR: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', id: string, categoryFR: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type CreateSkillMutationVariables = Exact<{
   data: CreateSkillInput;
 }>;
 
 
-export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+export type CreateSkillMutation = { __typename?: 'Mutation', createSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId?: number | null }> | null } };
 
 export type UpdateCategoryMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -883,7 +938,7 @@ export type UpdateCategoryMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> | null } };
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> }> | null } };
 
 export type UpdateSkillMutationVariables = Exact<{
   data: UpdateSkillInput;
@@ -891,7 +946,7 @@ export type UpdateSkillMutationVariables = Exact<{
 }>;
 
 
-export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+export type UpdateSkillMutation = { __typename?: 'Mutation', updateSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId?: number | null }> | null } };
 
 export type DeleteCategoryMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -905,7 +960,29 @@ export type DeleteSkillMutationVariables = Exact<{
 }>;
 
 
-export type DeleteSkillMutation = { __typename?: 'Mutation', deleteSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId: number }> | null } };
+export type DeleteSkillMutation = { __typename?: 'Mutation', deleteSkill: { __typename?: 'SubItemResponse', message: string, code: number, subItems?: Array<{ __typename?: 'SkillSubItem', name: string, image: string, id: string, categoryId?: number | null }> | null } };
+
+export type CreateSocialMutationVariables = Exact<{
+  data: CreateSocialInput;
+}>;
+
+
+export type CreateSocialMutation = { __typename?: 'Mutation', createSocial: { __typename?: 'SocialResponse', code: number, message: string, social?: { __typename?: 'Social', id: string, title: string, url: string, tab: number } | null } };
+
+export type UpdateSocialMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  data: UpdateSocialInput;
+}>;
+
+
+export type UpdateSocialMutation = { __typename?: 'Mutation', updateSocial: { __typename?: 'SocialResponse', code: number, message: string, social?: { __typename?: 'Social', id: string, title: string, url: string, tab: number } | null } };
+
+export type DeleteSocialMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteSocialMutation = { __typename?: 'Mutation', deleteSocial: { __typename?: 'SocialResponse', code: number, message: string } };
 
 export type CreateThemeMutationVariables = Exact<{
   data: CreateThemeInput;
@@ -1000,26 +1077,38 @@ export type GetExperienceByIdQuery = { __typename?: 'Query', experienceById: { _
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId: number, id: string, image: string, name: string }> }> | null } };
+export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type SkillByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type SkillByIdQuery = { __typename?: 'Query', skillById: { __typename?: 'SubItemResponse', code: number, message: string, subItems?: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> | null } };
+export type SkillByIdQuery = { __typename?: 'Query', skillById: { __typename?: 'SubItemResponse', code: number, message: string, subItems?: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> | null } };
 
 export type SkillCategoryByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type SkillCategoryByIdQuery = { __typename?: 'Query', skillCategoryById: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'Skill', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId: number }> }> | null } };
+export type SkillCategoryByIdQuery = { __typename?: 'Query', skillCategoryById: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> }> | null } };
+
+export type GetSocialsListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSocialsListQuery = { __typename?: 'Query', socialList: Array<{ __typename?: 'Social', id: string, title: string, url: string, tab: number }> };
+
+export type GetSocialByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetSocialByIdQuery = { __typename?: 'Query', socialById: { __typename?: 'SocialResponse', code: number, message: string, social?: { __typename?: 'Social', id: string, title: string, url: string, tab: number } | null } };
 
 export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1807,6 +1896,121 @@ export function useDeleteSkillMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteSkillMutationHookResult = ReturnType<typeof useDeleteSkillMutation>;
 export type DeleteSkillMutationResult = Apollo.MutationResult<DeleteSkillMutation>;
 export type DeleteSkillMutationOptions = Apollo.BaseMutationOptions<DeleteSkillMutation, DeleteSkillMutationVariables>;
+export const CreateSocialDocument = gql`
+    mutation CreateSocial($data: CreateSocialInput!) {
+  createSocial(data: $data) {
+    social {
+      id
+      title
+      url
+      tab
+    }
+    code
+    message
+  }
+}
+    `;
+export type CreateSocialMutationFn = Apollo.MutationFunction<CreateSocialMutation, CreateSocialMutationVariables>;
+
+/**
+ * __useCreateSocialMutation__
+ *
+ * To run a mutation, you first call `useCreateSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSocialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSocialMutation, { data, loading, error }] = useCreateSocialMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSocialMutation(baseOptions?: Apollo.MutationHookOptions<CreateSocialMutation, CreateSocialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSocialMutation, CreateSocialMutationVariables>(CreateSocialDocument, options);
+      }
+export type CreateSocialMutationHookResult = ReturnType<typeof useCreateSocialMutation>;
+export type CreateSocialMutationResult = Apollo.MutationResult<CreateSocialMutation>;
+export type CreateSocialMutationOptions = Apollo.BaseMutationOptions<CreateSocialMutation, CreateSocialMutationVariables>;
+export const UpdateSocialDocument = gql`
+    mutation UpdateSocial($id: Int!, $data: UpdateSocialInput!) {
+  updateSocial(id: $id, data: $data) {
+    social {
+      id
+      title
+      url
+      tab
+    }
+    code
+    message
+  }
+}
+    `;
+export type UpdateSocialMutationFn = Apollo.MutationFunction<UpdateSocialMutation, UpdateSocialMutationVariables>;
+
+/**
+ * __useUpdateSocialMutation__
+ *
+ * To run a mutation, you first call `useUpdateSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSocialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSocialMutation, { data, loading, error }] = useUpdateSocialMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateSocialMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSocialMutation, UpdateSocialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSocialMutation, UpdateSocialMutationVariables>(UpdateSocialDocument, options);
+      }
+export type UpdateSocialMutationHookResult = ReturnType<typeof useUpdateSocialMutation>;
+export type UpdateSocialMutationResult = Apollo.MutationResult<UpdateSocialMutation>;
+export type UpdateSocialMutationOptions = Apollo.BaseMutationOptions<UpdateSocialMutation, UpdateSocialMutationVariables>;
+export const DeleteSocialDocument = gql`
+    mutation DeleteSocial($id: Int!) {
+  deleteSocial(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteSocialMutationFn = Apollo.MutationFunction<DeleteSocialMutation, DeleteSocialMutationVariables>;
+
+/**
+ * __useDeleteSocialMutation__
+ *
+ * To run a mutation, you first call `useDeleteSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSocialMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSocialMutation, { data, loading, error }] = useDeleteSocialMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSocialMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSocialMutation, DeleteSocialMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSocialMutation, DeleteSocialMutationVariables>(DeleteSocialDocument, options);
+      }
+export type DeleteSocialMutationHookResult = ReturnType<typeof useDeleteSocialMutation>;
+export type DeleteSocialMutationResult = Apollo.MutationResult<DeleteSocialMutation>;
+export type DeleteSocialMutationOptions = Apollo.BaseMutationOptions<DeleteSocialMutation, DeleteSocialMutationVariables>;
 export const CreateThemeDocument = gql`
     mutation CreateTheme($data: CreateThemeInput!) {
   createTheme(data: $data) {
@@ -2753,6 +2957,101 @@ export type SkillCategoryByIdQueryHookResult = ReturnType<typeof useSkillCategor
 export type SkillCategoryByIdLazyQueryHookResult = ReturnType<typeof useSkillCategoryByIdLazyQuery>;
 export type SkillCategoryByIdSuspenseQueryHookResult = ReturnType<typeof useSkillCategoryByIdSuspenseQuery>;
 export type SkillCategoryByIdQueryResult = Apollo.QueryResult<SkillCategoryByIdQuery, SkillCategoryByIdQueryVariables>;
+export const GetSocialsListDocument = gql`
+    query GetSocialsList {
+  socialList {
+    id
+    title
+    url
+    tab
+  }
+}
+    `;
+
+/**
+ * __useGetSocialsListQuery__
+ *
+ * To run a query within a React component, call `useGetSocialsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSocialsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSocialsListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSocialsListQuery(baseOptions?: Apollo.QueryHookOptions<GetSocialsListQuery, GetSocialsListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSocialsListQuery, GetSocialsListQueryVariables>(GetSocialsListDocument, options);
+      }
+export function useGetSocialsListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSocialsListQuery, GetSocialsListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSocialsListQuery, GetSocialsListQueryVariables>(GetSocialsListDocument, options);
+        }
+// @ts-ignore
+export function useGetSocialsListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSocialsListQuery, GetSocialsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSocialsListQuery, GetSocialsListQueryVariables>;
+export function useGetSocialsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSocialsListQuery, GetSocialsListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSocialsListQuery | undefined, GetSocialsListQueryVariables>;
+export function useGetSocialsListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSocialsListQuery, GetSocialsListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSocialsListQuery, GetSocialsListQueryVariables>(GetSocialsListDocument, options);
+        }
+export type GetSocialsListQueryHookResult = ReturnType<typeof useGetSocialsListQuery>;
+export type GetSocialsListLazyQueryHookResult = ReturnType<typeof useGetSocialsListLazyQuery>;
+export type GetSocialsListSuspenseQueryHookResult = ReturnType<typeof useGetSocialsListSuspenseQuery>;
+export type GetSocialsListQueryResult = Apollo.QueryResult<GetSocialsListQuery, GetSocialsListQueryVariables>;
+export const GetSocialByIdDocument = gql`
+    query GetSocialById($id: Int!) {
+  socialById(id: $id) {
+    social {
+      id
+      title
+      url
+      tab
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useGetSocialByIdQuery__
+ *
+ * To run a query within a React component, call `useGetSocialByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSocialByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSocialByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetSocialByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSocialByIdQuery, GetSocialByIdQueryVariables> & ({ variables: GetSocialByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSocialByIdQuery, GetSocialByIdQueryVariables>(GetSocialByIdDocument, options);
+      }
+export function useGetSocialByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSocialByIdQuery, GetSocialByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSocialByIdQuery, GetSocialByIdQueryVariables>(GetSocialByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetSocialByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSocialByIdQuery, GetSocialByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetSocialByIdQuery, GetSocialByIdQueryVariables>;
+export function useGetSocialByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSocialByIdQuery, GetSocialByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetSocialByIdQuery | undefined, GetSocialByIdQueryVariables>;
+export function useGetSocialByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSocialByIdQuery, GetSocialByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSocialByIdQuery, GetSocialByIdQueryVariables>(GetSocialByIdDocument, options);
+        }
+export type GetSocialByIdQueryHookResult = ReturnType<typeof useGetSocialByIdQuery>;
+export type GetSocialByIdLazyQueryHookResult = ReturnType<typeof useGetSocialByIdLazyQuery>;
+export type GetSocialByIdSuspenseQueryHookResult = ReturnType<typeof useGetSocialByIdSuspenseQuery>;
+export type GetSocialByIdQueryResult = Apollo.QueryResult<GetSocialByIdQuery, GetSocialByIdQueryVariables>;
 export const GetThemesListDocument = gql`
     query GetThemesList {
   themeList {

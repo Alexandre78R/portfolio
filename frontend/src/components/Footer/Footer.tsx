@@ -1,5 +1,6 @@
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import LinkIcon from "@mui/icons-material/Link";
 import { useLang, LangKey } from "@/context/Lang/LangContext";
 import type LangType from "@/lang/typeLang";
 import { useAppSelector } from "@/store/hook";
@@ -11,14 +12,14 @@ const Footer = (): JSX.Element => {
   const currentYear: number = new Date().getFullYear();
   const dataSocials: Social[] = useAppSelector((state) => state.socials.dataSocials);
 
-  const getIconComponent = (title: string): JSX.Element | null => {
+  const getIconComponent = (title: string): JSX.Element => {
     switch (title.toLowerCase()) {
       case "github":
         return <GitHubIcon className="text-text hover:text-secondary" />;
       case "linkedin":
         return <LinkedInIcon className="text-text hover:text-secondary" />;
       default:
-        return null;
+        return <LinkIcon className="text-text hover:text-secondary" />;
     }
   };
 
@@ -40,9 +41,7 @@ const Footer = (): JSX.Element => {
           <p className="text-lg font-bold mb-2">{translations.footerNetworks}</p>
           <div className="flex space-x-4">
             {dataSocials.map((social: Social) => {
-              const icon: JSX.Element | null = getIconComponent(social.title);
-              if (!icon) return null;
-              
+              const icon: JSX.Element = getIconComponent(social.title);
               return (
                 <a
                   key={social.id}
