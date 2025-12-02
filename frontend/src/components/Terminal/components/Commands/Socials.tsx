@@ -8,6 +8,7 @@ import {
   generateTabs,
 } from "../../util";
 import Usage from "../Usage";
+import { useAppSelector } from "../../../../store/hook";
 
 export type Socials = {
   id: number;
@@ -16,22 +17,8 @@ export type Socials = {
   tab: number;
 };
 
-const socials: Socials[] = [
-  {
-    id: 1,
-    title: "GitHub",
-    url: "https://github.com/Alexandre78R",
-    tab: 3,
-  },
-  {
-    id: 2,
-    title: "linkedin",
-    url: "https://www.linkedin.com/in/alexandrerenard/",
-    tab: 3,
-  },
-];
-
 const Socials = (): React.ReactNode => {
+  const socials = useAppSelector((state) => state.socials.dataSocials);
   const { arg, history, rerender } = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
@@ -43,8 +30,10 @@ const Socials = (): React.ReactNode => {
     }
   }, [arg, rerender, currentCommand]);
 
-  const checkArg = (): React.ReactElement | null =>
-    isArgInvalid(arg, "go", ["1", "2"]) ? <Usage cmd="socials" /> : null;
+  const checkArg = (): React.ReactElement | null => {
+    const validIds = socials.map((social) => social.id.toString());
+    return isArgInvalid(arg, "go", validIds) ? <Usage cmd="socials" /> : null;
+  };
 
   return arg.length > 0 || arg.length > 2 ? (
     checkArg()
