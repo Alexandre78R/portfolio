@@ -4,7 +4,10 @@ import Socials from "@/components/Terminal/components/Commands/Socials";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import * as util from "@/components/Terminal/util";
 
-// ---------- Mocks ----------
+jest.mock("@/store/hook", () => ({
+  useAppSelector: jest.fn(),
+}));
+
 jest.mock("@/components/Terminal/util", () => ({
   getCurrentCmdArry: jest.fn() as jest.Mock,
   checkRedirect: jest.fn() as jest.Mock,
@@ -28,6 +31,21 @@ jest.mock("@/components/Terminal/components/Message", () => {
   return { __esModule: true, Message: MessageMock };
 });
 
+const mockSocials: Socials[] = [
+  {
+    id: 1,
+    title: "GitHub",
+    url: "https://github.com/Alexandre78R",
+    tab: 3,
+  },
+  {
+    id: 2,
+    title: "linkedin",
+    url: "https://www.linkedin.com/in/alexandrerenard/",
+    tab: 3,
+  },
+];
+
 describe("Socials command", () => {
   const mockGetCurrentCmdArry: jest.Mock = util.getCurrentCmdArry as jest.Mock;
   const mockCheckRedirect: jest.Mock = util.checkRedirect as jest.Mock;
@@ -35,6 +53,10 @@ describe("Socials command", () => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    const { useAppSelector } = require("@/store/hook");
+    (useAppSelector as jest.Mock).mockImplementation((selector: any) =>
+      selector({ socials: { dataSocials: mockSocials } })
+    );
   });
 
   const renderWithContext = (ctx: Term): RenderResult =>
@@ -43,8 +65,6 @@ describe("Socials command", () => {
         <Socials />
       </termContext.Provider>
     );
-
-  // ---------------- TESTS ----------------
 
   it("renders socials list when no args are provided", (): void => {
     mockGetCurrentCmdArry.mockReturnValue([] as string[]);
