@@ -114,6 +114,8 @@ type Lang = {
   "sideBarAdmin-skills": string;
   "sideBarAdmin-skills/list": string;
   "sideBarAdmin-skills/create": string;
+  "sideBarAdmin-skills/categories": string;
+  "sideBarAdmin-skills/categories/list": string;
   "sideBarAdmin-skills/categories/create": string;
   "sideBarAdmin-theme-colors": string;
   "sideBarAdmin-theme-colors/list": string;
@@ -312,6 +314,30 @@ type Lang = {
   messageAdminSocialDeleteButton: string;
   messageAdminSocialNoData: string;
   messageAdminSocialTableEmptyMessage: string;
+  
+  // Skill Categories
+  messageAdminSkillCategoryListTitle: string;
+  messageAdminSkillCategoryListNotFound: string;
+  messageAdminSkillCategoryColumnEN: string;
+  messageAdminSkillCategoryColumnFR: string;
+  messageAdminSkillCategoryColumnSkillCount: string;
+  messageAdminSkillCategoryColumnAction: string;
+  messageAdminSkillCategoryEditTitle: string;
+  messageAdminSkillCategoryEditSuccess: string;
+  messageAdminSkillCategoryEditError: string;
+  messageAdminSkillCategoryEditConfirm: string;
+  messageAdminSkillCategoryEditCancel: string;
+  messageAdminSkillCategoryDeleteTitle: string;
+  messageAdminSkillCategoryDeleteDescription: string;
+  messageAdminSkillCategoryDeleteConfirm: string;
+  messageAdminSkillCategoryDeleteCancel: string;
+  messageAdminSkillCategoryDeleteSuccess: string;
+  messageAdminSkillCategoryDeleteError: string;
+  messageAdminSkillCategoryCreateTitle: string;
+  messageAdminSkillCategoryCreateSuccess: string;
+  messageAdminSkillCategoryCreateError: string;
+  messageAdminSkillCategoryInputEN: string;
+  messageAdminSkillCategoryInputFR: string;
 };
 
 export default Lang;
