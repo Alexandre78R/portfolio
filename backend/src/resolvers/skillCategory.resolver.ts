@@ -59,6 +59,65 @@ export class SkillCategoryResolver {
   }
 
   @Query(() => CategoryResponse)
+  async searchSkills(@Arg("searchTerm", () => String, { nullable: true }) searchTerm?: string): Promise<CategoryResponse> {
+    try {
+      // Si searchTerm est vide ou non fourni, retourner toutes les catégories
+      if (!searchTerm || searchTerm.trim() === "") {
+        return this.skillList();
+      }
+
+      const searchLower = searchTerm.toLowerCase();
+
+      // Récupérer tous les skills et filtrer côté client (ou utiliser une requête brute)
+      // MySQL avec LOWER() pour la recherche insensible à la casse
+      const matchingSkills = await this.db.$queryRaw`
+        SELECT * FROM Skill WHERE LOWER(name) LIKE LOWER(CONCAT('%', ${searchTerm}, '%'))
+      `;
+
+      if (!Array.isArray(matchingSkills) || matchingSkills.length === 0) {
+        return { code: 200, message: "No skills found", categories: [] };
+      }
+
+      const matchingSkillIds = (matchingSkills as Array<{ id: number }>).map((s) => s.id);
+
+      // Récupérer les catégories qui contiennent ces skills
+      const categories: SkillCategoryWithSkills[] = await this.db.skillCategory.findMany({
+        include: {
+          skills: {
+            include: { skill: true },
+            where: {
+              skillId: {
+                in: matchingSkillIds,
+              },
+            },
+          },
+        },
+        orderBy: { id: "asc" },
+      });
+
+      const dtoList: SkillCategoryWithSkillsDTO[] = categories
+        .filter((cat) => cat.skills.length > 0) // Filtrer les catégories sans skills correspondants
+        .map((cat: SkillCategoryWithSkills): SkillCategoryWithSkillsDTO => ({
+          id: cat.id,
+          categoryEN: cat.categoryEN,
+          categoryFR: cat.categoryFR,
+          skills: cat.skills.map((junction: PrismaSkillCategorySkill & { skill: PrismaSkill }) => ({
+            id: junction.skill.id,
+            name: junction.skill.name,
+            image: junction.skill.image,
+            categoryId: cat.id,
+          })),
+        }));
+
+      return { code: 200, message: "Skills found", categories: dtoList };
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error searching skills:", errorMessage);
+      return { code: 500, message: "Failed to search skills", categories: undefined };
+    }
+  }
+
+  @Query(() => CategoryResponse)
   async skillCategoryById(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
     try {
       const category: SkillCategoryWithSkills | null = await this.db.skillCategory.findUnique({

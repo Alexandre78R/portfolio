@@ -57,7 +57,7 @@ export type CaptchaResponse = {
 
 export type CategoryResponse = {
   __typename?: 'CategoryResponse';
-  categories?: Maybe<Array<Skill>>;
+  categories?: Maybe<Array<SkillCategoryWithSkillsDto>>;
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
 };
@@ -77,6 +77,7 @@ export type ContactFrom = {
 export type CreateCategoryInput = {
   categoryEN: Scalars['String']['input'];
   categoryFR: Scalars['String']['input'];
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type CreateEducationInput = {
@@ -122,9 +123,15 @@ export type CreateProjectInput = {
 };
 
 export type CreateSkillInput = {
-  categoryId: Scalars['Int']['input'];
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
   image: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+export type CreateSocialInput = {
+  tab: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  url: Scalars['String']['input'];
 };
 
 export type CreateThemeInput = {
@@ -270,6 +277,7 @@ export type Mutation = {
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
   createSkill: SubItemResponse;
+  createSocial: SocialResponse;
   createTheme: ThemeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
@@ -278,6 +286,7 @@ export type Mutation = {
   deleteProject: Response;
   deleteProjectMedia: ProjectResponse;
   deleteSkill: SubItemResponse;
+  deleteSocial: SocialResponse;
   deleteTheme: Response;
   deleteUser: Response;
   generateDatabaseBackup: BackupResponse;
@@ -290,6 +299,7 @@ export type Mutation = {
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
   updateSkill: SubItemResponse;
+  updateSocial: SocialResponse;
   updateTheme: ThemeResponse;
   updateUser: UserResponse;
   uploadCV: UploadResponse;
@@ -334,6 +344,11 @@ export type MutationCreateSkillArgs = {
 };
 
 
+export type MutationCreateSocialArgs = {
+  data: CreateSocialInput;
+};
+
+
 export type MutationCreateThemeArgs = {
   data: CreateThemeInput;
 };
@@ -370,6 +385,11 @@ export type MutationDeleteProjectMediaArgs = {
 
 
 export type MutationDeleteSkillArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSocialArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -422,6 +442,12 @@ export type MutationUpdateProjectArgs = {
 
 export type MutationUpdateSkillArgs = {
   data: UpdateSkillInput;
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateSocialArgs = {
+  data: UpdateSocialInput;
   id: Scalars['Int']['input'];
 };
 
@@ -500,9 +526,12 @@ export type Query = {
   me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
+  searchSkills: CategoryResponse;
   skillById: SubItemResponse;
   skillCategoryById: CategoryResponse;
   skillList: CategoryResponse;
+  socialById: SocialResponse;
+  socialList: Array<Social>;
   themeById: ThemeResponse;
   themeList: ThemesResponse;
   userById: UserResponse;
@@ -532,12 +561,22 @@ export type QueryProjectByIdArgs = {
 };
 
 
+export type QuerySearchSkillsArgs = {
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type QuerySkillByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
 
 export type QuerySkillCategoryByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QuerySocialByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -564,8 +603,8 @@ export enum Role {
   View = 'view'
 }
 
-export type Skill = {
-  __typename?: 'Skill';
+export type SkillCategoryWithSkillsDto = {
+  __typename?: 'SkillCategoryWithSkillsDTO';
   categoryEN: Scalars['String']['output'];
   categoryFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -574,10 +613,25 @@ export type Skill = {
 
 export type SkillSubItem = {
   __typename?: 'SkillSubItem';
-  categoryId: Scalars['Float']['output'];
+  categoryId?: Maybe<Scalars['Float']['output']>;
   id: Scalars['ID']['output'];
   image: Scalars['String']['output'];
   name: Scalars['String']['output'];
+};
+
+export type Social = {
+  __typename?: 'Social';
+  id: Scalars['ID']['output'];
+  tab: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  url: Scalars['String']['output'];
+};
+
+export type SocialResponse = {
+  __typename?: 'SocialResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  social?: Maybe<Social>;
 };
 
 export type SubItemResponse = {
@@ -645,6 +699,7 @@ export type TopSkillsResponse = {
 export type UpdateCategoryInput = {
   categoryEN?: InputMaybe<Scalars['String']['input']>;
   categoryFR?: InputMaybe<Scalars['String']['input']>;
+  skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type UpdateEducationInput = {
@@ -693,9 +748,15 @@ export type UpdateProjectInput = {
 };
 
 export type UpdateSkillInput = {
-  categoryId: Scalars['Int']['input'];
+  categoryId?: InputMaybe<Scalars['Int']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSocialInput = {
+  tab?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateThemeInput = {
