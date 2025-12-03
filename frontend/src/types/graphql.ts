@@ -1084,6 +1084,13 @@ export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
+export type SearchSkillsQueryVariables = Exact<{
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SearchSkillsQuery = { __typename?: 'Query', searchSkills: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+
 export type GetSkillCategoryByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
@@ -2852,6 +2859,61 @@ export type GetSkillsListQueryHookResult = ReturnType<typeof useGetSkillsListQue
 export type GetSkillsListLazyQueryHookResult = ReturnType<typeof useGetSkillsListLazyQuery>;
 export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkillsListSuspenseQuery>;
 export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
+export const SearchSkillsDocument = gql`
+    query SearchSkills($searchTerm: String) {
+  searchSkills(searchTerm: $searchTerm) {
+    categories {
+      categoryFR
+      id
+      skills {
+        categoryId
+        id
+        image
+        name
+      }
+      categoryEN
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useSearchSkillsQuery__
+ *
+ * To run a query within a React component, call `useSearchSkillsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchSkillsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchSkillsQuery({
+ *   variables: {
+ *      searchTerm: // value for 'searchTerm'
+ *   },
+ * });
+ */
+export function useSearchSkillsQuery(baseOptions?: Apollo.QueryHookOptions<SearchSkillsQuery, SearchSkillsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchSkillsQuery, SearchSkillsQueryVariables>(SearchSkillsDocument, options);
+      }
+export function useSearchSkillsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchSkillsQuery, SearchSkillsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchSkillsQuery, SearchSkillsQueryVariables>(SearchSkillsDocument, options);
+        }
+// @ts-ignore
+export function useSearchSkillsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchSkillsQuery, SearchSkillsQueryVariables>): Apollo.UseSuspenseQueryResult<SearchSkillsQuery, SearchSkillsQueryVariables>;
+export function useSearchSkillsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchSkillsQuery, SearchSkillsQueryVariables>): Apollo.UseSuspenseQueryResult<SearchSkillsQuery | undefined, SearchSkillsQueryVariables>;
+export function useSearchSkillsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchSkillsQuery, SearchSkillsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchSkillsQuery, SearchSkillsQueryVariables>(SearchSkillsDocument, options);
+        }
+export type SearchSkillsQueryHookResult = ReturnType<typeof useSearchSkillsQuery>;
+export type SearchSkillsLazyQueryHookResult = ReturnType<typeof useSearchSkillsLazyQuery>;
+export type SearchSkillsSuspenseQueryHookResult = ReturnType<typeof useSearchSkillsSuspenseQuery>;
+export type SearchSkillsQueryResult = Apollo.QueryResult<SearchSkillsQuery, SearchSkillsQueryVariables>;
 export const GetSkillCategoryByIdDocument = gql`
     query GetSkillCategoryById($id: Int!) {
   skillCategoryById(id: $id) {
