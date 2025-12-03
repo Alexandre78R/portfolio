@@ -3,79 +3,132 @@ import React, {
   FormEvent,
   ReactElement,
   useState,
+  useEffect,
+  useCallback,
+  useMemo,
 } from "react";
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 import TextAdmin from "../../../components/Text/TextAdmin";
 import InputField from "@/components/InputField/InputField";
+import InputMultiSelect, {
+  SelectOption,
+} from "../../../components/Input/InputMultiSelect";
 import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import {
-  useCreateCategoryMutation,
+  useCreateSkillCategoryMutation,
   CreateCategoryInput,
+  useGetSkillsListQuery,
 } from "@/types/graphql";
 
-/**
- * Default form values
- */
-const defaultForm: CreateCategoryInput = {
+interface SkillCategoryFormWithSkills extends CreateCategoryInput {
+  skillIds?: number[];
+}
+
+const defaultForm: SkillCategoryFormWithSkills = {
   categoryEN: "",
   categoryFR: "",
+  skillIds: [],
 };
 
 const SkillCategoryCreate = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
-    CustomToast();
+  const { showAlert } = CustomToast();
 
-  const [form, setForm] = useState<CreateCategoryInput>(defaultForm);
-  const [createCategoryMutation, { loading }] = useCreateCategoryMutation();
+  const [form, setForm] = useState<SkillCategoryFormWithSkills>(defaultForm);
+  const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ): void => {
-    const { name, value } = e.target;
+  const [createCategoryMutation, { loading }] = useCreateSkillCategoryMutation();
 
-    setForm(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const { data: skillsData, loading: skillsLoading } = useGetSkillsListQuery({
+    fetchPolicy: "cache-and-network",
+  });
 
-  /**
-   * Submit form
-   */
-  const handleSubmit = async (
-    e: FormEvent<HTMLFormElement | HTMLButtonElement>
-  ): Promise<void> => {
-    e.preventDefault();
+    const allSkillsOptions = useMemo<SelectOption<number>[]>(() => {
+    if (!skillsData?.skillList?.categories) return [];
 
-    try {
-      const res = await createCategoryMutation({
-        variables: { data: form },
-      });
+    const map = new Map<number, SelectOption<number>>();
 
-      const response = res.data?.createCategory;
+    skillsData.skillList.categories.forEach(category => {
+        category?.skills?.forEach(skill => {
+        if (skill && !map.has(Number(skill.id))) {
+            map.set(Number(skill.id), {
+            label: skill.name ?? "",
+            value: Number(skill.id),
+            });
+        }
+        });
+    });
 
-      if (response?.code === 200) {
-        showAlert(
-          "success",
-          translations.messageAdminSkillCategoryCreateSuccess
-        );
-        setForm(defaultForm);
-      } else {
-        showAlert(
-          "error",
-          response?.message || translations.messageAdminSkillCategoryCreateError
-        );
+    return Array.from(map.values());
+    }, [skillsData]);
+
+  const handleChange = useCallback(
+    (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ): void => {
+      const { name, value } = e.target;
+
+      setForm(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
+
+  const handleSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+      e.preventDefault();
+
+      try {
+        const submitData: CreateCategoryInput & {
+          skillIds?: number[];
+        } = {
+          categoryEN: form.categoryEN,
+          categoryFR: form.categoryFR,
+        };
+
+        if (selectedSkillIds.length > 0) {
+          submitData.skillIds = selectedSkillIds;
+        }
+
+        const res = await createCategoryMutation({
+          variables: { data: submitData },
+        });
+
+        const response = res.data?.createCategory;
+
+        if (response?.code === 200) {
+          showAlert(
+            "success",
+            translations.messageAdminSkillCategoryCreateSuccess
+          );
+          setForm(defaultForm);
+          setSelectedSkillIds([]);
+        } else {
+          showAlert(
+            "error",
+            response?.message ||
+              translations.messageAdminSkillCategoryCreateError
+          );
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert("error", translations.messageErrorServerOff);
       }
-    } catch (err) {
-      console.error(err);
-      showAlert("error", translations.messageErrorServerOff);
-    }
-  };
+    },
+    [
+      form,
+      selectedSkillIds,
+      createCategoryMutation,
+      showAlert,
+      translations,
+    ]
+  );
 
   return (
     <AuthFormLayout
@@ -109,6 +162,23 @@ const SkillCategoryCreate = (): ReactElement => {
           onChange={handleChange}
           required
         />
+
+        {/* ✅ PAS de prop onSearch - le filtrage se fait localement dans le composant */}
+        {skillsLoading ? (
+          <div className="text-center py-4">Loading skills...</div>
+        ) : allSkillsOptions.length > 0 ? (
+          <InputMultiSelect<number>
+            id="skillIds"
+            label={
+              translations.messageAdminSkillCategorySelectSkills ||
+              "Select skills (optional)"
+            }
+            value={selectedSkillIds}
+            options={allSkillsOptions}
+            onChange={setSelectedSkillIds}
+            required={false}
+          />
+        ) : null}
 
         <div className="flex justify-center mt-8">
           <ButtonCustom
