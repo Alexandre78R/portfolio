@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
-export const GET_SKILL_CATEGORIES_LIST = gql`
-  query GetSkillCategoriesList {
+export const GET_SKILLS_LIST = gql`
+  query GetSkillsList {
     skillList {
       categories {
         categoryFR
