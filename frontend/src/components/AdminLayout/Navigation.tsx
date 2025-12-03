@@ -78,7 +78,16 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Voir les skills', key: 'skills/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'skills' },
       { name: 'Créer un skill', key: 'skills/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills' },
-      { name: 'Créer une catégorie de skill', key: 'skills/categories/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills' },
+    ],
+  },
+  {
+    name: 'Catégories de Skills',
+    key: 'skills/categories',
+    icon: PanelsTopLeft,
+    roles: ['admin', 'editor'],
+    children: [
+      { name: 'Voir les catégories', key: 'skills/categories/list', icon: Eye, roles: ['admin', 'editor'], parentKey: 'skills/categories' },
+      { name: 'Créer une catégorie', key: 'skills/categories/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills/categories' },
     ],
   },
   {

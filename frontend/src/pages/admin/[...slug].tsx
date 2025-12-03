@@ -18,8 +18,8 @@ const pagesMap: Record<string, () => Promise<any>> = {
   'educations/create': () => import('@/components/AdminLayout/Pages/Educations/EducationCreate'),
   'skills/list': () => import('@/components/AdminLayout/Pages/Skills/SkillsList'),
   'skills/create': () => import('@/components/AdminLayout/Pages/Skills/SkillCreate'),
-    'skills/categories/create': () =>
-    import('@/components/AdminLayout/Pages/Skills/Categories/SkillCategoryCreate'),
+  'skills/categories/list': () => import('@/components/AdminLayout/Pages/Skills/Categories/SkillCategoriesList'),
+  'skills/categories/create': () => import('@/components/AdminLayout/Pages/Skills/Categories/SkillCategoryCreate'),
   'socials/list': () => import('@/components/AdminLayout/Pages/Socials/SocialsList'),
   'socials/create': () => import('@/components/AdminLayout/Pages/Socials/SocialCreate'),
   'theme-colors/list': () => import('@/components/AdminLayout/Pages/Themes/ThemesList'),
