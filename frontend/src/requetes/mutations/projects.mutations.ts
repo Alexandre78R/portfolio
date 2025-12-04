@@ -24,8 +24,8 @@ export const CREATE_PROJECT = gql`
 `;
 
 export const UPDATE_PROJECT = gql`
-  mutation UpdateProject($id: Int!, $data: UpdateProjectInput!) {
-    updateProject(id: $id, data: $data) {
+  mutation UpdateProject($data: UpdateProjectInput!) {
+    updateProject(data: $data) {
       code
       message
       project {
