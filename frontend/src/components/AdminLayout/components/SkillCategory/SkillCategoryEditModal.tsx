@@ -56,25 +56,21 @@ const SkillCategoryEditModal = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [updateCategoryMutation] = useUpdateSkillCategoryMutation();
 
-  // Récupérer la catégorie avec ses skills
   const { data, loading: categoryLoading } = useGetSkillCategoryByIdQuery({
     variables: { id: category?.id ?? 0 },
     skip: !category,
     fetchPolicy: "network-only",
   });
 
-  // Récupérer la liste de tous les skills pour le multi-select
   const { data: allSkillsData } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
   });
 
-  // Hook lazy query pour la recherche de skills
   const [searchSkillsQuery] = useSearchSkillsLazyQuery({
     fetchPolicy: "network-only",
   });
 
-  // Préparer les options de skills pour le multi-select
-  const skillOptions = useMemo<SelectOption<number>[]>(() => {
+  const skillOptions = useMemo<SelectOption<number>[]>((): SelectOption<number>[] => {
     if (!allSkillsData?.skillList?.categories) return [];
     
     const allSkills: SelectOption<number>[] = [];
@@ -94,13 +90,10 @@ const SkillCategoryEditModal = ({
     return allSkills;
   }, [allSkillsData]);
 
-  /**
-   * Fonction de recherche asynchrone pour les skills
-   */
   const handleSkillSearch = useCallback(
     async (searchTerm: string): Promise<SelectOption<number>[]> => {
       try {
-        const result = await searchSkillsQuery({
+        const result: ReturnType<typeof searchSkillsQuery> = await searchSkillsQuery({
           variables: { searchTerm },
         });
 
@@ -132,10 +125,9 @@ const SkillCategoryEditModal = ({
 
   useEffect(() => {
     if (data?.skillCategoryById?.categories?.[0]) {
-      const categoryData = data.skillCategoryById.categories[0];
-      
-      // Extraire les IDs des skills déjà liés
-      const linkedSkillIds = categoryData.skills?.map(skill => Number(skill.id)) ?? [];
+      const categoryData: typeof data.skillCategoryById.categories[0] = data.skillCategoryById.categories[0];
+
+      const linkedSkillIds: number[] = categoryData.skills?.map(skill => Number(skill.id)) ?? [];
       
       const newData: SkillCategoryFormData = {
         id: Number(categoryData.id),
@@ -182,12 +174,11 @@ const SkillCategoryEditModal = ({
         categoryFR: form.categoryFR,
       };
 
-      // Ajouter les skillIds si des skills sont sélectionnées
       if (selectedSkillIds.length > 0) {
         updateData.skillIds = selectedSkillIds;
       }
 
-      const { data, error } = await updateCategoryMutation({
+      const { data }: ReturnType<typeof updateCategoryMutation> = await updateCategoryMutation({
         variables: { id: Number(form.id), data: updateData },
       });
 
@@ -234,8 +225,7 @@ const SkillCategoryEditModal = ({
           onChange={handleChange}
           required
         />
-
-        {/* Skills Multi-Select avec les skills déjà liés */}
+        
         {skillOptions.length > 0 && (
           <InputMultiSelect<number>
             id="skillIds"
