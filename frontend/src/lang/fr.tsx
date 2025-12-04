@@ -334,8 +334,6 @@ const fr: Lang = {
   "messageAdminSocialDeleteButton": "Supprimer",
   "messageAdminSocialNoData": "Aucun réseau social disponible",
   "messageAdminSocialTableEmptyMessage": "Aucun réseau social n'a été trouvé. Créez-en un nouveau!",
-  
-  // Skill Categories
   "messageAdminSkillCategoryListTitle": "Catégories de compétences",
   "messageAdminSkillCategoryListNotFound": "Aucune catégorie de compétence trouvée",
   "messageAdminSkillCategoryColumnEN": "Nom en anglais",
