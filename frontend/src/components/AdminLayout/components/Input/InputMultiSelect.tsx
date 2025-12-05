@@ -46,6 +46,10 @@ const InputMultiSelect = <T extends string | number>(
   }: InputMultiSelectProps<T>
 ): ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [filteredOptions, setFilteredOptions] = useState<SelectOption<T>[]>(
+    options as SelectOption<T>[]
+  );
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleChange = useCallback(
     (
@@ -86,37 +90,43 @@ const InputMultiSelect = <T extends string | number>(
     []
   );
 
-  const handleFilterOptions = useCallback(
-    async (options: SelectOption<T>[], params: { inputValue: string }) => {
-      if (onSearch && params.inputValue.trim().length > 0) {
-        setLoading(true);
+  // Handle async search
+  useEffect(() => {
+    if (onSearch && searchTerm.trim().length > 0) {
+      setLoading(true);
+      const timer = setTimeout(async () => {
         try {
-          const results = await onSearch(params.inputValue);
-          return results;
+          const results = await onSearch(searchTerm);
+          setFilteredOptions(results);
         } catch (error) {
           console.error("Error searching options:", error);
-          return [];
+          setFilteredOptions([]);
         } finally {
           setLoading(false);
         }
-      }
-      return options;
-    },
-    [onSearch]
-  );
+      }, 300); // Debounce search requests
+
+      return () => clearTimeout(timer);
+    } else {
+      setFilteredOptions(options as SelectOption<T>[]);
+    }
+  }, [searchTerm, onSearch, options]);
 
   return (
     <div className={`w-full ${className ?? ""}`}>
       <Autocomplete<SelectOption<T>, true, false, false>
         multiple
         id={id}
-        options={options as SelectOption<T>[]}
+        options={filteredOptions}
         getOptionLabel={(option) => option.label}
         value={selectedOptions}
         onChange={handleChange}
+        onInputChange={(event, value) => {
+          setSearchTerm(value);
+        }}
         disabled={disabled}
         filterSelectedOptions
-        filterOptions={onSearch ? (x) => x : undefined}
+        filterOptions={undefined}
         loading={loading}
         isOptionEqualToValue={isOptionEqualToValue}
         renderInput={(params) => (
@@ -146,16 +156,14 @@ const InputMultiSelect = <T extends string | number>(
               },
               ...sx,
             }}
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                endAdornment: (
-                  <>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                    {params.InputProps.endAdornment}
-                  </>
-                ),
-              },
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
             }}
           />
         )}
