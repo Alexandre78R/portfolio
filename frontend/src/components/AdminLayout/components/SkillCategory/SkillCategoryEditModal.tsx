@@ -93,7 +93,7 @@ const SkillCategoryEditModal = ({
   const handleSkillSearch = useCallback(
     async (searchTerm: string): Promise<SelectOption<number>[]> => {
       try {
-        const result: ReturnType<typeof searchSkillsQuery> = await searchSkillsQuery({
+        const result = await searchSkillsQuery({
           variables: { searchTerm },
         });
 
@@ -178,7 +178,7 @@ const SkillCategoryEditModal = ({
         updateData.skillIds = selectedSkillIds;
       }
 
-      const { data }: ReturnType<typeof updateCategoryMutation> = await updateCategoryMutation({
+      const { data }= await updateCategoryMutation({
         variables: { id: Number(form.id), data: updateData },
       });
 
