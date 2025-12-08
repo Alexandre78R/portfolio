@@ -14,6 +14,7 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
   useCreateSocialMutation,
   CreateSocialInput,
+  CreateSocialMutation,
 } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 
@@ -67,7 +68,7 @@ const SocialCreate = (): ReactElement => {
         variables: { data: payload },
       });
 
-      const response: CreateSocialMutation | undefined = res.data?.createSocial;
+      const response= res.data?.createSocial;
 
       if (response?.code === 200) {
         showAlert(
