@@ -43,7 +43,7 @@ const ForgotPasswordPage = (): ReactElement => {
           label={translations?.messagePageForgotPasswordEmail ?? ""}
           type="email"
           value={form.email}
-          onChange={handleChange}
+          onChange={handleChange as any}
           required
         />
         <div className="flex justify-center">

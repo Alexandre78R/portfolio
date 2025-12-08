@@ -66,15 +66,6 @@ const SocialEditModal = ({
         tab: socialData.tab ?? 0,
       };
       setForm(newData);
-    } else if (data?.socialById) {
-      const socialData = data.socialById;
-      const newData: SocialFormData = {
-        id: Number(socialData.id),
-        title: socialData.title ?? "",
-        url: socialData.url ?? "",
-        tab: socialData.tab ?? 0,
-      };
-      setForm(newData);
     }
   }, [data]);
 
@@ -118,7 +109,7 @@ const SocialEditModal = ({
         tab: Number(form.tab),
       };
 
-      const { data, error } = await updateSocialMutation({
+      const { data } = await updateSocialMutation({
         variables: { id: Number(form.id), data: updateData },
       });
 

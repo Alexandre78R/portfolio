@@ -50,6 +50,17 @@ const Contact: React.FC = (): React.ReactElement => {
     }));
   };
 
+  const handleInputChangeWrapper = (
+    value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ): void => {
+    if (typeof value === 'string') {
+      // For date picker
+      return;
+    }
+    // For text input
+    handleInputChange(value as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
+  };
+
   useEffect(() => {
     if (!captchaValid) return;
 
@@ -108,13 +119,15 @@ const Contact: React.FC = (): React.ReactElement => {
             label={translations.inputNameContactEmail}
             type="email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
           <InputField
             id="object"
             label={translations.inputNameContactObject}
             value={formData.object}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
           <InputField
             id="message"
@@ -122,7 +135,8 @@ const Contact: React.FC = (): React.ReactElement => {
             value={formData.message}
             multiline
             rows={6}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
           <ButtonCustom
             onClick={handleClick}

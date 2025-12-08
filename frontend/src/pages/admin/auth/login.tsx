@@ -88,7 +88,7 @@ const LoginPage = (): React.ReactElement => {
           label={translations.messagePageLoginInputEmail}
           type="email"
           value={form.email}
-          onChange={handleChange}
+          onChange={handleChange as any}
           name="email"
         />
         <InputField
@@ -96,7 +96,7 @@ const LoginPage = (): React.ReactElement => {
           label={translations.messagePageLoginInputPassword}
           type="password"
           value={form.password}
-          onChange={handleChange}
+          onChange={handleChange as any}
           name="password"
         />
 

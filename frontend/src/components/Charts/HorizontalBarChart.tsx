@@ -11,7 +11,7 @@ import {
   ChartTypeRegistry,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { useTheme, ThemeContextObject } from "@/context/Theme/ThemeContext";
+import { useTheme, ThemeContextType } from "@/context/Theme/ThemeContext";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
@@ -26,7 +26,7 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data })
   const [primaryColor, setPrimaryColor] = useState<string>("#6366f1");
   const [labelColor, setLabelColor] = useState<string>("#1f2937");
 
-  const { theme }: ThemeContextObject = useTheme();
+  const { theme }: ThemeContextType = useTheme();
   const { translations }: { translations: Lang } = useLang();
 
   useEffect((): void => {

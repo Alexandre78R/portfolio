@@ -48,7 +48,8 @@ const ChoicePasswordPage = (): ReactElement => {
           label={translations?.messagePageChoicePasswordOld ?? ""}
           type="password"
           value={form.password}
-          onChange={handleChange}
+          onChange={handleChange as any}
+          picker={undefined}
           required
         />
         <InputField
@@ -57,7 +58,8 @@ const ChoicePasswordPage = (): ReactElement => {
           label={translations?.messagePageChoicePasswordNew ?? ""}
           type="password"
           value={form.newPassword}
-          onChange={handleChange}
+          onChange={handleChange as any}
+          picker={undefined}
           required
         />
         <div className="flex justify-center">
