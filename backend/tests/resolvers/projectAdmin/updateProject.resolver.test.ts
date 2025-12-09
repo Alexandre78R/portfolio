@@ -59,7 +59,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
     });
 
     (resolver as any).transformProject = jest.fn().mockImplementation(
-      (projectPrisma: PrismaProjectWithSkills): { id: number; title: string; descriptionEN: string; descriptionFR: string; typeDisplay: string; github: string | null; contentDisplay: string; skills: Array<{ id: number; name: string; image: string }> } => {
+      (projectPrisma: PrismaProjectWithSkills): { id: number; title: string; descriptionEN: string; descriptionFR: string; typeDisplay: string; github: string | null; image: string | null; video: string | null; contentDisplay: string; skills: Array<{ id: number; name: string; image: string }> } => {
         const skills: Array<{ id: number; name: string; image: string }> = (projectPrisma.skills || []).map(
           (ps: ProjectSkill & { skill: Skill }): { id: number; name: string; image: string } => ({
             id: ps.skill?.id || ps.skillId || 0,
@@ -76,6 +76,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
           typeDisplay: projectPrisma.typeDisplay,
           github: projectPrisma.github ?? null,
           contentDisplay: projectPrisma.contentDisplay,
+          image: projectPrisma.image ?? null,
+          video: projectPrisma.video ?? null,
           skills
         };
       }
@@ -125,6 +127,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
         descriptionFR: "Description FR",
         typeDisplay: "image",
         github: null,
+        image: null,
+        video: null,
         contentDisplay: "image.jpg",
         skills: [{ projectId: 1, skillId: 1 }],
       };
@@ -170,6 +174,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
         descriptionFR: "Old FR",
         typeDisplay: "image",
         github: null,
+        image: null,
+        video: null,
         contentDisplay: "old.jpg",
         skills: [],
       };
@@ -182,6 +188,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
         typeDisplay: "image",
         github: input.github!,
         contentDisplay: "old.jpg",
+        image: null,
+        video: null,
         skills: [],
       };
 
@@ -211,6 +219,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
         descriptionFR: "Description FR",
         typeDisplay: "image",
         github: null,
+        image: null,
+        video: null,
         contentDisplay: "image.jpg",
         skills: [{ projectId: 1, skillId: 1 }],
       };
@@ -257,6 +267,8 @@ describe("ProjectAdminResolver - updateProject", (): void => {
         descriptionFR: "Description FR",
         typeDisplay: "image",
         github: null,
+        image: null,
+        video: null,
         contentDisplay: "image.jpg",
         skills: [],
       };
@@ -312,7 +324,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
 
       const existingProject: PrismaProjectWithBasicSkills = {
         id: 1, title: "Old", descriptionEN: "", descriptionFR: "", 
-        typeDisplay: "image", github: null, contentDisplay: "", skills: []
+        typeDisplay: "image", github: null, image: null, video: null, contentDisplay: "", skills: []
       };
 
       const updatedProject: PrismaProjectWithSkills = {
@@ -344,7 +356,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
       const input: UpdateProjectInput = { id: 1, skillIds: [1, 999] };
       const existingProject: PrismaProjectWithBasicSkills = {
         id: 1, title: "Test", descriptionEN: "", descriptionFR: "",
-        typeDisplay: "image", github: null, contentDisplay: "", skills: []
+        typeDisplay: "image", github: null, image: null, video: null, contentDisplay: "", skills: []
       };
 
       mockPrisma.project.findUnique.mockResolvedValue(existingProject);
@@ -362,7 +374,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
       const input: UpdateProjectInput = { id: 1, title: "Test" };
       const existingProject: PrismaProjectWithBasicSkills = {
         id: 1, title: "Old", descriptionEN: "", descriptionFR: "",
-        typeDisplay: "image", github: null, contentDisplay: "", skills: []
+        typeDisplay: "image", github: null, image: null, video: null, contentDisplay: "", skills: []
       };
 
       mockPrisma.project.findUnique.mockResolvedValue(existingProject);
@@ -378,7 +390,7 @@ describe("ProjectAdminResolver - updateProject", (): void => {
       const input: UpdateProjectInput = { id: 1, title: "Test" };
       const existingProject: PrismaProjectWithBasicSkills = {
         id: 1, title: "Old", descriptionEN: "", descriptionFR: "",
-        typeDisplay: "image", github: null, contentDisplay: "", skills: []
+        typeDisplay: "image", github: null, image: null, video: null, contentDisplay: "", skills: []
       };
 
       mockPrisma.project.findUnique
