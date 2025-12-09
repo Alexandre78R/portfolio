@@ -83,10 +83,18 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
         _operation: GraphQLRequest,
         previousContext: DefaultContext
       ): DefaultContext => {
+        // Récupérer le token JWT depuis localStorage pour l'authentification
+        const jwtToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        
         const headers: Record<string, string> = {
           ...(previousContext.headers as Record<string, string> | undefined),
           "x-api-key": token ?? "",
         };
+
+        // Ajouter le token JWT dans les headers si présent
+        if (jwtToken) {
+          headers['authorization'] = `Bearer ${jwtToken}`;
+        }
 
         return { headers };
       }

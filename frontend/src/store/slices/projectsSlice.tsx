@@ -13,6 +13,8 @@ export type Project = {
   typeDisplay: string;
   github: string | null;
   contentDisplay: string;
+  image: string | null;
+  video: string | null;
   skills: SkillsProject[];
 };
 

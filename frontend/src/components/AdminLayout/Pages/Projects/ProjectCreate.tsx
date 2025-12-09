@@ -125,6 +125,40 @@ const ProjectCreate = (): ReactElement => {
       }
 
       try {
+        let imagePath: string | null = null;
+        let videoPath: string | null = null;
+
+        // Si un fichier est sélectionné, l'uploader au bon endpoint
+        if (selectedFile) {
+          const formData = new FormData();
+          const isVideo = selectedFile.type.startsWith("video/");
+          const field = isVideo ? "video" : "image";
+          const endpoint = isVideo ? "/api/project-video-upload" : "/api/project-upload";
+          
+          formData.append(field, selectedFile);
+
+          const uploadResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (uploadResponse.ok) {
+            const uploadData = await uploadResponse.json();
+            if (isVideo) {
+              videoPath = uploadData.filePath;
+            } else {
+              imagePath = uploadData.filePath;
+            }
+          } else {
+            const errorMsg = isVideo ? "Erreur lors de l'upload de la vidéo" : "Erreur lors de l'upload de l'image";
+            showAlert("error", errorMsg);
+            return;
+          }
+        }
+
         const submitData: CreateProjectInput = {
           title: form.title,
           descriptionFR: form.descriptionFR,
@@ -133,6 +167,8 @@ const ProjectCreate = (): ReactElement => {
           contentDisplay: form.contentDisplay,
           github: form.github || null,
           skillIds: form.skillIds,
+          image: imagePath,
+          video: videoPath,
         };
 
         const res = await createProjectMutation({
@@ -166,7 +202,7 @@ const ProjectCreate = (): ReactElement => {
         );
       }
     },
-    [form, createProjectMutation, showAlert, translations]
+    [form, createProjectMutation, showAlert, translations, selectedFile]
   );
 
   if (skillsLoading) return <LoadingCustom />;
@@ -201,7 +237,7 @@ const ProjectCreate = (): ReactElement => {
           type="text"
           value={form.title}
           onChange={handleChange}
-          required
+          
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,7 +251,7 @@ const ProjectCreate = (): ReactElement => {
             type="text"
             value={form.descriptionFR}
             onChange={handleChange}
-            required
+            
           />
 
           <InputField
@@ -228,7 +264,7 @@ const ProjectCreate = (): ReactElement => {
             type="text"
             value={form.descriptionEN}
             onChange={handleChange}
-            required
+            
           />
         </div>
 
@@ -243,7 +279,7 @@ const ProjectCreate = (): ReactElement => {
             value={form.typeDisplay}
             options={typeDisplayOptions}
             onChange={handleChange}
-            required
+            
           />
 
           <InputSelect
@@ -256,7 +292,7 @@ const ProjectCreate = (): ReactElement => {
             value={form.contentDisplay}
             options={contentDisplayOptions}
             onChange={handleChange}
-            required
+            
           />
         </div>
 
@@ -278,7 +314,7 @@ const ProjectCreate = (): ReactElement => {
           value={form.skillIds}
           options={allSkills}
           onChange={handleSkillsChange}
-          // required
+          required={false}
         />
 
         {/* Media Upload Section */}

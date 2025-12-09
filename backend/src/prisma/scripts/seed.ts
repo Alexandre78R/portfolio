@@ -71,11 +71,6 @@ const mapThemeToPrisma = (
 
   visible: theme.colors.visible,
 });
-
-/* =========================
- * Seed function
- * ========================= */
-
 async function seed(): Promise<void> {
   const answer: string = await ask(
     "⚠️  This will reset and seed your database. Are you sure? (y/n): "
@@ -90,10 +85,6 @@ async function seed(): Promise<void> {
   console.log("⏳ Seeding database...");
 
   try {
-    /* =========================
-     * Cleanup
-     * ========================= */
-
     await prisma.projectSkill.deleteMany();
     await prisma.project.deleteMany();
     await prisma.skill.deleteMany();
@@ -103,11 +94,6 @@ async function seed(): Promise<void> {
     await prisma.user.deleteMany();
     await prisma.theme.deleteMany();
     await prisma.social.deleteMany();
-
-    /* =========================
-     * Themes
-     * ========================= */
-
     for (const key of Object.keys(themesData) as (keyof typeof themesData)[]) {
       const themeData = themesData[key];
 
@@ -117,10 +103,6 @@ async function seed(): Promise<void> {
 
       console.log(`🎨 Theme seeded: ${createdTheme.name}`);
     }
-
-    /* =========================
-     * Skills and Categories
-     * ========================= */
 
     for (const cat of skillsData as SkillCategoryData[]) {
       const catRec: SkillCategory = await prisma.skillCategory.create({
@@ -138,7 +120,6 @@ async function seed(): Promise<void> {
           },
         });
 
-        // Create junction table record to link skill to category
         await prisma.skillCategorySkill.create({
           data: {
             categoryId: catRec.id,
@@ -157,6 +138,8 @@ async function seed(): Promise<void> {
           typeDisplay: proj.typeDisplay,
           github: proj.github ?? null,
           contentDisplay: proj.contentDisplay || "",
+          image: proj.image ?? null,
+          video: proj.video ?? null,
         },
       });
 
@@ -173,7 +156,6 @@ async function seed(): Promise<void> {
             },
           });
 
-          // Link to "Others" category
           let otherCat: SkillCategory | null =
             await prisma.skillCategory.findFirst({
               where: { categoryEN: "Others" },
@@ -204,10 +186,6 @@ async function seed(): Promise<void> {
       }
     }
 
-    /* =========================
-     * Educations
-     * ========================= */
-
     for (const edu of educationsData as EducationData[]) {
       await prisma.education.create({
         data: {
@@ -229,10 +207,6 @@ async function seed(): Promise<void> {
       });
     }
 
-    /* =========================
-     * Experiences
-     * ========================= */
-
     for (const exp of experiencesData as ExperienceData[]) {
       await prisma.experience.create({
         data: {
@@ -251,10 +225,6 @@ async function seed(): Promise<void> {
         },
       });
     }
-
-    /* =========================
-     * Socials
-     * ========================= */
 
     for (const social of socialsData) {
       const createdSocial: Social = await prisma.social.create({

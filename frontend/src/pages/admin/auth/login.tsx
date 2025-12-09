@@ -62,8 +62,16 @@ const LoginPage = (): React.ReactElement => {
 
       if (response?.code === 200) {
         console.log("✅ Connexion réussie :", response.message);
+        
+        // Sauvegarder le token si fourni
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+        }
+        
         showAlert("success", translations.messagePageLoginMessageSuccess);
-        router.push("/admin");
+        
+        // Forcer un rechargement complet pour que le middleware et le contexte se mettent à jour
+        window.location.href = "/admin";
       } else if (response?.code === 401) {
         console.warn("❌ Identifiants invalides :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);

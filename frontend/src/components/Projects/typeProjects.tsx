@@ -4,7 +4,11 @@ export type Project = {
   contentDisplay: string;
   title: string;
   description: string;
+  descriptionEN: string;
+  descriptionFR: string;
   github: string;
+  image: string | null;
+  video: string | null;
   skills: { id: string; name: string; image: string }[];
 };
 
@@ -15,7 +19,11 @@ export type ProjectComponent = {
     contentDisplay: string;
     title: string;
     description: string;
+    descriptionEN: string;
+    descriptionFR: string;
     github: string;
+    image: string | null;
+    video: string | null;
     skills: { id: string; name: string; image: string }[];
   };
 };

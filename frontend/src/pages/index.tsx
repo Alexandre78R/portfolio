@@ -76,6 +76,8 @@ const Home: React.FC = (): ReactElement => {
       typeDisplay: project.typeDisplay,
       github: project.github ?? null,
       contentDisplay: project.contentDisplay,
+      image: project.image ?? null,
+      video: project.video ?? null,
       skills: project.skills || [],
       description: translations.file === "fr" ? project.descriptionFR : project.descriptionEN,
     }));

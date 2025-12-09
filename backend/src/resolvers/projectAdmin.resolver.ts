@@ -17,8 +17,6 @@ import { SkillSubItem } from "../entities/skillSubItem.entity";
 const UPLOAD_BASE: string = path.resolve(__dirname, "../../uploads");
 const IMAGE_DIR: string = "images";
 const VIDEO_DIR: string = "videos";
-// const IMAGE_DIR: string = "images/projects";
-// const VIDEO_DIR: string = "videos/projects";
 
 type PrismaProjectWithSkills = PrismaProject & {
   skills: Array<ProjectSkill & { skill: Skill }>;
@@ -39,7 +37,12 @@ interface FileUploadResult {
 @Resolver(() => Project)
 @Authorized([UserRole.admin, UserRole.editor])
 export class ProjectAdminResolver {
-  private readonly db: PrismaClient = prisma;
+  private readonly db: PrismaClient;
+
+  constructor() {
+    this.db = prisma;
+  }
+
   @Mutation(() => ProjectResponse)
   async createProject(
     @Arg("data") data: CreateProjectInput,
@@ -69,6 +72,8 @@ export class ProjectAdminResolver {
           typeDisplay: data.typeDisplay,
           github: data.github || null,
           contentDisplay: data.contentDisplay,
+          image: data.image || null,
+          video: data.video || null,
           skills: {
             create: data.skillIds.map((skillId: number) => ({
               skill: { connect: { id: skillId } }
@@ -371,7 +376,7 @@ export class ProjectAdminResolver {
         };
       }
 
-      const project: PrismaProject | null = await this.db.project.findUnique({
+      const project: PrismaProject | null = await prisma.project.findUnique({
         where: { id }
       });
 
@@ -390,7 +395,11 @@ export class ProjectAdminResolver {
         );
       }
 
-      await this.db.project.delete({
+      await prisma.projectSkill.deleteMany({
+        where: { projectId: id }
+      });
+
+      await prisma.project.delete({
         where: { id }
       });
 
@@ -498,6 +507,8 @@ export class ProjectAdminResolver {
       typeDisplay: projectPrisma.typeDisplay,
       github: projectPrisma.github,
       contentDisplay: projectPrisma.contentDisplay,
+      image: projectPrisma.image,
+      video: projectPrisma.video,
       skills
     };
 

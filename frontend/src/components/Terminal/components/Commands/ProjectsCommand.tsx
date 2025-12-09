@@ -28,7 +28,6 @@ const ProjectsCommand = (): JSX.Element => {
 
   const [isClient, setIsClient] = useState<boolean>(false);
 
-  // Responsive chunk size
   const [chunkSize, setChunkSize] = useState<number>(2);
 
   const [expandedText, setExpandedText] = useState<Set<number>>(new Set());
@@ -94,24 +93,24 @@ const ProjectsCommand = (): JSX.Element => {
           return (
             <Message key={project.id}>
               <div className="flex">
-                {project.typeDisplay === "video" ? (
+                {project.video ? (
                   <div className="video-container">
                     {isClient && (
                       <ReactPlayer
-                        url={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                        url={`${process.env.NEXT_PUBLIC_API_URL}/api${project.video}`}
                         width="310px"
                         height="170px"
                         controls
                       />
                     )}
                   </div>
-                ) : (
+                ) : project.image ? (
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/api${project.image}`}
                     alt={project.title}
                     className="w-[350px] h-[170px] pb-2 overflow-hidden"
                   />
-                )}
+                ) : null}
               </div>
 
               <div className="sm:max-w-[80%] md:max-w-[60%] lg:max-w-[50%] xl:max-w-[35%]">

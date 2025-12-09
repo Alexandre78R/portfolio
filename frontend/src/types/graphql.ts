@@ -120,9 +120,11 @@ export type CreateProjectInput = {
   descriptionEN: Scalars['String']['input'];
   descriptionFR: Scalars['String']['input'];
   github?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   skillIds: Array<Scalars['Float']['input']>;
   title: Scalars['String']['input'];
   typeDisplay: Scalars['String']['input'];
+  video?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateSkillInput = {
@@ -493,9 +495,11 @@ export type Project = {
   descriptionFR: Scalars['String']['output'];
   github?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   skills: Array<SkillSubItem>;
   title: Scalars['String']['output'];
   typeDisplay: Scalars['String']['output'];
+  video?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProjectResponse = {
@@ -745,9 +749,11 @@ export type UpdateProjectInput = {
   descriptionFR?: InputMaybe<Scalars['String']['input']>;
   github?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
   skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
+  video?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {
@@ -929,14 +935,14 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', code: number, message: string, project?: { __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, contentDisplay: string, github?: string | null, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string }> } | null } };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'ProjectResponse', code: number, message: string, project?: { __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, contentDisplay: string, github?: string | null, image?: string | null, video?: string | null, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string }> } | null } };
 
 export type UpdateProjectMutationVariables = Exact<{
   data: UpdateProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'ProjectResponse', code: number, message: string, project?: { __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, contentDisplay: string, github?: string | null, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string }> } | null } };
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'ProjectResponse', code: number, message: string, project?: { __typename?: 'Project', id: string, title: string, descriptionFR: string, descriptionEN: string, typeDisplay: string, contentDisplay: string, github?: string | null, image?: string | null, video?: string | null, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string }> } | null } };
 
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -1104,7 +1110,7 @@ export type GetExperienceByIdQuery = { __typename?: 'Query', experienceById: { _
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, image?: string | null, video?: string | null, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1697,6 +1703,8 @@ export const CreateProjectDocument = gql`
       typeDisplay
       contentDisplay
       github
+      image
+      video
       skills {
         id
         name
@@ -1745,6 +1753,8 @@ export const UpdateProjectDocument = gql`
       typeDisplay
       contentDisplay
       github
+      image
+      video
       skills {
         id
         name
@@ -2915,6 +2925,8 @@ export const GetProjectsListDocument = gql`
       descriptionFR
       github
       id
+      image
+      video
       skills {
         categoryId
         id

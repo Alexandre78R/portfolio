@@ -1,4 +1,4 @@
-import { ReactElement, useState, useCallback, ChangeEvent, useMemo } from "react";
+import { ReactElement, useState, useEffect, useCallback, ChangeEvent, useMemo } from "react";
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
 import InputField from "@/components/InputField/InputField";
 import InputMultiSelect from "@/components/AdminLayout/components/Input/InputMultiSelect";
@@ -45,7 +45,7 @@ const ProjectEditModal = ({
   const { data: skillsData } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
   });
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
   const typeDisplayOptions: SelectOption<string>[] = [
@@ -78,6 +78,20 @@ const ProjectEditModal = ({
     github: project?.github || "",
     skillIds: project?.skills.map((s) => Number(s.id)) || [],
   });
+
+  useEffect(() => {
+    if (project) {
+      setForm({
+        title: project.title || "",
+        descriptionFR: project.descriptionFR || "",
+        descriptionEN: project.descriptionEN || "",
+        typeDisplay: project.typeDisplay || "image",
+        contentDisplay: project.contentDisplay || "full",
+        github: project.github || "",
+        skillIds: project.skills.map((s) => Number(s.id)) || [],
+      });
+    }
+  }, [project]);
 
   const handleChange = useCallback(
     (
@@ -164,8 +178,7 @@ const ProjectEditModal = ({
             name="title"
             type="text"
             value={form.title}
-            onChange={handleChange}
-            required
+            onChange={handleChange}        
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -176,7 +189,8 @@ const ProjectEditModal = ({
               type="text"
               value={form.descriptionFR}
               onChange={handleChange}
-              required
+              multiline
+              rows={6}
             />
 
             <InputField
@@ -186,7 +200,8 @@ const ProjectEditModal = ({
               type="text"
               value={form.descriptionEN}
               onChange={handleChange}
-              required
+              multiline
+              rows={6}
             />
           </div>
 
@@ -198,7 +213,6 @@ const ProjectEditModal = ({
               value={form.typeDisplay}
               options={typeDisplayOptions}
               onChange={handleChange}
-              required
             />
 
             <InputSelect
@@ -208,7 +222,6 @@ const ProjectEditModal = ({
               value={form.contentDisplay}
               options={contentDisplayOptions}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -227,7 +240,6 @@ const ProjectEditModal = ({
             value={form.skillIds}
             options={allSkills}
             onChange={handleSkillsChange}
-            required
           />
 
           <div className="flex justify-end gap-4 mt-6">

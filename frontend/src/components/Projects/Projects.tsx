@@ -18,7 +18,12 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
   const { translations }: { translations: Lang } = useLang();
 
   useEffect(() => {
-    if (project) setIsClient(true);
+    if (project) {
+      setIsClient(true);
+      // console.log("Project data:", project);
+      // console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
+      // console.log("${process.env.NEXT_PUBLIC_API_URL}/api${project.video}:", `${process.env.NEXT_PUBLIC_API_URL}/api${project.video}`);
+    }
   }, [project]);
 
   const handleExpandClick = (cardId: string): void => {
@@ -41,12 +46,12 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
     <div className="bg-body text-text">
       <div key={project?.id} className="flex-shrink-0 w-50 bg-body text-text">
         <div className="flex-shrink-0 w-50 bg-body text-text m-5">
-          {project?.typeDisplay === "video" ? (
+          {project?.video ? (
             <div className="w-full h-auto overflow-hidden bg-body text-text">
               <div className="video-container">
                 {isClient && (
                   <ReactPlayer
-                    url={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                    url={`${process.env.NEXT_PUBLIC_API_URL}/api${project.video}`}
                     width="310px"
                     height="170px"
                     controls
@@ -77,13 +82,39 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
                 </>
               )}
             </div>
-          ) : (
+          ) : project?.image ? (
             <div className="w-320px h-170 overflow-hidden bg-body text-text">
               <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/api/upload/${project.typeDisplay}/${project.contentDisplay}`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}/api${project.image}`}
                 alt={project?.title}
                 className="max-w-[310px] pb-2 overflow-hidden"
               />
+              <p className="text-xl max-w-320px pt-0.5">{project?.title}</p>
+              {project?.description && (
+                <>
+                  <p className="max-w-320px pt-2 leading-125%">
+                    {project.description.length > 150 && !expandedText.has(project.id)
+                      ? project.description.substring(0, 150) + "..."
+                      : project.description}
+                  </p>
+                  {project.description.length > 150 && (
+                    <p
+                      title={expandedText.has(project.id)
+                        ? translations.buttonSeeLess
+                        : translations.buttonSeeMore}
+                      onClick={() => handleExpandTextClick(project.id)}
+                      className="text-primary hover:text-secondary cursor-pointer"
+                    >
+                      {expandedText.has(project.id)
+                        ? translations.buttonSeeLess
+                        : translations.buttonSeeMore}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="w-320px h-170 overflow-hidden bg-body text-text">
               <p className="text-xl max-w-320px pt-0.5">{project?.title}</p>
               {project?.description && (
                 <>

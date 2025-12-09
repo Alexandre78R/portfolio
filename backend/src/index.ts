@@ -45,33 +45,36 @@ app.use(
   })
 );
 
-// ❌ NE PAS mettre express.json() ici globalement
-// app.use(express.json());
 
 /* --- Démarrage serveur --- */
 (async (): Promise<void> => {
   try {
-    /* ▸ Monte GraphQL EN PREMIER (avant les routes REST) */
+
     await mountGraphQL(app);
 
     /* ▸ MAINTENANT on peut ajouter express.json() pour les autres routes */
-    app.use(express.json());
+    app.use(express.json({ limit: "50mb" }));
 
     /* --- Routes REST --- */
     app.use("/api/badges", badgeRoutes);
     app.use("/api/backups", backupsRoutes);
     app.use("/api/dynamic-images", captchaRoutes);
-    app.use("/api/upload", uploadRoutes);
-    app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));
 
-    /* --- Serve static files --- */
-    app.use(
-      "/uploads",
-      express.static(path.join(__dirname, "../uploads"), {
-        maxAge: "7d",
-        immutable: true,
-      })
-    );
+    app.use("/api/uploads", uploadRoutes);
+    app.use("/api/upload", uploadRoutes);
+
+    app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));
+    app.use("/api/uploads/images", express.static(path.join(__dirname, "../uploads/images")));
+    app.use("/api/uploads/videos", express.static(path.join(__dirname, "../uploads/videos")));
+
+  /* --- Serve static files --- */
+  app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "../uploads"), {
+      maxAge: "7d",
+      immutable: true,
+    })
+  );
 
     /* ▸ Cleanup périodique captchas expirés */
     setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);

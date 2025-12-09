@@ -35,6 +35,12 @@ export class Project {
   @Field()
   contentDisplay: string;
 
+  @Field(() => String, { nullable: true })
+  image: string | null;
+
+  @Field(() => String, { nullable: true })
+  video: string | null;
+
   @Field(() => [SkillSubItem])
   skills: SkillSubItem[];
   

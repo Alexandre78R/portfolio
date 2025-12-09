@@ -83,10 +83,10 @@ export async function mountGraphQL(app: Express) {
     }),
     // IMPORTANT: graphqlUploadExpress AVANT express.json()
     graphqlUploadExpress({ 
-      maxFileSize: 10000000, // 10MB
+      maxFileSize: 50000000, // 50MB
       maxFiles: 10 
     }),
-    express.json(),
+    express.json({ limit: "50mb" }),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
         /* ▸ Cookies */
@@ -94,7 +94,17 @@ export async function mountGraphQL(app: Express) {
 
         /* ▸ Auth utilisateur via JWT */
         let user: User | null = null;
-        const token: string | undefined = cookies.get("token") ?? undefined;
+        
+        // Essayer d'abord le cookie, puis le header Authorization
+        let token: string | undefined = cookies.get("token") ?? undefined;
+        
+        // Si pas de cookie, chercher dans le header Authorization
+        if (!token) {
+          const authHeader = req.headers.authorization;
+          if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+          }
+        }
 
         if (token && process.env.JWT_SECRET) {
           try {

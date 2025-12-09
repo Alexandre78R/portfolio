@@ -117,9 +117,11 @@ export type CreateProjectInput = {
   descriptionEN: Scalars['String']['input'];
   descriptionFR: Scalars['String']['input'];
   github?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   skillIds: Array<Scalars['Float']['input']>;
   title: Scalars['String']['input'];
   typeDisplay: Scalars['String']['input'];
+  video?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateSkillInput = {
@@ -490,9 +492,11 @@ export type Project = {
   descriptionFR: Scalars['String']['output'];
   github?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   skills: Array<SkillSubItem>;
   title: Scalars['String']['output'];
   typeDisplay: Scalars['String']['output'];
+  video?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProjectResponse = {
@@ -742,9 +746,11 @@ export type UpdateProjectInput = {
   descriptionFR?: InputMaybe<Scalars['String']['input']>;
   github?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
   skillIds?: InputMaybe<Array<Scalars['Int']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
+  video?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {

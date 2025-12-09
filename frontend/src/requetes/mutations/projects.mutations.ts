@@ -13,6 +13,8 @@ export const CREATE_PROJECT = gql`
         typeDisplay
         contentDisplay
         github
+        image
+        video
         skills {
           id
           name
@@ -36,6 +38,8 @@ export const UPDATE_PROJECT = gql`
         typeDisplay
         contentDisplay
         github
+        image
+        video
         skills {
           id
           name

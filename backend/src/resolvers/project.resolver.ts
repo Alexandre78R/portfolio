@@ -5,6 +5,8 @@ import { ProjectResponse, ProjectsResponse } from "../types/response.types";
 import { mapProject } from "../lib/mapProject";
 
 type PrismaProjectWithSkills = PrismaProject & {
+  image?: string | null;
+  video?: string | null;
   skills: Array<{
     projectId: number;
     skillId: number;

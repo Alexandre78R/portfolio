@@ -1,10 +1,8 @@
-// Skill individuelle
 export interface SkillData {
   name: string;
   image: string;
 }
 
-// Catégorie de skill avec skills imbriqués
 export interface SkillCategoryData {
   id: number;
   categoryEN: string;
@@ -12,9 +10,8 @@ export interface SkillCategoryData {
   skills: SkillData[];
 }
 
-// Pour les projets
 export interface ProjectSkillData {
-  name: string; // le nom de la skill associée au projet
+  name: string;
 }
 
 export interface ProjectData {
@@ -24,10 +21,10 @@ export interface ProjectData {
   typeDisplay: string;
   github?: string | null;
   contentDisplay?: string | undefined;
+  image?: string | null;
   skills: ProjectSkillData[];
 }
 
-// Pour l'éducation
 export interface EducationData {
   titleEN: string;
   titleFR: string;
@@ -45,7 +42,6 @@ export interface EducationData {
   typeFR: string;
 }
 
-// Pour les expériences
 export interface ExperienceData {
   jobEN: string;
   jobFR: string;

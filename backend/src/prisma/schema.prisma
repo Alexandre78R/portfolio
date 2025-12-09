@@ -21,6 +21,8 @@ model Project {
   typeDisplay    String
   github         String?
   contentDisplay String         @db.Text
+  image          String?
+  video          String?
   skills         ProjectSkill[]
 }
 

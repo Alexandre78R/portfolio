@@ -14,6 +14,8 @@ export function mapProject(
     github: project.github ?? null,
     typeDisplay: project.typeDisplay,
     contentDisplay: project.contentDisplay,
+    image: project.image ?? null,
+    video: project.video ?? null,
     skills: project.skills.map(ps => ({
       id: ps.skill.id,
       name: ps.skill.name,

@@ -9,6 +9,8 @@ export const projectsData = [
     typeDisplay: "image",
     github: undefined,
     contentDisplay: "Semantik.png",
+    image: "/uploads/images/semantik.png",
+    video: null,
     skills: [
       {
         name: "JavaScript",

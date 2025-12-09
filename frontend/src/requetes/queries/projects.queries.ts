@@ -11,6 +11,8 @@ export const GET_PROJECTS_LIST = gql`
         descriptionFR
         github
         id
+        image
+        video
         skills {
           categoryId
           id

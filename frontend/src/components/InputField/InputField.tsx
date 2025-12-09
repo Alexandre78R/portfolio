@@ -64,12 +64,12 @@ const parseDate = (value: string): Dayjs | null => {
     }
   });
 
-  const dateValue = dayjs(parseValue, "MMMM YYYY");
+  const dateValue: Dayjs = dayjs(parseValue, "MMMM YYYY");
   
   return dateValue.isValid() ? dateValue : null;
 };
 
-const formatDate = (date: Dayjs, locale: Locale): string => {
+const formatDate: (date: Dayjs, locale: Locale) => string = (date: Dayjs, locale: Locale): string => {
   const formatted = date.locale(locale).format("MMMM YYYY");
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
@@ -95,10 +95,10 @@ const InputField: React.FC<InputFieldProps> = (props) => {
     const handleDateChange = (newValue: Dayjs | null): void => {
       if (newValue?.isValid()) {
         const formatted = formatDate(newValue, locale);
-        console.log(`Date formatée (${locale}):`, formatted);
+        // console.log(`Date formatée (${locale}):`, formatted);
         onChange(formatted);
       } else {
-        console.log("Date invalide ou nulle");
+        // console.log("Date invalide ou nulle");
       }
     };
 
@@ -117,6 +117,13 @@ const InputField: React.FC<InputFieldProps> = (props) => {
               name,
               className: `bg-white border border-gray-300 rounded-md text-text ${className}`,
               sx: {
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "white",
+                  color: "var(--text-color)",
+                  "& input": {
+                    color: "var(--text-color)",
+                  },
+                },
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
                   borderColor: "var(--primary-color)",
                   borderWidth: "0.2rem",
@@ -157,6 +164,16 @@ const InputField: React.FC<InputFieldProps> = (props) => {
       name={name}
       className={`bg-white border border-gray-300 rounded-md text-text ${className}`}
       sx={{
+        "& .MuiOutlinedInput-root": {
+          backgroundColor: "white",
+          color: "var(--text-color)",
+          "& input": {
+            color: "var(--text-color)",
+          },
+          "& textarea": {
+            color: "var(--text-color)",
+          },
+        },
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
           borderColor: "var(--primary-color)",
           borderWidth: "0.2rem",

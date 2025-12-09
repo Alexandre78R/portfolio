@@ -38,7 +38,7 @@ const InputMultiSelect = <T extends string | number>(
     options,
     onChange,
     onSearch,
-    required = true,
+    required = false,
     className,
     sx,
     placeholder,
