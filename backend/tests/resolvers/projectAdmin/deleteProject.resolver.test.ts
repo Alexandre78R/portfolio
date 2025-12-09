@@ -3,12 +3,25 @@ import { ProjectAdminResolver } from "../../../src/resolvers/projectAdmin.resolv
 import { MyContext } from "../../../src";
 import { UserRole } from "../../../src/entities/user.entity";
 import { ProjectResponse } from "../../../src/types/response.types";
+import prisma from "../../../src/lib/prisma";
 import Cookies from "cookies";
 import * as fs from "fs";
 import * as fsPromises from "fs/promises";
 
 jest.mock("fs");
 jest.mock("fs/promises");
+jest.mock("../../../src/lib/prisma", () => ({
+  __esModule: true,
+  default: {
+    project: {
+      findUnique: jest.fn(),
+      delete: jest.fn(),
+    },
+    projectSkill: {
+      deleteMany: jest.fn(),
+    },
+  },
+}));
 
 describe("ProjectAdminResolver - deleteProject", () => {
   let resolver: ProjectAdminResolver;
@@ -33,11 +46,14 @@ describe("ProjectAdminResolver - deleteProject", () => {
       token: "mock-token",
     };
 
-    mockPrisma = {
+    mockPrisma = prisma as unknown as {
       project: {
-        findUnique: jest.fn(),
-        delete: jest.fn(),
-      },
+        findUnique: jest.Mock;
+        delete: jest.Mock;
+      };
+      projectSkill: {
+        deleteMany: jest.Mock;
+      };
     };
 
     Object.defineProperty(resolver, "db", {
@@ -89,6 +105,8 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "",
       typeDisplay: "",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
@@ -116,6 +134,8 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "project-1-123456.mp4",
       typeDisplay: "video",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
@@ -144,6 +164,8 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "project-1-123456.png",
       typeDisplay: "image",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
@@ -171,6 +193,8 @@ describe("ProjectAdminResolver - deleteProject", () => {
       contentDisplay: "",
       typeDisplay: "",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
