@@ -16,6 +16,9 @@ import { UserRole } from "../../src/entities/user.entity";
 
 jest.mock("@apollo/server");
 jest.mock("@apollo/server/express4");
+jest.mock("graphql-upload-ts", () => ({
+  graphqlUploadExpress: jest.fn(() => jest.fn()),
+}));
 jest.mock("../../src/lib/checkApiKey");
 jest.mock("jose");
 jest.mock("cookies");

@@ -1,6 +1,7 @@
 import request from "supertest";
-import express, { Response, Errback, Request } from "express";
+import express, { Response, Errback } from "express";
 import path from "path";
+import uploadRoutes from "../../src/routes/upload.routes";
 
 jest.mock("path", () => {
   const actualPath = jest.requireActual("path");
@@ -11,25 +12,9 @@ jest.mock("path", () => {
 });
 
 const app = express();
+app.use("/api/uploads", uploadRoutes);
 
-app.get("/upload/:type/:filename", (req: Request, res: Response) => {
-  const { type, filename } : any = req.params;
-
-  if (!["image", "video"].includes(type)) {
-    return res.status(400).send('Invalid type. Use "image" or "video".');
-  }
-
-  const filePath : string = path.join(__dirname, ".", "uploads", `${type}s`, filename);
-
-  res.sendFile(filePath, (err?: Error) => {
-    if (err && !res.headersSent) {
-      console.error(`Fichier non trouvé : ${filePath}`);
-      return res.status(404).send("Fichier non trouvé");
-    }
-  });
-});
-
-describe("GET /upload/:type/:filename", () => {
+describe("GET /api/uploads/:type/:filename", () => {
   let mockJoin: jest.Mock;
   let sendFileSpy: jest.SpyInstance;
 
@@ -68,16 +53,16 @@ describe("GET /upload/:type/:filename", () => {
   });
 
   it("should return 400 if type is invalid", async () => {
-    const res = await request(app).get("/upload/invalid/file.png");
+    const res = await request(app).get("/api/uploads/invalid/file.png");
     expect(res.statusCode).toBe(400);
-    expect(res.text).toBe('Invalid type. Use "image" or "video".');
+    expect(res.text).toBe("Type invalide (image ou video attendu)");
   });
 
   it("should return 200 and call sendFile when file exists", async () => {
     const filePath : string = "/mock/path/uploads/images/file.png";
     mockJoin.mockReturnValueOnce(filePath);
 
-    const res = await request(app).get("/upload/image/file.png");
+    const res = await request(app).get("/api/uploads/images/file.png");
 
     expect(res.statusCode).toBe(200);
     expect(res.text).toBe("Mock file content from sendFile mock");
@@ -88,7 +73,7 @@ describe("GET /upload/:type/:filename", () => {
     const filePath : string = "/mock/path/uploads/images/missing.png";
     mockJoin.mockReturnValueOnce(filePath);
 
-    const res = await request(app).get("/upload/image/missing.png");
+    const res = await request(app).get("/api/uploads/images/missing.png");
 
     expect(res.statusCode).toBe(404);
     expect(res.text).toBe("Fichier non trouvé");

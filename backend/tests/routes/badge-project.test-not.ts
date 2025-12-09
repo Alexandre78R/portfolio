@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+import request from 'supertest';
 
 
 const mockGenerateBadgeSvg = jest.fn((label, message, color, labelColor, icon, iconColor, iconSide) => {
