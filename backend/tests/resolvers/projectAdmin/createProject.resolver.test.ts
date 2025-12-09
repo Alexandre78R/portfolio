@@ -54,6 +54,8 @@ describe("ProjectAdminResolver - createProject", (): void => {
           typeDisplay: projectPrisma.typeDisplay,
           github: projectPrisma.github ?? null,
           contentDisplay: projectPrisma.contentDisplay,
+          image: projectPrisma.image ?? null,
+          video: projectPrisma.video ?? null,
           skills
         };
       }
@@ -99,6 +101,8 @@ describe("ProjectAdminResolver - createProject", (): void => {
         typeDisplay: input.typeDisplay,
         github: input.github ?? null,
         contentDisplay: input.contentDisplay,
+        image: null,
+        video: null,
         skills: [],
       };
 
@@ -131,6 +135,8 @@ describe("ProjectAdminResolver - createProject", (): void => {
         typeDisplay: input.typeDisplay,
         github: null,
         contentDisplay: input.contentDisplay,
+        image: null,
+        video: null,
         skills: [],
       };
 
