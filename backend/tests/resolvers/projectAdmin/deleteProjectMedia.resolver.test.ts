@@ -55,6 +55,7 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
         typeDisplay: project.typeDisplay,
         contentDisplay: project.contentDisplay,
         github: project.github,
+        video: project.video ?? null,
         skills: project.skills || [],
       }));
 
@@ -102,6 +103,8 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       contentDisplay: "video.mp4",
       typeDisplay: "VIDEO",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
@@ -146,6 +149,8 @@ describe("ProjectAdminResolver - deleteProjectMedia", () => {
       contentDisplay: "",
       typeDisplay: "",
       github: null,
+      image: null,
+      video: null,
       skills: [],
     };
 
