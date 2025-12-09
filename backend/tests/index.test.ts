@@ -4,6 +4,34 @@ import Cookies from "cookies";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
+const useMock = jest.fn();
+const listenMock = jest.fn();
+const jsonMock = jest.fn(() => "json-mw");
+const staticMock = jest.fn(() => "static-mw");
+const expressInstance = { use: useMock };
+
+jest.mock("express", () => {
+  const expressFn = jest.fn(() => expressInstance) as any;
+  expressFn.json = jsonMock;
+  expressFn.static = staticMock;
+  return {
+    __esModule: true,
+    default: expressFn,
+    Request: jest.fn(),
+    Response: jest.fn(),
+    NextFunction: jest.fn(),
+  };
+});
+
+jest.mock("http", () => {
+  const createServer = jest.fn(() => ({ listen: listenMock }));
+  return {
+    __esModule: true,
+    default: { createServer },
+    createServer,
+  };
+});
+
 jest.mock("../src/routes/badge.routes", () => ({}));
 jest.mock("../src/routes/backups.routes", () => ({}));
 jest.mock("../src/routes/captcha.routes", () => ({}));
@@ -79,6 +107,39 @@ describe("Server Initialization", (): void => {
     expect(context).toHaveProperty("token");
     expect(context).toHaveProperty("user");
     expect(context.cookies).toBe(cookiesMock);
+  });
+});
+
+/* --- Route Mounting --- */
+describe("Route Mounting", (): void => {
+  beforeEach(async (): Promise<void> => {
+    jest.resetModules();
+    useMock.mockClear();
+    listenMock.mockClear();
+    await import("../src/index");
+  });
+
+  it("should mount all REST and static routes in order", (): void => {
+    const mountedPaths: string[] = useMock.mock.calls
+      .map((call: unknown[]) => call[0])
+      .filter((arg: unknown): arg is string => typeof arg === "string")
+      .filter((arg: string) => arg !== "json-mw");
+
+    expect(mountedPaths).toEqual([
+      "/api/badges",
+      "/api/backups",
+      "/api/dynamic-images",
+      "/api/uploads",
+      "/api/upload",
+      "/api/uploads/cv",
+      "/api/uploads/images",
+      "/api/uploads/videos",
+      "/uploads",
+    ]);
+  });
+
+  it("should start HTTP server", (): void => {
+    expect(listenMock).toHaveBeenCalled();
   });
 });
 
