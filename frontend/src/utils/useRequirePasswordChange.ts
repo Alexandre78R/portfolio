@@ -17,7 +17,7 @@ export const useRequirePasswordChange = (): void => {
         router.replace("/admin/auth/login");
       } else if (user.isPasswordChange === false) {
         // L'utilisateur doit changer son mot de passe
-        router.replace("/admin/auth/change-password");
+        router.replace("/admin/auth/changePassword");
       }
     }
   }, [user, loading, router]);

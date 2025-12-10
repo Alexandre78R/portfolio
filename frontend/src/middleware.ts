@@ -52,10 +52,10 @@ export default async function middleware(
         SECRET_KEY
       );
 
-      console.log("[Middleware] Token verified, role:", payload.role);
+      // console.log("[Middleware] Token verified, role:", payload.role);
 
       if (typeof payload.role !== "string" || payload.role !== "admin") {
-        console.log("[Middleware] Invalid role, redirecting to 400");
+        // console.log("[Middleware] Invalid role, redirecting to 400");
         return NextResponse.redirect(new URL("/400", request.url));
       }
 
