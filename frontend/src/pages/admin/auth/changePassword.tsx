@@ -103,7 +103,7 @@ const ChangePasswordPage = (): React.ReactElement => {
         // console.log("✅ Mot de passe changé avec succès :", response.message);
 
         showAlert("success", translations.messagePageChoicePasswordSuccess);
-
+        router.push("/admin");
       } else if (response?.code === 400) {
         // console.warn("❌ Erreur de validation :", response.message);
         showAlert("error", response.message);
@@ -136,7 +136,7 @@ const ChangePasswordPage = (): React.ReactElement => {
           label={translations.messagePageChoicePasswordNew}
           type="password"
           value={form.newPassword}
-          onChange={handleChange as any}
+          onChange={handleChange}
           name="newPassword"
         />
         <InputField
@@ -144,7 +144,7 @@ const ChangePasswordPage = (): React.ReactElement => {
           label={translations.messagePageChoicePasswordConfirm}
           type="password"
           value={form.confirmPassword}
-          onChange={handleChange as any}
+          onChange={handleChange}
           name="confirmPassword"
         />
 

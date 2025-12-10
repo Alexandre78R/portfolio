@@ -330,7 +330,12 @@ export class UserResolver {
         }
       }
       
-      const updateData: any = {};
+      const updateData: Partial<{
+        firstname: string | undefined;
+        lastname: string | undefined;
+        email: string | undefined;
+        role: UserRole | undefined;
+      }> = {};
       if (firstname !== undefined) updateData.firstname = firstname;
       if (lastname !== undefined) updateData.lastname = lastname;
       if (email !== undefined) updateData.email = email;
