@@ -25,7 +25,8 @@ export default async function middleware(
   // Toujours laisser passer les pages d'authentification
   if (
     pathname.startsWith("/admin/auth/login") ||
-    pathname.startsWith("/admin/auth/forgotpassword")
+    pathname.startsWith("/admin/auth/forgotpassword") ||
+    pathname.startsWith("/admin/auth/change-password")
   ) {
     return NextResponse.next();
   }

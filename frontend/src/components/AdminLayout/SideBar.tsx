@@ -1,7 +1,8 @@
 import { ReactElement, Dispatch, SetStateAction } from 'react'
 import clsx from 'clsx'
-import { ChevronDown, X } from 'lucide-react'
+import { ChevronDown, X, LogOut } from 'lucide-react'
 import { useLang } from "@/context/Lang/LangContext"
+import { useRouter } from 'next/router'
 import { NavItem } from './Navigation'
 import Lang from '@/lang/typeLang'
 
@@ -25,6 +26,12 @@ const SideBar = ({
   setOpenMenus,
 }: SideBarProps): ReactElement => {
   const { translations } = useLang()
+  const router = useRouter()
+
+  const handleLogout = (): void => {
+    localStorage.removeItem("token");
+    router.push("/admin/auth/login");
+  };
 
   const toggleMenu = (key: string) => {
     setOpenMenus(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])
@@ -112,6 +119,15 @@ const SideBar = ({
               </div>
             )
           })}
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-2 rounded transition-all text-text hover:bg-red-500 hover:text-white mt-4"
+          >
+            <LogOut className="w-5 h-5" />
+            {translations.navbarButtonLogout}
+          </button>
         </nav>
       </div>
     </div>

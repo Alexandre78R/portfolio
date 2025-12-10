@@ -90,7 +90,6 @@ const InputMultiSelect = <T extends string | number>(
     []
   );
 
-  // Handle async search
   useEffect(() => {
     if (onSearch && searchTerm.trim().length > 0) {
       setLoading(true);
@@ -104,8 +103,7 @@ const InputMultiSelect = <T extends string | number>(
         } finally {
           setLoading(false);
         }
-      }, 300); // Debounce search requests
-
+      }, 300);
       return () => clearTimeout(timer);
     } else {
       setFilteredOptions(options as SelectOption<T>[]);

@@ -128,7 +128,6 @@ const ProjectCreate = (): ReactElement => {
         let imagePath: string | null = null;
         let videoPath: string | null = null;
 
-        // Si un fichier est sélectionné, l'uploader au bon endpoint
         if (selectedFile) {
           const formData = new FormData();
           const isVideo = selectedFile.type.startsWith("video/");

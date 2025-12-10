@@ -56,7 +56,7 @@ const MONTH_MAP: Readonly<MonthMapType> = {
 const parseDate = (value: string): Dayjs | null => {
   if (!value) return null;
 
-  let parseValue = value;
+  let parseValue: string = value;
   
   Object.entries(MONTH_MAP).forEach(([fr, en]: [string, string]) => {
     if (value.includes(fr)) {
@@ -90,15 +90,14 @@ const InputField: React.FC<InputFieldProps> = (props) => {
 
   if (props.picker === "date") {
     const { locale = "en", onChange } = props;
-    const dateValue = parseDate(value);
+    const dateValue: Dayjs | null = parseDate(value);
 
     const handleDateChange = (newValue: Dayjs | null): void => {
       if (newValue?.isValid()) {
-        const formatted = formatDate(newValue, locale);
-        // console.log(`Date formatée (${locale}):`, formatted);
+        const formatted: string = formatDate(newValue, locale);
         onChange(formatted);
       } else {
-        // console.log("Date invalide ou nulle");
+        console.log("Date invalide ou nulle");
       }
     };
 

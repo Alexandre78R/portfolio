@@ -17,6 +17,7 @@ type Lang = {
   navbarButtonTerminal: string;
   navbarButtonCareer: string;
   navbarButtonContact: string;
+  navbarButtonLogout: string;
   headerTitle: string;
   nameCategoryAboutMe: string;
   titleAboutMe: string;
@@ -88,7 +89,14 @@ type Lang = {
   messagePageChoicePasswordTitle : string;
   messagePageChoicePasswordOld : string;
   messagePageChoicePasswordNew : string;
+  messagePageChoicePasswordConfirm : string;
   messagePageChoicePasswordButton : string;
+  messagePageChoicePasswordErrorMinLength : string;
+  messagePageChoicePasswordErrorMismatch : string;
+  messagePageChoicePasswordErrorEmailNotFound : string;
+  messagePageChoicePasswordSuccess : string;
+  messagePageChoicePasswordErrorServer : string;
+  messagePageChoicePasswordErrorUnexpected : string;
   messagePageForgotPasswordTitle : string;
   messagePageForgotPasswordEmail : string;
   messagePageForgotPasswordButton : string;

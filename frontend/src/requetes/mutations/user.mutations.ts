@@ -54,3 +54,12 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($email: String!, $newPassword: String!) {
+    changePassword(email: $email, newPassword: $newPassword) {
+      message
+      code
+    }
+  }
+`;

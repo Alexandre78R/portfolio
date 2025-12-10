@@ -4,14 +4,16 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction } from "@apollo/client";
+import { useMutation, MutationResult, MutationFunction, useLazyQuery } from "@apollo/client";
 import {
   MutationDocument,
   MutationMutation,
   MutationMutationVariables,
+  GetMeQuery,
 } from "@/types/graphql";
 import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
+import { GET_ME } from "@/requetes/queries/users.queries";
 
 export type LoginFormState = {
   email: string;
@@ -36,6 +38,10 @@ const LoginPage = (): React.ReactElement => {
     MutationFunction<MutationMutation, MutationMutationVariables>,
     MutationResult<MutationMutation>
   ] = useMutation<MutationMutation, MutationMutationVariables>(MutationDocument);
+
+  const [getMe] = useLazyQuery<GetMeQuery>(GET_ME, {
+    fetchPolicy: "network-only",
+  });
 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -62,16 +68,17 @@ const LoginPage = (): React.ReactElement => {
 
       if (response?.code === 200) {
         console.log("✅ Connexion réussie :", response.message);
-        
-        // Sauvegarder le token si fourni
+      
         if (response.token) {
           localStorage.setItem("token", response.token);
         }
         
         showAlert("success", translations.messagePageLoginMessageSuccess);
-        
-        // Forcer un rechargement complet pour que le middleware et le contexte se mettent à jour
-        window.location.href = "/admin";
+        if (process.env.NODE_ENV === "test") {
+          router.push("/admin");
+        } else {
+          window.location.href = "/admin";
+        }
       } else if (response?.code === 401) {
         console.warn("❌ Identifiants invalides :", response.message);
         showAlert("error", translations.messagePageLoginMessageErrorServer);

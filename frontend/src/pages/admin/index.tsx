@@ -12,7 +12,11 @@ const AdminIndexPage = (): ReactElement => {
   useEffect((): void => {
     if (!loading) {
       if (user) {
-        router.replace("/admin/dashboard");
+        if (user.isPasswordChange === false) {
+          router.replace("/admin/auth/change-password");
+        } else {
+          router.replace("/admin/dashboard");
+        }
       } else {
         router.replace("/admin/auth/login");
       }

@@ -3,22 +3,27 @@ import { useTheme } from "@/context/Theme/ThemeContext";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
+import { useUser } from "@/context/UserContext/UserContext";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@/components/Button/Button";
 import ToggleButton from "../Button/ToggleButton";
 import ChoiceViewButton from "../Button/ChoiceViewButton";
 import ButtonLinkNavBar from "../Button/ButtonLinkNavBar";
 import BurgerButton from "../Button/BurgerButton";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import ModalCustom from "../ModalCustom/ModalCustom";
 
 const Navbar: React.FC = (): JSX.Element => {
   const pathname: string = usePathname() ?? "/";
+  const router = useRouter();
 
   const { lang, setLang, translations } = useLang();
   const { toggleTheme, themes } = useTheme();
   const { selectedView } = useChoiceView();
+  const { user } = useUser();
 
   const {
     headerRef,
@@ -50,6 +55,11 @@ const Navbar: React.FC = (): JSX.Element => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
+  const handleLogout = (): void => {
+    localStorage.removeItem("token");
+    router.push("/admin/auth/login");
+  };
+
   const handleScrollToSection = (
     event: MouseEvent<HTMLElement>,
     sectionRef: React.RefObject<HTMLDivElement>
@@ -57,8 +67,8 @@ const Navbar: React.FC = (): JSX.Element => {
     event.preventDefault();
 
     if (sectionRef.current) {
-      const yOffset = -80;
-      const y =
+      const yOffset: number = -80;
+      const y: number =
         sectionRef.current.getBoundingClientRect().top +
         window.pageYOffset +
         yOffset;
@@ -137,6 +147,18 @@ const Navbar: React.FC = (): JSX.Element => {
                     className="cursor-pointer hover:text-secondary text-primary"
                   />
                 </li>
+
+                {user && (
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="text-text hover:text-secondary flex items-center gap-1"
+                      title={translations.navbarButtonLogout}
+                    >
+                      <LogoutIcon className="text-primary hover:text-secondary" />
+                    </button>
+                  </li>
+                )}
               </>
             ) : (
               <>
@@ -201,6 +223,18 @@ const Navbar: React.FC = (): JSX.Element => {
                 </li>
 
                 <li>{pathname === "/" && <ChoiceViewButton />}</li>
+
+                {user && (
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="text-text hover:text-secondary flex items-center gap-2"
+                    >
+                      <LogoutIcon className="text-primary" />
+                      <span>{translations.navbarButtonLogout}</span>
+                    </button>
+                  </li>
+                )}
               </>
             ) : (
               <>
@@ -214,6 +248,18 @@ const Navbar: React.FC = (): JSX.Element => {
                     {translations.navbarButtonTerminal}
                   </ButtonLinkNavBar>
                 </li>
+
+                {user && (
+                  <li>
+                    <button
+                      onClick={handleLogout}
+                      className="text-text hover:text-secondary flex items-center gap-2"
+                    >
+                      <LogoutIcon className="text-primary" />
+                      <span>{translations.navbarButtonLogout}</span>
+                    </button>
+                  </li>
+                )}
               </>
             )}
           </ul>

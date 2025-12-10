@@ -63,9 +63,13 @@ const AdminPage = (): ReactElement | null => {
 
   useEffect((): void => {
     if (!userLoading && user !== undefined) {
+      if (user && user.isPasswordChange === false) {
+        replace('/admin/auth/changePassword');
+        return;
+      }
       setReady(true);
     }
-  }, [userLoading, user]);
+  }, [userLoading, user, replace]);
 
   useEffect((): void => {
     if (!ready) return;
