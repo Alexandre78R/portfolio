@@ -67,6 +67,5 @@ export default async function middleware(
     }
   }
   
-  // En développement, laisser passer et laisser le client gérer l'auth
   return NextResponse.next();
 }

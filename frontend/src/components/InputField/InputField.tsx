@@ -1,5 +1,12 @@
-import React, { ChangeEvent, ReactNode } from "react";
-import { TextField, TextFieldProps } from "@mui/material";
+import React, { ChangeEvent, ReactNode, useState } from "react";
+import {
+  TextField,
+  TextFieldProps,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -144,6 +151,10 @@ const InputField: React.FC<InputFieldProps> = (props) => {
 
   const { type = "text", onChange } = props;
 
+  const isPasswordType: boolean = type === "password";
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const inputType: string = isPasswordType && showPassword ? "text" : type;
+
   const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     onChange(e as ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>);
   };
@@ -152,7 +163,7 @@ const InputField: React.FC<InputFieldProps> = (props) => {
     <TextField
       id={id}
       label={label}
-      type={type}
+      type={inputType}
       variant="outlined"
       fullWidth
       required={required}
@@ -161,6 +172,23 @@ const InputField: React.FC<InputFieldProps> = (props) => {
       multiline={multiline}
       rows={multiline && rows ? rows : undefined}
       name={name}
+      InputProps={
+        isPasswordType
+          ? {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }
+          : undefined
+      }
       className={`bg-white border border-gray-300 rounded-md text-text ${className}`}
       sx={{
         "& .MuiOutlinedInput-root": {
