@@ -20,6 +20,7 @@ interface CreateUserForm {
   lastname: string;
   email: string;
   role: UserRole;
+  lang: "fr" | "en";
 }
 
 const defaultForm: CreateUserForm = {
@@ -27,10 +28,11 @@ const defaultForm: CreateUserForm = {
   lastname: "",
   email: "",
   role: UserRole.view,
+  lang: "fr",
 };
 
 const UserCreate = (): ReactElement => {
-  const { translations }: { translations: Lang } = useLang();
+  const { translations, lang }: { translations: Lang; lang: "fr" | "en" } = useLang();
   const { showAlert } = CustomToast();
   
   const [form, setForm] = useState<CreateUserForm>(defaultForm);
@@ -54,7 +56,14 @@ const UserCreate = (): ReactElement => {
   ) => {
     e.preventDefault();
     try {
-      const { data } = await createUserMutation({ variables: { data: form } });
+      const { data } = await createUserMutation({ 
+        variables: { 
+          data: {
+            ...form,
+            lang: lang,
+          }
+        } 
+      });
 
       if (data?.registerUser.code === 201) {
         showAlert("success", translations.messageAdminUserCreateSuccess);

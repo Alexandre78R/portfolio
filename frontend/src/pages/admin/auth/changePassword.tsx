@@ -34,7 +34,7 @@ const ChangePasswordPage = (): React.ReactElement => {
     CustomToast();
 
   const { translations }: { translations: Lang } = useLang();
-  const { user, loading: userLoading }: UserContextType = useUser();
+  const { user, loading: userLoading, refetch }: UserContextType = useUser();
 
   const [form, setForm] = useState<ChangePasswordFormState>({
     newPassword: "",
@@ -103,7 +103,12 @@ const ChangePasswordPage = (): React.ReactElement => {
         // console.log("✅ Mot de passe changé avec succès :", response.message);
 
         showAlert("success", translations.messagePageChoicePasswordSuccess);
-        router.push("/admin");
+        
+        // Rafraîchir les données utilisateur pour mettre à jour isPasswordChange
+        await refetch();
+        
+        // Rediriger vers le dashboard
+        router.push("/admin/dashboard");
       } else if (response?.code === 400) {
         // console.warn("❌ Erreur de validation :", response.message);
         showAlert("error", response.message);

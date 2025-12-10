@@ -4,6 +4,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import { useSectionRefs } from "@/context/SectionRefs/SectionRefsContext";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 import { useUser } from "@/context/UserContext/UserContext";
+import { useApolloClient } from "@apollo/client";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@/components/Button/Button";
@@ -19,11 +20,12 @@ import ModalCustom from "../ModalCustom/ModalCustom";
 const Navbar: React.FC = (): JSX.Element => {
   const pathname: string = usePathname() ?? "/";
   const router = useRouter();
+  const apolloClient = useApolloClient();
 
   const { lang, setLang, translations } = useLang();
   const { toggleTheme, themes } = useTheme();
   const { selectedView } = useChoiceView();
-  const { user } = useUser();
+  const { user, refetch, checkToken } = useUser();
 
   const {
     headerRef,
@@ -55,8 +57,20 @@ const Navbar: React.FC = (): JSX.Element => {
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleLogout = (): void => {
+  const handleLogout = async (): Promise<void> => {
+    // Supprimer le token
     localStorage.removeItem("token");
+    
+    // Forcer la vérification du token dans le UserContext
+    checkToken();
+    
+    // Vider le cache Apollo pour supprimer toutes les données en cache
+    await apolloClient.clearStore();
+    
+    // Rafraîchir le contexte utilisateur
+    await refetch();
+    
+    // Rediriger vers la page de login
     router.push("/admin/auth/login");
   };
 

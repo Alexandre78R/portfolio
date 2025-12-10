@@ -118,9 +118,9 @@ export class UserResolver {
         },
       });
 
-      const subject : string = "Votre compte a été créé";
-      const messageFinalCreatedAccountTEXT: string = await structureMessageCreatedAccountTEXT(data.firstname, plainPassword);
-      const messageFinalCreatedAccountHTML: string = await structureMessageCreatedAccountHTML(data.firstname, plainPassword);
+      const subject : string = data.lang === "en" ? "Your account has been created" : "Votre compte a été créé";
+      const messageFinalCreatedAccountTEXT: string = await structureMessageCreatedAccountTEXT(data.firstname, plainPassword, data.lang);
+      const messageFinalCreatedAccountHTML: string = await structureMessageCreatedAccountHTML(data.firstname, plainPassword, data.lang);
 
       await sendEmail(data.email, subject, messageFinalCreatedAccountTEXT, messageFinalCreatedAccountHTML);
 
@@ -369,7 +369,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Response)
-  async forgotPassword(@Arg("data") { email }: ForgotPasswordInput): Promise<Response> {
+  async forgotPassword(@Arg("data") { email, lang }: ForgotPasswordInput): Promise<Response> {
     try {
       const user: PrismaUser | null = await this.db.user.findUnique({ where: { email } });
       
@@ -388,9 +388,9 @@ export class UserResolver {
         },
       });
 
-      const subject: string = "Réinitialisation de votre mot de passe";
-      const messageFinalForgotPasswordTEXT: string = await structureMessageForgotPasswordTEXT(user.firstname, newPassword);
-      const messageFinalForgotPasswordHTML: string = await structureMessageForgotPasswordHTML(user.firstname, newPassword);
+      const subject: string = lang === "en" ? "Password Reset" : "Réinitialisation de votre mot de passe";
+      const messageFinalForgotPasswordTEXT: string = structureMessageForgotPasswordTEXT(user.firstname, newPassword, lang);
+      const messageFinalForgotPasswordHTML: string = structureMessageForgotPasswordHTML(user.firstname, newPassword, lang);
 
       await sendEmail(email, subject, messageFinalForgotPasswordTEXT, messageFinalForgotPasswordHTML);
 

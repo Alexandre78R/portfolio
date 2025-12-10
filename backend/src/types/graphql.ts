@@ -164,6 +164,7 @@ export type CreateThemeInput = {
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   firstname: Scalars['String']['input'];
+  lang: Scalars['String']['input'];
   lastname: Scalars['String']['input'];
   role: Scalars['String']['input'];
 };
@@ -232,6 +233,11 @@ export type ExperiencesResponse = {
   message: Scalars['String']['output'];
 };
 
+export type ForgotPasswordInput = {
+  email: Scalars['String']['input'];
+  lang: Scalars['String']['input'];
+};
+
 export type GlobalStats = {
   __typename?: 'GlobalStats';
   totalEducations: Scalars['Int']['output'];
@@ -291,6 +297,7 @@ export type Mutation = {
   deleteSocial: SocialResponse;
   deleteTheme: Response;
   deleteUser: Response;
+  forgotPassword: Response;
   generateDatabaseBackup: BackupResponse;
   login: LoginResponse;
   logout: Response;
@@ -403,6 +410,11 @@ export type MutationDeleteThemeArgs = {
 
 export type MutationDeleteUserArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationForgotPasswordArgs = {
+  data: ForgotPasswordInput;
 };
 
 

@@ -23,12 +23,13 @@ export type ForgotPasswordMutation = {
 export type ForgotPasswordMutationVariables = {
   data: {
     email: string;
+    lang: "fr" | "en";
   };
 };
 
 const ForgotPasswordPage = (): ReactElement => {
   const router: NextRouter = useRouter();
-  const { translations }: { translations: Lang } = useLang();
+  const { translations, lang }: { translations: Lang; lang: "fr" | "en" } = useLang();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
@@ -63,6 +64,7 @@ const ForgotPasswordPage = (): ReactElement => {
         variables: {
           data: {
             email: form.email,
+            lang: lang,
           },
         },
       });
