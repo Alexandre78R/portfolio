@@ -3,18 +3,44 @@ import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useMutation, MutationResult, MutationFunction } from "@apollo/client";
+import { FORGOT_PASSWORD } from "@/requetes/mutations/user.mutations";
+import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
 
 export type ForgotPasswordFormState = {
   email: string;
 };
 
+export type ForgotPasswordMutation = {
+  forgotPassword: {
+    message: string;
+    code: number;
+  };
+};
+
+export type ForgotPasswordMutationVariables = {
+  data: {
+    email: string;
+  };
+};
+
 const ForgotPasswordPage = (): ReactElement => {
-  const { translations }: { translations : Lang } = useLang();
+  const router: NextRouter = useRouter();
+  const { translations }: { translations: Lang } = useLang();
+
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
 
   const [form, setForm] = useState<ForgotPasswordFormState>({
     email: "",
   });
+
+  const [forgotPassword, { loading }]: [
+    MutationFunction<ForgotPasswordMutation, ForgotPasswordMutationVariables>,
+    MutationResult<ForgotPasswordMutation>
+  ] = useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(FORGOT_PASSWORD);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = event.target;
@@ -24,9 +50,38 @@ const ForgotPasswordPage = (): ReactElement => {
     }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement | HTMLButtonElement>): Promise<void> => {
     event.preventDefault();
-    console.log("Demande de réinitialisation envoyée !", form);
+
+    if (!form.email) {
+      showAlert("error", translations.messagePageForgotPasswordErrorInvalidEmail);
+      return;
+    }
+
+    try {
+      const res = await forgotPassword({
+        variables: {
+          data: {
+            email: form.email,
+          },
+        },
+      });
+
+      const response = res.data?.forgotPassword;
+
+      if (response?.code === 200) {
+        showAlert("success", translations.messagePageForgotPasswordSuccess);
+        setForm({ email: "" });
+        router.push("/admin/auth/login");
+      } else if (response?.code === 500) {
+        showAlert("error", translations.messagePageForgotPasswordErrorServer);
+      } else {
+        showAlert("error", translations.messagePageForgotPasswordErrorServer);
+      }
+    } catch (err: unknown) {
+      console.error("Erreur Apollo :", err);
+      showAlert("error", translations.messagePageForgotPasswordErrorServer);
+    }
   };
 
   return (
@@ -48,7 +103,11 @@ const ForgotPasswordPage = (): ReactElement => {
         />
         <div className="flex justify-center">
           <ButtonCustom
-            text={translations?.messagePageForgotPasswordButton ?? ""}
+            text={
+              loading
+                ? translations?.messagePageForgotPasswordButton + "..."
+                : translations?.messagePageForgotPasswordButton ?? ""
+            }
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               handleSubmit(e as unknown as FormEvent<HTMLFormElement>);

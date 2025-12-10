@@ -5,9 +5,9 @@ import { UsersResponse, UserResponse, LoginResponse, Response } from "../types/r
 import { UserRole } from "../entities/user.entity";
 import { generateSecurePassword } from "../lib/generateSecurePassword";
 import { sendEmail } from "../mail/mail.service";
-import { CreateUserInput, LoginInput } from "../entities/inputs/user.input";
+import { CreateUserInput, LoginInput, ForgotPasswordInput } from "../entities/inputs/user.input";
 import argon2 from "argon2";
-import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT } from "../mail/structureMail.service";
+import { structureMessageCreatedAccountHTML, structureMessageCreatedAccountTEXT, structureMessageForgotPasswordHTML, structureMessageForgotPasswordTEXT } from "../mail/structureMail.service";
 import { emailRegex, passwordRegex, checkRegex } from "../regex";
 import { jwtVerify, SignJWT, JWTVerifyResult } from "jose";
 import { TextEncoder } from "util";
@@ -360,6 +360,39 @@ export class UserResolver {
         message: "Internal server error while updating user.",
         user: undefined,
       };
+    }
+  }
+
+  @Mutation(() => Response)
+  async forgotPassword(@Arg("data") { email }: ForgotPasswordInput): Promise<Response> {
+    try {
+      const user: PrismaUser | null = await this.db.user.findUnique({ where: { email } });
+      
+      // Si l'email n'existe pas, on retourne le même message que s'il existait pour des raisons de sécurité
+      // (éviter l'énumération d'utilisateurs)
+      if (!user) return { code: 200, message: "If an account exists with this email, a new password has been sent." };
+
+      const newPassword: string = generateSecurePassword();
+      const hashedPassword: string = await argon2.hash(newPassword);
+
+      await this.db.user.update({
+        where: { email },
+        data: { 
+          password: hashedPassword,
+          isPasswordChange: false
+        },
+      });
+
+      const subject: string = "Réinitialisation de votre mot de passe";
+      const messageFinalForgotPasswordTEXT: string = await structureMessageForgotPasswordTEXT(user.firstname, newPassword);
+      const messageFinalForgotPasswordHTML: string = await structureMessageForgotPasswordHTML(user.firstname, newPassword);
+
+      await sendEmail(email, subject, messageFinalForgotPasswordTEXT, messageFinalForgotPasswordHTML);
+
+      return { code: 200, message: "If an account exists with this email, a new password has been sent." };
+    } catch (error: unknown) {
+      console.error("Error in forgotPassword:", error);
+      return { code: 200, message: "If an account exists with this email, a new password has been sent." };
     }
   }
 }

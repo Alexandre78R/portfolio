@@ -63,3 +63,12 @@ export const CHANGE_PASSWORD = gql`
     }
   }
 `;
+
+export const FORGOT_PASSWORD = gql`
+  mutation ForgotPassword($data: ForgotPasswordInput!) {
+    forgotPassword(data: $data) {
+      message
+      code
+    }
+  }
+`;

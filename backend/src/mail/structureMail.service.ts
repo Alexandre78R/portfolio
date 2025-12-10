@@ -32,3 +32,23 @@ export const structureMessageCreatedAccountHTML = (firstname: string, plainPassw
 <p><strong>Mot de passe temporaire :</strong> ${plainPassword}</p>
 <p>Merci de le changer dès votre première connexion.</p>
 `;
+
+export const structureMessageForgotPasswordTEXT = (firstname: string, newPassword: string): string => `
+Bonjour ${firstname},
+
+Vous avez demandé à réinitialiser votre mot de passe.
+
+Voici votre nouveau mot de passe temporaire : ${newPassword}
+
+Merci de le changer dès votre prochaine connexion pour des raisons de sécurité.
+
+Si vous n'avez pas demandé cette réinitialisation, veuillez contacter l'administrateur immédiatement.
+`;
+
+export const structureMessageForgotPasswordHTML = (firstname: string, newPassword: string): string => `
+<p>Bonjour ${firstname},</p>
+<p>Vous avez demandé à réinitialiser votre mot de passe.</p>
+<p><strong>Nouveau mot de passe temporaire :</strong> ${newPassword}</p>
+<p>Merci de le changer dès votre prochaine connexion pour des raisons de sécurité.</p>
+<p style="color: #d32f2f;">Si vous n'avez pas demandé cette réinitialisation, veuillez contacter l'administrateur immédiatement.</p>
+`;

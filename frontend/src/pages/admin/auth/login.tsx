@@ -12,6 +12,7 @@ import {
   GetMeQuery,
 } from "@/types/graphql";
 import { useRouter, NextRouter } from "next/router";
+import Link from "next/link";
 import Lang from "@/lang/typeLang";
 import { GET_ME } from "@/requetes/queries/users.queries";
 
@@ -124,6 +125,14 @@ const LoginPage = (): React.ReactElement => {
             }
             onClick={handleLogin}
           />
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <Link href="/admin/auth/forgotpassword">
+            <span className="text-primary hover:text-secondary cursor-pointer text-sm">
+              {translations.messagePageForgotPasswordTitle}
+            </span>
+          </Link>
         </div>
       </form>
     </AuthFormLayout>

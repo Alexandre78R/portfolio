@@ -100,6 +100,9 @@ type Lang = {
   messagePageForgotPasswordTitle : string;
   messagePageForgotPasswordEmail : string;
   messagePageForgotPasswordButton : string;
+  messagePageForgotPasswordSuccess : string;
+  messagePageForgotPasswordErrorServer : string;
+  messagePageForgotPasswordErrorInvalidEmail : string;
   messagePageRegisterTitle : string;
   messagePageRegisterEmail : string;
   messagePageRegisterFirstName : string;
