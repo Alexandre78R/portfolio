@@ -1,10 +1,14 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor, act } from '@test-utils';
 import "@testing-library/jest-dom";
 
 import SocialEditModal from "@/components/AdminLayout/components/Social/SocialEditModal";
 import type { SocialRow } from "@/components/AdminLayout/components/Social/SocialTable";
 import type Lang from "@/lang/typeLang";
+import {
+  GetSocialByIdDocument,
+  UpdateSocialDocument,
+} from "@/types/graphql";
 
 const translationsMock: Lang = {
   messageAdminSocialEditTitle: "Edit Social",
@@ -37,14 +41,59 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(() => ({ showAlert: mockShowAlert })),
 }));
 
-const mockUpdateMutation: jest.Mock<any, any[]> = jest.fn();
-const mockUseGetSocialQuery: jest.Mock = jest.fn();
+const createGetSocialMock = (socialData: SocialRow = mockSocialData, delayMs?: number) => ({
+  request: {
+    query: GetSocialByIdDocument,
+    variables: { id: socialData.id },
+  },
+  result: {
+    data: {
+      socialById: {
+        __typename: "SocialResponse",
+        code: 200,
+        message: "Success",
+        social: {
+          __typename: "Social",
+          id: String(socialData.id),
+          title: socialData.title,
+          url: socialData.url,
+          tab: socialData.tab,
+        },
+      },
+    },
+  },
+  delay: delayMs,
+});
 
-jest.mock("@/types/graphql", () => ({
-  __esModule: true,
-  useUpdateSocialMutation: jest.fn(() => [mockUpdateMutation, {}] as const),
-  useGetSocialByIdQuery: jest.fn(() => mockUseGetSocialQuery()),
-}));
+const createUpdateSocialMock = (code: number = 200) => ({
+  request: {
+    query: UpdateSocialDocument,
+    variables: {
+      id: mockSocialData.id,
+      data: {
+        title: mockSocialData.title,
+        url: mockSocialData.url,
+        tab: mockSocialData.tab,
+      },
+    },
+  },
+  result: {
+    data: {
+      updateSocial: {
+        __typename: "SocialResponse",
+        code,
+        message: code === 200 ? "Updated" : "Update failed",
+        social: {
+          __typename: "Social",
+          id: String(mockSocialData.id),
+          title: mockSocialData.title,
+          url: mockSocialData.url,
+          tab: mockSocialData.tab,
+        },
+      },
+    },
+  },
+});
 
 jest.mock("@/components/ModalCustom/ModalCustom", () => ({
   __esModule: true,
@@ -84,7 +133,7 @@ jest.mock("@/components/InputField/InputField", () => ({
     label: string;
     name: string;
     value: string | number;
-    onChange: (e: any) => void;
+    onChange: (e: unknown) => void;
     type?: string;
   }): ReactElement => (
     <div data-testid={`input-${id}`}>
@@ -134,16 +183,9 @@ describe("SocialEditModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockShowAlert.mockClear();
-    mockUpdateMutation.mockClear();
-    mockUseGetSocialQuery.mockClear();
   });
 
   test("should return null when social is null", () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: null,
-      loading: false,
-    });
-
     const { container } = render(
       <SocialEditModal
         social={null}
@@ -156,36 +198,26 @@ describe("SocialEditModal", () => {
   });
 
   test("should display loading state", () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: { socialById: mockSocialData },
-      loading: true,
-    });
-
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />
+      />,
+      { mocks: [createGetSocialMock(mockSocialData, 1000)] }
     );
 
     expect(screen.getByTestId("loading")).toBeInTheDocument();
   });
 
   test("should display modal with form when data is loaded", async () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: {
-        socialById: mockSocialData,
-      },
-      loading: false,
-    });
-
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />
+      />,
+      { mocks: [createGetSocialMock()] }
     );
 
     await waitFor(() => {
@@ -195,25 +227,19 @@ describe("SocialEditModal", () => {
   });
 
   test("should populate form fields with social data", async () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: {
-        socialById: mockSocialData,
-      },
-      loading: false,
-    });
-
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />
+      />,
+      { mocks: [createGetSocialMock()] }
     );
 
     await waitFor(() => {
-      const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-      const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
-      const tabInput = screen.getByTestId("input-field-tab") as HTMLInputElement;
+      const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+      const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
+      const tabInput: HTMLInputElement = screen.getByTestId("input-field-tab") as HTMLInputElement;
 
       expect(titleInput.value).toBe("GitHub");
       expect(urlInput.value).toBe("https://github.com/user");
@@ -221,79 +247,24 @@ describe("SocialEditModal", () => {
     });
   });
 
-  test("should call mutation on form submit", async () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: {
-        socialById: mockSocialData,
-      },
-      loading: false,
-    });
-
-    mockUpdateMutation.mockResolvedValue({
-      data: {
-        updateSocial: {
-          code: 200,
-          message: "Updated",
-        },
-      },
-    });
-
-    const mockRefresh = jest.fn().mockResolvedValue(undefined);
-
-    render(
-      <SocialEditModal
-        social={mockSocialData}
-        onClose={jest.fn()}
-        onRefresh={mockRefresh}
-      />
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId("input-field-title")).toBeInTheDocument();
-    });
-
-    const submitButton = screen.getByTestId("button-Save Changes");
-    
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
-
-    await waitFor(() => {
-      expect(mockUpdateMutation).toHaveBeenCalled();
-    });
-  });
-
   test("should show success message on successful update", async () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: {
-        socialById: mockSocialData,
-      },
-      loading: false,
-    });
-
-    mockUpdateMutation.mockResolvedValue({
-      data: {
-        updateSocial: {
-          code: 200,
-        },
-      },
-    });
-
-    const mockRefresh = jest.fn().mockResolvedValue(undefined);
+    const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
+    const mockOnClose: jest.Mock<void, []> = jest.fn();
 
     render(
       <SocialEditModal
         social={mockSocialData}
-        onClose={jest.fn()}
+        onClose={mockOnClose}
         onRefresh={mockRefresh}
-      />
+      />,
+      { mocks: [createGetSocialMock(), createUpdateSocialMock(200)] }
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("input-field-title")).toBeInTheDocument();
     });
 
-    const submitButton = screen.getByTestId("button-Save Changes");
+    const submitButton: HTMLButtonElement = screen.getByTestId("button-Save Changes") as HTMLButtonElement;
     
     await act(async () => {
       fireEvent.click(submitButton);
@@ -301,40 +272,28 @@ describe("SocialEditModal", () => {
 
     await waitFor(() => {
       expect(mockShowAlert).toHaveBeenCalledWith("success", "Social updated successfully");
+      expect(mockRefresh).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
     });
   });
 
   test("should show error message on failed update", async () => {
-    mockUseGetSocialQuery.mockReturnValue({
-      data: {
-        socialById: mockSocialData,
-      },
-      loading: false,
-    });
-
-    mockUpdateMutation.mockResolvedValue({
-      data: {
-        updateSocial: {
-          code: 400,
-        },
-      },
-    });
-
-    const mockRefresh = jest.fn().mockResolvedValue(undefined);
+    const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
 
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={mockRefresh}
-      />
+      />,
+      { mocks: [createGetSocialMock(), createUpdateSocialMock(400)] }
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("input-field-title")).toBeInTheDocument();
     });
 
-    const submitButton = screen.getByTestId("button-Save Changes");
+    const submitButton: HTMLButtonElement = screen.getByTestId("button-Save Changes") as HTMLButtonElement;
     
     await act(async () => {
       fireEvent.click(submitButton);

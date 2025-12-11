@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
+﻿import React, { ReactElement } from "react";
 import { 
   render, 
   screen, 
   fireEvent 
-} from "@testing-library/react";
+} from '@test-utils';
 import "@testing-library/jest-dom";
 
 import SocialTable, { 
@@ -143,8 +143,8 @@ describe("SocialTable", () => {
       />
     );
 
-    const table = screen.getByTestId("mock-table");
-    const rows = screen.queryAllByTestId(/^row-/);
+    const table: HTMLElement = screen.getByTestId("mock-table");
+    const rows: HTMLElement[] = screen.queryAllByTestId(/^row-/);
     expect(rows).toHaveLength(0);
   });
 
@@ -180,7 +180,7 @@ describe("SocialTable", () => {
       />
     );
 
-    const rows = screen.getAllByTestId(/^row-/);
+    const rows: HTMLElement[] = screen.getAllByTestId(/^row-/);
     expect(rows).toHaveLength(mockSocials.length);
   });
 });
