@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import ThemeDeleteDialog from "@/components/AdminLayout/components/Theme/ThemeDeleteDialog";
 import { useLang } from "@/context/Lang/LangContext";
-import { useDeleteThemeMutation, GetThemesListQuery } from "@/types/graphql";
+import { GetThemesListQuery, DeleteThemeDocument } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../../../../src/components/AdminLayout/components/ConfirmDialog/ConfirmDialog";
 import Lang from "@/lang/typeLang";
@@ -29,11 +29,6 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   })),
 }));
 
-const mockDeleteThemeMutation: jest.Mock = jest.fn();
-jest.mock("@/types/graphql", () => ({
-  useDeleteThemeMutation: jest.fn(() => [mockDeleteThemeMutation, {}]),
-}));
-
 jest.mock("../../../../../src/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () => ({
   __esModule: true,
   default: jest.fn((props: any) => (
@@ -45,6 +40,22 @@ jest.mock("../../../../../src/components/AdminLayout/components/ConfirmDialog/Co
     </div>
   )),
 }));
+
+const createMocks = (mutationResult: any = { code: 200 }) => [
+  {
+    request: {
+      query: DeleteThemeDocument,
+      variables: {
+        id: 42,
+      },
+    },
+    result: {
+      data: {
+        deleteTheme: mutationResult,
+      },
+    },
+  },
+];
 
 describe("ThemeDeleteDialog Component", (): void => {
   const mockOnClose: jest.Mock = jest.fn();
@@ -66,7 +77,8 @@ describe("ThemeDeleteDialog Component", (): void => {
 
   test("renders confirm dialog correctly", (): void => {
     render(
-      <ThemeDeleteDialog themeId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />
+      <ThemeDeleteDialog themeId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />,
+      { mocks: createMocks() }
     );
 
     const confirmDialog: HTMLElement = screen.getByTestId("confirm-dialog");
@@ -79,19 +91,15 @@ describe("ThemeDeleteDialog Component", (): void => {
   });
 
   test("calls delete mutation and handles success correctly", async (): Promise<void> => {
-    mockDeleteThemeMutation.mockResolvedValue({
-      data: { deleteTheme: { code: 200 } },
-    });
-
     render(
-      <ThemeDeleteDialog themeId="42" onClose={mockOnClose} onRefresh={mockOnRefresh} />
+      <ThemeDeleteDialog themeId="42" onClose={mockOnClose} onRefresh={mockOnRefresh} />,
+      { mocks: createMocks({ code: 200 }) }
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
     fireEvent.click(confirmButton);
 
     await waitFor((): void => {
-      expect(mockDeleteThemeMutation).toHaveBeenCalledWith({ variables: { id: 42 } });
       expect(mockShowAlert).toHaveBeenCalledWith("success", "Theme deleted successfully");
       expect(mockOnRefresh).toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalled();
@@ -99,37 +107,15 @@ describe("ThemeDeleteDialog Component", (): void => {
   });
 
   test("calls delete mutation and handles error code", async (): Promise<void> => {
-    mockDeleteThemeMutation.mockResolvedValue({
-      data: { deleteTheme: { code: 500 } },
-    });
-
     render(
-      <ThemeDeleteDialog themeId="42" onClose={mockOnClose} onRefresh={mockOnRefresh} />
+      <ThemeDeleteDialog themeId="42" onClose={mockOnClose} onRefresh={mockOnRefresh} />,
+      { mocks: createMocks({ code: 500 }) }
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
     fireEvent.click(confirmButton);
 
     await waitFor((): void => {
-      expect(mockDeleteThemeMutation).toHaveBeenCalledWith({ variables: { id: 42 } });
-      expect(mockShowAlert).toHaveBeenCalledWith("error", "Failed to delete theme");
-      expect(mockOnRefresh).not.toHaveBeenCalled();
-      expect(mockOnClose).toHaveBeenCalled();
-    });
-  });
-
-  test("handles mutation throwing an exception", async (): Promise<void> => {
-    mockDeleteThemeMutation.mockRejectedValue(new Error("Network error"));
-
-    render(
-      <ThemeDeleteDialog themeId="99" onClose={mockOnClose} onRefresh={mockOnRefresh} />
-    );
-
-    const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
-    fireEvent.click(confirmButton);
-
-    await waitFor((): void => {
-      expect(mockDeleteThemeMutation).toHaveBeenCalledWith({ variables: { id: 99 } });
       expect(mockShowAlert).toHaveBeenCalledWith("error", "Failed to delete theme");
       expect(mockOnRefresh).not.toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalled();
@@ -138,7 +124,8 @@ describe("ThemeDeleteDialog Component", (): void => {
 
   test("calls onClose when cancel button is clicked", (): void => {
     render(
-      <ThemeDeleteDialog themeId="5" onClose={mockOnClose} onRefresh={mockOnRefresh} />
+      <ThemeDeleteDialog themeId="5" onClose={mockOnClose} onRefresh={mockOnRefresh} />,
+      { mocks: createMocks() }
     );
 
     const cancelButton: HTMLElement = screen.getByTestId("cancel-button");

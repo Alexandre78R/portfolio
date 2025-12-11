@@ -1,5 +1,5 @@
-import React, { ReactElement, ChangeEvent, FormEvent } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ReactElement, ChangeEvent, FormEvent } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import ThemeEditModal, { ThemeFormData } from "@/components/AdminLayout/components/Theme/ThemeEditModal";
 import { useLang } from "@/context/Lang/LangContext";
@@ -112,7 +112,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("renders null if no theme provided", (): void => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: null, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: null, loading: false });
     const { container } = render(
       <ThemeEditModal theme={null} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -120,7 +120,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("renders loading state while theme is loading", (): void => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: null, loading: true });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: null, loading: true });
     render(
       <ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -128,7 +128,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("renders form with inputs correctly", (): void => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
     render(
       <ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -144,7 +144,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("calls onChange callback when input value changes", (): void => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
     render(
       <ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -155,7 +155,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("submits form and handles success response", async (): Promise<void> => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
     mockUpdateThemeMutation.mockResolvedValue({ data: { updateTheme: { code: 200 } } });
 
     render(<ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />);
@@ -172,7 +172,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("submits form and handles error response", async (): Promise<void> => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
     mockUpdateThemeMutation.mockResolvedValue({ data: { updateTheme: { code: 500 } } });
 
     render(<ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />);
@@ -187,7 +187,6 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("closes modal when Cancel button is clicked", (): void => {
-    (useGetThemeByIdQuery as jest.Mock).mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
     render(<ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />);
 
     const cancelButton: HTMLButtonElement = screen.getByTestId("button-Cancel") as HTMLButtonElement;
