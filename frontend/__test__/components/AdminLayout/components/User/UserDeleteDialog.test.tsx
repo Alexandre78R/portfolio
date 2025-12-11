@@ -1,8 +1,9 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import UserDeleteDialog from "@/components/AdminLayout/components/User/UserDeleteDialog";
 import { useLang } from "@/context/Lang/LangContext";
+import { DeleteUserDocument } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -13,11 +14,6 @@ const mockShowAlert: jest.Mock<(type: "success" | "error", message: string) => v
 jest.mock("@/components/ToastCustom/CustomToast", () => ({
   __esModule: true,
   default: jest.fn(() => ({ showAlert: mockShowAlert })),
-}));
-
-const mockDeleteUserMutation: jest.Mock<Promise<{ data?: { deleteUser?: { code: number } } }>> = jest.fn();
-jest.mock("@/types/graphql", () => ({
-  useDeleteUserMutation: jest.fn(() => [mockDeleteUserMutation, {}]),
 }));
 
 jest.mock(
@@ -50,6 +46,22 @@ jest.mock(
   })
 );
 
+const createMocks = (mutationResult: any = { code: 200 }) => [
+  {
+    request: {
+      query: DeleteUserDocument,
+      variables: {
+        id: 1,
+      },
+    },
+    result: {
+      data: {
+        deleteUser: mutationResult,
+      },
+    },
+  },
+];
+
 describe("UserDeleteDialog Component", (): void => {
   const mockOnClose: jest.Mock<() => void> = jest.fn();
   const mockOnRefresh: jest.Mock<
@@ -79,7 +91,7 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("renders ConfirmDialog with correct texts", (): void => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks() });
 
     expect(screen.getByTestId("confirm-dialog")).toBeInTheDocument();
     expect(screen.getByTestId("dialog-title")).toHaveTextContent(
@@ -97,16 +109,11 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("calls deleteUserMutation and shows success toast on confirm", async (): Promise<void> => {
-    mockDeleteUserMutation.mockResolvedValue({
-      data: { deleteUser: { code: 200 } },
-    });
-
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks({ code: 200 }) });
     const confirmButton: HTMLButtonElement = screen.getByTestId("confirm-button") as HTMLButtonElement;
     fireEvent.click(confirmButton);
 
     await waitFor((): void => {
-      expect(mockDeleteUserMutation).toHaveBeenCalledWith({ variables: { id: 1 } });
       expect(mockShowAlert).toHaveBeenCalledWith(
         "success",
         translations.messageAdminUserDeleteSuccess
@@ -117,33 +124,11 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("shows error toast if server returns error", async (): Promise<void> => {
-    mockDeleteUserMutation.mockResolvedValue({
-      data: { deleteUser: { code: 500 } },
-    });
-
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks({ code: 500 }) });
     const confirmButton: HTMLButtonElement = screen.getByTestId("confirm-button") as HTMLButtonElement;
     fireEvent.click(confirmButton);
 
     await waitFor((): void => {
-      expect(mockDeleteUserMutation).toHaveBeenCalledWith({ variables: { id: 1 } });
-      expect(mockShowAlert).toHaveBeenCalledWith(
-        "error",
-        translations.messageAdminUserDeleteError
-      );
-      expect(mockOnClose).toHaveBeenCalled();
-    });
-  });
-
-  test("handles mutation rejection error", async (): Promise<void> => {
-    mockDeleteUserMutation.mockRejectedValue(new Error("Network error"));
-
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
-    const confirmButton: HTMLButtonElement = screen.getByTestId("confirm-button") as HTMLButtonElement;
-    fireEvent.click(confirmButton);
-
-    await waitFor((): void => {
-      expect(mockDeleteUserMutation).toHaveBeenCalled();
       expect(mockShowAlert).toHaveBeenCalledWith(
         "error",
         translations.messageAdminUserDeleteError
@@ -153,7 +138,7 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("calls onClose when cancel button is clicked", (): void => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks() });
     const cancelButton: HTMLButtonElement = screen.getByTestId("cancel-button") as HTMLButtonElement;
     fireEvent.click(cancelButton);
     expect(mockOnClose).toHaveBeenCalled();

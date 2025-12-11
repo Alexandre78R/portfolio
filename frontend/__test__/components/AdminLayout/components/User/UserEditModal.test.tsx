@@ -1,10 +1,7 @@
-import React, { ChangeEvent, FormEvent } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ChangeEvent, FormEvent } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import UserEditModal from "@/components/AdminLayout/components/User/UserEditModal";
-import {
-  useGetUserByIdQuery,
-} from "@/types/graphql";
 import { UserRow } from "@/components/AdminLayout/components/User/UserTable";
 import Lang from "@/lang/typeLang";
 
@@ -130,27 +127,28 @@ describe("UserEditModal Component", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+
+    const { useGetUserByIdQuery } = require("@/types/graphql");
+    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
+      data: { userById: { user: sampleUser } },
+      loading: false,
+      error: undefined,
+    });
   });
 
   test("renders null if no user is provided", (): void => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({ data: null, loading: false });
     const { container } = render(<UserEditModal user={null} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
     expect(container.firstChild).toBeNull();
   });
 
   test("renders loading state while user data is loading", (): void => {
+    const { useGetUserByIdQuery } = require("@/types/graphql");
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({ data: null, loading: true });
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
     expect(screen.getByTestId("loading")).toBeInTheDocument();
   });
 
   test("renders form with inputs correctly", (): void => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
-
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
     const firstnameInput: HTMLInputElement = screen.getByTestId("input-firstname") as HTMLInputElement;
@@ -173,12 +171,6 @@ describe("UserEditModal Component", (): void => {
   });
 
   test("updates form state when inputs change", (): void => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
-
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
     const firstnameInput: HTMLInputElement = screen.getByTestId("input-firstname") as HTMLInputElement;
@@ -199,11 +191,6 @@ describe("UserEditModal Component", (): void => {
   });
 
   test("submits form successfully and shows success toast", async (): Promise<void> => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
     mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 200 } } });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -221,11 +208,6 @@ describe("UserEditModal Component", (): void => {
   });
 
   test("handles error response on form submission", async (): Promise<void> => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
     mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 500 } } });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -241,11 +223,7 @@ describe("UserEditModal Component", (): void => {
   });
 
   test("handles mutation rejection error", async (): Promise<void> => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockUpdateUserMutation.mockRejectedValue(new Error("Network error"));
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
@@ -258,15 +236,11 @@ describe("UserEditModal Component", (): void => {
       expect(mockUpdateUserMutation).toHaveBeenCalled();
       expect(mockShowAlert).toHaveBeenCalledWith("error", "Erreur serveur !");
     });
+
+    consoleErrorSpy.mockRestore();
   });
 
   test("closes modal when Cancel button is clicked", (): void => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
-
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
     const cancelButton: HTMLButtonElement = screen.getByTestId("button-Cancel") as HTMLButtonElement;
@@ -275,11 +249,6 @@ describe("UserEditModal Component", (): void => {
   });
 
   test("verifies mutation is called with correct variables", async (): Promise<void> => {
-    (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
-      loading: false,
-      error: undefined,
-    });
     mockUpdateUserMutation.mockResolvedValue({ data: { updateUser: { code: 200 } } });
 
     render(<UserEditModal user={sampleUser} onClose={mockOnClose} onRefresh={mockOnRefresh} />);
