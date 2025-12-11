@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@test-utils';
 import TextAdmin, { TextAdminType, TextAdminProps } from "@/components/AdminLayout/components/Text/TextAdmin";
 
 describe("TextAdmin Component", () => {
