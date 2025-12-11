@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@testing-library/react';
 import Dashboard from "@/components/AdminLayout/Pages/Dashboard/Dashboard";
 import { ThemeProvider } from "@/context/Theme/ThemeContext";
 import Lang from "@/lang/typeLang";
@@ -58,8 +58,8 @@ jest.mock("@/context/Lang/LangContext", () => ({
 }));
 
 describe("Dashboard Page", () => {
-  const mockedGetThemes = useGetThemesListQuery as jest.Mock;
-  const mockedGetStats = useGetGlobalStatsQuery as jest.Mock;
+  const mockedGetThemes: jest.Mock = useGetThemesListQuery as jest.Mock;
+  const mockedGetStats: jest.Mock = useGetGlobalStatsQuery as jest.Mock;
 
   beforeEach(() => {
     mockedGetThemes.mockReturnValue({
@@ -73,6 +73,12 @@ describe("Dashboard Page", () => {
       loading: false,
       error: undefined,
     } as Partial<ReturnType<typeof useGetThemesListQuery>>);
+
+    mockedGetStats.mockReturnValue({
+      data: undefined,
+      loading: false,
+      error: undefined,
+    } as Partial<ReturnType<typeof useGetGlobalStatsQuery>>);
   });
 
 
@@ -140,8 +146,8 @@ const statsMock: GetGlobalStatsQuery = {
     admin: 1,
     editor: 2,
     view: 2,
-    code: 200, // obligatoire
-    message: "ok", // obligatoire
+    code: 200,
+    message: "ok",
   },
 };
 
@@ -157,37 +163,31 @@ const statsMock: GetGlobalStatsQuery = {
       </ThemeProvider>
     );
 
-    // --- Verify statistics cards ---
     expect(screen.getByText("Total Projects")).toBeInTheDocument();
     expect(screen.getByText("Education")).toBeInTheDocument();
     expect(screen.getByText("Experience")).toBeInTheDocument();
     expect(screen.getByText("Users")).toBeInTheDocument();
 
-    const skillsElements = screen.getAllByText(/^Skills$/i);
+    const skillsElements: HTMLElement[] = screen.getAllByText(/^Skills$/i);
     expect(skillsElements.length).toBeGreaterThan(0);
 
-    // --- Verify stats numbers ---
     expect(screen.getByText("10")).toBeInTheDocument(); // Total Projects
     expect(screen.getByText("8")).toBeInTheDocument(); // Skills
     expect(screen.getByText("3")).toBeInTheDocument(); // Education
     expect(screen.getByText("7")).toBeInTheDocument(); // Experience
     expect(screen.getByText("5")).toBeInTheDocument(); // Users
 
-    // --- Verify sections ---
     expect(screen.getByText("Average Skills")).toBeInTheDocument();
     expect(screen.getByText("Top Skills")).toBeInTheDocument();
     expect(screen.getByText("Roles")).toBeInTheDocument();
 
-    // --- Verify chart ---
     expect(screen.getByTestId("chart-bar")).toBeInTheDocument();
 
-    // --- Verify top skills ---
     expect(screen.getByText("React")).toBeInTheDocument();
     expect(screen.getByText("TypeScript")).toBeInTheDocument();
     expect(screen.getByText("15")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
 
-    // --- Verify average ---
     expect(screen.getByText("3.50")).toBeInTheDocument();
   });
 });
