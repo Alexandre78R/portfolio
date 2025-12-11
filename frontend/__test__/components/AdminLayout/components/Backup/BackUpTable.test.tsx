@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import "@testing-library/jest-dom";
 import BackUpTable, { formatBytes, formatDate } from "@/components/AdminLayout/components/Backup/BackUpTable";
 import { BackupFileInfo } from "@/types/graphql";
@@ -50,7 +50,7 @@ const backups: BackupFileInfo[] = [
 describe("BackUpTable Component", (): void => {
   let mockOnDelete: jest.Mock<void, [string]>;
   
-  const originalTZ = process.env.TZ;
+  const originalTZ: string | undefined = process.env.TZ;
   
   beforeAll(() => {
     process.env.TZ = 'Europe/Paris';
