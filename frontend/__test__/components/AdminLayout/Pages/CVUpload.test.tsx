@@ -1,7 +1,8 @@
-import React from "react";
+﻿import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CVUpdate from "@/components/AdminLayout/Pages/CV/CVUpdate";
 import Lang from "@/lang/typeLang";
+import { useUploadCvMutation } from "@/types/graphql";
 
 const uploadCvMock: jest.Mock<
   Promise<{ data?: { uploadCV?: { code: number; message: string } } }>,
@@ -11,7 +12,7 @@ const uploadCvMock: jest.Mock<
 const showAlertMock: jest.Mock<void, ["success" | "error", string]> = jest.fn();
 
 jest.mock("@/types/graphql", () => ({
-  useUploadCvMutation: () => [uploadCvMock],
+  useUploadCvMutation: jest.fn(),
 }));
 
 jest.mock("@/components/ToastCustom/CustomToast", () => ({
@@ -35,7 +36,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
   }),
 }));
 
-jest.mock("../../../../src/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () => ({
+jest.mock("@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () => ({
   __esModule: true,
   default: ({ open, onConfirm, onCancel }: { open: boolean; onConfirm: () => void; onCancel: () => void }): JSX.Element | null =>
     open ? (
@@ -46,7 +47,7 @@ jest.mock("../../../../src/components/AdminLayout/components/ConfirmDialog/Confi
     ) : null,
 }));
 
-jest.mock("../../../../src/components/Button/Button", () => ({
+jest.mock("@/components/Button/Button", () => ({
   __esModule: true,
   default: ({ onClick, text }: { onClick?: () => void; text: string }): JSX.Element => (
     <button type="button" onClick={onClick}>{text}</button>
@@ -56,6 +57,7 @@ jest.mock("../../../../src/components/Button/Button", () => ({
 describe("CVUpdate Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (useUploadCvMutation as jest.Mock).mockReturnValue([uploadCvMock]);
   });
 
   it("renders initial state", () => {
@@ -69,13 +71,11 @@ describe("CVUpdate Component", () => {
 
   it("opens confirm dialog when selecting a file", async () => {
     render(<CVUpdate />);
-    const file = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
+    const file: File = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
     const input: HTMLInputElement = document.getElementById("cv-input") as HTMLInputElement;
 
-    // trigger change event with TS fix
     fireEvent.change(input, { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>);
 
-    // wait for dialog to appear
     await waitFor(() => expect(screen.getByTestId("confirm-dialog")).toBeInTheDocument());
     expect(screen.getByText("confirm")).toBeInTheDocument();
     expect(screen.getByText("cancel")).toBeInTheDocument();
@@ -85,7 +85,7 @@ describe("CVUpdate Component", () => {
     uploadCvMock.mockResolvedValue({ data: { uploadCV: { code: 200, message: "Success" } } });
 
     render(<CVUpdate />);
-    const file = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
+    const file: File = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
     const input: HTMLInputElement = document.getElementById("cv-input") as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>);
 
@@ -102,7 +102,7 @@ describe("CVUpdate Component", () => {
     uploadCvMock.mockResolvedValue({ data: { uploadCV: { code: 500, message: "Failed" } } });
 
     render(<CVUpdate />);
-    const file = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
+    const file: File = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
     const input: HTMLInputElement = document.getElementById("cv-input") as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>);
 
@@ -116,7 +116,7 @@ describe("CVUpdate Component", () => {
 
   it("resets selected file and closes dialog on cancel", async () => {
     render(<CVUpdate />);
-    const file = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
+    const file: File = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
     const input: HTMLInputElement = document.getElementById("cv-input") as HTMLInputElement;
     fireEvent.change(input, { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>);
 
@@ -137,7 +137,7 @@ describe("CVUpdate Component", () => {
     uploadCvMock.mockReturnValue(uploadPromise);
 
     render(<CVUpdate />);
-    const file = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
+    const file: File = new File(["test"], "test-cv.pdf", { type: "application/pdf" });
     const input: HTMLInputElement = document.getElementById("cv-input") as HTMLInputElement;
 
     fireEvent.change(
