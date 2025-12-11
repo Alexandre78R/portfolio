@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, waitFor, RenderResult } from '@test-utils';
 import "@testing-library/jest-dom";
 import InputMultiSelect, { SelectOption } from "@/components/AdminLayout/components/Input/InputMultiSelect";
 
