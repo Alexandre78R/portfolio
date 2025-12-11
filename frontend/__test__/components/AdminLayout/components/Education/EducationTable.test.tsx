@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
+﻿import React, { ReactElement } from "react";
 import { 
   render, 
   screen, 
   fireEvent 
-} from "@testing-library/react";
+} from '@test-utils';
 import "@testing-library/jest-dom";
 
 import EducationTable, { 
