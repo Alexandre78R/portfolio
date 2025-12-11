@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import "@testing-library/jest-dom";
 import ActionButton, { ActionItem } from "@/components/AdminLayout/components/Button/ActionButton";
 
@@ -16,9 +16,9 @@ interface MockRow {
 const mockRowDefault: MockRow = { id: 1, name: "Default Row", isActive: true };
 const mockRowUndefined: MockRow = { id: 2, name: "Undefined Row", isActive: undefined };
 
-const mockOnClickEdit = jest.fn();
-const mockOnClickDelete = jest.fn();
-const mockOnClickCustom = jest.fn();
+const mockOnClickEdit: jest.Mock<void, [MockRow]> = jest.fn();
+const mockOnClickDelete: jest.Mock<void, [MockRow]> = jest.fn();
+const mockOnClickCustom: jest.Mock<void, [MockRow]> = jest.fn();
 
 const createMockActions = (): ActionItem<MockRow>[] => [
   {
@@ -41,9 +41,9 @@ const createMockActions = (): ActionItem<MockRow>[] => [
 ];
 
 describe("ActionButton Component", () => {
-  let renderedButtons: HTMLElement[] = [];
-  let renderedIcons: HTMLElement[] = [];
-  let containerDiv: HTMLElement | null = null;
+  let renderedButtons: HTMLElement[] = [] as [];
+  let renderedIcons: HTMLElement[] = [] as [];
+  let containerDiv: HTMLElement | null = null as null;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -72,9 +72,9 @@ describe("ActionButton Component", () => {
 
     renderedButtons = screen.getAllByRole("button");
 
-    const buttonEdit: HTMLElement = renderedButtons[0];
-    const buttonDelete: HTMLElement = renderedButtons[1];
-    const buttonCustom: HTMLElement = renderedButtons[2];
+    const buttonEdit: HTMLElement = renderedButtons[0] as HTMLElement;
+    const buttonDelete: HTMLElement = renderedButtons[1] as HTMLElement;
+    const buttonCustom: HTMLElement = renderedButtons[2] as HTMLElement;
 
     fireEvent.click(buttonEdit);
     fireEvent.click(buttonDelete);
@@ -94,13 +94,13 @@ describe("ActionButton Component", () => {
     render(<ActionButton row={mockRowDefault} actions={createMockActions()} />);
     renderedButtons = screen.getAllByRole("button");
 
-    const buttonEdit: HTMLElement = renderedButtons[0];
-    const buttonDelete: HTMLElement = renderedButtons[1];
-    const buttonCustom: HTMLElement = renderedButtons[2];
+    const buttonEdit: HTMLElement = renderedButtons[0] as HTMLElement;
+    const buttonDelete: HTMLElement = renderedButtons[1] as HTMLElement;
+    const buttonCustom: HTMLElement = renderedButtons[2] as HTMLElement;
 
-    expect(buttonEdit).toHaveClass("bg-red-500"); // custom
-    expect(buttonDelete).toHaveClass("bg-primary/90"); // default
-    expect(buttonCustom).toHaveClass("bg-blue-600"); // custom
+    expect(buttonEdit).toHaveClass("bg-red-500");
+    expect(buttonDelete).toHaveClass("bg-primary/90");
+    expect(buttonCustom).toHaveClass("bg-blue-600");
   });
 
   test("renders custom gap between buttons", () => {
@@ -125,7 +125,7 @@ describe("ActionButton Component", () => {
     render(<ActionButton row={mockRowUndefined} actions={createMockActions()} />);
     renderedButtons = screen.getAllByRole("button");
 
-    const buttonEdit: HTMLElement = renderedButtons[0];
+    const buttonEdit: HTMLElement = renderedButtons[0] as HTMLElement;
     fireEvent.click(buttonEdit);
     expect(mockOnClickEdit).toHaveBeenCalledWith(mockRowUndefined);
   });
