@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import { 
   render, 
   screen, 
   waitFor, 
   fireEvent 
-} from "@testing-library/react";
+} from '@testing-library/react';
 import "@testing-library/jest-dom";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
