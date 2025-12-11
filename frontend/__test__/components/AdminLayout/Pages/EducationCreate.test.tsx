@@ -1,7 +1,7 @@
-// __test__/components/AdminLayout/Pages/EducationCreate.test.tsx
+﻿// __test__/components/AdminLayout/Pages/EducationCreate.test.tsx
 
 import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import EducationCreate from "@/components/AdminLayout/Pages/Educations/EducationCreate";
@@ -12,18 +12,16 @@ import {
   CreateEducationInput,
   CreateEducationMutation,
 } from "@/types/graphql";
+import * as graphql from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 import {
   ApolloCache,
   DefaultContext,
   MutationFunctionOptions,
   FetchResult,
-  ApolloError, // ✅ IMPORT MANQUANT
+  ApolloError,
 } from "@apollo/client";
 
-// --------------------
-// --- Mocks (identiques) ---
-// --------------------
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
   __esModule: true,
   default: ({ title, children }: { title: ReactElement; children: ReactElement }) => (
@@ -110,22 +108,25 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(),
 }));
 
-jest.mock("@/types/graphql", () => ({
-  useCreateEducationMutation: jest.fn(),
-}));
+jest.mock("@/types/graphql", () => {
+  const mockUseCreateEducationMutation = jest.fn();
+  (global as any).__mockUseCreateEducationMutation = mockUseCreateEducationMutation;
+  return {
+    __esModule: true,
+    useCreateEducationMutation: mockUseCreateEducationMutation,
+  };
+});
 
-// --------------------
-// --- Types CORRIGÉS ---
-// --------------------
+const mockUseCreateEducationMutation = () => (global as any).__mockUseCreateEducationMutation;
+
 type TestMutationFn = jest.Mock<
   Promise<FetchResult<CreateEducationMutation>>,
   [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<any>> | undefined]
 >;
 
-// ✅ FIX 1: Interface avec ApolloError EXACT
 interface TestMutationResult {
   loading: boolean;
-  error?: ApolloError | undefined;  // ✅ ApolloError au lieu de Error
+  error?: ApolloError | undefined; 
   data?: CreateEducationMutation | undefined;
   called: boolean;
   client: any;
@@ -153,7 +154,6 @@ describe("EducationCreate Component", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
 
-    // Mock LangContext
     (useLang as jest.MockedFunction<typeof useLang>).mockReturnValue({
       translations: translationsMock,
       lang: "en",
@@ -161,26 +161,23 @@ describe("EducationCreate Component", (): void => {
       listLang: ["en", "fr"],
     } as LangContextType);
 
-    // Mock Toast
     (useCustomToast as jest.MockedFunction<typeof useCustomToast>).mockReturnValue({
       showAlert: mockShowAlert,
       ToastContainer: (): ReactElement => <div data-testid="toast-container" />,
     } as TestToastReturn);
 
-    // Mock Mutation
     mockMutationFn = jest.fn<
       Promise<FetchResult<CreateEducationMutation>>,
       [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<any>> | undefined]
     >() as TestMutationFn;
 
-    // ✅ FIX 2: TestMutationResult avec ApolloError
-    (useCreateEducationMutation as jest.MockedFunction<typeof useCreateEducationMutation>).mockReturnValue([
+    mockUseCreateEducationMutation().mockReturnValue([
       mockMutationFn,
       {
         called: false,
         loading: false,
         data: undefined,
-        error: undefined, // ✅ Compatible ApolloError | undefined
+        error: undefined,
         reset: jest.fn(),
         client: {
           query: jest.fn(),
@@ -234,15 +231,14 @@ describe("EducationCreate Component", (): void => {
     expect(yearInput).toHaveValue(2025);
   });
 
-  // ✅ FIX 3: Même correction pour le test loading
   it("displays loading state correctly", (): void => {
-    (useCreateEducationMutation as jest.MockedFunction<typeof useCreateEducationMutation>).mockReturnValue([
+    mockUseCreateEducationMutation().mockReturnValue([
       mockMutationFn,
       {
         called: false,
         loading: true,
         data: undefined,
-        error: undefined, // ✅ Compatible ApolloError | undefined
+        error: undefined,
         reset: jest.fn(),
         client: {
           query: jest.fn(),
