@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import BackUpList, { BackupFileInfo }  from "@/components/AdminLayout/Pages/BackUp/BackUpList";
 import Lang from "@/lang/typeLang";
 
@@ -7,11 +7,17 @@ const refetchMock: jest.Mock<Promise<void>, []> = jest.fn();
 const generateBackupMock: jest.Mock<Promise<any>, []> = jest.fn();
 const deleteBackupMock: jest.Mock<Promise<any>, []> = jest.fn();
 
-jest.mock("@/types/graphql", () => ({
-  useGetBackupsListQuery: jest.fn(),
-  useGenerateDatabaseBackupMutation: () => [generateBackupMock],
-  useDeleteBackupFileMutation: () => [deleteBackupMock],
-}));
+jest.mock("@/types/graphql", () => {
+  const mockUseGetBackupsListQuery = jest.fn();
+  (global as any).__mockUseGetBackupsListQuery = mockUseGetBackupsListQuery;
+  return {
+    useGetBackupsListQuery: mockUseGetBackupsListQuery,
+    useGenerateDatabaseBackupMutation: () => [generateBackupMock],
+    useDeleteBackupFileMutation: () => [deleteBackupMock],
+  };
+});
+
+const mockUseGetBackupsListQuery = () => (global as any).__mockUseGetBackupsListQuery;
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: (): { translations: Lang } => ({
@@ -113,8 +119,7 @@ describe("BackUpList Page", (): void => {
   });
 
   it("renders loading state", (): void => {
-    const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({ loading: true, error: null, data: null });
+    mockUseGetBackupsListQuery().mockReturnValue({ loading: true, error: null, data: null });
 
     render(<BackUpList />);
     const loadingElement: HTMLElement = screen.getByTestId("loading");
@@ -122,8 +127,7 @@ describe("BackUpList Page", (): void => {
   });
 
   it("renders error state", (): void => {
-    const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({ loading: false, error: true, data: null });
+    mockUseGetBackupsListQuery().mockReturnValue({ loading: false, error: true, data: null });
 
     render(<BackUpList />);
     const errorElement: HTMLElement = screen.getByText("No backups");
@@ -131,8 +135,7 @@ describe("BackUpList Page", (): void => {
   });
 
   it("renders backups list", (): void => {
-    const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({
+    mockUseGetBackupsListQuery().mockReturnValue({
       loading: false,
       error: false,
       data: { listBackupFiles: { files: mockBackups } },
@@ -145,8 +148,7 @@ describe("BackUpList Page", (): void => {
   });
 
   it("opens confirm dialog when clicking create backup", (): void => {
-    const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({
+    mockUseGetBackupsListQuery().mockReturnValue({
       loading: false,
       error: false,
       data: { listBackupFiles: { files: mockBackups } },
@@ -164,8 +166,7 @@ describe("BackUpList Page", (): void => {
   it("calls generate backup mutation on confirm", async (): Promise<void> => {
     generateBackupMock.mockResolvedValue({ data: { generateDatabaseBackup: { code: 200 } } });
 
-    const { useGetBackupsListQuery } = require("@/types/graphql");
-    useGetBackupsListQuery.mockReturnValue({
+    mockUseGetBackupsListQuery().mockReturnValue({
       loading: false,
       error: false,
       data: { listBackupFiles: { files: mockBackups } },
