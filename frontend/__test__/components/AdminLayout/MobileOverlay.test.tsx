@@ -1,15 +1,15 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+﻿import React from 'react'
+import { render, screen, fireEvent } from '@test-utils'
 import MobileOverlay, { MobileOverlayProps } from '@/components/AdminLayout/MobileOverlay'
 
 describe('MobileOverlay', () => {
   it('renders correctly', () => {
-    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn()
+    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn();
 
-    render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />)
+    render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />);
 
-    const overlay: HTMLElement = screen.getByTestId('overlay')
-    expect(overlay).toBeInTheDocument()
+    const overlay: HTMLElement = screen.getByTestId('overlay');
+    expect(overlay).toBeInTheDocument();
     expect(overlay).toHaveClass(
       'fixed',
       'top-[80px]',
@@ -21,17 +21,17 @@ describe('MobileOverlay', () => {
       'bg-opacity-40',
       'md:hidden'
     )
-  })
+  });
 
   it('calls setSidebarOpen(false) when clicked', () => {
-    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn()
+    const mockSetSidebarOpen: MobileOverlayProps['setSidebarOpen'] = jest.fn();
 
-    render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />)
+    render(<MobileOverlay setSidebarOpen={mockSetSidebarOpen} />);
 
-    const overlay: HTMLElement = screen.getByTestId('overlay')
+    const overlay: HTMLElement = screen.getByTestId('overlay');
     fireEvent.click(overlay)
 
-    expect(mockSetSidebarOpen).toHaveBeenCalledTimes(1)
-    expect(mockSetSidebarOpen).toHaveBeenCalledWith(false)
+    expect(mockSetSidebarOpen).toHaveBeenCalledTimes(1);
+    expect(mockSetSidebarOpen).toHaveBeenCalledWith(false);
   })
 })
