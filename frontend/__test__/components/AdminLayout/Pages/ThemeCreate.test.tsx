@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import ThemeCreate from "@/components/AdminLayout/Pages/Themes/ThemeCreate"; // ✅ Chemin corrigé
@@ -189,7 +189,7 @@ interface TestToastReturn {
   ToastContainer: () => ReactElement;
 }
 
-const translationsMock = {
+const translationsMock: Lang = {
   messagePageAddNewThemesTitleH2: "Create New Theme",
   messagePageAddNewThemesInputThemeName: "Theme Name",
   messagePageAddNewThemesInputThemeNameEN: "Theme Name EN",
@@ -301,7 +301,6 @@ describe("ThemeCreate Component", (): void => {
     expect(visibleCheckbox).not.toBeChecked();
   });
 
-  // ✅ FIX 1: Couleurs en minuscules
   it("updates color inputs correctly", (): void => {
     render(<ThemeCreate />);
 
