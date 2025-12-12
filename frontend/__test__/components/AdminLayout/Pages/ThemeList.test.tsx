@@ -1,8 +1,8 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import { MockedProvider } from "@apollo/client/testing";
-import ThemeList, { ThemeRow } from "@/components/AdminLayout/Pages/Themes/ThemesList";
+import ThemeList from "@/components/AdminLayout/Pages/Themes/ThemesList";
+import { ThemeRow } from "@/components/AdminLayout/components/Theme/ThemeTable";
 import { useGetThemesListQuery, useDeleteThemeMutation } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 
@@ -61,11 +61,7 @@ describe("ThemeList Component", () => {
       refetch: mockRefetch,
     });
 
-    render(
-      <MockedProvider>
-        <ThemeList />
-      </MockedProvider>
-    );
+    render(<ThemeList />);
 
     const loadingElement: HTMLElement = screen.getByTestId("loading");
     expect(loadingElement).toBeInTheDocument();
@@ -79,11 +75,7 @@ describe("ThemeList Component", () => {
       refetch: mockRefetch,
     });
 
-    render(
-      <MockedProvider>
-        <ThemeList />
-      </MockedProvider>
-    );
+    render(<ThemeList />);
 
     const errorElement: HTMLElement = screen.getByText("Theme list not found");
     expect(errorElement).toBeInTheDocument();
@@ -97,11 +89,7 @@ describe("ThemeList Component", () => {
       refetch: mockRefetch,
     });
 
-    render(
-      <MockedProvider>
-        <ThemeList />
-      </MockedProvider>
-    );
+    render(<ThemeList />);
 
     const headers: HTMLElement[] = screen.getAllByText(/Name|Name EN|Name FR|Actions/i);
     expect(headers.length).toBeGreaterThan(0);
@@ -120,11 +108,7 @@ describe("ThemeList Component", () => {
       refetch: mockRefetch,
     });
 
-    render(
-      <MockedProvider>
-        <ThemeList />
-      </MockedProvider>
-    );
+    render(<ThemeList />);
 
     const themeCells: HTMLElement[] = screen.getAllByText(/Theme1|Theme2/);
     expect(themeCells.length).toBeGreaterThan(0);
@@ -160,11 +144,7 @@ describe("ThemeList Component", () => {
       refetch: mockRefetch,
     });
 
-    render(
-      <MockedProvider>
-        <ThemeList />
-      </MockedProvider>
-    );
+    render(<ThemeList />);
 
     const themeCells: HTMLElement[] = screen.getAllByText("Theme1");
     expect(themeCells.length).toBeGreaterThan(0);
