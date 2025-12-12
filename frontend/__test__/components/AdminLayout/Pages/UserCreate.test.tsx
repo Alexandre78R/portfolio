@@ -1,14 +1,13 @@
-import React, { ChangeEvent, FormEvent } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ChangeEvent, FormEvent } from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import UserCreate from "@/components/AdminLayout/Pages/Users/UserCreate";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useCreateUserMutation } from "@/types/graphql";
+import { CreateUserDocument, CreateUserInput } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 
 const mockShowAlert: jest.Mock<(type: "success" | "error", message: string) => void> = jest.fn();
-const mockCreateUserMutation: jest.Mock<Promise<any>, [variables: any]> = jest.fn();
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
@@ -24,16 +23,13 @@ jest.mock("@/context/Lang/LangContext", () => ({
       messageAdminUserColumnRole: "Role",
       messageErrorServerOff: "Server error",
     } as Lang,
+    lang: "fr",
   })),
 }));
 
 jest.mock("@/components/ToastCustom/CustomToast", () => ({
   __esModule: true,
   default: jest.fn(() => ({ showAlert: mockShowAlert })),
-}));
-
-jest.mock("@/types/graphql", () => ({
-  useCreateUserMutation: jest.fn(() => [mockCreateUserMutation, { loading: false }]),
 }));
 
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
@@ -93,6 +89,81 @@ jest.mock("@/components/AdminLayout/Pages/Users/user.type", () => ({
   ]),
 }));
 
+const createUserVariables: Record<string, any> = {
+  data: {
+    firstname: "Jane",
+    lastname: "Smith",
+    email: "jane@example.com",
+    role: "user",
+    lang: "fr",
+  },
+};
+
+const createMocks = (mutationResult: any = { code: 201 }) => [
+  {
+    request: {
+      query: CreateUserDocument,
+      variables: createUserVariables,
+    },
+    result: {
+      data: {
+        registerUser: {
+          __typename: "UserResponse",
+          code: mutationResult.code ?? 201,
+          message: mutationResult.message ?? "Created",
+          user: {
+            __typename: "User",
+            id: "1",
+            firstname: "Jane",
+            lastname: "Smith",
+            email: "jane@example.com",
+            role: "user",
+            isPasswordChange: false,
+          },
+        },
+      },
+    },
+  },
+];
+
+const createErrorMocks = (error: Error) => [
+  {
+    request: {
+      query: CreateUserDocument,
+      variables: createUserVariables,
+    },
+    error,
+  },
+];
+
+const createDelayedMocks = (delayMs: number) => [
+  {
+    request: {
+      query: CreateUserDocument,
+      variables: createUserVariables,
+    },
+    result: {
+      data: {
+        registerUser: {
+          __typename: "UserResponse",
+          code: 201,
+          message: "Created",
+          user: {
+            __typename: "User",
+            id: "1",
+            firstname: "Jane",
+            lastname: "Smith",
+            email: "jane@example.com",
+            role: "user",
+            isPasswordChange: false,
+          },
+        },
+      },
+    },
+    delay: delayMs,
+  },
+];
+
 describe("UserCreate Component", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
@@ -147,24 +218,19 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should submit form successfully and show success toast", async (): Promise<void> => {
-    mockCreateUserMutation.mockResolvedValue({ data: { registerUser: { code: 201 } }, errors: undefined });
-    render(<UserCreate />);
+    render(<UserCreate />, { mocks: createMocks({ code: 201, message: "Created" }) });
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
     fireEvent.click(submitButton);
 
     await waitFor((): void => {
-      expect(mockCreateUserMutation).toHaveBeenCalledWith({
-        variables: { data: { firstname: "Jane", lastname: "Smith", email: "jane@example.com", role: "user" } },
-      });
       expect(mockShowAlert).toHaveBeenCalledWith("success", "User created successfully");
     });
   });
 
   test("should reset form after successful submission", async (): Promise<void> => {
-    mockCreateUserMutation.mockResolvedValue({ data: { registerUser: { code: 201 } }, errors: undefined });
-    render(<UserCreate />);
+    render(<UserCreate />, { mocks: createMocks({ code: 201, message: "Created" }) });
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -179,8 +245,7 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should handle error response on form submission", async (): Promise<void> => {
-    mockCreateUserMutation.mockResolvedValue({ data: { registerUser: { code: 500 } }, errors: undefined });
-    render(<UserCreate />);
+    render(<UserCreate />, { mocks: createMocks({ code: 500, message: "Error" }) });
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -192,8 +257,7 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should handle mutation rejection error", async (): Promise<void> => {
-    mockCreateUserMutation.mockRejectedValue(new Error("Network error"));
-    render(<UserCreate />);
+    render(<UserCreate />, { mocks: createErrorMocks(new Error("Network error")) });
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -205,9 +269,10 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should show loading state during submission", (): void => {
-    (useCreateUserMutation as jest.Mock).mockReturnValue([mockCreateUserMutation, { loading: true }]);
-    render(<UserCreate />);
+    render(<UserCreate />, { mocks: createDelayedMocks(1000) });
+    fillForm();
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
+    fireEvent.click(submitButton);
 
     expect(submitButton).toHaveTextContent("Creating...");
     expect(submitButton).toBeDisabled();
