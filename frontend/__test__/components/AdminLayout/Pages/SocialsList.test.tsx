@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import { 
   render, 
   screen, 
   waitFor, 
   fireEvent 
-} from "@testing-library/react";
+} from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import SocialsList from "@/components/AdminLayout/Pages/Socials/SocialsList";
@@ -22,14 +22,14 @@ interface MockQueryResult {
       url: string;
       tab: number;
     } | null> | null;
-  };
+  } | null;
   loading: boolean;
   error?: Error | null;
   refetch: jest.Mock<void, []>;
 }
 
-let mockEditCallback: jest.Mock<void, [social: SocialRow]> | undefined;
-let mockDeleteCallback: jest.Mock<void, [socialId: number]> | undefined;
+let mockEditCallback: ((social: SocialRow) => void) | undefined;
+let mockDeleteCallback: ((socialId: number) => void) | undefined;
 
 jest.mock("@/components/Loading/LoadingCustom", () => () => (
   <div data-testid="loading" aria-label="loading">Loading...</div>
@@ -149,10 +149,17 @@ jest.mock("@/context/Lang/LangContext", () => ({
 }));
 
 describe("SocialsList", () => {
+  let consoleLogSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockEditCallback = undefined;
     mockDeleteCallback = undefined;
+    consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
   });
 
   test("should display loading state", () => {
@@ -210,7 +217,7 @@ describe("SocialsList", () => {
   });
 
   test("should render table with socials data", () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -244,7 +251,7 @@ describe("SocialsList", () => {
   });
 
   test("should open edit modal when edit button is clicked", async () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -273,7 +280,7 @@ describe("SocialsList", () => {
   });
 
   test("should close edit modal when close is clicked", async () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -308,7 +315,7 @@ describe("SocialsList", () => {
   });
 
   test("should open delete dialog when delete button is clicked", async () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -337,7 +344,7 @@ describe("SocialsList", () => {
   });
 
   test("should close delete dialog when close is clicked", async () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -372,7 +379,7 @@ describe("SocialsList", () => {
   });
 
   test("should filter out null socials", () => {
-    const mockSocials = [
+    const mockSocials: unknown[] = [
       {
         __typename: "Social",
         id: "1",
@@ -407,7 +414,7 @@ describe("SocialsList", () => {
   });
 
   test("should call refetch on query", () => {
-    const mockRefetch = jest.fn();
+    const mockRefetch: jest.Mock = jest.fn();
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
         socialList: [],
