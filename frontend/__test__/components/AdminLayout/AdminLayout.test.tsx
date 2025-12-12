@@ -1,28 +1,25 @@
-import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+﻿import React from 'react'
+import { render, screen, fireEvent } from '@test-utils'
 import AdminLayout from '@/components/AdminLayout/AdminLayout'
 import { useRouter, usePathname } from 'next/navigation'
 import { useUser, UserContextType } from '@/context/UserContext/UserContext'
 import { NavItem } from '@/components/AdminLayout/Navigation'
 import { Role } from '@/types/graphql'
 
-// --- Mock Next.js navigation hooks ---
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   usePathname: jest.fn(),
 }))
 
-// --- Mock UserContext ---
 jest.mock('@/context/UserContext/UserContext', () => ({
   useUser: jest.fn(),
 }))
 
-// --- Mock subcomponents ---
 jest.mock('@/components/AdminLayout/SideBar', () => {
   const MockSideBar: React.FC<{
     setActiveTab: (key: string) => void
     navigation: NavItem[]
-    sidebarOpen: boolean
+    sidebarOpen: boolean;
   }> = ({ setActiveTab, navigation, sidebarOpen }) => (
     <div
       data-testid="sidebar"
@@ -34,7 +31,7 @@ jest.mock('@/components/AdminLayout/SideBar', () => {
       </button>
     </div>
   )
-  MockSideBar.displayName = 'SideBar'
+  MockSideBar.displayName = 'SideBar';
   return MockSideBar
 })
 
@@ -46,8 +43,8 @@ jest.mock('@/components/AdminLayout/MobileOverlay', () => {
       Overlay
     </div>
   )
-  MockMobileOverlay.displayName = 'MobileOverlay'
-  return MockMobileOverlay
+  MockMobileOverlay.displayName = 'MobileOverlay';
+  return MockMobileOverlay;
 })
 
 jest.mock('@/components/AdminLayout/ToggleButton', () => {
@@ -57,16 +54,16 @@ jest.mock('@/components/AdminLayout/ToggleButton', () => {
         Toggle
       </button>
     )
-  MockToggleButton.displayName = 'ToggleButton'
-  return MockToggleButton
+  MockToggleButton.displayName = 'ToggleButton';
+  return MockToggleButton;
 })
 
 jest.mock('@/components/AdminLayout/TopbarMobile', () => {
   const MockTopbarMobile: React.FC<{ activeTab: string }> = ({ activeTab }) => (
     <div data-testid="topbar">{activeTab}</div>
   )
-  MockTopbarMobile.displayName = 'TopbarMobile'
-  return MockTopbarMobile
+  MockTopbarMobile.displayName = 'TopbarMobile';
+  return MockTopbarMobile;
 })
 
 describe('AdminLayout', () => {
@@ -75,7 +72,6 @@ describe('AdminLayout', () => {
   beforeEach(() => {
     pushMock.mockClear()
 
-    // --- Mock Next.js hooks ---
     ;(useRouter as jest.Mock).mockReturnValue({
       push: pushMock,
       prefetch: jest.fn(),
@@ -85,7 +81,6 @@ describe('AdminLayout', () => {
 
     ;(usePathname as jest.Mock).mockReturnValue('/admin/dashboard')
 
-    // --- Mock UserContext complet et typé ---
     const mockUser: UserContextType = {
       user: {
         __typename: 'User',
@@ -99,9 +94,10 @@ describe('AdminLayout', () => {
       loading: false,
       error: null,
       refetch: jest.fn(),
+      checkToken: jest.fn(),
     }
 
-    ;(useUser as jest.Mock).mockReturnValue(mockUser)
+    ;(useUser as jest.Mock).mockReturnValue(mockUser);
   })
 
   it('renders children correctly', () => {
@@ -110,8 +106,8 @@ describe('AdminLayout', () => {
         <div data-testid="child">Hello Admin</div>
       </AdminLayout>
     )
-    const child: HTMLElement = screen.getByTestId('child')
-    expect(child).toHaveTextContent('Hello Admin')
+    const child: HTMLElement = screen.getByTestId('child');
+    expect(child).toHaveTextContent('Hello Admin');
   })
 
   it('renders sidebar and topbar', () => {
@@ -120,10 +116,10 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const sidebar: HTMLElement = screen.getByTestId('sidebar')
-    const topbar: HTMLElement = screen.getByTestId('topbar')
-    expect(sidebar).toBeInTheDocument()
-    expect(topbar).toHaveTextContent('dashboard')
+    const sidebar: HTMLElement = screen.getByTestId('sidebar');
+    const topbar: HTMLElement = screen.getByTestId('topbar');
+    expect(sidebar).toBeInTheDocument();
+    expect(topbar).toHaveTextContent('dashboard');
   })
 
   it('toggles sidebar when toggle button clicked', () => {
@@ -132,14 +128,14 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button')
-    fireEvent.click(toggleBtn)
+    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button');
+    fireEvent.click(toggleBtn);
 
-    const sidebar: HTMLElement = screen.getByTestId('sidebar')
-    expect(sidebar.getAttribute('data-sidebar-open')).toBe('true')
+    const sidebar: HTMLElement = screen.getByTestId('sidebar');
+    expect(sidebar.getAttribute('data-sidebar-open')).toBe('true');
 
-    fireEvent.click(toggleBtn)
-    expect(sidebar.getAttribute('data-sidebar-open')).toBe('false')
+    fireEvent.click(toggleBtn);
+    expect(sidebar.getAttribute('data-sidebar-open')).toBe('false');
   })
 
   it('shows MobileOverlay when sidebar is open', () => {
@@ -148,11 +144,11 @@ describe('AdminLayout', () => {
         <div>Test</div>
       </AdminLayout>
     )
-    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button')
-    fireEvent.click(toggleBtn)
+    const toggleBtn: HTMLElement = screen.getByTestId('toggle-button');
+    fireEvent.click(toggleBtn);
 
-    const overlay: HTMLElement = screen.getByTestId('mobile-overlay')
-    expect(overlay).toBeInTheDocument()
+    const overlay: HTMLElement = screen.getByTestId('mobile-overlay');
+    expect(overlay).toBeInTheDocument();
   })
 
   it('filters navigation based on role', () => {
