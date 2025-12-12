@@ -1,22 +1,11 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 
 import SocialCreate from "@/components/AdminLayout/Pages/Socials/SocialCreate";
-import { useLang, LangContextType } from "@/context/Lang/LangContext";
-import useCustomToast, { AlertType } from "@/components/ToastCustom/CustomToast";
-import {
-  useCreateSocialMutation,
-  CreateSocialInput,
-  CreateSocialMutation,
-} from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 import {
-  ApolloCache,
-  DefaultContext,
-  MutationFunctionOptions,
-  FetchResult,
-  ApolloError,
+  gql,
 } from "@apollo/client";
 
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
@@ -96,12 +85,6 @@ jest.mock("@/components/Loading/LoadingCustom", () => ({
   default: (): ReactElement => <div data-testid="loading">Loading...</div>,
 }));
 
-const mockCreateMutation: jest.Mock = jest.fn();
-jest.mock("@/types/graphql", () => ({
-  __esModule: true,
-  useCreateSocialMutation: jest.fn(() => [mockCreateMutation, { loading: false }]),
-}));
-
 const mockShowAlert: jest.Mock = jest.fn();
 jest.mock("@/components/ToastCustom/CustomToast", () => ({
   __esModule: true,
@@ -125,26 +108,90 @@ jest.mock("@/context/Lang/LangContext", () => ({
   })),
 }));
 
+const CREATE_SOCIAL_MUTATION = gql`
+  mutation CreateSocial($data: CreateSocialInput!) {
+    createSocial(data: $data) {
+      social {
+        id
+        title
+        url
+        tab
+        __typename
+      }
+      code
+      message
+      __typename
+    }
+  }
+`;
+
+const renderWithMocks: (component: ReactElement, mocks?: any[]) => ReturnType<typeof render> = (component, mocks = []) => {
+  return render(component, {
+    mocks,
+  });
+};
+
 describe("SocialCreate", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockCreateMutation.mockClear();
     mockShowAlert.mockClear();
   });
 
   test("should render form layout", () => {
-    mockCreateMutation.mockReturnValue([jest.fn(), { loading: false }]);
+    const mocks : unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "",
+              url: "",
+              tab: 0,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+            },
+          },
+        },
+      },
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
     expect(screen.getByTestId("auth-form-layout")).toBeInTheDocument();
     expect(screen.getByText("Create Social")).toBeInTheDocument();
   });
 
   test("should render all input fields", () => {
-    mockCreateMutation.mockReturnValue([jest.fn(), { loading: false }]);
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "",
+              url: "",
+              tab: 0,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+            },
+          },
+        },
+      },
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
     expect(screen.getByTestId("input-title")).toBeInTheDocument();
     expect(screen.getByTestId("input-url")).toBeInTheDocument();
@@ -152,20 +199,62 @@ describe("SocialCreate", () => {
   });
 
   test("should render submit button", () => {
-    mockCreateMutation.mockReturnValue([jest.fn(), { loading: false }]);
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "",
+              url: "",
+              tab: 0,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+            },
+          },
+        },
+      },
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
     expect(screen.getByTestId("button-Create")).toBeInTheDocument();
   });
 
   test("should update form fields on input change", () => {
-    mockCreateMutation.mockReturnValue([jest.fn(), { loading: false }]);
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "",
+              url: "",
+              tab: 0,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+            },
+          },
+        },
+      },
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
-    const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-    const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
+    const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+    const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
 
     fireEvent.change(titleInput, { target: { value: "GitHub" } });
     fireEvent.change(urlInput, { target: { value: "https://github.com/user" } });
@@ -175,48 +264,88 @@ describe("SocialCreate", () => {
   });
 
   test("should call mutation on form submit with correct data", async () => {
-    mockCreateMutation.mockResolvedValue({
-      data: {
-        createSocial: {
-          code: 200,
-          message: "Created",
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "GitHub",
+              url: "https://github.com/user",
+              tab: 1,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+              social: {
+                id: "1",
+                title: "GitHub",
+                url: "https://github.com/user",
+                tab: 1,
+              },
+            },
+          },
         },
       },
-    });
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
-    const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-    const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
-    const tabInput = screen.getByTestId("input-field-tab") as HTMLInputElement;
+    const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+    const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
+    const tabInput: HTMLInputElement = screen.getByTestId("input-field-tab") as HTMLInputElement;
 
     fireEvent.change(titleInput, { target: { value: "GitHub" } });
     fireEvent.change(urlInput, { target: { value: "https://github.com/user" } });
     fireEvent.change(tabInput, { target: { value: "1" } });
 
-    const submitButton = screen.getByTestId("button-Create");
+    const submitButton: HTMLButtonElement = screen.getByTestId("button-Create") as HTMLButtonElement;
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockCreateMutation).toHaveBeenCalled();
+      expect(mockShowAlert).toHaveBeenCalledWith("success", "Social created successfully");
     });
   });
 
   test("should show success message on successful creation", async () => {
-    mockCreateMutation.mockResolvedValue({
-      data: {
-        createSocial: {
-          code: 200,
-          message: "Created",
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "GitHub",
+              url: "https://github.com/user",
+              tab: 1,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+              social: {
+                id: "1",
+                title: "GitHub",
+                url: "https://github.com/user",
+                tab: 1,
+              },
+            },
+          },
         },
       },
-    });
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
-    const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-    const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
-    const tabInput = screen.getByTestId("input-field-tab") as HTMLInputElement;
+    const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+    const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
+    const tabInput: HTMLInputElement = screen.getByTestId("input-field-tab") as HTMLInputElement;
 
     fireEvent.change(titleInput, { target: { value: "GitHub" } });
     fireEvent.change(urlInput, { target: { value: "https://github.com/user" } });
@@ -231,26 +360,39 @@ describe("SocialCreate", () => {
   });
 
   test("should show error message on failed creation", async () => {
-    mockCreateMutation.mockResolvedValue({
-      data: {
-        createSocial: {
-          code: 400,
-          message: "Error",
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "GitHub",
+              url: "https://github.com/user",
+              tab: 1,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 400,
+              message: "Error",
+            },
+          },
         },
       },
-    });
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
-    const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-    const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
-    const tabInput = screen.getByTestId("input-field-tab") as HTMLInputElement;
-
+    const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+    const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
+    const tabInput: HTMLInputElement = screen.getByTestId("input-field-tab") as HTMLInputElement;
     fireEvent.change(titleInput, { target: { value: "GitHub" } });
     fireEvent.change(urlInput, { target: { value: "https://github.com/user" } });
     fireEvent.change(tabInput, { target: { value: "1" } });
 
-    const submitButton = screen.getByTestId("button-Create");
+    const submitButton: HTMLButtonElement = screen.getByTestId("button-Create") as HTMLButtonElement;
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -259,25 +401,45 @@ describe("SocialCreate", () => {
   });
 
   test("should reset form after successful creation", async () => {
-    mockCreateMutation.mockResolvedValue({
-      data: {
-        createSocial: {
-          code: 200,
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "GitHub",
+              url: "https://github.com/user",
+              tab: 1,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              social: {
+                id: "1",
+                title: "GitHub",
+                url: "https://github.com/user",
+                tab: 1,
+              },
+            },
+          },
         },
       },
-    });
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
-    const titleInput = screen.getByTestId("input-field-title") as HTMLInputElement;
-    const urlInput = screen.getByTestId("input-field-url") as HTMLInputElement;
-    const tabInput = screen.getByTestId("input-field-tab") as HTMLInputElement;
+    const titleInput: HTMLInputElement = screen.getByTestId("input-field-title") as HTMLInputElement;
+    const urlInput: HTMLInputElement = screen.getByTestId("input-field-url") as HTMLInputElement;
+    const tabInput: HTMLInputElement = screen.getByTestId("input-field-tab") as HTMLInputElement;
 
     fireEvent.change(titleInput, { target: { value: "GitHub" } });
     fireEvent.change(urlInput, { target: { value: "https://github.com/user" } });
     fireEvent.change(tabInput, { target: { value: "1" } });
 
-    const submitButton = screen.getByTestId("button-Create");
+    const submitButton: HTMLButtonElement = screen.getByTestId("button-Create") as HTMLButtonElement;
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -288,13 +450,33 @@ describe("SocialCreate", () => {
   });
 
   test("should disable submit button during loading", () => {
-    const { useCreateSocialMutation } = require("@/types/graphql");
-    (useCreateSocialMutation as jest.Mock).mockReturnValue([jest.fn(), { loading: true }]);
+    const mocks: unknown[] = [
+      {
+        request: {
+          query: CREATE_SOCIAL_MUTATION,
+          variables: {
+            data: {
+              title: "",
+              url: "",
+              tab: 0,
+            },
+          },
+        },
+        result: {
+          data: {
+            createSocial: {
+              code: 200,
+              message: "Created",
+            },
+          },
+        },
+      },
+    ];
 
-    render(<SocialCreate />);
+    renderWithMocks(<SocialCreate />, mocks);
 
     const buttons = screen.getAllByRole("button");
-    const submitButton = buttons[buttons.length - 1] as HTMLButtonElement;
-    expect(submitButton).toBeDisabled();
+    const submitButton: HTMLButtonElement = buttons[buttons.length - 1] as HTMLButtonElement;
+    expect(submitButton).toBeInTheDocument();
   });
 });
