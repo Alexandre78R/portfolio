@@ -1,10 +1,10 @@
-import React from "react";
+﻿import React from "react";
 import {
   render,
   screen,
   act,
   waitFor,
-} from "@testing-library/react";
+} from '@test-utils';
 import "@testing-library/jest-dom";
 
 import {
@@ -64,10 +64,6 @@ beforeEach((): void => {
 afterEach((): void => {
   jest.clearAllMocks();
 });
-
-/* -------------------------------------------------------------------------- */
-/*                                   Tests                                     */
-/* -------------------------------------------------------------------------- */
 
 describe("ChoiceViewContext", () => {
   it("provides default selectedView", (): void => {

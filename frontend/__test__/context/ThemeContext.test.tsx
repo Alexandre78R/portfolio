@@ -1,52 +1,18 @@
-import React from "react";
+﻿import React from "react";
 import {
   render,
   screen,
   act,
   waitFor,
   renderHook,
-} from "@testing-library/react";
+} from '@testing-library/react';
 import "@testing-library/jest-dom";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { ThemeProvider, useTheme, ThemeContextType, ThemeProviderProps, ThemeKey } from "@/context/Theme/ThemeContext";
 import defaultThemes from "@/context/Theme/themes";
-import { ApolloError, gql } from "@apollo/client";
+import { ApolloError } from "@apollo/client";
+import { GetThemesListDocument } from "@/types/graphql";
 import { LocalStorageMock } from "./context.types";
-import Error from "next/error";
-
-const GET_THEMES_LIST = gql`
-  query GetThemesList {
-    themeList {
-      themes {
-        body
-        admin
-        error
-        footer
-        grey
-        id
-        info
-        name
-        nameEN
-        nameFR
-        placeholder
-        primary
-        scrollHandle
-        scrollHandleHover
-        secondary
-        success
-        text100
-        text200
-        text300
-        textButton
-        textDefault
-        visible
-        warn
-      }
-      message
-      code
-    }
-  }
-`;
 
 interface TestComponentProps {}
 
@@ -171,14 +137,13 @@ const mockUbuntuThemeData = {
 };
 
 const mockDarkThemeDataHidden = {
-  __typename: "Theme",
   ...mockDarkThemeData,
   visible: false,
 };
 
 const mockSuccessResponse: MockedResponse = {
   request: {
-    query: GET_THEMES_LIST,
+    query: GetThemesListDocument,
   },
   result: {
     data: {
@@ -194,14 +159,14 @@ const mockSuccessResponse: MockedResponse = {
 
 const mockErrorResponse: MockedResponse = {
   request: {
-    query: GET_THEMES_LIST,
+    query: GetThemesListDocument,
   },
   error: new ApolloError({ errorMessage: "Network error" }),
 };
 
 const mockEmptyResponse: MockedResponse = {
   request: {
-    query: GET_THEMES_LIST,
+    query: GetThemesListDocument,
   },
   result: {
     data: {
@@ -217,7 +182,7 @@ const mockEmptyResponse: MockedResponse = {
 
 const mockNoVisibleThemesResponse: MockedResponse = {
   request: {
-    query: GET_THEMES_LIST,
+    query: GetThemesListDocument,
   },
   result: {
     data: {
@@ -372,14 +337,13 @@ describe("ThemeContext with GraphQL", () => {
       expect(themeSpan).toHaveTextContent("dark");
     });
 
-    // Vérifier que le message de fallback a été appelé (peut y avoir d'autres warnings d'Apollo)
-    const calls = consoleWarnSpy.mock.calls.map(call => call[0]);
+    const calls: string[] = consoleWarnSpy.mock.calls.map(call => call[0]);
     expect(calls).toContain("[ThemeContext] Using fallback themes due to error");
     consoleWarnSpy.mockRestore();
   });
 
   it("should use default themes when no themes are returned from backend", async (): Promise<void> => {
-    const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+    const consoleWarnSpy: jest.SpyInstance = jest.spyOn(console, "warn").mockImplementation();
 
     render(
       <MockedProvider mocks={[mockEmptyResponse]}>
@@ -391,7 +355,6 @@ describe("ThemeContext with GraphQL", () => {
 
     await waitFor(() => {
       const themesCount: HTMLElement = screen.getByTestId("themes-count");
-      // 0 thème en BDD → charge les thèmes par défaut frontend
       const expectedCount: string = Object.keys(defaultThemes).length.toString();
       expect(themesCount).toHaveTextContent(expectedCount);
     });
@@ -401,7 +364,6 @@ describe("ThemeContext with GraphQL", () => {
       expect(themeSpan).toHaveTextContent("dark");
     });
 
-    // Vérifier que le message de fallback a été appelé (peut y avoir d'autres warnings d'Apollo)
     const calls = consoleWarnSpy.mock.calls.map(call => call[0]);
     expect(calls).toContain("[ThemeContext] Using fallback themes - no data");
     consoleWarnSpy.mockRestore();
@@ -418,7 +380,6 @@ describe("ThemeContext with GraphQL", () => {
 
     await waitFor(() => {
       const themesCount: HTMLElement = screen.getByTestId("themes-count");
-      // 0 thème visible en BDD → charge les thèmes par défaut frontend
       const expectedCount: string = Object.keys(defaultThemes).length.toString();
       expect(themesCount).toHaveTextContent(expectedCount);
     });
@@ -432,7 +393,7 @@ describe("ThemeContext with GraphQL", () => {
   it("should handle empty array of themes from backend", async (): Promise<void> => {
     const mockEmptyArrayResponse: MockedResponse = {
       request: {
-        query: GET_THEMES_LIST,
+        query: GetThemesListDocument,
       },
       result: {
         data: {
@@ -456,7 +417,6 @@ describe("ThemeContext with GraphQL", () => {
 
     await waitFor(() => {
       const themesCount: HTMLElement = screen.getByTestId("themes-count");
-      // Tableau vide → 0 thèmes visibles → charge les thèmes par défaut frontend
       const expectedCount: string = Object.keys(defaultThemes).length.toString();
       expect(themesCount).toHaveTextContent(expectedCount);
     });
@@ -473,7 +433,7 @@ describe("ThemeContext with GraphQL", () => {
 
     await waitFor(() => {
       const themesCount: HTMLElement = screen.getByTestId("themes-count");
-      const expectedVisibleThemesCount = "3";
+      const expectedVisibleThemesCount: string = "3";
       expect(themesCount).toHaveTextContent(expectedVisibleThemesCount);
     });
   });
@@ -507,7 +467,7 @@ describe("ThemeContext with GraphQL", () => {
   });
 
   it("should handle theme toggle to non-existent theme gracefully", async (): Promise<void> => {
-      const consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+      const consoleWarnSpy: jest.SpyInstance = jest.spyOn(console, "warn").mockImplementation();
 
       const TestComponentWithInvalidTheme: React.FC = (): React.ReactElement => {
         const { theme, toggleTheme } = useTheme();
@@ -595,13 +555,12 @@ describe("ThemeContext with GraphQL", () => {
   });
 
   it("should throw error when useTheme is used outside ThemeProvider", (): void => {
-      const TestComponentOutsideProvider: React.FC = () => {
-        useTheme();
-        return <div />;
-      };
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-      expect(() => render(<TestComponentOutsideProvider />)).toThrow(
-        "useTheme must be used within ThemeProvider"
-      );
+    expect(() => renderHook(() => useTheme())).toThrow(
+      "useTheme must be used within ThemeProvider"
+    );
+
+    consoleErrorSpy.mockRestore();
   });
 });

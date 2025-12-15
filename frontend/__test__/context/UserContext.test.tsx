@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { render, screen, act } from "@testing-library/react";
+﻿import React, { ReactNode } from "react";
+import { render, screen, act } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import { UserProvider, useUser, UserContextType } from "@/context/UserContext/UserContext";
 import { UseGetMeQueryMock } from "./context.types";
@@ -134,9 +134,15 @@ describe("UserContext", () => {
   });
 
   it("throws error when used outside provider", () => {
+    const consoleErrorSpy: jest.SpyInstance = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
     const renderOutsideProvider = () => render(<TestComponent />);
     expect(renderOutsideProvider).toThrow(
       "useUser must be used within a UserProvider"
     );
+
+    consoleErrorSpy.mockRestore();
   });
 })
