@@ -1,11 +1,12 @@
-import React from "react";
-import { render } from "@testing-library/react";
+﻿import React from "react";
+import { render } from '@testing-library/react';
 import HorizontalBarChart from "@/components/Charts/HorizontalBarChart";
-import { useTheme, ThemeContextObject } from "@/context/Theme/ThemeContext";
+import { ThemeContextType, useTheme } from "@/context/Theme/ThemeContext";
 import { useLang, LangContextType } from "@/context/Lang/LangContext";
+// import ThemeContext
 
 jest.mock("@/context/Theme/ThemeContext", () => ({
-  useTheme: jest.fn<ThemeContextObject, []>(),
+  useTheme: jest.fn<ThemeContextType, []>(),
 }));
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -17,7 +18,7 @@ describe("HorizontalBarChart", () => {
   const data: number[] = [10, 20, 30];
 
   beforeEach(() => {
-    (useTheme as jest.Mock).mockReturnValue({ theme: "light" } as ThemeContextObject);
+    (useTheme as jest.Mock).mockReturnValue({ theme: "light" } as ThemeContextType);
     (useLang as jest.Mock).mockReturnValue({
       translations: { messagePageDashBoardMessageStatsChart: "Nombre d'utilisations" },
       lang: "fr",
