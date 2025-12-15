@@ -1,10 +1,9 @@
-import React, { ReactNode } from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React, { ReactNode } from "react";
+import { render, screen, RenderResult } from '@test-utils';
 import Welcome from "@/components/Terminal/components/Commands/Welcome";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
 
-// ---------- Mocks ----------
 jest.mock("@/context/Lang/LangContext");
 
 const translationsMock: { terminalWelcomeMessage: string; terminalWelcomeMessageHelp: string } = {
@@ -19,7 +18,6 @@ const mockTermContextValue: Term = {
   index: 0,
 };
 
-// ---------- Helpers ----------
 const renderWithContext = (ui: React.ReactNode, contextValue: Term = mockTermContextValue): RenderResult => {
   return render(
     <termContext.Provider value={contextValue}>
@@ -28,7 +26,7 @@ const renderWithContext = (ui: React.ReactNode, contextValue: Term = mockTermCon
   );
 };
 
-// ---------- Tests ----------
+
 describe("Welcome Component", () => {
   beforeEach((): void => {
     jest.clearAllMocks();

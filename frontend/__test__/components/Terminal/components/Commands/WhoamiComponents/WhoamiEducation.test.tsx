@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, RenderResult, screen } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, RenderResult, screen } from '@test-utils';
 import { Provider } from "react-redux";
 import configureStore, { MockStoreEnhanced } from "redux-mock-store";
 import WhoamiEducation from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiEducation";

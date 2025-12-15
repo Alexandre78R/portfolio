@@ -1,5 +1,5 @@
-import React from "react";
-import { render, RenderResult, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, RenderResult, screen } from '@test-utils';
 import Echo from "@/components/Terminal/components/Commands/Echo";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 
@@ -56,7 +56,6 @@ describe("Echo command component", () => {
     const container: HTMLElement = renderResult.container;
     const textContent: string | null = container.textContent;
 
-    // correspond au comportement réel d'Echo : quotes retirées uniquement au début/fin global
     expect(textContent).toContain("hello` 'world' \"again");
   });
 });

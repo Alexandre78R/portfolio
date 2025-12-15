@@ -1,11 +1,10 @@
-import React from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, RenderResult } from '@test-utils';
 import Whoami from "@/components/Terminal/components/Commands/Whoami";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
-// ---------- Mocks Components ----------
 jest.mock(
   "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiError",
   () => ({
@@ -39,13 +38,11 @@ jest.mock(
   })
 );
 
-// ---------- Mock Lang ----------
 jest.mock("@/context/Lang/LangContext", () => ({
   __esModule: true as boolean,
   useLang: jest.fn() as jest.Mock,
 }));
 
-// ---------- Tests ----------
 describe("Whoami Component", () => {
   const translationsMock: Lang = {
     terminalWhoamiNotArg: "Aucun argument fourni",

@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsCommand";
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
@@ -43,6 +43,8 @@ const mockProjects: Project[] = [
       { name: "React", image: "/react.png" },
       { name: "TS", image: "/ts.png" },
     ],
+    image: null,
+    video: null
   },
   {
     id: 2,
@@ -53,6 +55,8 @@ const mockProjects: Project[] = [
     contentDisplay: "image2.png",
     github: null,
     skills: [],
+    image: null,
+    video: null
   },
 ];
 

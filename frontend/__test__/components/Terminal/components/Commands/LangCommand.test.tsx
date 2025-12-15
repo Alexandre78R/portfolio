@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, RenderResult } from '@test-utils';
 import Lang from "@/components/Terminal/components/Commands/Lang";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";

@@ -1,11 +1,10 @@
-import React from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, RenderResult } from '@testing-library/react';
 import Themes from "@/components/Terminal/components/Commands/Themes";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useTheme } from "@/context/Theme/ThemeContext";
 import * as util from "@/components/Terminal/util";
 
-// ---------- Mocks ----------
 jest.mock("@/components/Terminal/util", () => ({
   isArgInvalid: jest.fn(),
   checkThemeSwitch: jest.fn(),
@@ -32,7 +31,7 @@ jest.mock("@/context/Theme/ThemeContext", () => ({
 describe("Themes command component", () => {
   let toggleThemeMock: jest.Mock;
 
-  const mockThemes = {
+  const mockThemes: Record<string, any> = {
     dark: {
       id: "1",
       name: "dark",

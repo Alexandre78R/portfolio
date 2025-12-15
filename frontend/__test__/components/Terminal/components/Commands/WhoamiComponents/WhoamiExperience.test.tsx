@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, waitFor, RenderResult } from '@test-utils';
 import { Provider } from "react-redux";
 import configureStore, { MockStoreEnhanced } from "redux-mock-store";
 import WhoamiExperience from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiExperience";

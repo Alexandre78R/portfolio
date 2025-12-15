@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, RenderResult } from '@test-utils';
 import Socials from "@/components/Terminal/components/Commands/Socials";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import * as util from "@/components/Terminal/util";
@@ -31,7 +31,7 @@ jest.mock("@/components/Terminal/components/Message", () => {
   return { __esModule: true, Message: MessageMock };
 });
 
-const mockSocials: Socials[] = [
+const mockSocials: unknown[] = [
   {
     id: 1,
     title: "GitHub",

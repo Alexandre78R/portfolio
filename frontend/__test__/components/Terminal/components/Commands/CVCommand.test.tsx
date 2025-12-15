@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, RenderResult, fireEvent } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, RenderResult } from '@testing-library/react';
 import CV from "@/components/Terminal/components/Commands/CV";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { getCurrentCmdArry } from "@/components/Terminal/util";
