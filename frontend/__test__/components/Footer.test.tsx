@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@test-utils';
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import Footer from "@/components/Footer/Footer";
@@ -33,12 +33,10 @@ jest.mock("@mui/icons-material/Link", () => ({
   default: (props: any) => <div data-testid="link-icon" {...props} />,
 }));
 
-const createMockStore = (initialState: any): ReturnType<typeof configureStore> => {
+const createMockStore = (initialState: any) => {
   return configureStore({
-    reducer: {
-      socials: socialsReducer,
-    },
-    preloadedState: initialState,
+    reducer: socialsReducer,
+    preloadedState: initialState as any,
   });
 };
 
