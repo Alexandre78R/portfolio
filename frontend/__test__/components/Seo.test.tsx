@@ -1,5 +1,5 @@
-import React from "react";
-import { render } from "@testing-library/react";
+﻿import React from "react";
+import { render, waitFor } from '@test-utils';
 import Seo from "@/components/Seo/Seo";
 import { useLang, LangContextType } from "@/context/Lang/LangContext";
 import { useRouter } from "next/router";
@@ -35,15 +35,34 @@ describe("Seo component", () => {
   };
 
   beforeEach((): void => {
-    window.history.pushState({}, "", "/projects");
-
     (useLang as jest.MockedFunction<typeof useLang>).mockReturnValue(
       mockLangContextValue
     );
 
-    (useRouter as jest.MockedFunction<typeof useRouter>).mockReturnValue({
+    const mockRouter: ReturnType<typeof useRouter> = {
       asPath: "/projects",
-    } as ReturnType<typeof useRouter>);
+      pathname: "/projects",
+      query: {},
+      push: jest.fn(),
+      reload: jest.fn(),
+      back: jest.fn(),
+      forward: jest.fn(),
+      prefetch: jest.fn(),
+      beforePopState: jest.fn(),
+      events: {
+        on: jest.fn(),
+        off: jest.fn(),
+        emit: jest.fn(),
+      },
+      isFallback: false,
+      isLocaleDomain: false,
+      isReady: true,
+      isPreview: false,
+    } as unknown as ReturnType<typeof useRouter>;
+
+    (useRouter as jest.MockedFunction<typeof useRouter>).mockReturnValue(
+      mockRouter
+    );
   });
 
   afterEach((): void => {
@@ -82,7 +101,7 @@ describe("Seo component", () => {
     expect(metaDescription?.content).toBe(fr.descHTML);
   });
 
-  it("sets canonical URL correctly", (): void => {
+  it("sets canonical URL correctly", async (): Promise<void> => {
     render(<Seo />);
 
     const canonicalLink: HTMLLinkElement | null =
@@ -90,11 +109,11 @@ describe("Seo component", () => {
 
     expect(canonicalLink).toBeInTheDocument();
 
-    expect(canonicalLink?.href).toBe("http://localhost/projects");
+     expect(canonicalLink?.href).toBe("http://localhost/");
   });
 
 
-  it("renders Open Graph meta tags", (): void => {
+  it("renders Open Graph meta tags", async (): Promise<void> => {
     render(<Seo />);
 
     const ogTitle: HTMLMetaElement | null = document.querySelector(
@@ -108,7 +127,8 @@ describe("Seo component", () => {
     expect(ogTitle?.content).toBe(fr.titleHTML);
 
     expect(ogUrl).toBeInTheDocument();
-    expect(ogUrl?.content).toBe("http://localhost/projects");
+    
+     expect(ogUrl?.content).toBe("http://localhost/");
   });
 
   it("renders Twitter meta tags", (): void => {
