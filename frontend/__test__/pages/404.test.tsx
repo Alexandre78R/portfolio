@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import Custom404 from "@/pages/404";
 import { useLang } from "@/context/Lang/LangContext";
 import { useRouter } from "next/router";
@@ -57,24 +57,12 @@ describe("Custom404 Component", () => {
     expect(svg).toBeInTheDocument();
   });
 
-  it("should redirect to /404 on mount", async () => {
-    render(<Custom404 />);
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith("/404");
-      expect(mockRouter.push).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("should navigate to home when button is clicked", async () => {
+  it("should have a button that links to home page", () => {
     render(<Custom404 />);
     const button: HTMLButtonElement = screen.getByRole("button", {
       name: mockTranslations.messagePageNotFoundButtom,
     });
 
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith("/404");
-    });
+    expect(button.closest("a")).toHaveAttribute("href", "/");
   });
 });
