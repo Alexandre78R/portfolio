@@ -1,9 +1,8 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import Terminal from "../../../src/components/Terminal/Terminal";
 import "@testing-library/jest-dom";
 
-// Mock des composants internes
 jest.mock("@/components/Terminal/components/Wrapper", () => ({
   Wrapper: ({ children }: any) => <div data-testid="wrapper">{children}</div>,
 }));
@@ -74,7 +73,6 @@ describe("Terminal component", () => {
     const input: HTMLInputElement = screen.getByTitle("terminal-input" as string) as HTMLInputElement;
     fireEvent.change(input, { target: { value: "foobar" } } as { target: HTMLInputElement } );
     fireEvent.submit(input.closest("form" as string)!) ;
-    // expect(screen.getByTestId("not-found-1")).toHaveTextContent("foobar");
     expect(screen.getByTestId("not-found-foobar" as string) as HTMLElement).toHaveTextContent("foobar");
   });
 
