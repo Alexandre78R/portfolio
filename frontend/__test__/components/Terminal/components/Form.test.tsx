@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, RenderResult } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, RenderResult } from '@test-utils';
 import { Form } from "../../../../src/components/Terminal/components/Form";
 import "@testing-library/jest-dom";
 

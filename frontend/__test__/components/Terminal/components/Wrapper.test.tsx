@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@test-utils';
 import { Wrapper } from "../../../../src/components/Terminal/components/Wrapper";
 
 describe("Wrapper component", () => {

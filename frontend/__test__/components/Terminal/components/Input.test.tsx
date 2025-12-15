@@ -1,5 +1,5 @@
-import React, { createRef } from "react";
-import { render, screen, RenderResult } from "@testing-library/react";
+﻿import React, { createRef } from "react";
+import { render, screen, RenderResult } from '@test-utils';
 import { Input } from "../../../../src/components/Terminal/components/Input";
 import HomeTerminal from "../../../../src/components/Terminal/HomeTerminal";
 import "@testing-library/jest-dom";
