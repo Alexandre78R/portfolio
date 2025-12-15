@@ -1,9 +1,9 @@
-import React, { ChangeEvent, FormEvent } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ChangeEvent, FormEvent } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from "@/pages/admin/auth/login";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationTuple } from "@apollo/client";
+import { useMutation, MutationTuple, useLazyQuery } from "@apollo/client";
 import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
 
@@ -13,7 +13,6 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 jest.mock("@/components/ToastCustom/CustomToast", () => jest.fn());
 
-// Mock AuthFormLayout
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
   __esModule: true,
   default: ({ children, title }: { children: React.ReactNode; title: string }) => (
@@ -24,7 +23,6 @@ jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
   ),
 }));
 
-// Mock InputField - controlled + typé
 jest.mock("@/components/InputField/InputField", () => ({
   __esModule: true,
   default: ({
@@ -62,7 +60,6 @@ jest.mock("@/components/InputField/InputField", () => ({
   },
 }));
 
-// Mock ButtonCustom
 jest.mock("@/components/Button/Button", () => ({
   __esModule: true,
   default: ({
@@ -78,24 +75,22 @@ jest.mock("@/components/Button/Button", () => ({
   ),
 }));
 
-// Mock Apollo Client
 jest.mock("@apollo/client", () => {
   const actual = jest.requireActual("@apollo/client");
   return {
     ...actual,
     useMutation: jest.fn(),
+    useLazyQuery: jest.fn(),
     gql: (str: TemplateStringsArray) => str,
   };
 });
 
-// Mock types GraphQL
 jest.mock("@/types/graphql", () => ({
   MutationDocument: {},
   MutationMutation: jest.fn(),
   MutationMutationVariables: jest.fn(),
 }));
 
-// Mock Next.js router
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }));
@@ -128,6 +123,11 @@ describe("LoginPage Component", (): void => {
       jest.fn().mockResolvedValue({ data: { login: { code: 200, message: "ok" } } }),
       { loading: false, error: null, data: null },
     ]) as unknown as MutationTuple<any, any>;
+
+    (useLazyQuery as jest.Mock).mockReturnValue([
+      jest.fn(),
+      { loading: false, error: null, data: null },
+    ]);
   });
 
   it("should render correctly", (): void => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from '@testing-library/react';
 import AdminPage from "@/pages/admin/[...slug]";
 import { useRouter, type NextRouter } from "next/router";
 import { useUser, type UserContextType } from "@/context/UserContext/UserContext";
