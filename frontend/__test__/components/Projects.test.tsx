@@ -1,6 +1,6 @@
-
+﻿
 import React, { ReactElement } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from '@test-utils';
 import Projects from "@/components/Projects/Projects";
 import { useLang } from "@/context/Lang/LangContext";
 import { Project } from "@/components/Projects/typeProjects";
@@ -44,13 +44,15 @@ jest.mock("@mui/icons-material/ExpandMore", () => {
 });
 
 // ---------------------- Mock Data ----------------------
-const mockProject: Project = {
+const mockProject: Project | any = {
   id: "1",
   title: "Test Project",
   description: "A".repeat(200),
   typeDisplay: "image",
   contentDisplay: "image.png",
   github: "https://github.com/test/project",
+  image: "/images/test.png",
+  video: null,
   skills: [
     { id: "s1", name: "React", image: "/react.png" },
     { id: "s2", name: "TypeScript", image: "/ts.png" },
@@ -127,14 +129,14 @@ describe("Projects component", (): void => {
     expect(skill2).toBeInTheDocument();
   });
 
-  it("renders ReactPlayer when project type is video", (): void => {
+  it("renders ReactPlayer when project type is video", async (): Promise<void> => {
     render(
       <Projects
-        project={{ ...mockProject, typeDisplay: "video" }}
+        project={{ ...mockProject, typeDisplay: "video", video: "/videos/demo.mp4", image: null }}
       /> as ReactElement
     );
 
-    const playerElement: HTMLElement = screen.getByTestId("react-player");
+    const playerElement: HTMLElement = await screen.findByTestId("react-player");
     expect(playerElement).toBeInTheDocument();
   });
 });
