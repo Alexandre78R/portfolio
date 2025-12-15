@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@test-utils';
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { CircularProgress as MuiCircularProgress, CircularProgressProps } from "@mui/material";
 
