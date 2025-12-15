@@ -1,7 +1,9 @@
-import React, { RefObject } from "react";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+﻿import React, { RefObject } from "react";
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import Navbar from "@/components/NavBar/NavBar";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
+import { useApolloClient } from "@apollo/client";
 
 const translationsMock: Record<string, string> = {
   navbarTitle: "Mon Portfolio",
@@ -214,6 +216,26 @@ jest.mock("next/navigation", () => ({
   usePathname: jest.fn() as jest.Mock<string>,
 }));
 
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock("@apollo/client", () => {
+  const actual = jest.requireActual("@apollo/client");
+  return {
+    ...actual,
+    useApolloClient: jest.fn(),
+  };
+});
+
+jest.mock("@/context/UserContext/UserContext", () => ({
+  useUser: (): { user: null; refetch: jest.Mock; checkToken: jest.Mock } => ({
+    user: null,
+    refetch: jest.fn(),
+    checkToken: jest.fn(),
+  }),
+}));
+
 jest.mock("@mui/icons-material/ColorLens", () => ({
   __esModule: true,
   default: (props: Record<string, unknown>): React.ReactElement => <div data-testid="color-lens" {...props} />,
@@ -226,6 +248,9 @@ jest.mock("@mui/icons-material/ColorLens", () => ({
 describe("Navbar component", () => {
   beforeEach(() => {
     (usePathname as jest.Mock).mockReturnValue("/");
+    (useRouter as jest.Mock).mockReturnValue({ push: jest.fn() });
+    (useApolloClient as jest.Mock).mockReturnValue({ clearStore: jest.fn() });
+    window.scrollTo = jest.fn();
   });
 
   it("renders navbar title", () => {
@@ -279,10 +304,6 @@ describe("Navbar component", () => {
   });
 });
 
-// ---------------------
-// Tests Navbar Mobile
-// ---------------------
-
 describe("Navbar mobile view", () => {
   beforeEach(() => {
     (usePathname as jest.Mock).mockReturnValue("/");
@@ -302,19 +323,19 @@ describe("Navbar mobile view", () => {
     const burgerBtn: HTMLButtonElement = screen.getByTestId("burger-button") as HTMLButtonElement;
     fireEvent.click(burgerBtn);
 
-    const aboutButtons = screen.getAllByText(translationsMock.navbarButtonAbout);
-    const skillButtons = screen.getAllByText(translationsMock.navbarButtonSkill);
-    const projectButtons = screen.getAllByText(translationsMock.navbarButtonProject);
-    const careerButtons = screen.getAllByText(translationsMock.navbarButtonCareer);
+    const aboutButtons: HTMLElement[] = screen.getAllByText(translationsMock.navbarButtonAbout);
+    const skillButtons: HTMLElement[] = screen.getAllByText(translationsMock.navbarButtonSkill);
+    const projectButtons: HTMLElement[] = screen.getAllByText(translationsMock.navbarButtonProject);
+    const careerButtons: HTMLElement[] = screen.getAllByText(translationsMock.navbarButtonCareer);
     
     expect(aboutButtons.length).toBeGreaterThanOrEqual(2);
     expect(skillButtons.length).toBeGreaterThanOrEqual(2);
     expect(projectButtons.length).toBeGreaterThanOrEqual(2);
     expect(careerButtons.length).toBeGreaterThanOrEqual(2);
 
-    const toggleButtons = screen.getAllByTestId("toggle-button");
-    const colorLensIcons = screen.getAllByTestId("color-lens");
-    const choiceViewButtons = screen.getAllByTestId("choice-view-button");
+    const toggleButtons: HTMLElement[] = screen.getAllByTestId("toggle-button");
+    const colorLensIcons: HTMLElement[] = screen.getAllByTestId("color-lens");
+    const choiceViewButtons: HTMLElement[] = screen.getAllByTestId("choice-view-button");
     
     expect(toggleButtons.length).toBeGreaterThanOrEqual(1);
     expect(colorLensIcons.length).toBeGreaterThanOrEqual(1);
