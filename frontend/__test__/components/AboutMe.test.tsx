@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen, fireEvent } from '@testing-library/react';
 import AboutMe from "@/components/AboutMe/AboutMe";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
@@ -49,6 +49,7 @@ describe("AboutMe component", (): void => {
   beforeEach((): void => {
     (useLang as jest.Mock).mockReturnValue({ translations });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: showAlertMock });
+    (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
     jest.clearAllMocks();
   });
 
@@ -57,8 +58,6 @@ describe("AboutMe component", (): void => {
   });
 
   it("renders title and descriptions", (): void => {
-    (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
-
     render(<AboutMe />);
 
     expect(screen.getByText(translations.titleAboutMe)).toBeInTheDocument();
@@ -68,9 +67,6 @@ describe("AboutMe component", (): void => {
   });
 
   it("renders the CV download button", (): void => {
-    // English: Should render the CV button
-    (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
-
     render(<AboutMe />);
 
     const cvButton: HTMLButtonElement = screen.getByRole("button", { name: translations.buttonCV }) as HTMLButtonElement;
