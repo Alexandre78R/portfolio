@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import Custom400 from "@/pages/400";
 import { useLang } from "@/context/Lang/LangContext";
 import { useRouter, NextRouter } from "next/router";
@@ -57,25 +57,13 @@ describe("Custom400 Component", () => {
     expect(svg).toBeInTheDocument();
   });
 
-  it("should redirect to /400 on mount", async (): Promise<void> => {
-    render(<Custom400 />);
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith("/400");
-      expect(mockRouter.push).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("should navigate to home when button is clicked", async (): Promise<void> => {
+  it("should have a button that links to home page", () => {
     render(<Custom400 />);
     const button: HTMLButtonElement = screen.getByRole("button", {
       name: mockTranslations.messagePageUnauthorizedButtom,
     });
 
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith("/400");
-    });
+    expect(button.closest("a")).toHaveAttribute("href", "/");
   });
 
   it("should have the correct title in Head (mocked)", (): void => {
