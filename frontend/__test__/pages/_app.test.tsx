@@ -1,20 +1,17 @@
-import React, { FC, ReactElement } from "react";
-import { render, screen, waitFor, RenderResult } from "@testing-library/react";
+﻿import React, { FC, ReactElement } from "react";
+import { render, screen, waitFor, RenderResult } from '@test-utils';
 import "@testing-library/jest-dom";
 import App from "@/pages/_app";
 import type { AppProps } from "next/app";
 import type { NextRouter } from "next/router";
 import { ApolloLink } from "@apollo/client";
 
-// ------------------- ENV -------------------
 beforeAll((): void => {
   process.env.NEXT_PUBLIC_API_TOKEN = "test-token";
 });
 
-// ------------------- TYPES -------------------
 type ProviderProps = { children: React.ReactNode };
 
-// ------------------- MOCK APOLLO LINK -------------------
 class MockApolloLink extends ApolloLink {
   public request = jest.fn();
   public concat(next: ApolloLink): ApolloLink {
@@ -22,7 +19,6 @@ class MockApolloLink extends ApolloLink {
   }
 }
 
-// ------------------- MOCK COMPONENTS -------------------
 jest.mock("@/components/Loading/LoadingCustom", () => {
   const Loading: FC = (): ReactElement => <div data-testid="loading">Loading...</div>;
   Loading.displayName = "LoadingCustom";
@@ -43,7 +39,6 @@ jest.mock("@/context/UserContext/UserContext", () => ({ UserProvider: ({ childre
 jest.mock("@/store/provider", () => ({ __esModule: true, default: ({ children }: ProviderProps) => <>{children}</> }));
 jest.mock("@/components/ToastCustom/ToastProvider", () => ({ __esModule: true, default: ({ children }: ProviderProps) => <>{children}</> }));
 
-// ------------------- MOCK MUI DATEPICKER -------------------
 jest.mock("@mui/x-date-pickers/LocalizationProvider", () => {
   const LocalizationProvider: FC<{ children: React.ReactNode; dateAdapter: new () => unknown }> = ({ children, dateAdapter }) => (
     <div data-testid="localization-provider" data-adapter={dateAdapter?.name || "unknown"}>{children}</div>
@@ -56,7 +51,6 @@ jest.mock("@mui/x-date-pickers/AdapterDayjs", () => {
   return { AdapterDayjs: AdapterDayjsMock };
 });
 
-// ------------------- MOCK APOLLO -------------------
 jest.mock("@apollo/client", () => {
   const actual = jest.requireActual("@apollo/client");
   return {
@@ -79,12 +73,10 @@ jest.mock("@apollo/client", () => {
   };
 });
 
-// ------------------- MOCK UPLOAD -------------------
 jest.mock("apollo-upload-client", () => ({
   createUploadLink: jest.fn(() => new MockApolloLink()),
 }));
 
-// ------------------- MOCK NEXT ROUTER -------------------
 const mockRouter = {
   basePath: "",
   pathname: "/",
@@ -105,7 +97,6 @@ const mockRouter = {
   forward: jest.fn(),
 } as any as NextRouter;
 
-// ------------------- TEST -------------------
 describe("App component with Apollo Upload", (): void => {
   const MockPage: FC = (): ReactElement => <div data-testid="page-component">Page</div>;
 
