@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen } from '@testing-library/react';
 import DoughnutChart from "@/components/Charts/DoughnutChart";
 
 jest.mock("react-chartjs-2", () => ({
@@ -23,6 +23,7 @@ describe("DoughnutChart", () => {
           if (prop === "--chart-label-color") return "#123456";
           return "";
         },
+        setProperty: jest.fn(),
       },
       configurable: true,
     });
