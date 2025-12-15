@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen } from '@test-utils';
 import Careers from "@/components/Careers/Careers";
 import { useSelector } from "react-redux";
 import { EducationType } from "@/store/slices/educationsSlice";
