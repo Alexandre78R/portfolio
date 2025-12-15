@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import React, { ChangeEvent } from "react";
+import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import dayjs, { Dayjs } from "dayjs";
 import InputField, { InputFieldProps } from "@/components/InputField/InputField";
