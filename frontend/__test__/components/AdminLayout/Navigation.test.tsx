@@ -1,7 +1,7 @@
 import navigation, { NavItem, Role } from '@/components/AdminLayout/Navigation'
 import { ComponentType } from 'react'
 
-const isReactComponent = (
+const isReactComponent: (component: unknown) => component is ComponentType<{ className?: string }> = (
   component: unknown
 ): component is ComponentType<{ className?: string }> => {
   return (
