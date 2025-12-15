@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import ButtonCustom, { ButtonCustomProps} from "@/components/Button/Button";
 
 describe("ButtonCustom Component", () => {

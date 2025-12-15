@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import BurgerButton, { BurgerButtonProps } from "@/components/Button/BurgerButton";
 
 const mockToggleMenu: jest.Mock<() => void, []> = jest.fn();

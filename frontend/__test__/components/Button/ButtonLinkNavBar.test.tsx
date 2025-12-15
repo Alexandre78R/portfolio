@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React, { ReactNode } from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import ButtonLinkNavBar from "@/components/Button/ButtonLinkNavBar";
 import { usePathname } from "next/navigation";
 

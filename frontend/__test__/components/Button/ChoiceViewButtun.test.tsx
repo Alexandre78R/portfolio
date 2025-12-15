@@ -1,5 +1,5 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import ChoiceViewButton from "@/components/Button/ChoiceViewButton";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";
 
