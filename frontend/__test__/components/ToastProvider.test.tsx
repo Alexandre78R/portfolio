@@ -1,5 +1,5 @@
-import React from "react";
-import { render } from "@testing-library/react";
+﻿import React from "react";
+import { render } from '@test-utils';
 import ToastProvider from "@/components/ToastCustom/ToastProvider";
 
 describe("ToastProvider Component", (): void => {
