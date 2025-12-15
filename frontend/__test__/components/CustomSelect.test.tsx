@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+﻿import React, { FC, useState } from "react";
+import { render, screen, fireEvent } from '@test-utils';
 import CustomSelect, { CustomSelectProps } from "@/components/CustomSelect/CustomSelect";
 import { SelectChangeEvent } from "@mui/material";
 
