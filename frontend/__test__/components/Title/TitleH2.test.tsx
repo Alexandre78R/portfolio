@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React, { ReactElement } from "react";
+import { render, screen } from '@test-utils';
 import TitleH2, { TitleH2Props } from "@/components/Title/TitleH2";
 
 describe("TitleH2 component", () => {
