@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+﻿import React, { FC } from "react";
+import { render, screen, fireEvent, act } from '@test-utils';
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
@@ -10,7 +10,7 @@ const TestProjectsSlice: FC = () => {
   const projects: Project[] = useAppSelector((state) => state.projects.dataProjects);
 
   const handleAddProject = (): void => {
-    const newProj: Project = {
+    const newProj: Project | any = {
       id: 1,
       title: "Mon projet",
       descriptionFR: "Description FR",

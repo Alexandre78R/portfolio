@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+﻿import React, { FC } from "react";
+import { render, screen, fireEvent, act } from '@test-utils';
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
@@ -76,6 +76,8 @@ const TestHooksComponent: FC = () => {
       github: null,
       contentDisplay: "Content",
       skills: [] as SkillsProject[],
+      image: null,
+      video: null
     };
     dispatch(setProjects([newProj]));
   };

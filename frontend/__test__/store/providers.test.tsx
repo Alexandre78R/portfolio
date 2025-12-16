@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { render, screen } from "@testing-library/react";
+﻿import React, { FC } from "react";
+import { render, screen } from '@test-utils';
 import ReduxProvider from "@/store/provider";
 import { useAppSelector } from "@/store/hook";
 import { Skill } from "@/store/slices/skillsSlice";
