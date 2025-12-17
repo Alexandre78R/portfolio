@@ -5,15 +5,7 @@ import SkillDeleteDialog from "@/components/AdminLayout/components/Skill/SkillDe
 import Lang from "@/lang/typeLang";
 import { useLang } from "@/context/Lang/LangContext";
 import { useDeleteSkillMutation } from "@/types/graphql";
-
-interface DeleteSkillResponse {
-  data: {
-    deleteSkill: {
-      code: number;
-      message?: string;
-    };
-  };
-}
+// import { SubItemResponse } from "@/types/graphql";
 
 interface LangContextType {
   translations: Lang;
