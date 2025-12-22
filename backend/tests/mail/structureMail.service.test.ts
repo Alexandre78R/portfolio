@@ -58,7 +58,7 @@ describe('structureMail.service', () => {
   });
 
   describe('structureMessageCreatedAccountTEXT', () => {
-    it('should return a plain text account creation message', () => {
+    it('should return a plain text account creation message in French (default)', () => {
       const firstname: string = 'Alexandre';
       const password: string = 'abc123';
 
@@ -67,6 +67,27 @@ describe('structureMail.service', () => {
       expect(result).toContain(password);
       expect(result).toContain('compte a été créé');
       expect(result).toContain('changer dès votre première connexion');
+    });
+
+    it('should return a plain text account creation message in French when lang is "fr"', () => {
+      const firstname: string = 'Alexandre';
+      const password: string = 'abc123';
+
+      const result: string = structureMessageCreatedAccountTEXT(firstname, password, 'fr');
+      expect(result).toContain(`Bonjour ${firstname}`);
+      expect(result).toContain(password);
+      expect(result).toContain('Votre compte a été créé avec succès');
+    });
+
+    it('should return a plain text account creation message in English when lang is "en"', () => {
+      const firstname: string = 'Alexandre';
+      const password: string = 'abc123';
+
+      const result: string = structureMessageCreatedAccountTEXT(firstname, password, 'en');
+      expect(result).toContain(`Hello ${firstname}`);
+      expect(result).toContain(password);
+      expect(result).toContain('Your account has been successfully created');
+      expect(result).toContain('Please change it on your first login');
     });
 
     it('should handle empty firstname and password in structureMessageCreatedAccountTEXT', () => {
@@ -78,7 +99,7 @@ describe('structureMail.service', () => {
   });
 
   describe('structureMessageCreatedAccountHTML', () => {
-    it('should return an HTML account creation message', () => {
+    it('should return an HTML account creation message in French (default)', () => {
       const firstname: string = 'Alexandre';
       const password: string = 'abc123';
 
@@ -86,6 +107,27 @@ describe('structureMail.service', () => {
       expect(result).toContain(`<p>Bonjour ${firstname},</p>`);
       expect(result).toContain(`<strong>Mot de passe temporaire :</strong> ${password}`);
       expect(result).toContain('changer dès votre première connexion');
+    });
+
+    it('should return an HTML account creation message in French when lang is "fr"', () => {
+      const firstname: string = 'Alexandre';
+      const password: string = 'abc123';
+
+      const result: string = structureMessageCreatedAccountHTML(firstname, password, 'fr');
+      expect(result).toContain(`<p>Bonjour ${firstname},</p>`);
+      expect(result).toContain(`<strong>Mot de passe temporaire :</strong> ${password}`);
+      expect(result).toContain('Votre compte a été créé avec succès');
+    });
+
+    it('should return an HTML account creation message in English when lang is "en"', () => {
+      const firstname: string = 'Alexandre';
+      const password: string = 'abc123';
+
+      const result: string = structureMessageCreatedAccountHTML(firstname, password, 'en');
+      expect(result).toContain(`<p>Hello ${firstname},</p>`);
+      expect(result).toContain(`<strong>Temporary password:</strong> ${password}`);
+      expect(result).toContain('Your account has been successfully created');
+      expect(result).toContain('Please change it on your first login');
     });
 
     it('should handle empty firstname and password in structureMessageCreatedAccountHTML', () => {

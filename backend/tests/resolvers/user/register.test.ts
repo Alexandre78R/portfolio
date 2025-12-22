@@ -39,6 +39,7 @@ describe("UserResolver - registerUser", () => {
       lastname: "Renard",
       email: "alex@example.com",
       role: UserRole.admin,
+      lang: "fr",
     };
 
     const existingUser: Readonly<User & { password: string; pseudo: string | null; ban: boolean }> = {
@@ -68,6 +69,7 @@ describe("UserResolver - registerUser", () => {
       lastname: "Dupont",
       email: "jean.dupont@example.com",
       role: UserRole.admin,
+      lang: "fr",
     };
 
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
@@ -123,6 +125,7 @@ describe("UserResolver - registerUser", () => {
       lastname: "Dupont",
       email: "invalid-email",
       role: UserRole.admin,
+      lang: "fr",
     };
 
     (checkRegex as jest.Mock).mockReturnValueOnce(false);
@@ -140,6 +143,7 @@ describe("UserResolver - registerUser", () => {
       lastname: "Dupont",
       email: "jean.dupont@example.com",
       role: UserRole.admin,
+      lang: "fr",
     };
 
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
