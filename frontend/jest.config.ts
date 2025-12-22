@@ -11,20 +11,17 @@ const config: Config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   moduleNameMapper: {
+    "^@/components/Loading/Loading$": "<rootDir>/src/components/Loading/LoadingCustom.tsx",
+    "^@/components/ConfirmDialog/ConfirmDialog$": "<rootDir>/src/components/AdminLayout/components/ConfirmDialog/ConfirmDialog.tsx",
+    "^@test-utils$": "<rootDir>/__test__/test-utils.tsx",
     "^@/(.*)$": "<rootDir>/src/$1",    // alias existing (@/...)
     "^@src/(.*)$": "<rootDir>/src/$1", // new alias (@src/...)
   },
-  moduleDirectories: ["node_modules", "<rootDir>/src"],
+  moduleDirectories: ["node_modules", "<rootDir>/src", "<rootDir>/__test__"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   transform: {
-    "^.+\\.(ts|tsx)$": ["ts-jest", {
-      tsconfig: "<rootDir>/tsconfig.json",
-      astTransformers: { before: ["tsconfig-paths-jest"] }
-    }]
+    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.json" }],
   },
-  // transform: {
-  //   "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.json" }],
-  // },
   testMatch: [
     "**/__tests__/**/*.[jt]s?(x)",
     "**/?(*.)+(spec|test).[tj]s?(x)",

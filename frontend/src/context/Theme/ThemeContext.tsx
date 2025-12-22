@@ -32,17 +32,7 @@ export interface ThemeProviderProps {
   children: ReactNode;
 }
 
-/* =======================
-   Context
-======================= */
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-/* =======================
-   Fallback (STATIC)
-   ⚠️ utilisé si erreur réseau
-   OU si 0 thème en BDD
-======================= */
+const ThemeContext: React.Context<ThemeContextType | undefined> = createContext<ThemeContextType | undefined>(undefined);
 
 const getDefaultThemes = (): Record<string, Theme> => {
   const themesObject: Record<string, Theme> = {};
@@ -64,10 +54,6 @@ const getDefaultThemes = (): Record<string, Theme> => {
   return themesObject;
 };
 
-/* =======================
-   Provider
-======================= */
-
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeKey>("dark");
   const [themes, setThemes] = useState<Record<string, Theme>>({});
@@ -76,10 +62,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const { data, loading, error } = useGetThemesListQuery({
     fetchPolicy: "cache-and-network",
   });
-
-  /* =======================
-     Sync themes from backend
-  ======================= */
 
   useEffect(() => {
     // ❌ Erreur réseau → fallback
@@ -112,7 +94,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       return;
     }
 
-    // ✅ Thèmes trouvés en BDD → les utiliser
     const themesObject: Record<string, Theme> = {};
 
     visibleThemes.forEach((themeData) => {
@@ -151,10 +132,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setIsUsingFallback(false);
   }, [data, error]);
 
-  /* =======================
-     Apply CSS variables
-  ======================= */
-
   const setColorVarCSS = (newTheme: ThemeKey): void => {
     const themeData = themes[newTheme];
     if (!themeData) return;
@@ -183,10 +160,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     });
   };
 
-  /* =======================
-     Toggle theme
-  ======================= */
-
   const toggleTheme = (newTheme: ThemeKey): void => {
     if (!themes[newTheme]) {
       console.warn(`[ThemeContext] Theme "${newTheme}" not found`);
@@ -197,10 +170,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
   };
-
-  /* =======================
-     Init theme on load
-  ======================= */
 
   useEffect(() => {
     if (Object.keys(themes).length === 0) return;
@@ -214,10 +183,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       toggleTheme(firstTheme);
     }
   }, [themes]);
-
-  /* =======================
-     Memo
-  ======================= */
 
   const value = useMemo(
     () => ({
@@ -241,9 +206,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
-/* =======================
-   Hook
-======================= */
 
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
@@ -252,10 +214,6 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
-
-/* =======================
-   Helpers
-======================= */
 
 export const getVisibleThemes = (themes: Record<string, Theme>): Theme[] =>
   Object.values(themes).filter((theme) => theme.visible);

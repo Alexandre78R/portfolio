@@ -1,4 +1,19 @@
 services:
+  # db:
+  #   image: mysql:8.0
+  #   container_name: portfolio-db
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: portfolio
+  #   ports:
+  #     - 3307:3306
+  #   volumes:
+  #     - portfolio-data:/var/lib/mysql
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     timeout: 20s
+  #     retries: 10
+
   backend:
     build: ./backend
     ports:
@@ -7,6 +22,8 @@ services:
       - ./backend/src:/app/src
       - ./backend/backups:/app/backups
       - ./backend/uploads/cv:/app/uploads/cv
+      - ./backend/uploads/images:/app/uploads/images
+      - ./backend/uploads/videos:/app/uploads/videos
       # - ./backend/node_modules:/app/node_modules 
       
     environment:
@@ -16,6 +33,9 @@ services:
 
     env_file:
       - ./backend/.env
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
 
   frontend:
     # build: ./frontend
