@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement, type FC } from "react";
 import {
   render,
   screen,
@@ -7,12 +7,12 @@ import {
   renderHook,
 } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import { MockedProvider, MockedResponse } from "@apollo/client/testing";
-import { ThemeProvider, useTheme, ThemeContextType, ThemeProviderProps, ThemeKey } from "@/context/Theme/ThemeContext";
+import { MockedProvider, type MockedResponse } from "@apollo/client/testing";
+import { ThemeProvider, useTheme, type ThemeContextType, type ThemeProviderProps, type ThemeKey } from "@/context/Theme/ThemeContext";
 import defaultThemes from "@/context/Theme/themes";
 import { ApolloError } from "@apollo/client";
 import { GetThemesListDocument } from "@/types/graphql";
-import { LocalStorageMock } from "./context.types";
+import { type LocalStorageMock } from "./context.types";
 
 interface TestComponentProps {}
 

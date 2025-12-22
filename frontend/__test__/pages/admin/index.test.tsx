@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import AdminIndexPage from "@/pages/admin/index";
 import { useUser } from "@/context/UserContext/UserContext";

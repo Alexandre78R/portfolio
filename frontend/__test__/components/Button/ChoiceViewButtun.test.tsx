@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import ChoiceViewButton from "@/components/Button/ChoiceViewButton";
 import { useChoiceView } from "@/context/ChoiceView/ChoiceViewContext";

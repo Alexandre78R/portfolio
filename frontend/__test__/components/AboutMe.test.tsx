@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@testing-library/react';
 import AboutMe from "@/components/AboutMe/AboutMe";
 import { useLang } from "@/context/Lang/LangContext";

@@ -1,7 +1,7 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, act, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
-import { LangProvider, useLang, LangContextType } from "@/context/Lang/LangContext";
+import { LangProvider, useLang, type LangContextType } from "@/context/Lang/LangContext";
 import fr from "@/lang/fr";
 import en from "@/lang/en";
 

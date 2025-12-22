@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import TermInfo from "../../../src/components/Terminal/TermInfo";
 import "@testing-library/jest-dom";

@@ -1,11 +1,11 @@
-﻿import React, { ChangeEvent, FormEvent } from "react";
+﻿import React, { type ChangeEvent, type FormEvent } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from "@/pages/admin/auth/login";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationTuple, useLazyQuery } from "@apollo/client";
-import { useRouter, NextRouter } from "next/router";
-import Lang from "@/lang/typeLang";
+import { useMutation, type MutationTuple, useLazyQuery } from "@apollo/client";
+import { useRouter, type NextRouter } from "next/router";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(),

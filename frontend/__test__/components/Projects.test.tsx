@@ -1,10 +1,10 @@
 ﻿
-import React, { ReactElement } from "react";
+import React, { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import Projects from "@/components/Projects/Projects";
 import { useLang } from "@/context/Lang/LangContext";
 import { Project } from "@/components/Projects/typeProjects";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn() as jest.Mock,
@@ -43,7 +43,6 @@ jest.mock("@mui/icons-material/ExpandMore", () => {
   return ExpandMoreMock;
 });
 
-// ---------------------- Mock Data ----------------------
 const mockProject: Project | any = {
   id: "1",
   title: "Test Project",

@@ -1,5 +1,4 @@
-﻿import React from "react";
-import { 
+﻿import { 
   render, 
   screen, 
   waitFor, 
@@ -13,7 +12,7 @@ import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import type { SocialRow } from "@/components/AdminLayout/components/Social/SocialTable";
 
-interface MockQueryResult {
+type MockQueryResult = {
   data?: {
     socialList?: Array<{
       __typename?: string;
@@ -26,7 +25,7 @@ interface MockQueryResult {
   loading: boolean;
   error?: Error | null;
   refetch: jest.Mock<void, []>;
-}
+};
 
 let mockEditCallback: ((social: SocialRow) => void) | undefined;
 let mockDeleteCallback: ((socialId: number) => void) | undefined;

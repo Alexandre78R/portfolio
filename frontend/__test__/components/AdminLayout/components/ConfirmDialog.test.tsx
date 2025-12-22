@@ -1,6 +1,6 @@
-﻿import React from 'react';
+﻿import React from "react";
 import { render, screen, fireEvent } from '@test-utils';
-import ConfirmDialog, { ConfirmDialogProps } from '@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog';
+import ConfirmDialog, { type ConfirmDialogProps } from '@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog';
 
 jest.mock('@/components/ModalCustom/ModalCustom', () => {
   const ModalCustom: React.FC<{ open: boolean; onClose: () => void; children?: React.ReactNode }> = ({

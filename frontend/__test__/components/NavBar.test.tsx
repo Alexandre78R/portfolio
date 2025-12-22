@@ -1,4 +1,4 @@
-﻿import React, { RefObject } from "react";
+﻿import React, { type RefObject } from "react";
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import Navbar from "@/components/NavBar/NavBar";
 import { usePathname } from "next/navigation";

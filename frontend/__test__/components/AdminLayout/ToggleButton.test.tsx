@@ -1,6 +1,6 @@
 ﻿import { render, screen, fireEvent } from '@test-utils'
 import ToggleButton from '@/components/AdminLayout/ToggleButton'
-import { Dispatch, SetStateAction } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 describe('ToggleButton', () => {
   let setSidebarOpen: jest.MockedFunction<Dispatch<SetStateAction<boolean>>>

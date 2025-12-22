@@ -1,18 +1,18 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import ThemeCreate from "@/components/AdminLayout/Pages/Themes/ThemeCreate"; // ✅ Chemin corrigé
-import { useLang, LangContextType } from "@/context/Lang/LangContext";
-import useCustomToast, { AlertType } from "@/components/ToastCustom/CustomToast";
-import { useCreateThemeMutation, CreateThemeInput } from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import { useLang, type LangContextType } from "@/context/Lang/LangContext";
+import useCustomToast, { type AlertType } from "@/components/ToastCustom/CustomToast";
+import { useCreateThemeMutation, type CreateThemeInput } from "@/types/graphql";
+import type Lang from "@/lang/typeLang";
 import {
-  ApolloCache,
-  DefaultContext,
-  MutationFunctionOptions,
-  FetchResult,
-  ApolloError,
+  type ApolloCache,
+  type DefaultContext,
+  type MutationFunctionOptions,
+  type FetchResult,
+  type ApolloError,
 } from "@apollo/client";
 
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({

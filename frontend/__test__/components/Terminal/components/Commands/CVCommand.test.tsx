@@ -6,7 +6,7 @@ import { getCurrentCmdArry } from "@/components/Terminal/util";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/components/Terminal/util", () => ({
   getCurrentCmdArry: jest.fn(),

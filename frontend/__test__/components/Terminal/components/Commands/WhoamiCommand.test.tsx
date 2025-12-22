@@ -3,7 +3,7 @@ import { render, screen, RenderResult } from '@test-utils';
 import Whoami from "@/components/Terminal/components/Commands/Whoami";
 import { termContext, Term } from "@/components/Terminal/Terminal";
 import { useLang } from "@/context/Lang/LangContext";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock(
   "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiError",

@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import Terminal from "../../../src/components/Terminal/Terminal";
 import "@testing-library/jest-dom";

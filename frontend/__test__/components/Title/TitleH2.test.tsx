@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import TitleH2, { TitleH2Props } from "@/components/Title/TitleH2";
 

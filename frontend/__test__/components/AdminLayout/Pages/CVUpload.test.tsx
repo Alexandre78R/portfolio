@@ -1,7 +1,6 @@
-﻿import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CVUpdate from "@/components/AdminLayout/Pages/CV/CVUpdate";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import { useUploadCvMutation } from "@/types/graphql";
 
 const uploadCvMock: jest.Mock<

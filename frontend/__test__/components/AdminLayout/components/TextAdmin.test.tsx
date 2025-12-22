@@ -1,13 +1,13 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
-import TextAdmin, { TextAdminType, TextAdminProps } from "@/components/AdminLayout/components/Text/TextAdmin";
+import TextAdmin, { type TextAdminType, type TextAdminProps } from "@/components/AdminLayout/components/Text/TextAdmin";
 
 describe("TextAdmin Component", () => {
   const types: Array<TextAdminType> = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span"];
 
   it("renders children correctly", () => {
     const props: TextAdminProps = { type: "h1", children: "Hello World" };
-    const element: React.ReactElement = <TextAdmin {...props} />;
+    const element: ReactElement = <TextAdmin {...props} />;
     render(element);
 
     const childElement: HTMLElement = screen.getByText("Hello World") as HTMLElement;

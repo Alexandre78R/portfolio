@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, RenderResult } from '@test-utils';
 import "@testing-library/jest-dom";
 import CaptchaModal, { ContactProps } from "@/components/Captcha/Captcha";
 import { CaptchaImage, useGenerateCaptchaQuery, useValidateCaptchaMutation, useClearCaptchaMutation } from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import ReactDOM from "react-dom";
 import { MockedResponse } from "@apollo/client/testing";
 

@@ -1,8 +1,8 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import "@testing-library/jest-dom";
 import Skills from "@/components/Skills/Skills";
-import { Skill } from "@/components/Skills/typeSkills";
+import { type Skill } from "@/components/Skills/typeSkills";
 
 interface SkillData extends Skill {
   name: string;

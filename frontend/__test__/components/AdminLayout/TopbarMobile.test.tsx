@@ -1,6 +1,5 @@
 ﻿import { render, screen } from '@test-utils'
-import TopbarMobile, { NavItem } from '@/components/AdminLayout/TopbarMobile'
-import React from 'react'
+import TopbarMobile, { type NavItem } from '@/components/AdminLayout/TopbarMobile'
 
 describe('TopbarMobile', () => {
   const navigationMock: NavItem[] = [

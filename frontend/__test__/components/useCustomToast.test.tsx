@@ -1,7 +1,7 @@
 ﻿import { renderHook, act } from '@test-utils';
 import { toast, ToastOptions } from "react-toastify";
 import useCustomToast, { AlertType, Alert } from "@/components/ToastCustom/CustomToast";
-import React from "react";
+import { type ReactElement } from "react";
 
 jest.mock("react-toastify", () => ({
   toast: {

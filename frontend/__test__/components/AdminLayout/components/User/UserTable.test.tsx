@@ -1,10 +1,9 @@
-﻿import React from "react";
-import { render, screen, fireEvent } from '@test-utils';
+﻿import { render, screen, fireEvent } from '@test-utils';
 import "@testing-library/jest-dom";
-import UserTable, { UserRow } from "@/components/AdminLayout/components/User/UserTable";
-import Lang from "@/lang/typeLang";
-import { ColumnDef } from "@/components/AdminLayout/components/Table/Table";
-import ActionButton, { ActionItem } from "@/components/AdminLayout/components/Button/ActionButton";
+import UserTable, { type UserRow } from "@/components/AdminLayout/components/User/UserTable";
+import type Lang from "@/lang/typeLang";
+import type { ColumnDef } from "@/components/AdminLayout/components/Table/Table";
+import ActionButton, { type ActionItem } from "@/components/AdminLayout/components/Button/ActionButton";
 
 jest.mock("@/components/AdminLayout/components/Table/Table", () => ({
   __esModule: true,

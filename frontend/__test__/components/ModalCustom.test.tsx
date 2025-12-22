@@ -1,4 +1,4 @@
-﻿import React, { ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 import { render, screen } from '@test-utils';
 import ModalCustom, { ModalCustomProps } from "@/components/ModalCustom/ModalCustom";
 

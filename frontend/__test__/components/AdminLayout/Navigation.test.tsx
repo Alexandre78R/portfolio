@@ -1,5 +1,5 @@
-import navigation, { NavItem, Role } from '@/components/AdminLayout/Navigation'
-import { ComponentType } from 'react'
+import navigation, { type NavItem, type Role } from '@/components/AdminLayout/Navigation'
+import type { ComponentType } from 'react'
 
 const isReactComponent: (component: unknown) => component is ComponentType<{ className?: string }> = (
   component: unknown

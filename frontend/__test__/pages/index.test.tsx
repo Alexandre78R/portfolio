@@ -1,16 +1,16 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, waitFor } from '@test-utils';
 import Home from "@/pages";
-import { useLang, LangContextType } from "@/context/Lang/LangContext";
-import { useSectionRefs, SectionRefsContextProps } from "@/context/SectionRefs/SectionRefsContext";
-import { useChoiceView, ChoiceVieContextType } from "@/context/ChoiceView/ChoiceViewContext";
+import { useLang, type LangContextType } from "@/context/Lang/LangContext";
+import { useSectionRefs, type SectionRefsContextProps } from "@/context/SectionRefs/SectionRefsContext";
+import { useChoiceView, type ChoiceVieContextType } from "@/context/ChoiceView/ChoiceViewContext";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import * as skillsSlice from "@/store/slices/skillsSlice";
 import * as projectsSlice from "@/store/slices/projectsSlice";
 import * as educationsSlice from "@/store/slices/educationsSlice";
 import * as experiencesSlice from "@/store/slices/experiencesSlice";
 import * as socialsSlice from "@/store/slices/socialsSlice";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext");
 jest.mock("@/context/SectionRefs/SectionRefsContext");

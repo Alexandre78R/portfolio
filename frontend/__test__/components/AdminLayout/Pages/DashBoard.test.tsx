@@ -1,8 +1,7 @@
-﻿import React from "react";
-import { render, screen } from '@testing-library/react';
+﻿import { render, screen } from '@testing-library/react';
 import Dashboard from "@/components/AdminLayout/Pages/Dashboard/Dashboard";
 import { ThemeProvider } from "@/context/Theme/ThemeContext";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import type { GetGlobalStatsQuery, GetThemesListQuery } from "@/types/graphql";
 import { useGetGlobalStatsQuery, useGetThemesListQuery } from "@/types/graphql";
 

@@ -4,7 +4,7 @@ import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsC
 import { useLang } from "@/context/Lang/LangContext";
 import { useSelector } from "react-redux";
 import { Project, SkillsProject } from "@/store/slices/projectsSlice";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("next/dynamic", () => () => {
   const DynamicComponent: React.FC = () => <div data-testid="react-player" />;

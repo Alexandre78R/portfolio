@@ -1,12 +1,12 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import ExperienceDeleteDialog from "@/components/AdminLayout/components/Experience/ExperienceDeleteDialog";
 import {
-  GetExperiencesListQuery,
+  type GetExperiencesListQuery,
   DeleteExperienceDocument,
 } from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({

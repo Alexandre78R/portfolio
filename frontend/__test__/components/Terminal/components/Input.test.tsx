@@ -1,4 +1,4 @@
-﻿import React, { createRef } from "react";
+﻿import { createRef } from "react";
 import { render, screen, RenderResult } from '@test-utils';
 import { Input } from "../../../../src/components/Terminal/components/Input";
 import HomeTerminal from "../../../../src/components/Terminal/HomeTerminal";

@@ -1,6 +1,5 @@
-﻿import React from 'react';
-import { render, screen } from '@test-utils';
-import DashboardCard, { DashboardCardProps } from '@/components/AdminLayout/components/Dashboard/DashBordCard';
+﻿import { render, screen } from '@test-utils';
+import DashboardCard, { type DashboardCardProps } from '@/components/AdminLayout/components/Dashboard/DashBordCard';
 import { FaBeer } from 'react-icons/fa';
 
 describe('DashboardCard', (): void => {

@@ -1,9 +1,9 @@
-﻿import React, { FC } from "react";
+﻿import { type FC } from "react";
 import { render, screen, fireEvent, act } from '@test-utils';
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { setProjects, Project, SkillsProject } from "@/store/slices/projectsSlice";
+import { setProjects, type Project, type SkillsProject } from "@/store/slices/projectsSlice";
 
 const TestProjectsSlice: FC = () => {
   const dispatch = useAppDispatch();

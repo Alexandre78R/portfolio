@@ -1,10 +1,9 @@
-﻿import React from 'react'
-import { render, screen, fireEvent } from '@test-utils'
+﻿import { render, screen, fireEvent } from '@test-utils'
 import AdminLayout from '@/components/AdminLayout/AdminLayout'
 import { useRouter, usePathname } from 'next/navigation'
-import { useUser, UserContextType } from '@/context/UserContext/UserContext'
-import { NavItem } from '@/components/AdminLayout/Navigation'
-import { Role } from '@/types/graphql'
+import { useUser, type UserContextType } from '@/context/UserContext/UserContext'
+import type { NavItem } from '@/components/AdminLayout/Navigation'
+import type { Role } from '@/types/graphql'
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),

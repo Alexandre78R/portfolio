@@ -1,6 +1,5 @@
-﻿import React from 'react'
-import { render, screen, fireEvent } from '@test-utils'
-import MobileOverlay, { MobileOverlayProps } from '@/components/AdminLayout/MobileOverlay'
+﻿import { render, screen, fireEvent } from '@test-utils'
+import MobileOverlay, { type MobileOverlayProps } from '@/components/AdminLayout/MobileOverlay'
 
 describe('MobileOverlay', () => {
   it('renders correctly', () => {

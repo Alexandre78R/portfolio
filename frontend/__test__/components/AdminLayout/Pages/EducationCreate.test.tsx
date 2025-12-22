@@ -1,25 +1,24 @@
 ﻿// __test__/components/AdminLayout/Pages/EducationCreate.test.tsx
 
-import React, { ReactElement } from "react";
+import React, { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import EducationCreate from "@/components/AdminLayout/Pages/Educations/EducationCreate";
-import { useLang, LangContextType } from "@/context/Lang/LangContext";
-import useCustomToast, { AlertType } from "@/components/ToastCustom/CustomToast";
+import { useLang, type LangContextType } from "@/context/Lang/LangContext";
+import useCustomToast, { type AlertType } from "@/components/ToastCustom/CustomToast";
 import {
   useCreateEducationMutation,
-  CreateEducationInput,
-  CreateEducationMutation,
+  type CreateEducationInput,
+  type CreateEducationMutation,
 } from "@/types/graphql";
-import * as graphql from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import {
-  ApolloCache,
-  DefaultContext,
-  MutationFunctionOptions,
-  FetchResult,
-  ApolloError,
+  type ApolloCache,
+  type DefaultContext,
+  type MutationFunctionOptions,
+  type FetchResult,
+  type ApolloError,
 } from "@apollo/client";
 
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
@@ -124,19 +123,19 @@ type TestMutationFn = jest.Mock<
   [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<any>> | undefined]
 >;
 
-interface TestMutationResult {
+type TestMutationResult = {
   loading: boolean;
   error?: ApolloError | undefined; 
   data?: CreateEducationMutation | undefined;
   called: boolean;
   client: any;
   reset: jest.Mock<void, []>;
-}
+};
 
-interface TestToastReturn {
+type TestToastReturn = {
   showAlert: jest.Mock<void, [AlertType, string]>;
   ToastContainer: () => ReactElement;
-}
+};
 
 const translationsMock = {
   messageAdminEducationCreateTitle: "Create Education",

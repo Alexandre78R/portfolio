@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import HomeTerminal from "../../../src/components/Terminal/HomeTerminal";
 import "@testing-library/jest-dom";

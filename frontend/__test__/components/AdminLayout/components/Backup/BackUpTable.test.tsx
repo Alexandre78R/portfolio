@@ -1,9 +1,9 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import "@testing-library/jest-dom";
 import BackUpTable, { formatBytes, formatDate } from "@/components/AdminLayout/components/Backup/BackUpTable";
-import { BackupFileInfo } from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import type { BackupFileInfo } from "@/types/graphql";
+import type Lang from "@/lang/typeLang";
 import BackupActions from "@/components/AdminLayout/components/Backup/BackupActions";
 
 jest.mock("@/components/AdminLayout/components/Backup/BackupActions", () => ({

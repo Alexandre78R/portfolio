@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render } from '@test-utils';
 import ToastProvider from "@/components/ToastCustom/ToastProvider";
 

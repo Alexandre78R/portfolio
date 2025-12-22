@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import ExperienceEditModal from "@/components/AdminLayout/components/Experience/ExperienceEditModal";

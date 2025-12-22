@@ -3,7 +3,7 @@ import { render, screen } from '@test-utils';
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import Footer from "@/components/Footer/Footer";
-import Lang  from "@/lang/typeLang";
+import type Lang  from "@/lang/typeLang";
 import { Social } from "@/store/slices/socialsSlice";
 import socialsReducer from "@/store/slices/socialsSlice";
 

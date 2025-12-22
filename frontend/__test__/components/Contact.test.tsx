@@ -1,10 +1,10 @@
-﻿import React from "react";
+﻿import React, { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Contact from "@/components/Contact/Contact";
-import { LangContextType, useLang } from "@/context/Lang/LangContext";
+import { type LangContextType, useLang } from "@/context/Lang/LangContext";
 import { useSendContactMutation } from "@/types/graphql";
 import CaptchaModal from "@/components/Captcha/Captcha";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 const mockShowAlert: jest.Mock<void, [type: string, message: string]> = jest.fn();
 let captchaTriggered = false;

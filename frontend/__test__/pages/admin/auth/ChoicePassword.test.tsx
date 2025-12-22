@@ -1,14 +1,14 @@
-﻿import React, { ChangeEvent, FormEvent, ReactNode, MouseEvent as ReactMouseEvent } from "react";
-import { render, screen, fireEvent, waitFor, RenderResult } from "@testing-library/react";
+﻿import { type ChangeEvent, type FormEvent, type ReactNode, type MouseEvent as ReactMouseEvent } from "react";
+import { render, screen, fireEvent, waitFor, type RenderResult } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { MockedProvider, MockedResponse } from "@apollo/client/testing";
-import ChangePasswordPage, { ChangePasswordFormState, ChangePasswordMutation, ChangePasswordMutationVariables } from "@/pages/admin/auth/changePassword";
+import { MockedProvider, type MockedResponse } from "@apollo/client/testing";
+import ChangePasswordPage, { type ChangePasswordFormState, type ChangePasswordMutation, type ChangePasswordMutationVariables } from "@/pages/admin/auth/changePassword";
 import { CHANGE_PASSWORD } from "@/requetes/mutations/user.mutations";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useUser, UserContextType } from "@/context/UserContext/UserContext";
+import { useUser, type UserContextType } from "@/context/UserContext/UserContext";
 import { useRouter } from "next/router";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext");
 jest.mock("@/components/ToastCustom/CustomToast");

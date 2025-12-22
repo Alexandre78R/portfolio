@@ -1,8 +1,8 @@
-﻿import React, { ReactNode } from "react";
+﻿import { type ReactNode } from "react";
 import { render, screen, act } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import { UserProvider, useUser, UserContextType } from "@/context/UserContext/UserContext";
-import { UseGetMeQueryMock } from "./context.types";
+import { UserProvider, useUser, type UserContextType } from "@/context/UserContext/UserContext";
+import { type UseGetMeQueryMock } from "./context.types";
 import { useGetMeQuery } from "@/types/graphql";
 
 const mockRefetch: jest.Mock = jest.fn();

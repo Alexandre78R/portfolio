@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactElement } from "react";
 import { render, screen, waitFor } from '@testing-library/react';
 import AdminPage from "@/pages/admin/[...slug]";
 import { useRouter, type NextRouter } from "next/router";

@@ -1,9 +1,9 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 
 import SocialCreate from "@/components/AdminLayout/Pages/Socials/SocialCreate";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import {
   gql,
 } from "@apollo/client";

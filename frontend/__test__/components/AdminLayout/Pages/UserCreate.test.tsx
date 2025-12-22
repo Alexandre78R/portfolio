@@ -1,11 +1,11 @@
-﻿import React, { ChangeEvent, FormEvent } from "react";
+﻿import { type ChangeEvent, type FormEvent } from "react";
 import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import UserCreate from "@/components/AdminLayout/Pages/Users/UserCreate";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { CreateUserDocument, CreateUserInput } from "@/types/graphql";
-import Lang from "@/lang/typeLang";
+import { CreateUserDocument, type CreateUserInput } from "@/types/graphql";
+import type Lang from "@/lang/typeLang";
 
 const mockShowAlert: jest.Mock<(type: "success" | "error", message: string) => void> = jest.fn();
 

@@ -1,7 +1,6 @@
-﻿import React from "react";
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import BackUpList, { BackupFileInfo }  from "@/components/AdminLayout/Pages/BackUp/BackUpList";
-import Lang from "@/lang/typeLang";
+﻿import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import BackUpList, { type BackupFileInfo }  from "@/components/AdminLayout/Pages/BackUp/BackUpList";
+import type Lang from "@/lang/typeLang";
 
 const refetchMock: jest.Mock<Promise<void>, []> = jest.fn();
 const generateBackupMock: jest.Mock<Promise<any>, []> = jest.fn();

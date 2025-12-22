@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import Output from "../../../src/components/Terminal/Output";
 import { termContext } from "../../../src/components/Terminal/Terminal";

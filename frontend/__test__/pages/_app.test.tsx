@@ -1,5 +1,5 @@
-﻿import React, { FC, ReactElement } from "react";
-import { render, screen, waitFor, RenderResult } from '@test-utils';
+﻿import React, { type FC, type ReactElement } from "react";
+import { render, screen, waitFor, type RenderResult } from '@test-utils';
 import "@testing-library/jest-dom";
 import App from "@/pages/_app";
 import type { AppProps } from "next/app";

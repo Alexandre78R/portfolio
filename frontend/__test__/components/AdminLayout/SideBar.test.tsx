@@ -1,7 +1,7 @@
-﻿import { render, screen, fireEvent, RenderResult } from '@test-utils'
-import SideBar, { SideBarProps } from '@/components/AdminLayout/SideBar'
-import { NavItem } from '@/components/AdminLayout/Navigation'
-import { Dispatch, SetStateAction, ComponentType } from 'react'
+﻿import { render, screen, fireEvent, type RenderResult } from '@test-utils'
+import SideBar, { type SideBarProps } from '@/components/AdminLayout/SideBar'
+import type { NavItem } from '@/components/AdminLayout/Navigation'
+import type { Dispatch, SetStateAction, ComponentType } from 'react'
 
 jest.mock('@/context/Lang/LangContext', () => ({
   useLang: (): { translations: Record<string, string> } => ({

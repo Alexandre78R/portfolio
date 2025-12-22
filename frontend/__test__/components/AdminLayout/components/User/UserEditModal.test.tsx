@@ -1,9 +1,9 @@
-﻿import React, { ChangeEvent, FormEvent } from "react";
+﻿import { type ChangeEvent, type FormEvent } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import UserEditModal from "@/components/AdminLayout/components/User/UserEditModal";
-import { UserRow } from "@/components/AdminLayout/components/User/UserTable";
-import Lang from "@/lang/typeLang";
+import type { UserRow } from "@/components/AdminLayout/components/User/UserTable";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({

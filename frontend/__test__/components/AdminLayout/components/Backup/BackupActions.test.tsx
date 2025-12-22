@@ -1,8 +1,8 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import "@testing-library/jest-dom";
 import BackupActions from "@/components/AdminLayout/components/Backup/BackupActions";
-import { BackupFileInfo } from "@/components/AdminLayout/Pages/BackUp/BackUpList";
+import type { BackupFileInfo } from "@/components/AdminLayout/Pages/BackUp/BackUpList";
 
 jest.mock("@/components/AdminLayout/components/Button/ActionButton", () => {
   return ({

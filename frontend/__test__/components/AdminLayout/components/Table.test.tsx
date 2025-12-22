@@ -1,12 +1,12 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen } from '@test-utils';
-import Table, { ColumnDef, TableProps } from "../../../../src/components/AdminLayout/components/Table/Table";
+import Table, { type ColumnDef, type TableProps } from "../../../../src/components/AdminLayout/components/Table/Table";
 
-interface TestData {
+type TestData = {
   id: number;
   name: string;
   age: number;
-}
+};
 
 describe("Table Component", (): void => {
   const columns: ColumnDef<TestData>[] = [
@@ -21,7 +21,7 @@ describe("Table Component", (): void => {
   ];
 
   it("renders table headers correctly", (): void => {
-    render(<Table columns={columns} data={data} /> as React.ReactElement);
+    render(<Table columns={columns} data={data} /> as ReactElement);
 
     columns.forEach((col: ColumnDef<TestData>): void => {
       const headerElement: HTMLElement = screen.getByText(col.header);
@@ -30,7 +30,7 @@ describe("Table Component", (): void => {
   });
 
   it("renders table rows correctly", (): void => {
-    render(<Table columns={columns} data={data} /> as React.ReactElement);
+    render(<Table columns={columns} data={data} /> as ReactElement);
 
     const cell1: HTMLElement = screen.getByText("1");
     const cell2: HTMLElement = screen.getByText("Alice");
@@ -63,7 +63,7 @@ describe("Table Component", (): void => {
       { header: "ID", accessor: "id", className: "custom-cell", headerClassName: "custom-header" },
     ];
 
-    render(<Table columns={customColumns} data={data} /> as React.ReactElement);
+    render(<Table columns={customColumns} data={data} /> as ReactElement);
 
     const header: HTMLElement = screen.getByText("ID");
     expect(header).toHaveClass("custom-header");

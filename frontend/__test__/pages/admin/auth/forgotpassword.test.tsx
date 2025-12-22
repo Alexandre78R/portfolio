@@ -1,10 +1,10 @@
-﻿import React from "react";
-import { render, screen, fireEvent, waitFor, RenderResult } from '@testing-library/react';
+﻿import { type ReactElement } from "react";
+import { render, screen, fireEvent, waitFor, type RenderResult } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import { MockedProvider, MockedResponse } from "@apollo/client/testing";
-import { ApolloError } from "@apollo/client";
+import { MockedProvider, type MockedResponse } from "@apollo/client/testing";
+import { type ApolloError } from "@apollo/client";
 import { FORGOT_PASSWORD } from "@/requetes/mutations/user.mutations";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 const mockRouterPush: jest.Mock<Promise<boolean>, [pathname: string]> = jest.fn(async (pathname: string): Promise<boolean> => true);
 jest.mock("next/router", () => ({

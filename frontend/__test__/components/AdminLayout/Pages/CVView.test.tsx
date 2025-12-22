@@ -1,11 +1,10 @@
-﻿import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+﻿import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import CVView from "@/components/AdminLayout/Pages/CV/CVView";
 import { useLang } from "@/context/Lang/LangContext";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(),

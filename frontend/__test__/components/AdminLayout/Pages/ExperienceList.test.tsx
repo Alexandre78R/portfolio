@@ -12,7 +12,7 @@ import type { ExperienceRow } from "@/components/AdminLayout/components/Experien
 import ExperienceList from "@/components/AdminLayout/Pages/Experiences/ExperiencesList";
 import { useGetExperiencesListQuery } from "@/types/graphql"; 
 
-interface MockQueryResult {
+type MockQueryResult = {
   data?: {
     experienceList?: {
       experiences: Array<{
@@ -36,7 +36,7 @@ interface MockQueryResult {
   loading: boolean;
   error?: Error | null;
   refetch: jest.Mock<void, []>;
-}
+};
 
 let mockEditCallback: jest.Mock<void, [experience: ExperienceRow]> | undefined;
 let mockDeleteCallback: jest.Mock<void, [experienceId: number]> | undefined;

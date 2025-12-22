@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { render, RenderResult, screen } from '@test-utils';
 import AuthFormLayout from "@/components/AuthFormLayout/AuthFormLayout";
 

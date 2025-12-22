@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { type ReactElement } from "react";
 import { render, waitFor } from '@test-utils';
 import Seo from "@/components/Seo/Seo";
 import { useLang, LangContextType } from "@/context/Lang/LangContext";

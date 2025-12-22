@@ -1,10 +1,10 @@
-﻿import React from "react";
+﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@test-utils';
 import Custom400 from "@/pages/400";
 import { useLang } from "@/context/Lang/LangContext";
-import { useRouter, NextRouter } from "next/router";
+import { useRouter, type NextRouter } from "next/router";
 import "@testing-library/jest-dom";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),

@@ -3,7 +3,7 @@ import { render, RenderResult } from '@test-utils';
 import Help from "@/components/Terminal/components/Commands/Help";
 import { commands, Command } from "@/components/Terminal/Terminal";
 import { generateTabs } from "@/components/Terminal/util";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 
 jest.mock("@/components/Terminal/Terminal", () => ({
   commands: [

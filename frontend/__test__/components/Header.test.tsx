@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import { type ReactElement, type RefObject } from "react";
 import { render, screen } from '@testing-library/react';
 import Header from "@/components/Header/Header";
 import themes from "@/context/Theme/themes";

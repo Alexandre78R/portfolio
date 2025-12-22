@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+﻿import { type ReactElement } from "react";
 import { 
   render, 
   screen, 
@@ -7,9 +7,9 @@ import {
 import "@testing-library/jest-dom";
 
 import ExperienceTable, { 
-  ExperienceRow 
+  type ExperienceRow 
 } from "@/components/AdminLayout/components/Experience/ExperienceTable";
-import Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang";
 import type { ColumnDef } from "@/components/AdminLayout/components/Table/Table";
 
 let capturedOnEdit: ((experience: ExperienceRow) => void) | undefined;

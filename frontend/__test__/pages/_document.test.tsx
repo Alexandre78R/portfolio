@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import "@testing-library/jest-dom";
 

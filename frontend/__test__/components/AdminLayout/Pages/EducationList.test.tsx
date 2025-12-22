@@ -13,7 +13,7 @@ import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import type { EducationRow } from "@/components/AdminLayout/components/Education/EducationTable";
 
-interface MockQueryResult {
+type MockQueryResult = {
   data?: {
     educationList?: {
       educations: Array<{
@@ -35,7 +35,7 @@ interface MockQueryResult {
   loading: boolean;
   error?: Error | null;
   refetch: jest.Mock<void, []>;
-}
+};
 
 let mockEditCallback: jest.Mock<void, [education: EducationRow]> | undefined;
 let mockDeleteCallback: jest.Mock<void, [educationId: number]> | undefined;
