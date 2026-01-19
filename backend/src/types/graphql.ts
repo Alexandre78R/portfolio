@@ -269,6 +269,12 @@ export type LoginResponse = {
   token?: Maybe<Scalars['String']['output']>;
 };
 
+export type MessageResponse = {
+  __typename?: 'MessageResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
 export type MessageType = {
   __typename?: 'MessageType';
   label: Scalars['String']['output'];
@@ -303,6 +309,7 @@ export type Mutation = {
   logout: Response;
   registerUser: UserResponse;
   sendContact: MessageType;
+  sendMessage: MessageResponse;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
   updateExperience: ExperienceResponse;
@@ -430,6 +437,13 @@ export type MutationRegisterUserArgs = {
 
 export type MutationSendContactArgs = {
   data: ContactFrom;
+};
+
+
+export type MutationSendMessageArgs = {
+  content: Scalars['String']['input'];
+  recipients: Scalars['String']['input'];
+  subject: Scalars['String']['input'];
 };
 
 

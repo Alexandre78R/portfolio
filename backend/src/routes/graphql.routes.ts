@@ -26,6 +26,7 @@ import { CVResolver } from "../resolvers/cv.resolver";
 import { ThemeResolver } from "../resolvers/theme.resolver";
 import { ProjectAdminResolver } from "../resolvers/projectAdmin.resolver";
 import { SocialResolver } from "../resolvers/social.resolver";
+import { MessageResolver } from "../resolvers/message.resolver";
 
 /* --- Types context GraphQL --- */
 
@@ -65,40 +66,35 @@ export async function mountGraphQL(app: Express) {
       ThemeResolver,
       ProjectAdminResolver,
       SocialResolver,
+      MessageResolver,
     ],
     validate: false,
     authChecker: customAuthChecker,
   });
 
-  /* 2. Crée ApolloServer v4 */
   const server = new ApolloServer<GraphQLContext>({ schema });
   await server.start();
 
-  /* 3. Monte le middleware sur /graphql */
   app.use(
     "/graphql",
     cors<cors.CorsRequest>({
       origin: process.env.CLIENT_URL?.split(",") ?? ["http://localhost:3000"],
       credentials: true,
     }),
-    // IMPORTANT: graphqlUploadExpress AVANT express.json()
     graphqlUploadExpress({ 
-      maxFileSize: 50000000, // 50MB
+      maxFileSize: 50000000,
       maxFiles: 10 
     }),
     express.json({ limit: "50mb" }),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
-        /* ▸ Cookies */
+
         const cookies: Cookies = new Cookies(req, res);
 
-        /* ▸ Auth utilisateur via JWT */
         let user: User | null = null;
-        
-        // Essayer d'abord le cookie, puis le header Authorization
+
         let token: string | undefined = cookies.get("token") ?? undefined;
         
-        // Si pas de cookie, chercher dans le header Authorization
         if (!token) {
           const authHeader = req.headers.authorization;
           if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -138,7 +134,6 @@ export async function mountGraphQL(app: Express) {
           }
         }
 
-        /* ▸ Vérification de la clé API */
         const apiKeyHeader: string | string[] | undefined = req.headers["x-api-key"];
         const apiKey: string | undefined = Array.isArray(apiKeyHeader)
           ? apiKeyHeader[0]
@@ -146,7 +141,6 @@ export async function mountGraphQL(app: Express) {
         if (!apiKey) throw new Error("Unauthorized: x-api-key header is missing.");
         await checkApiKey(apiKey);
 
-        /* Contexte retourné à chaque resolver */
         return { req, res, cookies, token, user, apiKey };
       },
     })
