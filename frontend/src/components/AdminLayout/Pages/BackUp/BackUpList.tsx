@@ -96,7 +96,6 @@ const BackUpList = (): React.ReactElement => {
       <TextAdmin type="h1">
         {translations.messagePageBackUpListTitle}
       </TextAdmin>
-
       <ButtonCustom
         text={translations.messagePageBackUpButtomCreated}
         onClick={() => setOpenCreateDialog(true)}
