@@ -27,6 +27,7 @@ const pagesMap: Record<string, () => Promise<any>> = {
   'backup/list': () => import('@/components/AdminLayout/Pages/BackUp/BackUpList'),
   'cv/view': () => import('@/components/AdminLayout/Pages/CV/CVView'),
   'cv/update': () => import('@/components/AdminLayout/Pages/CV/CVUpdate'),
+  'messages/create': () => import('@/components/AdminLayout/Pages/Messages/MessageCreate'),
 };
 
 const AdminPage = (): ReactElement | null => {

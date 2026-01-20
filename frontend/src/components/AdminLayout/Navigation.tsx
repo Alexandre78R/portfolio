@@ -8,6 +8,7 @@ import {
   DatabaseBackup,
   PanelsTopLeft,
   FileUser,
+  Mail,
 } from 'lucide-react'
 
 export type Role = 'admin' | 'editor' | 'view'
@@ -134,6 +135,15 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Voir le CV', key: 'cv/view', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'cv' },
       { name: 'Modifier le CV', key: 'cv/update', icon: FolderPlus, roles: ['admin'], parentKey: 'cv' },
+    ],
+  },
+  {
+    name: 'Messages',
+    key: 'messages',
+    icon: Mail,
+    roles: ['admin'],
+    children: [
+      { name: 'Envoyer un message', key: 'messages/create', icon: FolderPlus, roles: ['admin'], parentKey: 'messages' },
     ],
   },
   // {
