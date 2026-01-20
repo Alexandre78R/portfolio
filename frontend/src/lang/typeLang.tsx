@@ -416,6 +416,28 @@ type Lang = {
   messageAdminProjectNoSkillsFound: string;
   messageAdminProjectUpdateSuccess: string;
   messageAdminProjectUpdateError: string;
+  messageAdminMessageCreateTitle: string;
+  messageAdminMessageSubject: string;
+  messageAdminMessageRecipients: string;
+  messageAdminMessageContent: string;
+  messageAdminMessageSend: string;
+  messageAdminMessageSuccess: string;
+  messageAdminMessageError: string;
+  messageAdminMessageSubjectRequired: string;
+  messageAdminMessageContentRequired: string;
+  messageAdminMessageRecipientsRequired: string;
+  messageAdminMessageSendError: string;
+  messageAdminMessagePlaceholderSubject: string;
+  messageAdminMessagePlaceholderRecipients: string;
+  messageAdminEditorTabLabel: string;
+  messageAdminEditorSplitLabel: string;
+  messageAdminEditorCodeLabel: string;
+  messageAdminEditorWysiwygHelp: string;
+  messageAdminEditorLeftLabel: string;
+  messageAdminEditorPreviewLabel: string;
+  messageAdminEditorCodeTitle: string;
+  messageAdminEditorCodeHelp: string;
+  messageAdminEditorCharacterCount: string;
 };
 
 export default Lang;
