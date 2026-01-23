@@ -176,7 +176,7 @@ type CreateSkillInput = {
 };
 
 let mockCategoriesData: SkillListData = {
-  skillList: {
+  listSkillCategories: {
     categories: [
       {
         id: "1",
@@ -250,7 +250,7 @@ function resetAllMocks(): void {
   mockGetSkillsListQuery.mockReset();
   mockShowAlert.mockClear();
   mockCategoriesData = {
-    skillList: {
+    listSkillCategories: {
       categories: [
         {
           id: "1",
@@ -359,7 +359,7 @@ describe("SkillCreate", (): void => {
 
   test("displays error message when no categories are available", (): void => {
     mockGetSkillsListQuery.mockReturnValue({
-      data: { skillList: { categories: [], code: 200, message: "Success" } },
+      data: { listSkillCategories: { categories: [], code: 200, message: "Success" } },
       loading: false,
       error: null,
     });

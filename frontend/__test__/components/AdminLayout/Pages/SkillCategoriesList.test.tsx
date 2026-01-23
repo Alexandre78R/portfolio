@@ -1,4 +1,4 @@
-﻿import React, { type ReactElement } from "react";
+import React, { type ReactElement } from "react";
 import {
   render,
   screen,
@@ -14,7 +14,7 @@ import type Lang from "@/lang/typeLang";
 
 type SkillListData = GetSkillsListQuery;
 
-type SkillCategory = NonNullable<SkillListData['skillList']['categories']>[number];
+type SkillCategory = NonNullable<SkillListData['listSkillCategories']['categories']>[number];
 
 type SkillCategoryRow = SkillCategory & {
   skillCount: number;
@@ -213,7 +213,7 @@ describe("SkillCategoriesList", (): void => {
 
   test("should display message when no categories available", (): void => {
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: null,
         code: 0,
         message: ""
@@ -227,7 +227,7 @@ describe("SkillCategoriesList", (): void => {
 
   test("should render title", (): void => {
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: [],
         code: 0,
         message: ""
@@ -240,7 +240,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should render table with categories", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -274,7 +274,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -291,7 +291,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should display correct skill count for each category", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -325,7 +325,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -342,17 +342,17 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should handle categories with no skills", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Empty Category",
-        categoryFR: "Catégorie Vide",
+        categoryFR: "Cat�gorie Vide",
         skills: [],
       },
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -366,7 +366,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should filter out null categories", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -382,7 +382,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -397,7 +397,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should open edit modal when edit button is clicked", async (): Promise<void> => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -412,7 +412,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -430,7 +430,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should close edit modal when close button is clicked", async (): Promise<void> => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -440,7 +440,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -465,7 +465,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should open delete dialog when delete button is clicked", async (): Promise<void> => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -475,7 +475,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -493,7 +493,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should close delete dialog when close button is clicked", async (): Promise<void> => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -503,7 +503,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -528,7 +528,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should pass refetch function to edit modal", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -538,7 +538,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -554,7 +554,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should pass refetch function to delete dialog", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -564,7 +564,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -580,7 +580,7 @@ describe("SkillCategoriesList", (): void => {
   });
 
   test("should not render modals when no category is selected", (): void => {
-    const mockCategories: SkillListData['skillList']['categories'] = [
+    const mockCategories: SkillListData['listSkillCategories']['categories'] = [
       {
         id: "1",
         categoryEN: "Programming",
@@ -590,7 +590,7 @@ describe("SkillCategoriesList", (): void => {
     ];
 
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: mockCategories,
         code: 200,
         message: "Success",
@@ -613,3 +613,4 @@ describe("SkillCategoriesList", (): void => {
     });
   });
 });
+

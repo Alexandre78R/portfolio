@@ -108,7 +108,7 @@ describe("MessageCreate Component", (): void => {
 
       expect(screen.getByRole("textbox", { name: /subject/i })).toBeInTheDocument();
       expect(screen.getByRole("textbox", { name: /recipients/i })).toBeInTheDocument();
-      expect(screen.getByLabelText("Content")).toBeInTheDocument();
+      expect(screen.getByTestId("html-editor")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
     });
 

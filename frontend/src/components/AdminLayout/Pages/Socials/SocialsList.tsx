@@ -21,7 +21,7 @@ const SocialsList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.socialList) {
+  if (error || !data?.listSocials) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminSocialListNotFound}
@@ -29,7 +29,7 @@ const SocialsList = (): ReactElement => {
     );
   }
 
-  const socials: SocialRow[] = (data.socialList as any[])
+  const socials: SocialRow[] = (data.listSocials as any[])
     .filter((social): social is NonNullable<typeof social> => !!social)
     .map((social) => ({
       id: Number(social.id),

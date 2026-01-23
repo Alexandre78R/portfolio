@@ -64,9 +64,9 @@ const ProjectCreate = (): ReactElement => {
   ];
 
   const allSkills: SelectOption<number>[] = useMemo(() => {
-    if (!skillsData?.skillList?.categories) return [];
+    if (!skillsData?.listSkillCategories?.categories) return [];
 
-    return skillsData.skillList.categories.flatMap((category) =>
+    return skillsData.listSkillCategories.categories.flatMap((category) =>
       (category?.skills || []).map((skill) => ({
         label: skill?.name || "",
         value: Number(skill?.id) || 0,
@@ -206,7 +206,7 @@ const ProjectCreate = (): ReactElement => {
 
   if (skillsLoading) return <LoadingCustom />;
 
-  if (!skillsData?.skillList?.categories || allSkills.length === 0) {
+  if (!skillsData?.listSkillCategories?.categories || allSkills.length === 0) {
     return (
       <div className="text-center">
         <TextAdmin type="h1">

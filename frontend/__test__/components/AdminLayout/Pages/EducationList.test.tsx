@@ -165,7 +165,7 @@ const translationsMock: Lang = {
 } as Lang;
 
 const mockEducationGraphQLData: MockQueryResult["data"] = {
-  educationList: {
+  listEducations: {
     educations: [
       {
         __typename: "Education",
@@ -229,7 +229,7 @@ describe("EducationList Component", () => {
 
   it("displays no data state correctly", (): void => {
     (useGetEducationsListQuery as jest.Mock).mockReturnValue({
-      data: { educationList: { educations: null } },
+      data: { listEducations: { educations: null } },
       loading: false,
       error: undefined,
       refetch: jest.fn(),

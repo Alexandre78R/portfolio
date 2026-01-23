@@ -51,8 +51,8 @@ const UserEditModal = ({
   const USER_ROLE_OPTIONS: SelectOption<UserRole>[] = getUserRoleOptions(translations);
 
   useEffect(() => {
-    if (userData?.userById?.user) {
-      const u = userData.userById.user;
+    if (userData?.getUserById?.user) {
+      const u = userData.getUserById.user;
       setForm({
         firstname: u.firstname,
         lastname: u.lastname,

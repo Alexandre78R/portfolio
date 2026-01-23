@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_SOCIALS_LIST = gql`
   query GetSocialsList {
-    socialList {
+    listSocials {
       id
       title
       url
@@ -13,7 +13,7 @@ export const GET_SOCIALS_LIST = gql`
 
 export const GET_SOCIAL_BY_ID = gql`
   query GetSocialById($id: Int!) {
-    socialById(id: $id) {
+    getSocialById(id: $id) {
       social {
         id
         title

@@ -71,10 +71,10 @@ const SkillCategoryEditModal = ({
   });
 
   const skillOptions = useMemo<SelectOption<number>[]>((): SelectOption<number>[] => {
-    if (!allSkillsData?.skillList?.categories) return [];
+    if (!allSkillsData?.listSkillCategories?.categories) return [];
     
     const allSkills: SelectOption<number>[] = [];
-    allSkillsData.skillList.categories.forEach(category => {
+    allSkillsData.listSkillCategories.categories.forEach(category => {
       if (category?.skills) {
         category.skills.forEach(skill => {
           if (skill) {
@@ -124,8 +124,8 @@ const SkillCategoryEditModal = ({
   );
 
   useEffect(() => {
-    if (data?.skillCategoryById?.categories?.[0]) {
-      const categoryData: typeof data.skillCategoryById.categories[0] = data.skillCategoryById.categories[0];
+    if (data?.getSkillCategoryById?.categories?.[0]) {
+      const categoryData: typeof data.getSkillCategoryById.categories[0] = data.getSkillCategoryById.categories[0];
 
       const linkedSkillIds: number[] = categoryData.skills?.map(skill => Number(skill.id)) ?? [];
       

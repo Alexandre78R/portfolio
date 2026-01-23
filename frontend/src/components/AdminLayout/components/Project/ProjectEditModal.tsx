@@ -59,9 +59,9 @@ const ProjectEditModal = ({
   ];
 
   const allSkills: SelectOption<number>[] = useMemo(() => {
-    if (!skillsData?.skillList?.categories) return [];
+    if (!skillsData?.listSkillCategories?.categories) return [];
 
-    return skillsData.skillList.categories.flatMap((category) =>
+    return skillsData.listSkillCategories.categories.flatMap((category) =>
       (category?.skills || []).map((skill) => ({
         label: skill?.name || "",
         value: Number(skill?.id) || 0,

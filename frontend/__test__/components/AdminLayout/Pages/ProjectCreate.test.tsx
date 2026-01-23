@@ -24,7 +24,7 @@ const mockCreateProjectMutationFn: jest.Mock<
 
 
 let mockGetSkillsListQueryData: SkillListData = {
-  skillList: {
+  listSkillCategories: {
     categories: [
       {
         id: "1",
@@ -206,7 +206,7 @@ describe("ProjectCreate", (): void => {
 
   const resetMockData = (): void => {
     mockGetSkillsListQueryData = {
-      skillList: {
+      listSkillCategories: {
         categories: [
           {
             id: "1",

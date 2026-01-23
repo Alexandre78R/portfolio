@@ -25,7 +25,7 @@ const mockCreateProjectMutationFn: jest.Mock<
 const mockShowAlert: jest.Mock<void, ["success" | "error", string]> = jest.fn();
 
 let mockGetSkillsListQueryData: SkillsListData = {
-  skillList: {
+  listSkillCategories: {
     categories: [
       {
         id: "1",
@@ -194,7 +194,7 @@ describe("ProjectCreate", (): void => {
     mockCreateProjectMutationFn.mockReset();
     mockShowAlert.mockReset();
     mockGetSkillsListQueryData = {
-      skillList: {
+      listSkillCategories: {
         categories: [
           {
             id: "1",

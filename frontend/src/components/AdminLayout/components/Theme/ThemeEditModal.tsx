@@ -77,8 +77,8 @@ const ThemeEditModal = ({
   });
 
   useEffect(() => {
-    if (themeData?.themeById?.theme) {
-      const fullTheme = themeData.themeById.theme;
+    if (themeData?.getThemeById?.theme) {
+      const fullTheme = themeData.getThemeById.theme;
       const initialForm: ThemeFormData = {
         id: fullTheme.id,
         name: fullTheme.name,

@@ -118,7 +118,7 @@ describe("EducationEditModal Component", () => {
     mockOnRefreshCallback = jest.fn().mockResolvedValue(undefined);
     
     mockUseGetEducationQuery.mockReturnValue({
-      data: { educationById: { education: mockEducationData } },
+      data: { getEducationById: { education: mockEducationData } },
       loading: false,
     } as any);
 

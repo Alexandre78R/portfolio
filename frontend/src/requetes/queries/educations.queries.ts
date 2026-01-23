@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_EDUCATIONS_LIST = gql`
   query GetEducationsList {
-    educationList {
+    listEducations {
       message
       code
       educations {
@@ -28,7 +28,7 @@ export const GET_EDUCATIONS_LIST = gql`
 
 export const GET_EDUCATION_BY_ID = gql`
   query GetEducationById($id: Int!) {
-    educationById(id: $id) {
+    getEducationById(id: $id) {
       education {
         id
         school

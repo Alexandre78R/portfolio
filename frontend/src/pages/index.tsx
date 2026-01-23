@@ -60,7 +60,7 @@ const Home: React.FC = (): ReactElement => {
   const dataSocials: Social[] = useAppSelector((state: any) => state.socials.dataSocials);
 
   useEffect(() => {
-    const projectList = projectsData?.projectList;
+    const projectList = projectsData?.listProjects;
     if (!projectList || 
         !projectList.projects || 
         projectList.code !== 200 || 
@@ -86,7 +86,7 @@ const Home: React.FC = (): ReactElement => {
   }, [projectsData, dataProjects.length, dispatch, translations.file]);
 
   useEffect(() => {
-    const skillList = skillsData?.skillList;
+    const skillList = skillsData?.listSkillCategories;
     if (!skillList || 
         !skillList.categories || 
         skillList.code !== 200 || 
@@ -106,7 +106,7 @@ const Home: React.FC = (): ReactElement => {
   }, [skillsData, dataSkills.length, dispatch, translations.file]);
 
   useEffect(() => {
-    const educationList = educationsData?.educationList;
+    const educationList = educationsData?.listEducations;
     if (!educationList || 
         !educationList.educations || 
         educationList.code !== 200 || 
@@ -141,7 +141,7 @@ const Home: React.FC = (): ReactElement => {
   }, [educationsData, dataEducations.length, dispatch, translations.file]);
 
   useEffect(() => {
-    const experienceList = experiencesData?.experienceList;
+    const experienceList = experiencesData?.listExperiences;
     if (!experienceList || 
         !experienceList.experiences || 
         experienceList.code !== 200 || 
@@ -174,7 +174,7 @@ const Home: React.FC = (): ReactElement => {
   }, [experiencesData, dataExperiences.length, dispatch, translations.file]);
 
   useEffect(() => {
-    const socialList = socialsData?.socialList;
+    const socialList = socialsData?.listSocials;
     if (!Array.isArray(socialList) || dataSocials.length > 0) {
       return;
     }

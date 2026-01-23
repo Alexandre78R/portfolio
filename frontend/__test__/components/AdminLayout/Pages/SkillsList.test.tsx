@@ -165,7 +165,7 @@ jest.mock("@/context/Lang/LangContext", () => ({
 }));
 
 const mockSkillsData: SkillListData = {
-  skillList: {
+  listSkillCategories: {
     categories: [
       {
         id: "1",
@@ -253,7 +253,7 @@ describe("SkillsList", (): void => {
 
   test("displays 'no skills found' message when data is empty", (): void => {
     setupQueryMock({
-      skillList: {
+      listSkillCategories: {
         categories: [],
         code: 200,
         message: "Success",
@@ -366,7 +366,7 @@ describe("SkillsList", (): void => {
 
   test("handles missing skills in category gracefully", (): void => {
     const dataWithMissingSkills: SkillListData = {
-      skillList: {
+      listSkillCategories: {
         categories: [
           {
             id: "1",
@@ -388,7 +388,7 @@ describe("SkillsList", (): void => {
 
   test("handles null categories gracefully", (): void => {
     const dataWithNullCategories: SkillListData = {
-      skillList: {
+      listSkillCategories: {
         categories: null,
         code: 200,
         message: "Success",

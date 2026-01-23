@@ -20,11 +20,11 @@ const SkillsList = (): ReactElement => {
 
   // Transformer les données pour le tableau
   const skills = useMemo<SkillRow[]>(() => {
-    if (!data?.skillList?.categories) return [];
+    if (!data?.listSkillCategories?.categories) return [];
 
     const allSkills: SkillRow[] = [];
 
-    data.skillList.categories.forEach((category) => {
+    data.listSkillCategories.categories.forEach((category) => {
       if (category?.skills) {
         category.skills.forEach((skill) => {
           if (skill) {

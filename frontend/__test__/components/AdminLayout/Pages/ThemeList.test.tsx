@@ -85,7 +85,7 @@ describe("ThemeList Component", () => {
     (useGetThemesListQuery as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
-      data: { themeList: { themes: [] } },
+      data: { listThemes: { themes: [] } },
       refetch: mockRefetch,
     });
 
@@ -104,7 +104,7 @@ describe("ThemeList Component", () => {
     (useGetThemesListQuery as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
-      data: { themeList: { themes: mockThemes } },
+      data: { listThemes: { themes: mockThemes } },
       refetch: mockRefetch,
     });
 
@@ -140,7 +140,7 @@ describe("ThemeList Component", () => {
     (useGetThemesListQuery as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
-      data: { themeList: { themes: mockThemes } },
+      data: { listThemes: { themes: mockThemes } },
       refetch: mockRefetch,
     });
 

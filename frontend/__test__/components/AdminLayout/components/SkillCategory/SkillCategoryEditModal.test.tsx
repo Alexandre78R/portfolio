@@ -189,7 +189,7 @@ describe("SkillCategoryEditModal", (): void => {
     });
     mockGetCategoryByIdQuery.mockReturnValue({
       data: {
-        skillCategoryById: {
+        getSkillCategoryById: {
           categories: [
             {
               id: mockCategory.id,
@@ -204,7 +204,7 @@ describe("SkillCategoryEditModal", (): void => {
     });
     mockGetSkillsListQuery.mockReturnValue({
       data: {
-        skillList: {
+        listSkillCategories: {
           categories: [
             {
               id: "1",

@@ -48,11 +48,11 @@ const SkillCategoryCreate = (): ReactElement => {
   });
 
     const allSkillsOptions = useMemo<SelectOption<number>[]>(() => {
-    if (!skillsData?.skillList?.categories) return [];
+    if (!skillsData?.listSkillCategories?.categories) return [];
 
     const map = new Map<number, SelectOption<number>>();
 
-    skillsData.skillList.categories.forEach(category => {
+    skillsData.listSkillCategories.categories.forEach(category => {
         category?.skills?.forEach(skill => {
         if (skill && !map.has(Number(skill.id))) {
             map.set(Number(skill.id), {

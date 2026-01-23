@@ -15,7 +15,7 @@ export const GET_ME = gql`
 
 export const GET_USERS_LIST = gql`
   query GetUsersList {
-    userList {
+    listUsers {
       users {
         id
         firstname
@@ -32,7 +32,7 @@ export const GET_USERS_LIST = gql`
 
 export const GET_USER_BY_ID = gql`
   query GetUserById($id: Int!) {
-    userById(id: $id) {
+    getUserById(id: $id) {
       user {
         id
         firstname

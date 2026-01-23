@@ -57,8 +57,8 @@ const SocialEditModal = ({
   });
 
   useEffect(() => {
-    if (data?.socialById?.social) {
-      const socialData = data.socialById.social;
+    if (data?.getSocialById?.social) {
+      const socialData = data.getSocialById.social;
       const newData: SocialFormData = {
         id: Number(socialData.id),
         title: socialData.title ?? "",

@@ -20,7 +20,7 @@ const ThemeList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.themeList?.themes) {
+  if (error || !data?.listThemes?.themes) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminThemeListNotFound}
@@ -28,7 +28,7 @@ const ThemeList = (): ReactElement => {
     );
   }
 
-  const themes: ThemeRow[] = data.themeList.themes
+  const themes: ThemeRow[] = data.listThemes.themes
     .filter((theme): theme is NonNullable<typeof theme> => !!theme)
     .map((theme) => ({
       id: theme.id,

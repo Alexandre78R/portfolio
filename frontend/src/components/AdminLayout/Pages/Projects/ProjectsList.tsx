@@ -19,9 +19,9 @@ const ProjectsList = (): ReactElement => {
   const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
 
   const projects: ProjectRow[] = useMemo(() => {
-    if (!data?.projectList?.projects) return [];
+    if (!data?.listProjects?.projects) return [];
 
-    return data.projectList.projects
+    return data.listProjects.projects
       .filter((project): project is NonNullable<typeof project> => project !== null)
       .map((project) => ({
         id: Number(project.id),
@@ -57,7 +57,7 @@ const ProjectsList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.projectList?.projects) {
+  if (error || !data?.listProjects?.projects) {
     return (
       <div className="text-center">
         <TextAdmin type="h1">

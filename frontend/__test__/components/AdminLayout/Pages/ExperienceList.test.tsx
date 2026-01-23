@@ -164,7 +164,7 @@ const translationsMock: Lang = {
 } as Lang;
 
 const mockExperienceGraphQLData: MockQueryResult["data"] = {
-  experienceList: {
+  listExperiences: {
     experiences: [
       {
         __typename: "Experience",
@@ -293,7 +293,7 @@ describe("ExperienceList Component", () => {
 
   it("handles empty experiences list", (): void => {
     (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
-      data: { experienceList: { experiences: [] } },
+      data: { listExperiences: { experiences: [] } },
       loading: false,
       error: undefined,
       refetch: jest.fn(),

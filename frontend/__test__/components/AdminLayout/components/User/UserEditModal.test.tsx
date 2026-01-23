@@ -130,7 +130,7 @@ describe("UserEditModal Component", (): void => {
 
     const { useGetUserByIdQuery } = require("@/types/graphql");
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({
-      data: { userById: { user: sampleUser } },
+      data: { getUserById: { user: sampleUser } },
       loading: false,
       error: undefined,
     });

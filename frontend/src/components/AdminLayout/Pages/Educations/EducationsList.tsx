@@ -24,7 +24,7 @@ const EducationList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.educationList?.educations) {
+  if (error || !data?.listEducations?.educations) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminEducationListNotFound}
@@ -32,7 +32,7 @@ const EducationList = (): ReactElement => {
     );
   }
 
-  const educations: EducationRow[] = data.educationList.educations
+  const educations: EducationRow[] = data.listEducations.educations
     .filter((edu): edu is NonNullable<typeof edu> => !!edu)
     .map((edu) => ({
       id: Number(edu.id),

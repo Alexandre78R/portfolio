@@ -20,7 +20,7 @@ const UserList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.userList?.users) {
+  if (error || !data?.listUsers?.users) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminUserListNotFound}
@@ -28,7 +28,7 @@ const UserList = (): ReactElement => {
     );
   }
 
-  const users: UserRow[] = data.userList.users
+  const users: UserRow[] = data.listUsers.users
     .filter((user): user is NonNullable<typeof user> => !!user)
     .map((user) => ({
       id: user.id,

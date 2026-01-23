@@ -128,7 +128,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("renders form with inputs correctly", (): void => {
-    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { getThemeById: { theme: sampleTheme } }, loading: false });
     render(
       <ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -144,7 +144,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("calls onChange callback when input value changes", (): void => {
-    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { getThemeById: { theme: sampleTheme } }, loading: false });
     render(
       <ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />
     );
@@ -155,7 +155,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("submits form and handles success response", async (): Promise<void> => {
-    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { getThemeById: { theme: sampleTheme } }, loading: false });
     mockUpdateThemeMutation.mockResolvedValue({ data: { updateTheme: { code: 200 } } });
 
     render(<ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />);
@@ -172,7 +172,7 @@ describe("ThemeEditModal Component", (): void => {
   });
 
   test("submits form and handles error response", async (): Promise<void> => {
-    mockUseGetThemeByIdQuery.mockReturnValue({ data: { themeById: { theme: sampleTheme } }, loading: false });
+    mockUseGetThemeByIdQuery.mockReturnValue({ data: { getThemeById: { theme: sampleTheme } }, loading: false });
     mockUpdateThemeMutation.mockResolvedValue({ data: { updateTheme: { code: 500 } } });
 
     render(<ThemeEditModal theme={sampleTheme} onClose={mockOnClose} onRefresh={mockOnRefresh} onChange={mockOnChange} />);

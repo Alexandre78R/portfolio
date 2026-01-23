@@ -63,7 +63,7 @@ describe("Dashboard Page", () => {
   beforeEach(() => {
     mockedGetThemes.mockReturnValue({
       data: {
-        themeList: [],
+        listThemes: [],
         __typename: "ThemesResponse",
         code: 200,
         message: "ok",

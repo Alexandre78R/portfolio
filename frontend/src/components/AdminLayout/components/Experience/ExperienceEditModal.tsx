@@ -53,8 +53,8 @@ const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditM
 
   // Remplir le formulaire quand les données sont chargées
   useEffect(() => {
-    if (data?.experienceById?.experience) {
-      const exp = data.experienceById.experience;
+    if (data?.getExperienceById?.experience) {
+      const exp = data.getExperienceById.experience;
       setForm({
         id: Number(exp.id),
         jobFR: exp.jobFR,

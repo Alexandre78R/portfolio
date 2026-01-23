@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_THEMES_LIST = gql`
   query GetThemesList {
-    themeList {
+    listThemes {
         themes {
             body
             admin
@@ -36,7 +36,7 @@ export const GET_THEMES_LIST = gql`
 
 export const GET_THEME_BY_ID = gql`
   query GetThemeById($id: Int!) {
-    themeById(id: $id) {
+    getThemeById(id: $id) {
       theme {
         id
         name

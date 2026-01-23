@@ -14,7 +14,7 @@ import type { SocialRow } from "@/components/AdminLayout/components/Social/Socia
 
 type MockQueryResult = {
   data?: {
-    socialList?: Array<{
+    listSocials?: Array<{
       __typename?: string;
       id: string;
       title: string;
@@ -203,7 +203,7 @@ describe("SocialsList", () => {
   test("should display list title", () => {
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: [],
+        listSocials: [],
       },
       loading: false,
       error: null,
@@ -235,7 +235,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -262,7 +262,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -291,7 +291,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -326,7 +326,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -355,7 +355,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -398,7 +398,7 @@ describe("SocialsList", () => {
 
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: mockSocials,
+        listSocials: mockSocials,
       },
       loading: false,
       error: null,
@@ -416,7 +416,7 @@ describe("SocialsList", () => {
     const mockRefetch: jest.Mock = jest.fn();
     (useGetSocialsListQuery as jest.Mock).mockReturnValue({
       data: {
-        socialList: [],
+        listSocials: [],
       },
       loading: false,
       error: null,

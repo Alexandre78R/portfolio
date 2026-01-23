@@ -1,4 +1,4 @@
-﻿import React, { ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import SkillEditModal from "@/components/AdminLayout/components/Skill/SkillEditModal";
@@ -22,7 +22,7 @@ interface UpdateSkillResponse {
 }
 
 interface SkillsListData {
-  skillList: {
+  listSkillCategories: {
     categories: Array<{
       id: number;
       categoryEN: string;
@@ -165,7 +165,7 @@ const mockSkill: SkillRowData = {
 };
 
 const mockSkillsListData: SkillsListData = {
-  skillList: {
+  listSkillCategories: {
     categories: [
       {
         id: 10,
@@ -327,3 +327,4 @@ describe("SkillEditModal", (): void => {
     });
   });
 });
+

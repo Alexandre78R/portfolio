@@ -129,7 +129,7 @@ describe("ProjectEditModal", (): void => {
     const { useGetSkillsListQuery } = require("@/types/graphql");
     (useGetSkillsListQuery as jest.Mock).mockReturnValue({
       data: {
-        skillList: {
+        listSkillCategories: {
           categories: [],
           code: 200,
           message: "Success",

@@ -114,7 +114,7 @@ describe("ExperienceEditModal Component", () => {
     mockOnRefreshCallback = jest.fn().mockResolvedValue(undefined);
     
     mockUseGetExperienceQuery.mockReturnValue({
-      data: { experienceById: { experience: mockExperienceData } },
+      data: { getExperienceById: { experience: mockExperienceData } },
       loading: false,
     } as any);
 

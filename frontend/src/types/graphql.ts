@@ -127,6 +127,11 @@ export type CreateProjectInput = {
   video?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateSignatureInput = {
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type CreateSkillInput = {
   categoryId?: InputMaybe<Scalars['Int']['input']>;
   image: Scalars['String']['input'];
@@ -293,6 +298,7 @@ export type Mutation = {
   createEducation: EducationResponse;
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
+  createSignature: SignatureResponse;
   createSkill: SubItemResponse;
   createSocial: SocialResponse;
   createTheme: ThemeResponse;
@@ -302,6 +308,7 @@ export type Mutation = {
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteProjectMedia: ProjectResponse;
+  deleteSignature: SignatureResponse;
   deleteSkill: SubItemResponse;
   deleteSocial: SocialResponse;
   deleteTheme: Response;
@@ -317,6 +324,7 @@ export type Mutation = {
   updateEducation: EducationResponse;
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
+  updateSignature: SignatureResponse;
   updateSkill: SubItemResponse;
   updateSocial: SocialResponse;
   updateTheme: ThemeResponse;
@@ -355,6 +363,11 @@ export type MutationCreateExperienceArgs = {
 
 export type MutationCreateProjectArgs = {
   data: CreateProjectInput;
+};
+
+
+export type MutationCreateSignatureArgs = {
+  data: CreateSignatureInput;
 };
 
 
@@ -400,6 +413,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteProjectMediaArgs = {
   projectId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSignatureArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -468,6 +486,11 @@ export type MutationUpdateExperienceArgs = {
 
 export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSignatureArgs = {
+  data: UpdateSignatureInput;
 };
 
 
@@ -545,35 +568,33 @@ export type ProjectsResponse = {
 export type Query = {
   __typename?: 'Query';
   cvUrl: Scalars['String']['output'];
-  educationById: EducationResponse;
-  educationList: EducationsResponse;
   educationListPagination: EducationsResponse;
-  experienceById: ExperienceResponse;
-  experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
+  getEducationById: EducationResponse;
+  getExperienceById: ExperienceResponse;
   getGlobalStats: GlobalStatsResponse;
+  getProjectById: ProjectResponse;
+  getSignatureById: SignatureResponse;
+  getSkillById: SubItemResponse;
+  getSkillCategoryById: CategoryResponse;
+  getSocialById: SocialResponse;
+  getThemeById: ThemeResponse;
   getTopUsedSkills: TopSkillsResponse;
+  getUserById: UserResponse;
   getUsersRoleDistribution: UserRolePercent;
+  listAllSignatures: SignaturesResponse;
   listBackupFiles: BackupFilesResponse;
+  listEducations: EducationsResponse;
+  listExperiences: ExperiencesResponse;
+  listProjects: ProjectsResponse;
+  listSignatures: SignaturesResponse;
+  listSkillCategories: CategoryResponse;
+  listSocials: Array<Social>;
+  listThemes: ThemesResponse;
+  listUsers: UsersResponse;
   me?: Maybe<User>;
-  projectById: ProjectResponse;
-  projectList: ProjectsResponse;
-  searchSkills: CategoryResponse;
-  skillById: SubItemResponse;
-  skillCategoryById: CategoryResponse;
-  skillList: CategoryResponse;
-  socialById: SocialResponse;
-  socialList: Array<Social>;
-  themeById: ThemeResponse;
-  themeList: ThemesResponse;
-  userById: UserResponse;
-  userList: UsersResponse;
-};
-
-
-export type QueryEducationByIdArgs = {
-  id: Scalars['Int']['input'];
+  searchSkillCategories: CategoryResponse;
 };
 
 
@@ -584,43 +605,60 @@ export type QueryEducationListPaginationArgs = {
 };
 
 
-export type QueryExperienceByIdArgs = {
+export type QueryGetEducationByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
 
-export type QueryProjectByIdArgs = {
+export type QueryGetExperienceByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
 
-export type QuerySearchSkillsArgs = {
+export type QueryGetProjectByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSignatureByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSkillByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSkillCategoryByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSocialByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetThemeByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetUserByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryListSignaturesArgs = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 
-export type QuerySkillByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QuerySkillCategoryByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QuerySocialByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryThemeByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryUserByIdArgs = {
-  id: Scalars['Int']['input'];
+export type QuerySearchSkillCategoriesArgs = {
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Response = {
@@ -635,6 +673,28 @@ export enum Role {
   Editor = 'editor',
   View = 'view'
 }
+
+export type Signature = {
+  __typename?: 'Signature';
+  description: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type SignatureResponse = {
+  __typename?: 'SignatureResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  signature?: Maybe<Signature>;
+};
+
+export type SignaturesResponse = {
+  __typename?: 'SignaturesResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  signatures?: Maybe<Array<Signature>>;
+  total?: Maybe<Scalars['Int']['output']>;
+};
 
 export type SkillCategoryWithSkillsDto = {
   __typename?: 'SkillCategoryWithSkillsDTO';
@@ -780,6 +840,12 @@ export type UpdateProjectInput = {
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
   video?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSignatureInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {
@@ -1141,81 +1207,81 @@ export type CvQuery = { __typename?: 'Query', cvUrl: string };
 export type GetEducationsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEducationsListQuery = { __typename?: 'Query', educationList: { __typename?: 'EducationsResponse', message: string, code: number, educations?: Array<{ __typename?: 'Education', diplomaLevelEN: string, diplomaLevelFR: string, endDateEN: string, endDateFR: string, id: string, location: string, month?: number | null, school: string, startDateEN: string, startDateFR: string, titleEN: string, titleFR: string, typeEN: string, typeFR: string, year: number }> | null } };
+export type GetEducationsListQuery = { __typename?: 'Query', listEducations: { __typename?: 'EducationsResponse', message: string, code: number, educations?: Array<{ __typename?: 'Education', diplomaLevelEN: string, diplomaLevelFR: string, endDateEN: string, endDateFR: string, id: string, location: string, month?: number | null, school: string, startDateEN: string, startDateFR: string, titleEN: string, titleFR: string, typeEN: string, typeFR: string, year: number }> | null } };
 
 export type GetEducationByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetEducationByIdQuery = { __typename?: 'Query', educationById: { __typename?: 'EducationResponse', code: number, education?: { __typename?: 'Education', id: string, school: string, location: string, diplomaLevelFR: string, diplomaLevelEN: string, titleFR: string, titleEN: string, typeFR: string, typeEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month?: number | null, year: number } | null } };
+export type GetEducationByIdQuery = { __typename?: 'Query', getEducationById: { __typename?: 'EducationResponse', code: number, education?: { __typename?: 'Education', id: string, school: string, location: string, diplomaLevelFR: string, diplomaLevelEN: string, titleFR: string, titleEN: string, typeFR: string, typeEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month?: number | null, year: number } | null } };
 
 export type GetExperiencesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetExperiencesListQuery = { __typename?: 'Query', experienceList: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN: string, business: string, employmentContractFR: string, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month: number, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
+export type GetExperiencesListQuery = { __typename?: 'Query', listExperiences: { __typename?: 'ExperiencesResponse', message: string, code: number, experiences?: Array<{ __typename?: 'Experience', employmentContractEN: string, business: string, employmentContractFR: string, endDateEN: string, endDateFR: string, jobEN: string, id: string, jobFR: string, month: number, startDateEN: string, startDateFR: string, typeEN: string, typeFR: string }> | null } };
 
 export type GetExperienceByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetExperienceByIdQuery = { __typename?: 'Query', experienceById: { __typename?: 'ExperienceResponse', code: number, message: string, experience?: { __typename?: 'Experience', id: string, jobFR: string, jobEN: string, business: string, typeFR: string, typeEN: string, employmentContractFR: string, employmentContractEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month: number } | null } };
+export type GetExperienceByIdQuery = { __typename?: 'Query', getExperienceById: { __typename?: 'ExperienceResponse', code: number, message: string, experience?: { __typename?: 'Experience', id: string, jobFR: string, jobEN: string, business: string, typeFR: string, typeEN: string, employmentContractFR: string, employmentContractEN: string, startDateFR: string, startDateEN: string, endDateFR: string, endDateEN: string, month: number } | null } };
 
 export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsListQuery = { __typename?: 'Query', projectList: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, image?: string | null, video?: string | null, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+export type GetProjectsListQuery = { __typename?: 'Query', listProjects: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, image?: string | null, video?: string | null, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillsListQuery = { __typename?: 'Query', skillList: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+export type GetSkillsListQuery = { __typename?: 'Query', listSkillCategories: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type SearchSkillsQueryVariables = Exact<{
   searchTerm?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type SearchSkillsQuery = { __typename?: 'Query', searchSkills: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+export type SearchSkillsQuery = { __typename?: 'Query', searchSkillCategories: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', categoryFR: string, id: string, categoryEN: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
 
 export type GetSkillCategoryByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetSkillCategoryByIdQuery = { __typename?: 'Query', skillCategoryById: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> }> | null } };
+export type GetSkillCategoryByIdQuery = { __typename?: 'Query', getSkillCategoryById: { __typename?: 'CategoryResponse', code: number, message: string, categories?: Array<{ __typename?: 'SkillCategoryWithSkillsDTO', id: string, categoryEN: string, categoryFR: string, skills: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> }> | null } };
 
 export type GetSkillByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetSkillByIdQuery = { __typename?: 'Query', skillById: { __typename?: 'SubItemResponse', code: number, message: string, subItems?: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> | null } };
+export type GetSkillByIdQuery = { __typename?: 'Query', getSkillById: { __typename?: 'SubItemResponse', code: number, message: string, subItems?: Array<{ __typename?: 'SkillSubItem', id: string, name: string, image: string, categoryId?: number | null }> | null } };
 
 export type GetSocialsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSocialsListQuery = { __typename?: 'Query', socialList: Array<{ __typename?: 'Social', id: string, title: string, url: string, tab: number }> };
+export type GetSocialsListQuery = { __typename?: 'Query', listSocials: Array<{ __typename?: 'Social', id: string, title: string, url: string, tab: number }> };
 
 export type GetSocialByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetSocialByIdQuery = { __typename?: 'Query', socialById: { __typename?: 'SocialResponse', code: number, message: string, social?: { __typename?: 'Social', id: string, title: string, url: string, tab: number } | null } };
+export type GetSocialByIdQuery = { __typename?: 'Query', getSocialById: { __typename?: 'SocialResponse', code: number, message: string, social?: { __typename?: 'Social', id: string, title: string, url: string, tab: number } | null } };
 
 export type GetThemesListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetThemesListQuery = { __typename?: 'Query', themeList: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameFR: string, nameEN: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
+export type GetThemesListQuery = { __typename?: 'Query', listThemes: { __typename?: 'ThemesResponse', message: string, code: number, themes?: Array<{ __typename?: 'Theme', body: string, admin: string, error: string, footer: string, grey: string, id: string, info: string, name: string, nameFR: string, nameEN: string, placeholder: string, primary: string, scrollHandle: string, scrollHandleHover: string, secondary: string, success: string, text100: string, text200: string, text300: string, textButton: string, textDefault: string, visible: boolean, warn: string }> | null } };
 
 export type GetThemeByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetThemeByIdQuery = { __typename?: 'Query', themeById: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', id: string, name: string, nameEN: string, nameFR: string, visible: boolean, body: string, scrollHandle: string, scrollHandleHover: string, primary: string, secondary: string, success: string, error: string, warn: string, info: string, grey: string, placeholder: string, footer: string, admin: string, textDefault: string, text100: string, text200: string, text300: string, textButton: string } | null } };
+export type GetThemeByIdQuery = { __typename?: 'Query', getThemeById: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', id: string, name: string, nameEN: string, nameFR: string, visible: boolean, body: string, scrollHandle: string, scrollHandleHover: string, primary: string, secondary: string, success: string, error: string, warn: string, info: string, grey: string, placeholder: string, footer: string, admin: string, textDefault: string, text100: string, text200: string, text300: string, textButton: string } | null } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1225,14 +1291,14 @@ export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', rol
 export type GetUsersListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersListQuery = { __typename?: 'Query', userList: { __typename?: 'UsersResponse', message: string, code: number, users?: Array<{ __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean }> | null } };
+export type GetUsersListQuery = { __typename?: 'Query', listUsers: { __typename?: 'UsersResponse', message: string, code: number, users?: Array<{ __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean }> | null } };
 
 export type GetUserByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', userById: { __typename?: 'UserResponse', message: string, code: number, user?: { __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean } | null } };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserResponse', message: string, code: number, user?: { __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean } | null } };
 
 
 export const GenerateDatabaseBackupDocument = gql`
@@ -2872,7 +2938,7 @@ export type CvSuspenseQueryHookResult = ReturnType<typeof useCvSuspenseQuery>;
 export type CvQueryResult = Apollo.QueryResult<CvQuery, CvQueryVariables>;
 export const GetEducationsListDocument = gql`
     query GetEducationsList {
-  educationList {
+  listEducations {
     message
     code
     educations {
@@ -2932,7 +2998,7 @@ export type GetEducationsListSuspenseQueryHookResult = ReturnType<typeof useGetE
 export type GetEducationsListQueryResult = Apollo.QueryResult<GetEducationsListQuery, GetEducationsListQueryVariables>;
 export const GetEducationByIdDocument = gql`
     query GetEducationById($id: Int!) {
-  educationById(id: $id) {
+  getEducationById(id: $id) {
     education {
       id
       school
@@ -2992,7 +3058,7 @@ export type GetEducationByIdSuspenseQueryHookResult = ReturnType<typeof useGetEd
 export type GetEducationByIdQueryResult = Apollo.QueryResult<GetEducationByIdQuery, GetEducationByIdQueryVariables>;
 export const GetExperiencesListDocument = gql`
     query GetExperiencesList {
-  experienceList {
+  listExperiences {
     message
     code
     experiences {
@@ -3050,7 +3116,7 @@ export type GetExperiencesListSuspenseQueryHookResult = ReturnType<typeof useGet
 export type GetExperiencesListQueryResult = Apollo.QueryResult<GetExperiencesListQuery, GetExperiencesListQueryVariables>;
 export const GetExperienceByIdDocument = gql`
     query GetExperienceById($id: Int!) {
-  experienceById(id: $id) {
+  getExperienceById(id: $id) {
     code
     message
     experience {
@@ -3109,7 +3175,7 @@ export type GetExperienceByIdSuspenseQueryHookResult = ReturnType<typeof useGetE
 export type GetExperienceByIdQueryResult = Apollo.QueryResult<GetExperienceByIdQuery, GetExperienceByIdQueryVariables>;
 export const GetProjectsListDocument = gql`
     query GetProjectsList {
-  projectList {
+  listProjects {
     message
     code
     projects {
@@ -3169,7 +3235,7 @@ export type GetProjectsListSuspenseQueryHookResult = ReturnType<typeof useGetPro
 export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
 export const GetSkillsListDocument = gql`
     query GetSkillsList {
-  skillList {
+  listSkillCategories {
     categories {
       categoryFR
       id
@@ -3223,7 +3289,7 @@ export type GetSkillsListSuspenseQueryHookResult = ReturnType<typeof useGetSkill
 export type GetSkillsListQueryResult = Apollo.QueryResult<GetSkillsListQuery, GetSkillsListQueryVariables>;
 export const SearchSkillsDocument = gql`
     query SearchSkills($searchTerm: String) {
-  searchSkills(searchTerm: $searchTerm) {
+  searchSkillCategories(searchTerm: $searchTerm) {
     categories {
       categoryFR
       id
@@ -3278,7 +3344,7 @@ export type SearchSkillsSuspenseQueryHookResult = ReturnType<typeof useSearchSki
 export type SearchSkillsQueryResult = Apollo.QueryResult<SearchSkillsQuery, SearchSkillsQueryVariables>;
 export const GetSkillCategoryByIdDocument = gql`
     query GetSkillCategoryById($id: Int!) {
-  skillCategoryById(id: $id) {
+  getSkillCategoryById(id: $id) {
     code
     message
     categories {
@@ -3333,7 +3399,7 @@ export type GetSkillCategoryByIdSuspenseQueryHookResult = ReturnType<typeof useG
 export type GetSkillCategoryByIdQueryResult = Apollo.QueryResult<GetSkillCategoryByIdQuery, GetSkillCategoryByIdQueryVariables>;
 export const GetSkillByIdDocument = gql`
     query GetSkillById($id: Int!) {
-  skillById(id: $id) {
+  getSkillById(id: $id) {
     code
     message
     subItems {
@@ -3383,7 +3449,7 @@ export type GetSkillByIdSuspenseQueryHookResult = ReturnType<typeof useGetSkillB
 export type GetSkillByIdQueryResult = Apollo.QueryResult<GetSkillByIdQuery, GetSkillByIdQueryVariables>;
 export const GetSocialsListDocument = gql`
     query GetSocialsList {
-  socialList {
+  listSocials {
     id
     title
     url
@@ -3428,7 +3494,7 @@ export type GetSocialsListSuspenseQueryHookResult = ReturnType<typeof useGetSoci
 export type GetSocialsListQueryResult = Apollo.QueryResult<GetSocialsListQuery, GetSocialsListQueryVariables>;
 export const GetSocialByIdDocument = gql`
     query GetSocialById($id: Int!) {
-  socialById(id: $id) {
+  getSocialById(id: $id) {
     social {
       id
       title
@@ -3478,7 +3544,7 @@ export type GetSocialByIdSuspenseQueryHookResult = ReturnType<typeof useGetSocia
 export type GetSocialByIdQueryResult = Apollo.QueryResult<GetSocialByIdQuery, GetSocialByIdQueryVariables>;
 export const GetThemesListDocument = gql`
     query GetThemesList {
-  themeList {
+  listThemes {
     themes {
       body
       admin
@@ -3546,7 +3612,7 @@ export type GetThemesListSuspenseQueryHookResult = ReturnType<typeof useGetTheme
 export type GetThemesListQueryResult = Apollo.QueryResult<GetThemesListQuery, GetThemesListQueryVariables>;
 export const GetThemeByIdDocument = gql`
     query GetThemeById($id: Int!) {
-  themeById(id: $id) {
+  getThemeById(id: $id) {
     theme {
       id
       name
@@ -3662,7 +3728,7 @@ export type GetMeSuspenseQueryHookResult = ReturnType<typeof useGetMeSuspenseQue
 export type GetMeQueryResult = Apollo.QueryResult<GetMeQuery, GetMeQueryVariables>;
 export const GetUsersListDocument = gql`
     query GetUsersList {
-  userList {
+  listUsers {
     users {
       id
       firstname
@@ -3713,7 +3779,7 @@ export type GetUsersListSuspenseQueryHookResult = ReturnType<typeof useGetUsersL
 export type GetUsersListQueryResult = Apollo.QueryResult<GetUsersListQuery, GetUsersListQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($id: Int!) {
-  userById(id: $id) {
+  getUserById(id: $id) {
     user {
       id
       firstname

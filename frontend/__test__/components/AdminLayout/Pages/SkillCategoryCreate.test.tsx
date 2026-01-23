@@ -172,7 +172,7 @@ const createMocks = (mutationResult: any = { code: 200, message: "Created" }) =>
     },
     result: {
       data: {
-        skillList: {
+        listSkillCategories: {
           categories: [
             {
               __typename: "SkillCategory",
@@ -447,7 +447,7 @@ describe("SkillCategoryCreate", () => {
         },
         result: {
           data: {
-            skillList: {
+            listSkillCategories: {
               categories: [],
               __typename: "SkillListResponse",
               code: 200,

@@ -78,7 +78,7 @@ const ThemeList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.themeList?.themes) {
+  if (error || !data?.listThemes?.themes) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminThemeListNotFound}

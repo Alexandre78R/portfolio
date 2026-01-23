@@ -73,14 +73,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
 
     // ❌ Pas de données → fallback
-    if (!data?.themeList?.themes) {
+    if (!data?.listThemes?.themes) {
       console.warn("[ThemeContext] Using fallback themes - no data");
       setThemes(getDefaultThemes());
       setIsUsingFallback(true);
       return;
     }
 
-    const themesData = data.themeList.themes;
+    const themesData = data.listThemes.themes;
 
     const visibleThemes = themesData.filter(
       (t): t is NonNullable<typeof t> => !!t && t.visible === true

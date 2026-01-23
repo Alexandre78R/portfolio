@@ -59,9 +59,9 @@ const SkillEditModal = ({
 
   // Préparer les options de catégories pour le select
   const categoryOptions = useMemo<SelectOption<number>[]>(() => {
-    if (!categoriesData?.skillList?.categories) return [];
+    if (!categoriesData?.listSkillCategories?.categories) return [];
     
-    return categoriesData.skillList.categories.map(category => ({
+    return categoriesData.listSkillCategories.categories.map(category => ({
       label: category.categoryEN || "",
       value: Number(category.id),
     }));
@@ -71,8 +71,8 @@ const SkillEditModal = ({
     if (skill) {
       // Trouver la catégorie du skill
       let categoryId = 0;
-      if (categoriesData?.skillList?.categories) {
-        for (const category of categoriesData.skillList.categories) {
+      if (categoriesData?.listSkillCategories?.categories) {
+        for (const category of categoriesData.listSkillCategories.categories) {
           const foundSkill = category.skills?.find(s => Number(s.id) === skill.id);
           if (foundSkill) {
             categoryId = Number(category.id);

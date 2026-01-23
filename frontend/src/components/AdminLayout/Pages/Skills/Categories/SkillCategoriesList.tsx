@@ -20,7 +20,7 @@ const SkillCategoriesList = (): ReactElement => {
 
   if (loading) return <LoadingCustom />;
 
-  if (error || !data?.skillList?.categories) {
+  if (error || !data?.listSkillCategories?.categories) {
     return (
       <p className="p-4 text-primary">
         {translations.messageAdminSkillCategoryListNotFound}
@@ -28,7 +28,7 @@ const SkillCategoriesList = (): ReactElement => {
     );
   }
 
-  const categories: SkillCategoryRow[] = (data.skillList.categories as any[])
+  const categories: SkillCategoryRow[] = (data.listSkillCategories.categories as any[])
     .filter((category): category is NonNullable<typeof category> => !!category)
     .map((category) => ({
       id: Number(category.id),

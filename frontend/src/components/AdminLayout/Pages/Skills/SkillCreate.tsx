@@ -46,9 +46,9 @@ const SkillCreate = (): ReactElement => {
 
   // Préparer les options de catégories pour le select
   const categoryOptions = useMemo<SelectOption<number>[]>(() => {
-    if (!categoriesData?.skillList?.categories) return [];
+    if (!categoriesData?.listSkillCategories?.categories) return [];
     
-    return categoriesData.skillList.categories.map(category => ({
+    return categoriesData.listSkillCategories.categories.map(category => ({
       label: category.categoryEN || "",
       value: Number(category.id),
     }));

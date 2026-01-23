@@ -147,7 +147,7 @@ const mockSuccessResponse: MockedResponse = {
   },
   result: {
     data: {
-      themeList: {
+      listThemes: {
         __typename: "ThemeListResponse",
         themes: [mockDarkThemeData, mockLightThemeData, mockUbuntuThemeData],
         message: "Themes retrieved successfully",
@@ -170,7 +170,7 @@ const mockEmptyResponse: MockedResponse = {
   },
   result: {
     data: {
-      themeList: {
+      listThemes: {
         __typename: "ThemeListResponse",
         themes: null,
         message: "No themes found",
@@ -186,7 +186,7 @@ const mockNoVisibleThemesResponse: MockedResponse = {
   },
   result: {
     data: {
-      themeList: {
+      listThemes: {
         __typename: "ThemeListResponse",
         themes: [mockDarkThemeDataHidden],
         message: "Themes retrieved successfully",
@@ -397,7 +397,7 @@ describe("ThemeContext with GraphQL", () => {
       },
       result: {
         data: {
-          themeList: {
+          listThemes: {
             __typename: "ThemeListResponse",
             themes: [],
             message: "No themes in database",

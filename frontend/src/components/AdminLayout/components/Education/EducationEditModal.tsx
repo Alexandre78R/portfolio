@@ -68,8 +68,8 @@ const EducationEditModal = ({
   });
 
   useEffect(() => {
-    if (data?.educationById?.education) {
-    const edu = data.educationById.education;
+    if (data?.getEducationById?.education) {
+    const edu = data.getEducationById.education;
     const newData: EducationFormData = {
         id: Number(edu.id),
         school: edu.school,

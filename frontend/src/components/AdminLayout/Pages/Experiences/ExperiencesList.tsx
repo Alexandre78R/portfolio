@@ -20,7 +20,7 @@ const ExperienceList = (): ReactElement => {
   });
 
   const experiences: ExperienceRow[] =
-    data?.experienceList?.experiences?.map((exp) => ({
+    data?.listExperiences?.experiences?.map((exp) => ({
       id: Number(exp.id),
       jobEN: exp.jobEN,
       jobFR: exp.jobFR,

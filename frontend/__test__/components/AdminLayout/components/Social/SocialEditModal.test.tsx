@@ -48,7 +48,7 @@ const createGetSocialMock = (socialData: SocialRow = mockSocialData, delayMs?: n
   },
   result: {
     data: {
-      socialById: {
+      getSocialById: {
         __typename: "SocialResponse",
         code: 200,
         message: "Success",
