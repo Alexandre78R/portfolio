@@ -1,6 +1,3 @@
-// export const themesData = [
-// ];
-
 export const themesData = {
   dark: {
     id: "1",
@@ -23,7 +20,7 @@ export const themesData = {
       admin: "#080b2a",
       visible : true,
       text: {
-        default: "#000000",
+        default: "#F8F8FD",
         100: "#000000",
         200: "#000000",
         300: "#000000",
@@ -81,7 +78,7 @@ export const themesData = {
       admin: "#180512",
       visible : true,
       text: {
-        default: "#000000",
+        default: "#F8F8FD",
         100: "#000000",
         200: "#000000",
         300: "#000000",
