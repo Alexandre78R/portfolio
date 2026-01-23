@@ -10,7 +10,7 @@ type MockPrismaTheme = {
   findMany: jest.Mock<Promise<PrismaTheme[]>, [any?]>;
 };
 
-describe("ThemeResolver - themeList", () => {
+describe("ThemeResolver - listThemes", () => {
   let resolver: ThemeResolver;
   let mockDb: { theme: MockPrismaTheme };
 
@@ -83,7 +83,7 @@ describe("ThemeResolver - themeList", () => {
   it("should return all themes for admin", async () => {
     mockDb.theme.findMany.mockResolvedValue(fakeThemes);
 
-    const result: ThemesResponse = await resolver.themeList(adminCtx);
+    const result: ThemesResponse = await resolver.listThemes(adminCtx);
     expect(result.code).toBe(200);
     expect(result.themes).toHaveLength(2);
     expect(mockDb.theme.findMany).toHaveBeenCalledWith({
@@ -95,7 +95,7 @@ describe("ThemeResolver - themeList", () => {
   it("should return only visible themes for non-admin users", async () => {
     mockDb.theme.findMany.mockResolvedValue(fakeThemes.filter(t => t.visible));
 
-    const result: ThemesResponse = await resolver.themeList(userCtx);
+    const result: ThemesResponse = await resolver.listThemes(userCtx);
     expect(result.code).toBe(200);
     expect(result.themes).toHaveLength(1);
     expect(result.themes?.[0].visible).toBe(true);
@@ -108,7 +108,7 @@ describe("ThemeResolver - themeList", () => {
   it("should handle database errors gracefully", async () => {
     mockDb.theme.findMany.mockRejectedValue(new Error("DB error"));
 
-    const result: ThemesResponse = await resolver.themeList(adminCtx);
+    const result: ThemesResponse = await resolver.listThemes(adminCtx);
     expect(result.code).toBe(500);
     expect(result.themes).toBeUndefined();
   });

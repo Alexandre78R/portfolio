@@ -11,7 +11,7 @@ export class SocialResolver {
   private readonly db: PrismaClient = new PrismaClient();
 
   @Query(() => [Social])
-  async socialList(): Promise<PrismaSocial[]> {
+  async listSocials(): Promise<PrismaSocial[]> {
     const socials: PrismaSocial[] = await this.db.social.findMany({
       orderBy: { id: "asc" },
     });
@@ -20,7 +20,7 @@ export class SocialResolver {
   }
 
   @Query(() => SocialResponse)
-  async socialById(@Arg("id", () => Int) id: number): Promise<SocialResponse> {
+  async getSocialById(@Arg("id", () => Int) id: number): Promise<SocialResponse> {
     try {
       const social: PrismaSocial | null = await this.db.social.findUnique({ where: { id } });
       

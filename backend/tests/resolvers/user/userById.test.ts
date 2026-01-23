@@ -10,7 +10,7 @@ type MockPrismaUser = {
   findFirst: jest.Mock<Promise<PrismaUser | null>, [any?]>;
 };
 
-describe("UserResolver - userById", () => {
+describe("UserResolver - getUserById", () => {
   let resolver: UserResolver;
   let mockDb: { user: MockPrismaUser };
 
@@ -40,7 +40,7 @@ describe("UserResolver - userById", () => {
   it("should return user when found by admin", async () => {
     mockDb.user.findFirst.mockResolvedValue(fakeUser);
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.code).toBe(200);
     expect(result.message).toBe("User found");
@@ -57,7 +57,7 @@ describe("UserResolver - userById", () => {
   it("should return 404 when user not found", async () => {
     mockDb.user.findFirst.mockResolvedValue(null);
 
-    const result: UserResponse = await resolver.userById(999, adminCtx);
+    const result: UserResponse = await resolver.getUserById(999, adminCtx);
     
     expect(result.code).toBe(404);
     expect(result.message).toBe("User not found");
@@ -69,7 +69,7 @@ describe("UserResolver - userById", () => {
     const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     mockDb.user.findFirst.mockRejectedValue(new Error("Database connection failed"));
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.code).toBe(500);
     expect(result.message).toBe("Internal server error");
@@ -89,7 +89,7 @@ describe("UserResolver - userById", () => {
     
     mockDb.user.findFirst.mockResolvedValue(editorUser);
 
-    const result: UserResponse = await resolver.userById(2, adminCtx);
+    const result: UserResponse = await resolver.getUserById(2, adminCtx);
     
     expect(result.code).toBe(200);
     expect(result.user?.role).toBe(UserRole.editor);
@@ -99,7 +99,7 @@ describe("UserResolver - userById", () => {
   it("should not include password in returned user object", async () => {
     mockDb.user.findFirst.mockResolvedValue(fakeUser);
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.user).toBeDefined();
     expect(result.user).not.toHaveProperty("password");
@@ -109,7 +109,7 @@ describe("UserResolver - userById", () => {
     const adminUser: PrismaUser = { ...fakeUser, role: Role.admin };
     mockDb.user.findFirst.mockResolvedValue(adminUser);
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.code).toBe(200);
     expect(result.user?.role).toBe(UserRole.admin);
@@ -119,7 +119,7 @@ describe("UserResolver - userById", () => {
     const editorUser: PrismaUser = { ...fakeUser, role: Role.editor };
     mockDb.user.findFirst.mockResolvedValue(editorUser);
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.code).toBe(200);
     expect(result.user?.role).toBe(UserRole.editor);
@@ -129,7 +129,7 @@ describe("UserResolver - userById", () => {
     const viewUser: PrismaUser = { ...fakeUser, role: Role.view };
     mockDb.user.findFirst.mockResolvedValue(viewUser);
 
-    const result: UserResponse = await resolver.userById(1, adminCtx);
+    const result: UserResponse = await resolver.getUserById(1, adminCtx);
     
     expect(result.code).toBe(200);
     expect(result.user?.role).toBe(UserRole.view);

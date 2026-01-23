@@ -23,7 +23,7 @@ export class ProjectResolver {
   private readonly db = new PrismaClient();
 
   @Query(() => ProjectsResponse)
-  async projectList(): Promise<ProjectsResponse> {
+  async listProjects(): Promise<ProjectsResponse> {
     const projects: PrismaProjectWithSkills[] = await this.db.project.findMany({
       include: { skills: { include: { skill: true } } },
       orderBy: { id: "desc" },
@@ -37,7 +37,7 @@ export class ProjectResolver {
   }
 
   @Query(() => ProjectResponse)
-  async projectById(
+  async getProjectById(
     @Arg("id", () => Int) id: number
   ): Promise<ProjectResponse> {
     const project: PrismaProjectWithSkills | null = await this.db.project.findUnique({

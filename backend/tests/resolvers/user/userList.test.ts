@@ -7,7 +7,7 @@ import Cookies from "cookies";
 import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 import { UsersResponse } from "../../../src/types/response.types";
 
-describe("UserResolver - userList", () => {
+describe("UserResolver - listUsers", () => {
   let resolver: UserResolver;
   let mockCookies: DeepMockProxy<Cookies>;
   let baseContext: Readonly<MyContext>;
@@ -73,7 +73,7 @@ describe("UserResolver - userList", () => {
 
     prismaMock.user.findMany.mockResolvedValueOnce(usersFromDb);
 
-    const result: UsersResponse = await resolver.userList(context);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Users fetched");
@@ -87,7 +87,7 @@ describe("UserResolver - userList", () => {
   it("should return 401 if no user is authenticated", async () => {
     const context: MyContext = { ...baseContext, user: null };
 
-    const result: UsersResponse = await resolver.userList(context);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
@@ -99,7 +99,7 @@ describe("UserResolver - userList", () => {
   it("should return 403 if authenticated user is not an admin", async () => {
     const context: MyContext = { ...baseContext, user: regularUser };
 
-    const result: UsersResponse = await resolver.userList(context);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
@@ -113,7 +113,7 @@ describe("UserResolver - userList", () => {
 
     prismaMock.user.findMany.mockRejectedValueOnce(new Error("Database connection error"));
 
-    const result: UsersResponse = await resolver.userList(context);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching users");

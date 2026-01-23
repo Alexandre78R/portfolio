@@ -5,7 +5,7 @@ import { prismaMock } from "../../singleton";
 import { ExperiencesResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 
-describe("ExperienceResolver - experienceList", () => {
+describe("ExperienceResolver - listExperiences", () => {
   
   let resolver: ExperienceResolver;
 
@@ -55,7 +55,7 @@ describe("ExperienceResolver - experienceList", () => {
       [...EXPERIENCES_LIST]
     );
 
-    const result: ExperiencesResponse = await resolver.experienceList();
+    const result: ExperiencesResponse = await resolver.listExperiences();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experiences fetched");
@@ -69,7 +69,7 @@ describe("ExperienceResolver - experienceList", () => {
 
     prismaMock.experience.findMany.mockResolvedValueOnce([]);
 
-    const result: ExperiencesResponse = await resolver.experienceList();
+    const result: ExperiencesResponse = await resolver.listExperiences();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experiences fetched");
@@ -85,7 +85,7 @@ describe("ExperienceResolver - experienceList", () => {
       new Error("Database connection error during fetch")
     );
 
-    const result: ExperiencesResponse = await resolver.experienceList();
+    const result: ExperiencesResponse = await resolver.listExperiences();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching experiences");

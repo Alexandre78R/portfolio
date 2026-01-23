@@ -27,7 +27,7 @@ export class EducationResolver {
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => EducationsResponse)
-  async educationList(): Promise<EducationsResponse> {
+  async listEducations(): Promise<EducationsResponse> {
     try {
       const list: PrismaEducation[] = await this.db.education.findMany();
       return { code: 200, message: "Educations fetched", educations: list };
@@ -75,7 +75,7 @@ export class EducationResolver {
   }
 
   @Query(() => EducationResponse)
-  async educationById(
+  async getEducationById(
     @Arg("id", () => Int) id: number
   ): Promise<EducationResponse> {
     try {

@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { EducationResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
 
-describe("EducationResolver - educationById", () => {
+describe("EducationResolver - getEducationById", () => {
   let resolver: EducationResolver;
 
   const mockEducation: PrismaEducation = {
@@ -35,7 +35,7 @@ describe("EducationResolver - educationById", () => {
 
     prismaMock.education.findUnique.mockResolvedValueOnce(mockEducation);
 
-    const result: EducationResponse = await resolver.educationById(mockEducation.id);
+    const result: EducationResponse = await resolver.getEducationById(mockEducation.id);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Education fetched");
@@ -50,7 +50,7 @@ describe("EducationResolver - educationById", () => {
   it("should return 404 if the education record is not found", async (): Promise<void> => {
     prismaMock.education.findUnique.mockResolvedValueOnce(null);
 
-    const result: EducationResponse = await resolver.educationById(999);
+    const result: EducationResponse = await resolver.getEducationById(999);
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Education not found");
@@ -67,7 +67,7 @@ describe("EducationResolver - educationById", () => {
       new Error("Database query failed")
     );
 
-    const result: EducationResponse = await resolver.educationById(mockEducation.id);
+    const result: EducationResponse = await resolver.getEducationById(mockEducation.id);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching education");

@@ -5,7 +5,7 @@ import { SubItemResponse } from "../../../src/types/response.types";
 import type { SkillSubItem } from "../../../src/entities/skillSubItem.entity";
 import type { Skill as PrismaSkill, SkillCategorySkill as PrismaSkillCategorySkill, SkillCategory as PrismaSkillCategory } from "@prisma/client";
 
-describe("SkillResolver - skillById", (): void => {
+describe("SkillResolver - getSkillById", (): void => {
   let resolver: SkillResolver;
 
   const mockSkill: PrismaSkill = {
@@ -43,7 +43,7 @@ describe("SkillResolver - skillById", (): void => {
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockSkill);
     prismaMock.skillCategorySkill.findMany.mockResolvedValueOnce([mockJunctionWithCategory]);
 
-    const result: SubItemResponse = await resolver.skillById(1);
+    const result: SubItemResponse = await resolver.getSkillById(1);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill fetched successfully");
@@ -68,7 +68,7 @@ describe("SkillResolver - skillById", (): void => {
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockSkillWithoutCategory);
     prismaMock.skillCategorySkill.findMany.mockResolvedValueOnce([]);
 
-    const result: SubItemResponse = await resolver.skillById(2);
+    const result: SubItemResponse = await resolver.getSkillById(2);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill fetched successfully");
@@ -85,7 +85,7 @@ describe("SkillResolver - skillById", (): void => {
   it("should return 404 if skill does not exist", async (): Promise<void> => {
     prismaMock.skill.findUnique.mockResolvedValueOnce(null);
 
-    const result: SubItemResponse = await resolver.skillById(999);
+    const result: SubItemResponse = await resolver.getSkillById(999);
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Skill not found");
@@ -100,7 +100,7 @@ describe("SkillResolver - skillById", (): void => {
     const dbError: Error = new Error("Database connection failed");
     prismaMock.skill.findUnique.mockRejectedValueOnce(dbError);
 
-    const result: SubItemResponse = await resolver.skillById(1);
+    const result: SubItemResponse = await resolver.getSkillById(1);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to fetch skill");
@@ -113,7 +113,7 @@ describe("SkillResolver - skillById", (): void => {
     const unknownError: unknown = "Some unknown error occurred";
     prismaMock.skill.findUnique.mockRejectedValueOnce(unknownError);
 
-    const result: SubItemResponse = await resolver.skillById(1);
+    const result: SubItemResponse = await resolver.getSkillById(1);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to fetch skill");
@@ -124,7 +124,7 @@ describe("SkillResolver - skillById", (): void => {
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockSkill);
     prismaMock.skillCategorySkill.findMany.mockResolvedValueOnce([mockJunctionWithCategory]);
 
-    await resolver.skillById(42);
+    await resolver.getSkillById(42);
 
     expect(prismaMock.skill.findUnique).toHaveBeenCalledWith({ where: { id: 42 } });
   });
@@ -133,7 +133,7 @@ describe("SkillResolver - skillById", (): void => {
     prismaMock.skill.findUnique.mockResolvedValueOnce(mockSkill);
     prismaMock.skillCategorySkill.findMany.mockResolvedValueOnce([mockJunctionWithCategory]);
 
-    await resolver.skillById(1);
+    await resolver.getSkillById(1);
 
     expect(prismaMock.skillCategorySkill.findMany).toHaveBeenCalledWith({
       where: { skillId: 1 },

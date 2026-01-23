@@ -31,7 +31,7 @@ export class ThemeResolver {
   }
   
   @Query(() => ThemesResponse)
-  async themeList(@Ctx() ctx: MyContext): Promise<ThemesResponse> {
+  async listThemes(@Ctx() ctx: MyContext): Promise<ThemesResponse> {
     try {
       const isAdmin: boolean = ctx.user?.role === UserRole.admin;
 
@@ -56,7 +56,7 @@ export class ThemeResolver {
   }
 
   @Query(() => ThemeResponse)
-  async themeById(
+  async getThemeById(
     @Arg("id", () => Int) id: number,
     @Ctx() ctx: MyContext
   ): Promise<ThemeResponse> {

@@ -11,7 +11,7 @@ export class ExperienceResolver {
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => ExperiencesResponse)
-  async experienceList(): Promise<ExperiencesResponse> {
+  async listExperiences(): Promise<ExperiencesResponse> {
     try {
       const list: PrismaExperience[] = await this.db.experience.findMany();
       return { code: 200, message: "Experiences fetched", experiences: list };
@@ -22,7 +22,7 @@ export class ExperienceResolver {
   }
 
   @Query(() => ExperienceResponse)
-  async experienceById(
+  async getExperienceById(
     @Arg("id", () => Int) id: number
   ): Promise<ExperienceResponse> {
     try {

@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { EducationsResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
 
-describe("EducationResolver - educationList", () => {
+describe("EducationResolver - listEducations", () => {
   let resolver: EducationResolver;
 
   const mockEducations: PrismaEducation[] = [
@@ -54,7 +54,7 @@ describe("EducationResolver - educationList", () => {
 
     prismaMock.education.findMany.mockResolvedValueOnce(mockEducations);
 
-    const result: EducationsResponse = await resolver.educationList();
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Educations fetched");
@@ -69,7 +69,7 @@ describe("EducationResolver - educationList", () => {
     prismaMock.education.findMany.mockResolvedValueOnce([]);
 
 
-    const result: EducationsResponse = await resolver.educationList();
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Educations fetched");
@@ -85,7 +85,7 @@ describe("EducationResolver - educationList", () => {
       new Error("Database connection error")
     );
 
-    const result: EducationsResponse = await resolver.educationList();
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching educations");

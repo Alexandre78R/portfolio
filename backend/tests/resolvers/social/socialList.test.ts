@@ -7,7 +7,7 @@ type MockPrismaSocial = {
   findMany: jest.Mock<Promise<PrismaSocial[]>, [any?]>;
 };
 
-describe("SocialResolver - socialList", () => {
+describe("SocialResolver - listSocials", () => {
   let resolver: SocialResolver;
   let mockDb: { social: MockPrismaSocial };
 
@@ -43,7 +43,7 @@ describe("SocialResolver - socialList", () => {
   it("should return all socials", async (): Promise<void> => {
     mockDb.social.findMany.mockResolvedValue(fakeSocials);
 
-    const result: PrismaSocial[] = await resolver.socialList();
+    const result: PrismaSocial[] = await resolver.listSocials();
     
     expect(result).toHaveLength(2);
     expect(result[0].title).toBe("GitHub");
@@ -56,7 +56,7 @@ describe("SocialResolver - socialList", () => {
   it("should return empty array if no socials", async (): Promise<void> => {
     mockDb.social.findMany.mockResolvedValue([]);
 
-    const result: PrismaSocial[] = await resolver.socialList();
+    const result: PrismaSocial[] = await resolver.listSocials();
     
     expect(result).toHaveLength(0);
     expect(mockDb.social.findMany).toHaveBeenCalled();

@@ -5,7 +5,7 @@ import { prismaMock } from "../../singleton";
 import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
 
-describe("ExperienceResolver - experienceById", () => {
+describe("ExperienceResolver - getExperienceById", () => {
   
   let resolver: ExperienceResolver;
 
@@ -36,7 +36,7 @@ describe("ExperienceResolver - experienceById", () => {
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(EXISTING_EXPERIENCE);
 
-    const result: ExperienceResponse = await resolver.experienceById(
+    const result: ExperienceResponse = await resolver.getExperienceById(
       EXISTING_EXPERIENCE.id
     );
 
@@ -55,7 +55,7 @@ describe("ExperienceResolver - experienceById", () => {
     const NON_EXISTENT_ID: number = 999;
     prismaMock.experience.findUnique.mockResolvedValueOnce(null);
 
-    const result: ExperienceResponse = await resolver.experienceById(
+    const result: ExperienceResponse = await resolver.getExperienceById(
       NON_EXISTENT_ID
     );
 
@@ -75,7 +75,7 @@ describe("ExperienceResolver - experienceById", () => {
       new Error("Database query failed unexpectedly")
     );
 
-    const result: ExperienceResponse = await resolver.experienceById(
+    const result: ExperienceResponse = await resolver.getExperienceById(
       EXISTING_EXPERIENCE.id
     );
 

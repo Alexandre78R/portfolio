@@ -15,7 +15,7 @@ export class SkillResolver {
   }
 
   @Query(() => SubItemResponse)
-  async skillById(@Arg("id", () => Int) id: number): Promise<SubItemResponse> {
+  async getSkillById(@Arg("id", () => Int) id: number): Promise<SubItemResponse> {
     try {
       const skill: PrismaSkill | null = await this.db.skill.findUnique({ where: { id } });
       if (!skill) {

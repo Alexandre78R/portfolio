@@ -25,7 +25,7 @@ export class SkillCategoryResolver {
   }
 
   @Query(() => CategoryResponse)
-  async skillList(): Promise<CategoryResponse> {
+  async listSkillCategories(): Promise<CategoryResponse> {
     try {
       const categories: SkillCategoryWithSkills[] = await this.db.skillCategory.findMany({
         include: {
@@ -59,11 +59,11 @@ export class SkillCategoryResolver {
   }
 
   @Query(() => CategoryResponse)
-  async searchSkills(@Arg("searchTerm", () => String, { nullable: true }) searchTerm?: string): Promise<CategoryResponse> {
+  async searchSkillCategories(@Arg("searchTerm", () => String, { nullable: true }) searchTerm?: string): Promise<CategoryResponse> {
     try {
       // Si searchTerm est vide ou non fourni, retourner toutes les catégories
       if (!searchTerm || searchTerm.trim() === "") {
-        return this.skillList();
+        return this.listSkillCategories();
       }
 
       const searchLower = searchTerm.toLowerCase();
@@ -118,7 +118,7 @@ export class SkillCategoryResolver {
   }
 
   @Query(() => CategoryResponse)
-  async skillCategoryById(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
+  async getSkillCategoryById(@Arg("id", () => Int) id: number): Promise<CategoryResponse> {
     try {
       const category: SkillCategoryWithSkills | null = await this.db.skillCategory.findUnique({
         where: { id },

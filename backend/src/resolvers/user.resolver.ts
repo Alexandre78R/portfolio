@@ -27,7 +27,7 @@ export class UserResolver {
 
   @Authorized([UserRole.admin])
   @Query(() => UsersResponse)
-  async userList(@Ctx() ctx: MyContext): Promise<UsersResponse> {
+  async listUsers(@Ctx() ctx: MyContext): Promise<UsersResponse> {
     try {
       if (!ctx.user) return { code: 401, message: "Authentication required.", users: undefined };
       if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", users: undefined };
@@ -52,7 +52,7 @@ export class UserResolver {
 
   @Authorized([UserRole.admin])
   @Query(() => UserResponse)
-  async userById(
+  async getUserById(
     @Arg("id", () => Int) id: number,
     @Ctx() ctx: MyContext
   ): Promise<UserResponse> {

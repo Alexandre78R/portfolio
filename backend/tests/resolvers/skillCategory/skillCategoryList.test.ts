@@ -5,7 +5,7 @@ import { CategoryResponse } from "../../../src/types/response.types";
 import type { SkillCategoryWithSkillsDTO } from "../../../src/entities/skillCategoryWithSkillsDTO.entity";
 import type { Skill as PrismaSkill, SkillCategory as PrismaSkillCategory, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
 
-describe("SkillCategoryResolver - skillList", (): void => {
+describe("SkillCategoryResolver - listSkillCategories", (): void => {
   let resolver: SkillCategoryResolver;
 
   type SkillCategoryWithSkills = PrismaSkillCategory & {
@@ -63,7 +63,7 @@ describe("SkillCategoryResolver - skillList", (): void => {
   it("should return all skill categories with their associated skills", async (): Promise<void> => {
     prismaMock.skillCategory.findMany.mockResolvedValueOnce(mockCategories);
 
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await resolver.listSkillCategories();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Categories fetched successfully");
@@ -101,7 +101,7 @@ describe("SkillCategoryResolver - skillList", (): void => {
 
     prismaMock.skillCategory.findMany.mockResolvedValueOnce(categoriesWithEmptySkills);
 
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await resolver.listSkillCategories();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Categories fetched successfully");
@@ -114,7 +114,7 @@ describe("SkillCategoryResolver - skillList", (): void => {
   it("should return empty array if no categories exist", async (): Promise<void> => {
     prismaMock.skillCategory.findMany.mockResolvedValueOnce([]);
 
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await resolver.listSkillCategories();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Categories fetched successfully");
@@ -127,7 +127,7 @@ describe("SkillCategoryResolver - skillList", (): void => {
     const dbError: Error = new Error("Database connection failed");
     prismaMock.skillCategory.findMany.mockRejectedValueOnce(dbError);
 
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await resolver.listSkillCategories();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to fetch categories");
@@ -140,7 +140,7 @@ describe("SkillCategoryResolver - skillList", (): void => {
     const unknownError: unknown = "Some unknown error";
     prismaMock.skillCategory.findMany.mockRejectedValueOnce(unknownError);
 
-    const result: CategoryResponse = await resolver.skillList();
+    const result: CategoryResponse = await resolver.listSkillCategories();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Failed to fetch categories");
