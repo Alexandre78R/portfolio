@@ -22,6 +22,7 @@ export interface ProjectData {
   github?: string | null;
   contentDisplay?: string | undefined;
   image?: string | null;
+  video?: string | null;
   skills: ProjectSkillData[];
 }
 
@@ -55,4 +56,9 @@ export interface ExperienceData {
   month: number;
   typeEN: string;
   typeFR: string;
+}
+
+export interface SignatureData {
+  name: string;
+  description: string;
 }

@@ -124,6 +124,11 @@ export type CreateProjectInput = {
   video?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateSignatureInput = {
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type CreateSkillInput = {
   categoryId?: InputMaybe<Scalars['Int']['input']>;
   image: Scalars['String']['input'];
@@ -290,6 +295,7 @@ export type Mutation = {
   createEducation: EducationResponse;
   createExperience: ExperienceResponse;
   createProject: ProjectResponse;
+  createSignature: SignatureResponse;
   createSkill: SubItemResponse;
   createSocial: SocialResponse;
   createTheme: ThemeResponse;
@@ -299,6 +305,7 @@ export type Mutation = {
   deleteExperience: ExperienceResponse;
   deleteProject: Response;
   deleteProjectMedia: ProjectResponse;
+  deleteSignature: SignatureResponse;
   deleteSkill: SubItemResponse;
   deleteSocial: SocialResponse;
   deleteTheme: Response;
@@ -314,6 +321,7 @@ export type Mutation = {
   updateEducation: EducationResponse;
   updateExperience: ExperienceResponse;
   updateProject: ProjectResponse;
+  updateSignature: SignatureResponse;
   updateSkill: SubItemResponse;
   updateSocial: SocialResponse;
   updateTheme: ThemeResponse;
@@ -352,6 +360,11 @@ export type MutationCreateExperienceArgs = {
 
 export type MutationCreateProjectArgs = {
   data: CreateProjectInput;
+};
+
+
+export type MutationCreateSignatureArgs = {
+  data: CreateSignatureInput;
 };
 
 
@@ -397,6 +410,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteProjectMediaArgs = {
   projectId: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteSignatureArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -465,6 +483,11 @@ export type MutationUpdateExperienceArgs = {
 
 export type MutationUpdateProjectArgs = {
   data: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSignatureArgs = {
+  data: UpdateSignatureInput;
 };
 
 
@@ -550,9 +573,12 @@ export type Query = {
   generateCaptcha: CaptchaResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
   getGlobalStats: GlobalStatsResponse;
+  getSignatureById: SignatureResponse;
   getTopUsedSkills: TopSkillsResponse;
   getUsersRoleDistribution: UserRolePercent;
+  listAllSignatures: SignaturesResponse;
   listBackupFiles: BackupFilesResponse;
+  listSignatures: SignaturesResponse;
   me?: Maybe<User>;
   projectById: ProjectResponse;
   projectList: ProjectsResponse;
@@ -583,6 +609,18 @@ export type QueryEducationListPaginationArgs = {
 
 export type QueryExperienceByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSignatureByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryListSignaturesArgs = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -632,6 +670,28 @@ export enum Role {
   Editor = 'editor',
   View = 'view'
 }
+
+export type Signature = {
+  __typename?: 'Signature';
+  description: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type SignatureResponse = {
+  __typename?: 'SignatureResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  signature?: Maybe<Signature>;
+};
+
+export type SignaturesResponse = {
+  __typename?: 'SignaturesResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  signatures?: Maybe<Array<Signature>>;
+  total?: Maybe<Scalars['Int']['output']>;
+};
 
 export type SkillCategoryWithSkillsDto = {
   __typename?: 'SkillCategoryWithSkillsDTO';
@@ -777,6 +837,12 @@ export type UpdateProjectInput = {
   title?: InputMaybe<Scalars['String']['input']>;
   typeDisplay?: InputMaybe<Scalars['String']['input']>;
   video?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSignatureInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {

@@ -19,7 +19,7 @@ interface JwtPayload {
   role: UserRole;
 }
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+const secret: Uint8Array = new TextEncoder().encode(process.env.JWT_SECRET);
 
 @Resolver(() => User)
 export class UserResolver {

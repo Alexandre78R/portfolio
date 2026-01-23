@@ -41,6 +41,7 @@ const cleanDatabase = async (): Promise<void> => {
     await prisma.user.deleteMany();
     await prisma.theme.deleteMany();
     await prisma.social.deleteMany();
+    await prisma.signature.deleteMany();
 
     console.log("✅ Data deleted.");
 
@@ -65,7 +66,8 @@ const cleanDatabase = async (): Promise<void> => {
     await prisma.$executeRawUnsafe("ALTER TABLE `User` AUTO_INCREMENT = 1;");
     await prisma.$executeRawUnsafe("ALTER TABLE `themes` AUTO_INCREMENT = 1;");
     await prisma.$executeRawUnsafe("ALTER TABLE `socials` AUTO_INCREMENT = 1;");
-
+    await prisma.$executeRawUnsafe("ALTER TABLE `signature` AUTO_INCREMENT = 1;");
+    
     console.log("✅ Auto-increments reset.");
     await prisma.$executeRawUnsafe("SET FOREIGN_KEY_CHECKS = 1;");
 

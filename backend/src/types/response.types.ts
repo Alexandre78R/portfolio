@@ -9,6 +9,7 @@ import { User } from "../entities/user.entity";
 import { Theme } from "../entities/theme.entity";
 import { Social } from "../entities/social.entity";
 import { Message } from "../entities/message.entity";
+import { Signature } from "../entities/signature.entity";
 
 @ObjectType()
 export class Response {
@@ -240,4 +241,19 @@ export class MessageResponse extends Response {}
 export class MessagesResponse extends Response {
   @Field(() => [Message], { nullable: true })
   messages?: Message[];
+}
+
+@ObjectType()
+export class SignatureResponse extends Response {
+  @Field(() => Signature, { nullable: true })
+  signature?: Signature;
+}
+
+@ObjectType()
+export class SignaturesResponse extends Response {
+  @Field(() => [Signature], { nullable: true })
+  signatures?: Signature[];
+
+  @Field(() => Int, { nullable: true })
+  total?: number;
 }

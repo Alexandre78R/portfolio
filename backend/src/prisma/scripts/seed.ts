@@ -6,6 +6,7 @@ import {
   Theme,
   SkillCategorySkill,
   Social,
+  Signature,
 } from "@prisma/client";
 import readline from "readline";
 
@@ -15,6 +16,7 @@ import { experiencesData } from "../seed/experiencesData";
 import { educationsData } from "../seed/educationsData";
 import { themesData } from "../seed/themesData";
 import { socialsData } from "../seed/socialsData";
+import { signaturesData } from "../seed/signaturesData";
 
 import type {
   SkillCategoryData,
@@ -22,6 +24,7 @@ import type {
   ProjectData,
   EducationData,
   ExperienceData,
+  SignatureData,
 } from "../../types/seed.types";
 
 // Prisma client
@@ -36,10 +39,6 @@ const rl: readline.Interface = readline.createInterface({
 // Ask helper
 const ask = (q: string): Promise<string> =>
   new Promise<string>((resolve) => rl.question(q, resolve));
-
-/* =========================
- * Theme mapping
- * ========================= */
 
 type ThemeSeedInput = Omit<Theme, "id">;
 
@@ -94,6 +93,7 @@ async function seed(): Promise<void> {
     await prisma.user.deleteMany();
     await prisma.theme.deleteMany();
     await prisma.social.deleteMany();
+    await prisma.signature.deleteMany();
     for (const key of Object.keys(themesData) as (keyof typeof themesData)[]) {
       const themeData = themesData[key];
 
@@ -236,7 +236,17 @@ async function seed(): Promise<void> {
       });
       console.log(`🔗 Social seeded: ${createdSocial.title}`);
     }
+for (const sig of signaturesData as SignatureData[]) {
+      const createdSignature: Signature = await prisma.signature.create({
+        data: {
+          name: sig.name,
+          description: sig.description,
+        },
+      });
+      console.log(`✍️ Signature seeded: ${createdSignature.name}`);
+    }
 
+    
     console.log("✅ Database seeded successfully.");
   } catch (error: unknown) {
     if (error instanceof Error) {

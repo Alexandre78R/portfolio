@@ -59,6 +59,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/thomassauveton/fastnews",
     contentDisplay: "fastNewsApplication.mp4",
+    video: "/uploads/videos/fastNewsApplication.mp4",
+    image: null,
     skills: [
       {
         name: "JavaScript",
@@ -112,6 +114,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/CV-Hermione",
     contentDisplay: "hermione.mp4",
+    video: "/uploads/videos/hermione.mp4",
+    imge: null,
     skills: [
       {
         name: "JavaScript",
@@ -140,6 +144,8 @@ export const projectsData = [
     typeDisplay: "image",
     github: "https://github.com/Alexandre78R/NotesApp",
     contentDisplay: "NotesApp.png",
+    image: "/uploads/images/notesApp.png",
+    video: null,
     skills: [
       {
         name: "JavaScript",
@@ -198,6 +204,8 @@ export const projectsData = [
     typeDisplay: "image",
     github: "https://github.com/Alexandre78R/tchat",
     contentDisplay: "Tchat.png",
+    image: "/uploads/images/tchat.png",
+    video: null,
     skills: [
       {
         name: "JavaScript",
@@ -241,6 +249,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/Guess",
     contentDisplay: "guessWhatApp.mp4",
+    video: "/uploads/videos/guessWhatApp.mp4",
+    image: null,
     skills: [
       {
         name: "JavaScript",
@@ -299,6 +309,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/WonderMatch",
     contentDisplay: "wonderMatch.mp4",
+    video: "/uploads/videos/wonderMatch.mp4",
+    image: null,
     skills: [
       {
         name: "JavaScript",
@@ -342,6 +354,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/makesense-client",
     contentDisplay: "makesense.mp4",
+    video: "/uploads/videos/makesense.mp4",
+    image: null,
     skills: [
       {
         name: "JavaScript",
@@ -405,6 +419,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/WildCodeSchool/2309-wns-jaune-wild-code-hub",
     contentDisplay: "wildCodeHub.mp4",
+    video: "/uploads/videos/wildCodeHub.mp4",
+    image: null, 
     skills: [
       {
         name: "TypeScript",
@@ -493,6 +509,8 @@ export const projectsData = [
     typeDisplay: "image",
     github: "https://github.com/Alexandre78R/portfolio",
     contentDisplay: "Portfolio.png",
+    image: "/uploads/images/portfolio.png",
+    video: null,
     skills: [
       {
         name: "TypeScript",
@@ -596,6 +614,8 @@ export const projectsData = [
     typeDisplay: "video",
     github: "https://github.com/Alexandre78R/Project-DailyLog-Angular",
     contentDisplay: "dailyLog.mp4",
+    video: "/uploads/videos/dailyLog.mp4",
+    image: null,
     skills: [
       {
         name: "TypeScript",

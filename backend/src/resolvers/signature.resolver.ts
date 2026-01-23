@@ -243,7 +243,7 @@ export class SignatureResolver {
       }
 
       if (
-        data.name &&
+        data.name !== undefined &&
         data.name.trim().length === 0
       ) {
         return {
@@ -253,7 +253,7 @@ export class SignatureResolver {
       }
 
       if (
-        data.description &&
+        data.description !== undefined &&
         data.description.trim().length === 0
       ) {
         return {
