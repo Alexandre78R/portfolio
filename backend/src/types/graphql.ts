@@ -565,38 +565,33 @@ export type ProjectsResponse = {
 export type Query = {
   __typename?: 'Query';
   cvUrl: Scalars['String']['output'];
-  educationById: EducationResponse;
-  educationList: EducationsResponse;
   educationListPagination: EducationsResponse;
-  experienceById: ExperienceResponse;
-  experienceList: ExperiencesResponse;
   generateCaptcha: CaptchaResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
+  getEducationById: EducationResponse;
+  getExperienceById: ExperienceResponse;
   getGlobalStats: GlobalStatsResponse;
+  getProjectById: ProjectResponse;
   getSignatureById: SignatureResponse;
+  getSkillById: SubItemResponse;
+  getSkillCategoryById: CategoryResponse;
+  getSocialById: SocialResponse;
+  getThemeById: ThemeResponse;
   getTopUsedSkills: TopSkillsResponse;
+  getUserById: UserResponse;
   getUsersRoleDistribution: UserRolePercent;
   listAllSignatures: SignaturesResponse;
   listBackupFiles: BackupFilesResponse;
+  listEducations: EducationsResponse;
+  listExperiences: ExperiencesResponse;
+  listProjects: ProjectsResponse;
   listSignatures: SignaturesResponse;
+  listSkillCategories: CategoryResponse;
+  listSocials: Array<Social>;
+  listThemes: ThemesResponse;
+  listUsers: UsersResponse;
   me?: Maybe<User>;
-  projectById: ProjectResponse;
-  projectList: ProjectsResponse;
-  searchSkills: CategoryResponse;
-  skillById: SubItemResponse;
-  skillCategoryById: CategoryResponse;
-  skillList: CategoryResponse;
-  socialById: SocialResponse;
-  socialList: Array<Social>;
-  themeById: ThemeResponse;
-  themeList: ThemesResponse;
-  userById: UserResponse;
-  userList: UsersResponse;
-};
-
-
-export type QueryEducationByIdArgs = {
-  id: Scalars['Int']['input'];
+  searchSkillCategories: CategoryResponse;
 };
 
 
@@ -607,12 +602,47 @@ export type QueryEducationListPaginationArgs = {
 };
 
 
-export type QueryExperienceByIdArgs = {
+export type QueryGetEducationByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetExperienceByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetProjectByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
 
 export type QueryGetSignatureByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSkillByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSkillCategoryByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSocialByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetThemeByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -624,38 +654,8 @@ export type QueryListSignaturesArgs = {
 };
 
 
-export type QueryProjectByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QuerySearchSkillsArgs = {
+export type QuerySearchSkillCategoriesArgs = {
   searchTerm?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QuerySkillByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QuerySkillCategoryByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QuerySocialByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryThemeByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type QueryUserByIdArgs = {
-  id: Scalars['Int']['input'];
 };
 
 export type Response = {
