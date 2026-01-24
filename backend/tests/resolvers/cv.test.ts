@@ -12,10 +12,10 @@ jest.mock("fs");
 
 describe("CVResolver", (): void => {
   let cvResolver: CVResolver;
-  const MOCK_UPLOAD_DIR: string = path.resolve(__dirname, "../../uploads/cv");
+  const MOCK_UPLOAD_DIR: string = path.resolve(__dirname, "../../doc/cv");
   const MOCK_CV_FILENAME: string = "Alexandre-Renard-CV.pdf";
   const MOCK_CV_PATH: string = path.join(MOCK_UPLOAD_DIR, MOCK_CV_FILENAME);
-  const MOCK_CV_URL: string = `/api/uploads/cv/${MOCK_CV_FILENAME}`;
+  const MOCK_CV_URL: string = `/api/doc/cv/${MOCK_CV_FILENAME}`;
 
   /**
    * Creates a mock WriteStream for testing file upload scenarios
@@ -91,7 +91,7 @@ describe("CVResolver", (): void => {
       const url: string = cvResolver.cvUrl();
 
       expect(url).toBe(MOCK_CV_URL);
-      expect(url).toMatch(/^\/api\/uploads\/cv\//);
+      expect(url).toMatch(/^\/api\/doc\/cv\//);
       expect(url).toContain(MOCK_CV_FILENAME);
       expect(mockExistsSync).toHaveBeenCalledWith(MOCK_CV_PATH);
       expect(mockExistsSync).toHaveBeenCalledTimes(1);
@@ -110,9 +110,9 @@ describe("CVResolver", (): void => {
   describe("uploadCV", (): void => {
     describe("successful upload scenarios", (): void => {
       it("should upload a valid PDF file successfully when folder does not exist", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockMkdirSync: jest.MockedFunction<typeof fs.mkdirSync> = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(false);
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
@@ -127,7 +127,7 @@ describe("CVResolver", (): void => {
         expect(result.code).toBe(200);
         expect(result.message).toBe("CV uploaded successfully!");
         expect(result.url).toBe(MOCK_CV_URL);
-        expect(result.url).toMatch(/^\/api\/uploads\/cv\//);
+        expect(result.url).toMatch(/^\/api\/doc\/cv\//);
         expect(mockExistsSync).toHaveBeenCalledWith(MOCK_UPLOAD_DIR);
         expect(mockMkdirSync).toHaveBeenCalledWith(MOCK_UPLOAD_DIR, { recursive: true });
         expect(mockMkdirSync).toHaveBeenCalledTimes(1);
@@ -136,9 +136,9 @@ describe("CVResolver", (): void => {
       });
 
       it("should upload a valid PDF file successfully when folder already exists", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockMkdirSync: jest.MockedFunction<typeof fs.mkdirSync> = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(false);
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
@@ -195,8 +195,8 @@ describe("CVResolver", (): void => {
 
     describe("error scenarios", (): void => {
       it("should return 500 error if write stream fails", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(true);
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf");
@@ -214,8 +214,8 @@ describe("CVResolver", (): void => {
       });
 
       it("should handle stream pipe error gracefully", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(true);
         const mockFile: FileUpload = createMockFileUpload("corrupted.pdf", "application/pdf");
@@ -233,8 +233,8 @@ describe("CVResolver", (): void => {
 
     describe("edge cases", (): void => {
       it("should handle PDF file with different encoding", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(false);
         const mockFile: FileUpload = createMockFileUpload("test.pdf", "application/pdf", "binary");
@@ -250,8 +250,8 @@ describe("CVResolver", (): void => {
       });
 
       it("should handle PDF file with uppercase extension", async (): Promise<void> => {
-        const mockExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
-        const mockCreateWriteStream = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
+        const mockExistsSync: jest.MockedFunction<typeof fs.existsSync> = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+        const mockCreateWriteStream: jest.MockedFunction<typeof fs.createWriteStream> = fs.createWriteStream as jest.MockedFunction<typeof fs.createWriteStream>;
 
         const mockWriteStream: WriteStream = createMockWriteStream(false);
         const mockFile: FileUpload = createMockFileUpload("TEST.PDF", "application/pdf");
