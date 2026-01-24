@@ -11,32 +11,29 @@ import Lang from "@/lang/typeLang";
 
 const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
   
-  const [expandedText, setExpandedText] = useState<Set<string>>(new Set());
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const [isClient, setIsClient] = useState<boolean>(false);
+  const [expandedText, setExpandedText]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
+  const [expandedCards, setExpandedCards]: [Set<string>, React.Dispatch<React.SetStateAction<Set<string>>>] = useState<Set<string>>(new Set());
+  const [isClient, setIsClient]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const { translations }: { translations: Lang } = useLang();
 
   useEffect(() => {
     if (project) {
       setIsClient(true);
-      // console.log("Project data:", project);
-      // console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
-      // console.log("${process.env.NEXT_PUBLIC_API_URL}/api${project.video}:", `${process.env.NEXT_PUBLIC_API_URL}/api${project.video}`);
     }
   }, [project]);
 
-  const handleExpandClick = (cardId: string): void => {
+  const handleExpandClick: (cardId: string) => void = (cardId: string): void => {
     setExpandedCards(prev => {
-      const newSet = new Set(prev);
+      const newSet: Set<string> = new Set(prev);
       prev.has(cardId) ? newSet.delete(cardId) : newSet.add(cardId);
       return newSet;
     });
   };
 
-  const handleExpandTextClick = (cardId: string): void => {
+  const handleExpandTextClick: (cardId: string) => void = (cardId: string): void => {
     setExpandedText(prev => {
-      const newSet = new Set(prev);
+      const newSet: Set<string> = new Set(prev);
       prev.has(cardId) ? newSet.delete(cardId) : newSet.add(cardId);
       return newSet;
     });

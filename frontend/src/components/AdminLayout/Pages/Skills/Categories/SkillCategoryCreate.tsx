@@ -22,7 +22,9 @@ import {
   useCreateSkillCategoryMutation,
   CreateCategoryInput,
   useGetSkillsListQuery,
+  CreateSkillCategoryMutation,
 } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 interface SkillCategoryFormWithSkills extends CreateCategoryInput {
   skillIds?: number[];
@@ -36,10 +38,10 @@ const defaultForm: SkillCategoryFormWithSkills = {
 
 const SkillCategoryCreate = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
-  const [form, setForm] = useState<SkillCategoryFormWithSkills>(defaultForm);
-  const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([]);
+  const [form, setForm]: [SkillCategoryFormWithSkills, React.Dispatch<React.SetStateAction<SkillCategoryFormWithSkills>>] = useState<SkillCategoryFormWithSkills>(defaultForm);
+  const [selectedSkillIds, setSelectedSkillIds]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
 
   const [createCategoryMutation, { loading }] = useCreateSkillCategoryMutation();
 
@@ -47,10 +49,10 @@ const SkillCategoryCreate = (): ReactElement => {
     fetchPolicy: "cache-and-network",
   });
 
-    const allSkillsOptions = useMemo<SelectOption<number>[]>(() => {
+    const allSkillsOptions: SelectOption<number>[] = useMemo<SelectOption<number>[]>(() => {
     if (!skillsData?.listSkillCategories?.categories) return [];
 
-    const map = new Map<number, SelectOption<number>>();
+    const map: Map<number, SelectOption<number>> = new Map<number, SelectOption<number>>();
 
     skillsData.listSkillCategories.categories.forEach(category => {
         category?.skills?.forEach(skill => {
@@ -96,7 +98,7 @@ const SkillCategoryCreate = (): ReactElement => {
           submitData.skillIds = selectedSkillIds;
         }
 
-        const res = await createCategoryMutation({
+        const res: FetchResult<CreateSkillCategoryMutation> = await createCategoryMutation({
           variables: { data: submitData },
         });
 
@@ -163,7 +165,6 @@ const SkillCategoryCreate = (): ReactElement => {
           required
         />
 
-        {/* ✅ PAS de prop onSearch - le filtrage se fait localement dans le composant */}
         {skillsLoading ? (
           <div className="text-center py-4">Loading skills...</div>
         ) : allSkillsOptions.length > 0 ? (

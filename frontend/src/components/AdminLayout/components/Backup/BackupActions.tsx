@@ -8,7 +8,7 @@ interface BackupActionsProps {
   onDelete: (fileName: string) => void;
 }
 
-const BackupActions = ({
+const BackupActions: React.FC<BackupActionsProps> = ({
   row,
   onDelete,
 }: BackupActionsProps): React.ReactElement => {

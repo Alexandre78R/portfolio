@@ -16,7 +16,7 @@ export interface LangProviderProps {
   children: ReactNode;
 }
 
-const LangContext = createContext<LangContextType>({
+const LangContext: React.Context<LangContextType> = createContext<LangContextType>({
   lang: "fr",
   setLang: () => {},
   translations: fr,
@@ -24,19 +24,19 @@ const LangContext = createContext<LangContextType>({
 });
 
 export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
-  const [lang, setLang] = useState<LangKey>("fr");
-  const [translations, setTranslations] = useState<Lang>(fr);
+  const [lang, setLang]: [LangKey, React.Dispatch<React.SetStateAction<LangKey>>] = useState<LangKey>("fr");
+  const [translations, setTranslations]: [Lang, React.Dispatch<React.SetStateAction<Lang>>] = useState<Lang>(fr);
   const listLang: LangKey[] = ["fr", "en"];
-  const [checkLang, setCheckLang] = useState(false);
+  const [checkLang, setCheckLang]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
 
-  const switchLang = (newLang: LangKey) => {
+  const switchLang: (newLang: LangKey) => void = (newLang: LangKey) => {
     setLang(newLang);
     setTranslations(newLang === "fr" ? fr : en);
     localStorage.setItem("lang", newLang);
   };
 
   useEffect(() => {
-    const localLang = localStorage.getItem("lang") as LangKey | null;
+    const localLang: LangKey | null = localStorage.getItem("lang") as LangKey | null;
     if (localLang && !checkLang) {
       switchLang(listLang.includes(localLang) ? localLang : lang);
       setCheckLang(true);
@@ -45,7 +45,7 @@ export const LangProvider: React.FC<LangProviderProps> = ({ children }) => {
     }
   }, [lang]);
 
-  const value = useMemo(() => ({ lang, setLang, translations, listLang }), [lang, translations]);
+  const value: LangContextType = useMemo(() => ({ lang, setLang, translations, listLang }), [lang, translations]);
 
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
 };

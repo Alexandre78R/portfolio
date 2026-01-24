@@ -8,15 +8,15 @@ import TextAdmin from "../../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
-const SkillCategoriesList = (): ReactElement => {
+const SkillCategoriesList: React.FC = (): ReactElement => {
   const { data, loading, error, refetch } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
   });
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [editCategory, setEditCategory] = useState<SkillCategoryRow | null>(null);
-  const [deleteCategoryId, setDeleteCategoryId] = useState<number | null>(null);
+  const [editCategory, setEditCategory]: [SkillCategoryRow | null, React.Dispatch<React.SetStateAction<SkillCategoryRow | null>>] = useState<SkillCategoryRow | null>(null);
+  const [deleteCategoryId, setDeleteCategoryId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);
 
   if (loading) return <LoadingCustom />;
 

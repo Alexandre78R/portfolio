@@ -16,7 +16,7 @@ const useCustomToast = () => {
     setAlerts((prev) => [...prev, { type, message }]);
   };
 
-  const getToastOptions = (type: AlertType): ToastOptions => {
+  const getToastOptions: (type: AlertType) => ToastOptions = (type: AlertType): ToastOptions => {
     const baseStyles: ToastOptions = {
       position: "top-right",
       autoClose: 3500,
@@ -68,7 +68,7 @@ const useCustomToast = () => {
   useEffect(() => {
     if (alerts.length === 0) return;
 
-    const { type, message } = alerts[0];
+    const { type, message }: Alert = alerts[0];
 
     if (toast[type]) toast[type](message, getToastOptions(type));
     else toast.error(`ERROR: Alert type "${type}" does not exist!`, getToastOptions("error"));

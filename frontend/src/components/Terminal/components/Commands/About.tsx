@@ -4,7 +4,7 @@ import { Message } from "../Message";
 import type Lang from "@/lang/typeLang";
 
 const About = (): JSX.Element => {
-  const { translations } = useLang() as { translations: Lang };
+  const { translations }: { translations: Lang } = useLang();
 
   return (
     <Message>

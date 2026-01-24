@@ -23,34 +23,34 @@ const Contact: React.FC = (): React.ReactElement => {
 
   const [sendContact] = useSendContactMutation();
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData]: [FormData, React.Dispatch<React.SetStateAction<FormData>>] = useState<FormData>({
     email: "",
     object: "",
     message: "",
   });
 
-  const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] = useState<boolean>(false);
+  const [captchaValid, setCaptchaValid]: [boolean | null, React.Dispatch<React.SetStateAction<boolean | null>>] = useState<boolean | null>(null);
+  const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
+  const handleOpen: () => void = (): void => setOpen(true);
+  const handleClose: () => void = (): void => setOpen(false);
 
-  const handleCaptchaValidation = (isValid: boolean): void => {
+  const handleCaptchaValidation: (isValid: boolean) => void = (isValid: boolean): void => {
     setCaptchaValid(isValid);
   };
 
-  const handleInputChange = (
+  const handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    const { id, value } = e.target;
+    const { id, value }: { id: string; value: string } = e.target;
     setFormData(prevData => ({
       ...prevData,
       [id]: value,
     }));
   };
 
-  const handleInputChangeWrapper = (
+  const handleInputChangeWrapper: (value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     if (typeof value === 'string') {
@@ -90,7 +90,7 @@ const Contact: React.FC = (): React.ReactElement => {
     });
   }, [captchaValid, formData, sendContact, showAlert, translations]);
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>): void => {
+  const handleClick: (e: MouseEvent<HTMLButtonElement>) => void = (e: MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
 
     const { email, object, message } : FormData = formData;

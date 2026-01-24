@@ -14,7 +14,7 @@ export interface AdminLayoutProps {
 
 export type Role = 'admin' | 'editor' | 'view' | 'unknown';
 
-const AdminLayout = ({ children }: AdminLayoutProps): ReactElement => {
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }: AdminLayoutProps): ReactElement => {
   const pathname: string = usePathname() ?? '';
   const router: ReturnType<typeof useRouter> = useRouter();
 
@@ -27,8 +27,8 @@ const AdminLayout = ({ children }: AdminLayoutProps): ReactElement => {
     return segments.slice(adminIndex + 1).join('/') || 'dashboard';
   }, [pathname])
 
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-  const [openMenus, setOpenMenus] = useState<string[]>([]);
+  const [sidebarOpen, setSidebarOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [openMenus, setOpenMenus]: [string[], React.Dispatch<React.SetStateAction<string[]>>] = useState<string[]>([]);
 
   useEffect(() => {
     const parent: NavItem | undefined = navigation.find(item =>
@@ -37,10 +37,10 @@ const AdminLayout = ({ children }: AdminLayoutProps): ReactElement => {
     if (parent && !openMenus.includes(parent.key)) {
       setOpenMenus(prev => [...prev, parent.key])
     }
-  }, [currentTab, openMenus])
+  }, [currentTab, openMenus, navigation])
 
   const filteredNavigation: NavItem[] = useMemo(() => {
-    const isAllowed = (roles?: Role[]): boolean => !roles || roles.includes(role)
+    const isAllowed: (roles?: Role[]) => boolean = (roles?: Role[]): boolean => !roles || roles.includes(role)
 
     return navigation.map(item => ({
       ...item,
@@ -52,7 +52,7 @@ const AdminLayout = ({ children }: AdminLayoutProps): ReactElement => {
     }))
   }, [role]);
 
-  const handleSetActiveTab = (key: string): void => {
+  const handleSetActiveTab: (key: string) => void = (key: string): void => {
     const parent: NavItem | undefined = filteredNavigation.find(item =>
       item.children?.some(child => child.key === key)
     )

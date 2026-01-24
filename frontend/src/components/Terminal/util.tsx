@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export const generateTabs = (num = 0): string => {
+export const generateTabs: (num?: number) => string = (num = 0): string => {
   let tabs = "\xA0\xA0";
   for (let i = 0; i < num; i++) {
     tabs += "\xA0";
@@ -8,7 +8,11 @@ export const generateTabs = (num = 0): string => {
   return tabs;
 };
 
-export const checkRedirect = (
+export const checkRedirect: (
+  rerender: boolean,
+  currentCommand: string[],
+  command: string
+) => boolean = (
   rerender: boolean,
   currentCommand: string[],
   command: string
@@ -20,16 +24,23 @@ export const checkRedirect = (
   currentCommand.length < 4 && // if num of arg is valid (not `projects go 1 sth`)
   _.includes([1, 2, 3, 4], parseInt(currentCommand[2])); // arg last part is one of id
 
-export const getCurrentCmdArry = (history: string[]) =>
+export const getCurrentCmdArry: (history: string[]) => string[] = (history: string[]) =>
   _.split(history[0].trim(), " ");
 
-export const isArgInvalid = (
+export const isArgInvalid: (
   arg: string[],
   action: string,
   options: string[]
-) => arg[0] !== action || !_.includes(options, arg[1]) || arg.length > 2;
-
-export const checkThemeSwitch = (
+) => boolean = (
+  arg: string[],
+  action: string,
+  options: string[]
+): boolean => arg[0] !== action || !_.includes(options, arg[1]) || arg.length > 2;
+export const checkThemeSwitch: (
+  rerender: boolean,
+  currentCommand: string[],
+  themes: string[]
+) => boolean = (
   rerender: boolean,
   currentCommand: string[],
   themes: string[]
@@ -40,7 +51,11 @@ export const checkThemeSwitch = (
   currentCommand.length > 2 && // current command has arg
   _.includes(themes, currentCommand[2]); // arg last part is one of id
 
-export const checkLangSwitch = (
+export const checkLangSwitch: (
+  rerender: boolean,
+  currentCommand: string[],
+  lang: string[]
+) => boolean = (
   rerender: boolean,
   currentCommand: string[],
   lang: string[]

@@ -25,7 +25,7 @@ interface EducationTableProps {
   onDelete: (educationId: number) => void;
 }
 
-const EducationTable = ({
+const EducationTable: React.FC<EducationTableProps> = ({
   educations,
   translations,
   onEdit,

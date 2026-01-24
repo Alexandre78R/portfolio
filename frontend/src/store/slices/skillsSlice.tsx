@@ -1,3 +1,4 @@
+import Lang from "@/lang/typeLang";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type SkillSubItem = {
@@ -28,8 +29,8 @@ const skillsSlice = createSlice({
     setSkills(state, action: PayloadAction<Skill[]>) {
       state.dataSkills = action.payload;
     },
-    updateSkillCategories(state, action: PayloadAction<string>) {
-      const lang = action.payload;
+    updateSkillCategories(state, action: PayloadAction<Lang["file"]>) {
+      const lang: Lang["file"] = action.payload;
       state.dataSkills = state.dataSkills.map((skill) => ({
         ...skill,
         category: lang === "fr" ? skill.categoryFR : skill.categoryEN,

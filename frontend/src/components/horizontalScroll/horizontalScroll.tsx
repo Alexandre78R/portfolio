@@ -17,47 +17,47 @@ const HorizontalScroll: React.FC<Props> = ({
   category,
   testId,
 }): React.ReactElement => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [startX, setStartX] = useState<number>(0);
-  const [scrollLeft, setScrollLeft] = useState<number>(0);
-  const [isClickOnImage, setIsClickOnImage] = useState<boolean>(false);
-  const [isAtStart, setIsAtStart] = useState<boolean>(true);
-  const [isAtEnd, setIsAtEnd] = useState<boolean>(false);
-  const [isScrollable, setIsScrollable] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const containerRef: React.RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [startX, setStartX]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(0);
+  const [scrollLeft, setScrollLeft]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(0);
+  const [isClickOnImage, setIsClickOnImage]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [isAtStart, setIsAtStart]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(true);
+  const [isAtEnd, setIsAtEnd]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [isScrollable, setIsScrollable]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(0);
 
-  const itemWidth = 365;
+  const itemWidth: number = 365;
 
-  const scrollToIndex = (index: number) => {
-    const container = containerRef.current;
+  const scrollToIndex: (index: number) => void = (index: number) => {
+    const container: HTMLDivElement | null = containerRef.current;
     if (container) {
-      const newScrollLeft = index * itemWidth;
+      const newScrollLeft: number = index * itemWidth;
       container.scrollTo({ left: newScrollLeft, behavior: "smooth" });
     }
   };
 
-  const handleScrollLeft = (): void => {
+  const handleScrollLeft: () => void = (): void => {
     if (activeIndex > 0) {
       setActiveIndex((prevIndex) => {
-        const newIndex = prevIndex - 1;
+        const newIndex: number = prevIndex - 1;
         scrollToIndex(newIndex);
         return newIndex;
       });
     }
   };
 
-  const handleScrollRight = (): void => {
+  const handleScrollRight: () => void = (): void => {
     if (activeIndex < data.length - 1) {
       setActiveIndex((prevIndex) => {
-        const newIndex = prevIndex + 1;
+        const newIndex: number = prevIndex + 1;
         scrollToIndex(newIndex);
         return newIndex;
       });
     }
   };
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>): void => {
+  const handleMouseDown: (event: React.MouseEvent<HTMLDivElement>) => void = (event: React.MouseEvent<HTMLDivElement>): void => {
     setIsDragging(true);
     setStartX(event.pageX - containerRef.current!.offsetLeft);
     setScrollLeft(containerRef.current!.scrollLeft);
@@ -67,22 +67,22 @@ const HorizontalScroll: React.FC<Props> = ({
     }
   };
 
-  const handleMouseMove = (event: MouseEvent): void => {
+  const handleMouseMove: (event: MouseEvent) => void = (event: MouseEvent): void => {
     if (!isDragging || isClickOnImage) return;
     const x: number = event.pageX - containerRef.current!.offsetLeft;
     const walk: number = (x - startX) * 1.0; // Vitesse du défilement
     containerRef.current!.scrollLeft = scrollLeft - walk;
   };
 
-  const handleMouseUp = (): void => {
+  const handleMouseUp: () => void = (): void => {
     setIsDragging(false);
     setIsClickOnImage(false);
   };
 
-  const checkScrollPosition = (): void => {
-    const container = containerRef.current;
+  const checkScrollPosition: () => void = (): void => {
+    const container: HTMLDivElement | null = containerRef.current;
     if (container) {
-      const isScrollableContent = container.scrollWidth > container.clientWidth;
+      const isScrollableContent: boolean = container.scrollWidth > container.clientWidth;
       setIsScrollable(isScrollableContent);
       setIsAtStart(container.scrollLeft === 0);
       setIsAtEnd(
@@ -92,7 +92,7 @@ const HorizontalScroll: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    const handleGlobalMouseUp = (): void => {
+    const handleGlobalMouseUp: () => void = (): void => {
       if (isDragging) {
         setIsDragging(false);
         setIsClickOnImage(false);
@@ -109,7 +109,7 @@ const HorizontalScroll: React.FC<Props> = ({
   }, [isDragging]);
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container: HTMLDivElement | null = containerRef.current;
     if (container) {
       container.addEventListener("mousedown", (e) =>
         handleMouseDown(e as unknown as React.MouseEvent<HTMLDivElement>)
@@ -131,7 +131,7 @@ const HorizontalScroll: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const timeoutId: NodeJS.Timeout = setTimeout(() => {
       checkScrollPosition();
     }, 100);
 
@@ -139,7 +139,7 @@ const HorizontalScroll: React.FC<Props> = ({
   }, [data]);
 
   useEffect(() => {
-    const container = containerRef.current;
+    const container: HTMLDivElement | null = containerRef.current;
     if (container) {
       if (isDragging && !isClickOnImage) {
         container.addEventListener("mousemove", handleMouseMove);

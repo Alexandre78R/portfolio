@@ -5,7 +5,9 @@ import Lang from "@/lang/typeLang";
 import {
   useDeleteSocialMutation,
   GetSocialsListQuery,
+  DeleteSocialMutation,
 } from "@/types/graphql";
+import { FetchResult } from "@apollo/client/link/core/types";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 
 interface SocialDeleteDialogProps {
@@ -16,25 +18,25 @@ interface SocialDeleteDialogProps {
   >;
 }
 
-const SocialDeleteDialog = ({
+const SocialDeleteDialog: React.FC<SocialDeleteDialogProps> = ({
   socialId,
   onClose,
   onRefresh,
 }: SocialDeleteDialogProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const [deleteSocialMutation] = useDeleteSocialMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const handleConfirm = async (): Promise<void> => {
+  const handleConfirm: () => Promise<void> = async (): Promise<void> => {
     if (!socialId) return;
 
     setLoading(true);
 
     try {
-      const { data } = await deleteSocialMutation({
+      const { data }: FetchResult<DeleteSocialMutation> = await deleteSocialMutation({
         variables: { id: socialId },
       });
 

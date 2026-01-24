@@ -7,20 +7,20 @@ import type Lang  from "@/lang/typeLang";
 
 type CanonicalState = string;
 
-const getWindowOrigin = (): string => {
+const getWindowOrigin: () => string = (): string => {
   if (typeof window === "undefined") return "";
   return window.location.origin;
 };
 
-const buildCanonicalUrl = (origin: string, path: string): string =>
+const buildCanonicalUrl: (origin: string, path: string) => string = (origin: string, path: string): string =>
   origin ? `${origin}${path}` : "";
 
-const Seo = (): JSX.Element => {
-  const router = useRouter();
+const Seo: () => JSX.Element = (): JSX.Element => {
+  const router: ReturnType<typeof useRouter> = useRouter();
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [canonicalUrl, setCanonicalUrl] = useState<CanonicalState>("");
+  const [canonicalUrl, setCanonicalUrl]: [CanonicalState, React.Dispatch<React.SetStateAction<CanonicalState>>] = useState<CanonicalState>("");
 
   useEffect((): void => {
     document.documentElement.lang = translations.file;
@@ -32,9 +32,7 @@ const Seo = (): JSX.Element => {
 
     setCanonicalUrl(canonical);
   }, [router.asPath]);
-
-  /* ------------------------------ JSON-LD data ----------------------------- */
-
+  
 const jsonLd: string = useMemo((): string => {
   return JSON.stringify(
     [

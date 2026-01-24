@@ -19,10 +19,12 @@ import {
   useUpdateThemeMutation, 
   GetThemesListQuery, 
   UpdateThemeInput,
-  useGetThemeByIdQuery
+  useGetThemeByIdQuery,
+  UpdateThemeMutation
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client";
 
 interface ThemeEditModalProps {
   theme: ThemeRow | null;
@@ -56,7 +58,7 @@ export interface ThemeFormData {
   textButton: string;
 }
 
-const ThemeEditModal = ({
+const ThemeEditModal: React.FC<ThemeEditModalProps> = ({
   theme,
   onClose,
   onRefresh,
@@ -66,8 +68,8 @@ const ThemeEditModal = ({
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<ThemeFormData | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [form, setForm]: [ThemeFormData | null, React.Dispatch<React.SetStateAction<ThemeFormData | null>>] = useState<ThemeFormData | null>(null);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateThemeMutation] = useUpdateThemeMutation();
 
   const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery({
@@ -102,7 +104,7 @@ const ThemeEditModal = ({
         text200: fullTheme.text200 ?? "#333333",
         text300: fullTheme.text300 ?? "#666666",
         textButton: fullTheme.textButton ?? "#FFFFFF",
-      };
+      } as ThemeFormData;
       setForm(initialForm);
       onChange?.(initialForm);
     } else if (!theme) {
@@ -140,13 +142,13 @@ const ThemeEditModal = ({
     "textButton",
   ] as const;
 
-  const handleChange = (
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ): void => {
-    const { name, value, type } = e.target;
+    const { name, value, type }: { name: string; value: string; type: string } = e.target;
     setForm(prev => {
       if (!prev) return prev;
-      const updatedForm = type === "checkbox"
+      const updatedForm: ThemeFormData = type === "checkbox"
         ? { ...prev, [name]: (e.target as HTMLInputElement).checked }
         : { ...prev, [name]: value };
       onChange?.(updatedForm);
@@ -154,7 +156,7 @@ const ThemeEditModal = ({
     });
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form) return;
     setLoading(true);
@@ -183,9 +185,9 @@ const ThemeEditModal = ({
         text200: form.text200,
         text300: form.text300,
         textButton: form.textButton,
-      };
+      } as UpdateThemeInput;
 
-      const { data } = await updateThemeMutation({
+      const { data }: FetchResult<UpdateThemeMutation> = await updateThemeMutation({
         variables: { data: updateData },
       });
 

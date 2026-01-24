@@ -18,7 +18,7 @@ interface SkillCategoryTableProps {
   onDelete: (categoryId: number) => void;
 }
 
-const SkillCategoryTable = ({
+const SkillCategoryTable: React.FC<SkillCategoryTableProps> = ({
   categories,
   translations,
   onEdit,

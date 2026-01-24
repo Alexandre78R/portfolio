@@ -20,7 +20,9 @@ import {
   useCreateSkillMutation,
   CreateSkillInput,
   useGetSkillsListQuery,
+  CreateSkillMutation,
 } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 interface SkillFormData extends CreateSkillInput {
   categoryId: number;
@@ -32,11 +34,11 @@ const defaultForm: SkillFormData = {
   categoryId: 0,
 };
 
-const SkillCreate = (): ReactElement => {
+const SkillCreate: React.FC = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
-  const [form, setForm] = useState<SkillFormData>(defaultForm);
+  const [form, setForm]: [SkillFormData, React.Dispatch<React.SetStateAction<SkillFormData>>] = useState<SkillFormData>(defaultForm);
 
   const [createSkillMutation, { loading }] = useCreateSkillMutation();
 
@@ -44,8 +46,7 @@ const SkillCreate = (): ReactElement => {
     fetchPolicy: "cache-and-network",
   });
 
-  // Préparer les options de catégories pour le select
-  const categoryOptions = useMemo<SelectOption<number>[]>(() => {
+  const categoryOptions: SelectOption<number>[] = useMemo<SelectOption<number>[]>(() => {
     if (!categoriesData?.listSkillCategories?.categories) return [];
     
     return categoriesData.listSkillCategories.categories.map(category => ({
@@ -54,11 +55,11 @@ const SkillCreate = (): ReactElement => {
     }));
   }, [categoriesData]);
 
-  const handleChange = useCallback(
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = useCallback(
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ): void => {
-      const { name, value } = e.target;
+      const { name, value }: { name: string; value: string } = e.target;
 
       setForm(prev => ({
         ...prev,
@@ -68,7 +69,7 @@ const SkillCreate = (): ReactElement => {
     []
   );
 
-  const handleSubmit = useCallback(
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = useCallback(
     async (e: FormEvent<HTMLFormElement>): Promise<void> => {
       e.preventDefault();
 
@@ -84,11 +85,11 @@ const SkillCreate = (): ReactElement => {
           categoryId: form.categoryId,
         };
 
-        const res = await createSkillMutation({
+        const res: FetchResult<CreateSkillMutation> = await createSkillMutation({
           variables: { data: submitData },
         });
 
-        const response = res.data?.createSkill;
+        const response = res.data?.createSkill; 
 
         if (response?.code === 200) {
           showAlert(
@@ -148,7 +149,6 @@ const SkillCreate = (): ReactElement => {
           required
         />
 
-        {/* Image preview */}
         {form.image && (
           <div className="flex justify-center">
             <img
@@ -162,7 +162,6 @@ const SkillCreate = (): ReactElement => {
           </div>
         )}
 
-        {/* Category Select */}
         {categoriesLoading ? (
           <div className="text-center py-4">Loading categories...</div>
         ) : categoryOptions.length > 0 ? (

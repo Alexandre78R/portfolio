@@ -39,15 +39,15 @@ const DEFAULT_FORM_STATE: MessageFormState = {
   recipients: "",
 };
 
-const MessageCreate = (): ReactElement => {
-  const langContext = useLang();
-  const translations = langContext?.translations || {};
+const MessageCreate: React.FC = (): ReactElement => {
+  const langContext: { translations: Lang } = useLang();
+  const translations: Lang = langContext?.translations || {};
   const { showAlert }: ToastActions = CustomToast();
 
-  const [form, setForm] = useState<MessageFormState>(DEFAULT_FORM_STATE);
+  const [form, setForm]: [MessageFormState, React.Dispatch<React.SetStateAction<MessageFormState>>] = useState<MessageFormState>(DEFAULT_FORM_STATE);
   const [sendMessageMutation, { loading }] = useSendMessageMutation();
 
-  const handleChange = (
+  const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
       | string
       | ChangeEvent<
@@ -66,14 +66,14 @@ const MessageCreate = (): ReactElement => {
     }));
   };
 
-  const handleContentChange = (content: string): void => {
+  const handleContentChange: (content: string) => void = (content: string): void => {
     setForm((prev: MessageFormState): MessageFormState => ({
       ...prev,
       content,
     }));
   };
 
-  const validateForm = (): boolean => {
+  const validateForm: () => boolean = (): boolean => {
     if (!form.subject.trim()) {
       showAlert("error", translations?.messageAdminMessageSubjectRequired || "Le sujet est requis");
       return false;
@@ -92,7 +92,7 @@ const MessageCreate = (): ReactElement => {
     return true;
   };
 
-  const handleSubmit = async (
+  const handleSubmit: (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => Promise<void> = async (
     e: FormEvent<HTMLFormElement | HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
@@ -123,7 +123,7 @@ const MessageCreate = (): ReactElement => {
           response?.message || translations?.messageAdminMessageError || "Une erreur s'est produite";
         showAlert("error", errorMessage);
       }
-    } catch (error: unknown) {
+    } catch (error: Error | unknown) {
       const errorMessage: string =
         error instanceof Error
           ? error.message
@@ -137,8 +137,7 @@ const MessageCreate = (): ReactElement => {
 
   return (
     <AuthFormLayout title={translations?.messageAdminMessageCreateTitle || "Créer un message"}>
-        <p>toto,  dfojdsdsfjdsl</p>
-        <TextAdmin type="h5">{translations?.messageAdminEditorCodeTitle || "; dclmldsxÉditeur HTML"}</TextAdmin>
+      <TextAdmin type="h5">{translations?.messageAdminEditorCodeTitle || "Éditeur HTML"}</TextAdmin>
       <form onSubmit={handleSubmit} className="space-y-6">
         <InputField
           id="subject"
@@ -163,9 +162,7 @@ const MessageCreate = (): ReactElement => {
         />
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-primary">
-            {translations?.messageAdminMessageContent || "Contenu"}
-          </label>
+          <TextAdmin type="p">{translations?.messageAdminMessageContent || "Contenu"}</TextAdmin>
           <HtmlEditor
             content={form.content}
             onChange={handleContentChange}

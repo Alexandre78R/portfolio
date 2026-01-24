@@ -7,14 +7,15 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
 const CV = (): JSX.Element => {
-  const { history, rerender } = useContext<Term>(termContext);
+  const { history, rerender }: Term = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
   const { translations }: { translations: Lang } = useLang();
 
   const { data, loading, error } = useCvQuery();
-  const { showAlert } = CustomToast();
-
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+  CustomToast();
+  
   useEffect(() => {
     if (rerender && currentCommand[0] === "cv") {
       if (loading) {
@@ -28,7 +29,7 @@ const CV = (): JSX.Element => {
       }
 
       if (data?.cvUrl) {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+        const baseUrl: string = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
         window.open(`${baseUrl}${data.cvUrl}`, "_blank");
       } else {
         showAlert("error", translations.messageCVNotFound);

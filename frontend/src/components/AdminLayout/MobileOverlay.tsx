@@ -4,7 +4,7 @@ export interface MobileOverlayProps {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const MobileOverlay = ({ setSidebarOpen }: MobileOverlayProps): ReactElement => {
+const MobileOverlay: React.FC<MobileOverlayProps> = ({ setSidebarOpen }: MobileOverlayProps): ReactElement => {
   return (
     <div
       data-testid="overlay"

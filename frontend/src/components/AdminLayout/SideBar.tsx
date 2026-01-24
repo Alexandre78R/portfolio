@@ -1,10 +1,11 @@
-import { ReactElement, Dispatch, SetStateAction } from 'react'
-import clsx from 'clsx'
-import { ChevronDown, X, LogOut } from 'lucide-react'
-import { useLang } from "@/context/Lang/LangContext"
-import { useRouter } from 'next/router'
-import { NavItem } from './Navigation'
-import Lang from '@/lang/typeLang'
+import { ReactElement, Dispatch, SetStateAction } from 'react';
+import clsx from 'clsx';
+import { ChevronDown, X, LogOut } from 'lucide-react';
+import { useLang } from "@/context/Lang/LangContext";
+import { useRouter } from 'next/router';
+import { NavItem } from './Navigation';
+import Lang from '@/lang/typeLang';
+import TextAdmin from '../AdminLayout/components/Text/TextAdmin';
 
  export interface SideBarProps {
   navigation: NavItem[]
@@ -16,7 +17,7 @@ import Lang from '@/lang/typeLang'
   setOpenMenus: Dispatch<SetStateAction<string[]>>
 }
 
-const SideBar = ({
+const SideBar: React.FC<SideBarProps> = ({
   navigation,
   sidebarOpen,
   setSidebarOpen,
@@ -25,19 +26,19 @@ const SideBar = ({
   openMenus,
   setOpenMenus,
 }: SideBarProps): ReactElement => {
-  const { translations } = useLang()
-  const router = useRouter()
+  const { translations }: { translations: Lang } = useLang();
+  const router: ReturnType<typeof useRouter> = useRouter();
 
-  const handleLogout = (): void => {
+  const handleLogout: () => void = (): void => {
     localStorage.removeItem("token");
     router.push("/admin/auth/login");
   };
 
-  const toggleMenu = (key: string) => {
+  const toggleMenu: (key: string) => void = (key: string): void => {
     setOpenMenus(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key])
-  }
+  };
 
-  const getTranslation = (
+  const getTranslation: (translations: Lang | Record<string, string>, key: string, fallback: string) => string = (
     translations: Lang | Record<string, string>,
     key: string,
     fallback: string
@@ -55,15 +56,15 @@ const SideBar = ({
     >
       <div className="flex flex-col h-full">
         <div className="p-5 font-bold text-xl border-b flex justify-between items-center text-primary hover:text-secondary">
-          <span>Admin</span>
+          <TextAdmin type="h3">Admin</TextAdmin>
           <button className="md:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5" />
           </button>
         </div>
         <nav className="overflow-y-auto p-4 space-y-4">
           {navigation.map(item => {
-            const isOpen = openMenus.includes(item.key)
-            const hasChildren = !!item.children?.length
+            const isOpen: boolean = openMenus.includes(item.key)
+            const hasChildren: boolean = !!item.children?.length
 
             return (
               <div key={item.key}>

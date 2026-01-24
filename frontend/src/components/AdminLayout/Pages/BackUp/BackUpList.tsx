@@ -3,6 +3,8 @@ import {
   useGetBackupsListQuery,
   useGenerateDatabaseBackupMutation,
   useDeleteBackupFileMutation,
+  GenerateDatabaseBackupMutation,
+  DeleteBackupFileMutation,
 } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
@@ -12,6 +14,7 @@ import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import Lang from "@/lang/typeLang";
 import BackUpTable from "@/components/AdminLayout/components/Backup/BackUpTable";
+import { FetchResult } from "@apollo/client";
 
 export interface BackupFileInfo {
   fileName: string;
@@ -25,9 +28,9 @@ const BackUpList = (): React.ReactElement => {
   const [generateBackup] = useGenerateDatabaseBackupMutation();
   const [deleteBackupFile] = useDeleteBackupFileMutation();
 
-  const [openCreateDialog, setOpenCreateDialog] = useState<boolean>(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState<boolean>(false);
-  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [openCreateDialog, setOpenCreateDialog]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [selectedFileName, setSelectedFileName]: [string | null, React.Dispatch<React.SetStateAction<string | null>>] = useState<string | null>(null);
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
@@ -41,9 +44,9 @@ const BackUpList = (): React.ReactElement => {
           new Date(a.createdAt).getTime()
       ) ?? [];
 
-  const handleGenerateBackup = async (): Promise<void> => {
+  const handleGenerateBackup: () => Promise<void> = async (): Promise<void> => {
     try {
-      const { data } = await generateBackup();
+      const { data }: FetchResult<GenerateDatabaseBackupMutation> = await generateBackup();
       if (data?.generateDatabaseBackup.code === 200) {
         showAlert("success", translations.messagePageBackUpCreatedSuccess);
         await refetch();
@@ -57,11 +60,11 @@ const BackUpList = (): React.ReactElement => {
     }
   };
 
-  const handleDeleteBackup = async (): Promise<void> => {
+  const handleDeleteBackup: () => Promise<void> = async (): Promise<void> => {
     if (!selectedFileName) return;
 
     try {
-      const { data } = await deleteBackupFile({
+      const { data }: FetchResult<DeleteBackupFileMutation> = await deleteBackupFile({
         variables: { fileName: selectedFileName },
       });
 

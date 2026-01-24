@@ -1,12 +1,14 @@
 import { ChangeEvent, ReactElement, useState } from "react";
-import { useUploadCvMutation } from "@/types/graphql";
+import { UploadCvMutation, useUploadCvMutation } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
+import TextAdmin from "../../components/Text/TextAdmin";
+import { FetchResult } from "@apollo/client";
 
-const formatBytes = (bytes: number): string => {
+const formatBytes: (bytes: number) => string = (bytes: number): string => {
   if (!bytes) return "0 B";
   const k: number = 1024;
   const sizes: string[] = ["B", "KB", "MB", "GB"];
@@ -14,7 +16,7 @@ const formatBytes = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
-const CVUpdate = (): JSX.Element => {
+const CVUpdate: React.FC = (): JSX.Element => {
 
   const [uploadCv] = useUploadCvMutation();
 
@@ -23,30 +25,30 @@ const CVUpdate = (): JSX.Element => {
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileEvent, setFileEvent] = useState<ChangeEvent<HTMLInputElement> | null>(null);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile]: [File | null, React.Dispatch<React.SetStateAction<File | null>>] = useState<File | null>(null);
+  const [fileEvent, setFileEvent]: [ChangeEvent<HTMLInputElement> | null, React.Dispatch<React.SetStateAction<ChangeEvent<HTMLInputElement> | null>>] = useState<ChangeEvent<HTMLInputElement> | null>(null);
+  const [openDialog, setOpenDialog]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const handleOpenDialog = (file: File, event: ChangeEvent<HTMLInputElement>): void => {
+  const handleOpenDialog: (file: File, event: ChangeEvent<HTMLInputElement>) => void = (file: File, event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedFile(file);
     setFileEvent(event);
     setOpenDialog(true);
   };
 
-  const handleCloseDialog = (): void => {
+  const handleCloseDialog: () => void = (): void => {
     setOpenDialog(false);
     setSelectedFile(null);
   };
 
-  const handleUpload = async (): Promise<void> => {
+  const handleUpload: () => Promise<void> = async (): Promise<void> => {
     if (!selectedFile) return;
 
     setLoading(true);
 
     try {
 
-      const { data } = await uploadCv({ variables: { file: selectedFile } });
+      const { data }: FetchResult<UploadCvMutation> = await uploadCv({ variables: { file: selectedFile } });
 
       const resultCode: number = data?.uploadCV?.code ?? 500;
       const resultMessage: string = data?.uploadCV?.message ?? "Upload failed";
@@ -58,11 +60,11 @@ const CVUpdate = (): JSX.Element => {
         showAlert("error", resultMessage);
       }
     } catch (error: unknown) {
-      const errMsg = error instanceof Error ? error.message : "Unknown error";
+      const errMsg: string = error instanceof Error ? error.message : "Unknown error";
       showAlert("error", translations.messagePageCvUploadError || errMsg);
     } finally {
       if (fileEvent) {
-        const input = fileEvent.target as HTMLInputElement;
+        const input: HTMLInputElement = fileEvent.target as HTMLInputElement;
         input.value = "";
         setFileEvent(null);
       }
@@ -71,7 +73,7 @@ const CVUpdate = (): JSX.Element => {
     }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const handleFileChange: (event: ChangeEvent<HTMLInputElement>) => void = (event: ChangeEvent<HTMLInputElement>): void => {
     const file: File | undefined = event.target.files?.[0];
     if (!file) return;
     handleOpenDialog(file, event);
@@ -79,7 +81,7 @@ const CVUpdate = (): JSX.Element => {
 
   return (
     <div className="flex flex-col">
-      <p className="text-primary text-lg font-semibold">{translations.messagePageCvTitle}</p>
+      <TextAdmin type="p" className="text-primary text-lg font-semibold">{translations.messagePageCvTitle}</TextAdmin>
       <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
 
       <ButtonCustom

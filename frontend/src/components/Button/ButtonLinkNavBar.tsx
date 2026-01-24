@@ -21,7 +21,7 @@ const ButtonLinkNavBar: React.FC<ButtonLinkNavBarProps> = ({
 
   if (pathname !== "/") return null;
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void = (event: React.MouseEvent<HTMLButtonElement>): void => {
     handleScrollToSection(event, sectionRef);
   };
 

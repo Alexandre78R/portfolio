@@ -18,17 +18,12 @@ export interface DoughnutChartProps {
   title?: string;
 }
 
-const DoughnutChart = ({ labels, data, title }: DoughnutChartProps): JSX.Element => {
+const DoughnutChart: React.FC<DoughnutChartProps> = ({ labels, data, title }: DoughnutChartProps): JSX.Element => {
 
-  const [colors, setColors] = useState<string[]>([]);
-  const [labelColor, setLabelColor] = useState<string>('#334155');
+  const [colors, _] : [string[], React.Dispatch<React.SetStateAction<string[]>>] = useState<string[]>([]);
+  const [labelColor, setLabelColor]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>('#334155');
 
   useEffect(() => {
-    // const style = getComputedStyle(document.documentElement);
-    // const chartColors = style.getPropertyValue('--chart-colors');
-    // const chartLabelColor = style.getPropertyValue('--chart-label-color');
-
-    // setColors(chartColors ? chartColors.split(',').map((c) => c.trim()) : []);
     const style: CSSStyleDeclaration = getComputedStyle(document.documentElement);
     const chartColorsString: string = style.getPropertyValue("--chart-colors").trim();
     const chartColors: string[] = chartColorsString

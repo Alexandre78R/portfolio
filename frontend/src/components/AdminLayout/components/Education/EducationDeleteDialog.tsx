@@ -5,8 +5,10 @@ import Lang from "@/lang/typeLang";
 import {
   useDeleteEducationMutation,
   GetEducationsListQuery,
+  DeleteEducationMutation,
 } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { FetchResult } from "@apollo/client";
 
 interface EducationDeleteDialogProps {
   educationId: number | null;
@@ -16,27 +18,30 @@ interface EducationDeleteDialogProps {
   >;
 }
 
-const EducationDeleteDialog = ({
+const EducationDeleteDialog: React.FC<EducationDeleteDialogProps> = ({
   educationId,
   onClose,
   onRefresh,
 }: EducationDeleteDialogProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const [deleteEducationMutation] = useDeleteEducationMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const handleConfirm = async (): Promise<void> => {
+  const handleConfirm: () => Promise<void> = async (): Promise<void> => {
     if (!educationId) return;
 
     setLoading(true);
 
     try {
-      const { data } = await deleteEducationMutation({
+
+      const result: FetchResult<DeleteEducationMutation> = await deleteEducationMutation({
         variables: { id: educationId },
       });
+      
+      const { data } = result;
 
       if (data?.deleteEducation?.code === 200) {
         showAlert("success", translations.messageAdminEducationDeleteSuccess);

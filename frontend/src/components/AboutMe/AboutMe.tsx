@@ -6,15 +6,15 @@ import Lang from "@/lang/typeLang";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 
-const AboutMe = (): JSX.Element => {
+const AboutMe: React.FC = (): JSX.Element => {
   const { translations }: { translations: Lang } = useLang();
 
-  const { data, loading, error } = useCvQuery();
+  const { data, loading, error }= useCvQuery();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const handleClick = (): void => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (): void => {
     if (loading) {
       showAlert("error", translations.messageCVLoading);
       return;
@@ -25,7 +25,7 @@ const AboutMe = (): JSX.Element => {
       return;
     }
     if (data?.cvUrl) {
-      const baseUrl =
+      const baseUrl: string =
         process.env.NEXT_PUBLIC_API_URL || window.location.origin;
       window.open(`${baseUrl}${data.cvUrl}`, "_blank");
     } else {

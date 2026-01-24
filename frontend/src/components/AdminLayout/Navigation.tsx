@@ -117,16 +117,6 @@ const navigation: NavItem[] = [
       { name: 'Créer un social', key: 'socials/create', icon: FolderPlus, roles: ['admin'], parentKey: 'socials' },
     ],
   },
-  // {
-  //   name: 'Sauvegarde',
-  //   key: 'backup',
-  //   icon: DatabaseBackup,
-  //   roles: ['admin', 'editor', 'view'],
-  //   children: [
-  //     { name: 'Voir les backup', key: 'backup/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'backup' },
-  //     { name: 'Nouvelle backup', key: 'backup/create', icon: FolderPlus, roles: ['admin'], parentKey: 'backup' },
-  //   ],
-  // },
   {
     name: 'CV',
     key: 'cv',
@@ -146,15 +136,6 @@ const navigation: NavItem[] = [
       { name: 'Envoyer un message', key: 'messages/create', icon: FolderPlus, roles: ['admin'], parentKey: 'messages' },
     ],
   },
-  // {
-    //   name: 'Paramètres',
-    //   key: 'settings',
-    //   icon: Settings,
-  //   roles: ['admin'],
-  //   children: [
-  //     { name: 'Changer mot de passe', key: 'settings/change-password', icon: Lock, roles: ['admin'], parentKey: 'settings' },
-  //   ],
-  // },
 ]
 
 export default navigation;

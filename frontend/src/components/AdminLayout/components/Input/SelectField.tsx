@@ -22,7 +22,7 @@ export interface SelectFieldProps<T extends string> {
   sx?: TextFieldProps["sx"];
 }
 
-const SelectField = <T extends string>({
+function SelectField<T extends string>({
   id,
   label,
   name,
@@ -32,7 +32,7 @@ const SelectField = <T extends string>({
   required = true,
   className,
   sx,
-}: SelectFieldProps<T>): ReactElement => {
+}: SelectFieldProps<T>): ReactElement {
   return (
     <TextField
       id={id}
@@ -70,6 +70,7 @@ const SelectField = <T extends string>({
       ))}
     </TextField>
   );
-};
+
+}
 
 export default SelectField;

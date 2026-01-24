@@ -14,14 +14,11 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
   useCreateEducationMutation,
   CreateEducationInput,
+  CreateEducationMutation,
 } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client";
 
-/**
- * Default form values
- * All InputField values MUST be strings
- * Number conversion is handled on submit
- */
 const defaultForm: CreateEducationInput = {
   school: "",
   location: "",
@@ -29,7 +26,7 @@ const defaultForm: CreateEducationInput = {
   titleEN: "",
   diplomaLevelFR: "",
   diplomaLevelEN: "",
-  year: new Date().getFullYear(), // number (converted later)
+  year: new Date().getFullYear(),
   month: 0,
   typeFR: "",
   typeEN: "",
@@ -39,16 +36,16 @@ const defaultForm: CreateEducationInput = {
   endDateEN: "",
 };
 
-const EducationCreate = (): ReactElement => {
+const EducationCreate: React.FC = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<CreateEducationInput>(defaultForm);
+  const [form, setForm]: [CreateEducationInput, React.Dispatch<React.SetStateAction<CreateEducationInput>>] = useState<CreateEducationInput>(defaultForm);
   const [createEducationMutation, { loading }] =
     useCreateEducationMutation();
 
-  const handleChange = (
+  const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
       | string
       | ChangeEvent<
@@ -67,10 +64,7 @@ const EducationCreate = (): ReactElement => {
     }));
   };
 
-  /**
-   * Submit form
-   */
-  const handleSubmit = async (
+  const handleSubmit: (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => Promise<void> = async (
     e: FormEvent<HTMLFormElement | HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
@@ -82,7 +76,7 @@ const EducationCreate = (): ReactElement => {
         month: form.month ? Number(form.month) : 0,
       };
 
-      const res = await createEducationMutation({
+      const res: FetchResult<CreateEducationMutation> = await createEducationMutation({
         variables: { data: payload },
       });
 

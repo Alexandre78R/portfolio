@@ -26,9 +26,9 @@ const EducationList = (): ReactElement => {
 
   if (error || !data?.listEducations?.educations) {
     return (
-      <p className="p-4 text-primary">
+      <TextAdmin type="p" className="p-4 text-primary">
         {translations.messageAdminEducationListNotFound}
-      </p>
+      </TextAdmin>
     );
   }
 

@@ -18,7 +18,7 @@ interface SocialTableProps {
   onDelete: (socialId: number) => void;
 }
 
-const SocialTable = ({
+const SocialTable: React.FC<SocialTableProps> = ({
   socials,
   translations,
   onEdit,

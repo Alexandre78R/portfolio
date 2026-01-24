@@ -35,7 +35,7 @@ const AdminPage = (): ReactElement | null => {
   const slug: string | string[] | undefined = query.slug;
   const { user, loading: userLoading }: UserContextType = useUser();
 
-  const [ready, setReady] = useState<boolean>(false);
+  const [ready, setReady]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const role: string = user?.role ?? 'view';
 
@@ -44,8 +44,8 @@ const AdminPage = (): ReactElement | null => {
     return slug ?? 'dashboard';
   }, [slug]);
 
-  const hasAccess = (key: string, role: string): boolean => {
-    const findInItems = (items: NavItem[]): boolean => {
+  const hasAccess: (key: string, role: string) => boolean = (key: string, role: string): boolean => {
+    const findInItems: (items: NavItem[]) => boolean = (items: NavItem[]): boolean => {
       for (const item of items) {
         if (item.key === key) {
           return !item.roles || item.roles.includes(role as any);

@@ -19,13 +19,13 @@ import ModalCustom from "../ModalCustom/ModalCustom";
 
 const Navbar: React.FC = (): JSX.Element => {
   const pathname: string = usePathname() ?? "/";
-  const router = useRouter();
-  const apolloClient = useApolloClient();
+  const router: ReturnType<typeof useRouter> = useRouter();
+  const apolloClient: ReturnType<typeof useApolloClient> = useApolloClient();
 
-  const { lang, setLang, translations } = useLang();
-  const { toggleTheme, themes } = useTheme();
-  const { selectedView } = useChoiceView();
-  const { user, refetch, checkToken } = useUser();
+  const { lang, setLang, translations }: ReturnType<typeof useLang> = useLang();
+  const { toggleTheme, themes }: ReturnType<typeof useTheme> = useTheme();
+  const { selectedView }: ReturnType<typeof useChoiceView> = useChoiceView();
+  const { user, refetch, checkToken }: ReturnType<typeof useUser> = useUser();
 
   const {
     headerRef,
@@ -35,29 +35,29 @@ const Navbar: React.FC = (): JSX.Element => {
     educationRef,
     terminalRef,
     contactRef,
-  } = useSectionRefs();
+  }: ReturnType<typeof useSectionRefs> = useSectionRefs();
 
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
-  const [isCheckedLang, setIsCheckedLang] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [isCheckedLang, setIsCheckedLang]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
+  const handleOpen: () => void = (): void => setOpen(true);
+  const handleClose: () => void = (): void => setOpen(false);
 
-  const toggleMenu = (): void => setMenuOpen((prev) => !prev);
+  const toggleMenu: () => void = (): void => setMenuOpen((prev) => !prev);
 
-  const handleChangeColorTheme = (themeKey: string): void => {
+  const handleChangeColorTheme: (themeKey: string) => void = (themeKey: string): void => {
     toggleTheme(themeKey);
     handleClose();
     setMenuOpen(false);
   };
 
-  const toggleCheckedLang = (): void => {
+  const toggleCheckedLang: () => void = (): void => {
     setIsCheckedLang((prev) => !prev);
     setLang(lang === "fr" ? "en" : "fr");
   };
 
-  const handleLogout = async (): Promise<void> => {
+  const handleLogout: () => Promise<void> = async (): Promise<void> => {
     // Supprimer le token
     localStorage.removeItem("token");
     
@@ -74,7 +74,7 @@ const Navbar: React.FC = (): JSX.Element => {
     router.push("/admin/auth/login");
   };
 
-  const handleScrollToSection = (
+  const handleScrollToSection: (event: MouseEvent<HTMLElement>, sectionRef: React.RefObject<HTMLDivElement>) => void = (
     event: MouseEvent<HTMLElement>,
     sectionRef: React.RefObject<HTMLDivElement>
   ): void => {

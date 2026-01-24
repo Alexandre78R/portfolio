@@ -19,12 +19,6 @@ export const DELETE_BACKUP  = gql`
 }
 `;
 
-// export const UPLOAD_CV = gql`
-//   mutation UploadCV($file: Upload!) {
-//     uploadCV(file: $file)
-//   }
-// `;
-
 export const UPLOAD_CV = gql`
   mutation UploadCV($file: Upload!) {
     uploadCV(file: $file) {

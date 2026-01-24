@@ -4,7 +4,7 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction, useLazyQuery } from "@apollo/client";
+import { useMutation, MutationResult, MutationFunction, useLazyQuery, FetchResult } from "@apollo/client";
 import {
   MutationDocument,
   MutationMutation,
@@ -40,11 +40,6 @@ const LoginPage = (): React.ReactElement => {
     MutationResult<MutationMutation>
   ] = useMutation<MutationMutation, MutationMutationVariables>(MutationDocument);
 
-  const [getMe] = useLazyQuery<GetMeQuery>(GET_ME, {
-    fetchPolicy: "network-only",
-  });
-
-
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value }: { name: string; value: string } = e.target;
     setForm((prev: LoginFormState): LoginFormState => ({
@@ -56,7 +51,7 @@ const LoginPage = (): React.ReactElement => {
   const handleLogin = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
     try {
-      const res = await login({
+      const res: FetchResult<MutationMutation> = await login({
         variables: {
           data: {
             email: form.email,

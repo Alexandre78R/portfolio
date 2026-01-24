@@ -5,11 +5,12 @@ import InputField from "@/components/InputField/InputField";
 import InputColor from "../../components/Input/InputColor";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useCreateThemeMutation } from "@/types/graphql";
+import { CreateThemeMutation, useCreateThemeMutation } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { CreateThemeInput } from "@/types/graphql";
 import InputBoolean from "../../components/Input/InputBoolean";
+import { FetchResult } from "@apollo/client";
 
 const defaultTheme: CreateThemeInput = {
   name: "",
@@ -40,14 +41,14 @@ const ThemeCreate = (): ReactElement => {
   const { showAlert } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
-  const [form, setForm] = useState<CreateThemeInput>(defaultTheme);
+  const [form, setForm]: [CreateThemeInput, React.Dispatch<React.SetStateAction<CreateThemeInput>>] = useState<CreateThemeInput>(defaultTheme);
 
   const [createThemeMutation, { loading }] = useCreateThemeMutation();
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value }: { name: string; value: string } = e.target;
 
     if (name === "visible") {
       setForm(prev => ({ ...prev, visible: value === "true" }));
@@ -56,10 +57,10 @@ const ThemeCreate = (): ReactElement => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const res = await createThemeMutation({ variables: { data: form } });
+      const res: FetchResult<CreateThemeMutation> = await createThemeMutation({ variables: { data: form } });
       const response = res.data?.createTheme;
 
       if (response?.code === 200) {
@@ -73,7 +74,6 @@ const ThemeCreate = (): ReactElement => {
     }
   };
 
-  // Tous les champs couleurs
   const colorFields = [
     "body",
     "scrollHandle",

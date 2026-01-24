@@ -45,13 +45,16 @@ const InputMultiSelect = <T extends string | number>(
     disabled = false,
   }: InputMultiSelectProps<T>
 ): ReactElement => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [filteredOptions, setFilteredOptions] = useState<SelectOption<T>[]>(
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [filteredOptions, setFilteredOptions]: [SelectOption<T>[], React.Dispatch<React.SetStateAction<SelectOption<T>[]>>] = useState<SelectOption<T>[]>(
     options as SelectOption<T>[]
   );
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
 
-  const handleChange = useCallback(
+  const handleChange: (
+    _event: React.SyntheticEvent,
+    newValue: SelectOption<T>[] | null
+  ) => void = useCallback(
     (
       _event: React.SyntheticEvent,
       newValue: SelectOption<T>[] | null
@@ -70,7 +73,7 @@ const InputMultiSelect = <T extends string | number>(
     [onChange]
   );
 
-  const getOptionFromValue = useCallback(
+  const getOptionFromValue: (selectedValue: T) => SelectOption<T> | undefined = useCallback(
     (selectedValue: T): SelectOption<T> | undefined => {
       return (options as SelectOption<T>[]).find((opt) => opt.value === selectedValue);
     },
@@ -83,7 +86,7 @@ const InputMultiSelect = <T extends string | number>(
       .filter((opt): opt is SelectOption<T> => opt !== undefined);
   }, [value, getOptionFromValue]);
 
-  const isOptionEqualToValue = useCallback(
+  const isOptionEqualToValue: (option: SelectOption<T>, value: SelectOption<T>) => boolean = useCallback(
     (option: SelectOption<T>, value: SelectOption<T>) => {
       return option.value === value.value;
     },
@@ -93,9 +96,9 @@ const InputMultiSelect = <T extends string | number>(
   useEffect(() => {
     if (onSearch && searchTerm.trim().length > 0) {
       setLoading(true);
-      const timer = setTimeout(async () => {
+      const timer: NodeJS.Timeout = setTimeout(async () => {
         try {
-          const results = await onSearch(searchTerm);
+          const results: SelectOption<T>[] = await onSearch(searchTerm);
           setFilteredOptions(results);
         } catch (error) {
           console.error("Error searching options:", error);

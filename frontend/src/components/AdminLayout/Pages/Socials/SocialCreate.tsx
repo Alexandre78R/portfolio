@@ -17,6 +17,7 @@ import {
   CreateSocialMutation,
 } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 
 const defaultForm: CreateSocialInput = {
@@ -25,16 +26,16 @@ const defaultForm: CreateSocialInput = {
   tab: 0,
 };
 
-const SocialCreate = (): ReactElement => {
+const SocialCreate: React.FC = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<CreateSocialInput>(defaultForm);
+  const [form, setForm]: [CreateSocialInput, React.Dispatch<React.SetStateAction<CreateSocialInput>>] = useState<CreateSocialInput>(defaultForm);
   const [createSocialMutation, { loading }] =
     useCreateSocialMutation();
 
-  const handleChange = (
+  const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
       | string
       | ChangeEvent<
@@ -45,7 +46,7 @@ const SocialCreate = (): ReactElement => {
       return;
     }
 
-    const { name, value } = e.target;
+    const { name, value }: { name: string; value: string } = e.target;
 
     setForm(prev => ({
       ...prev,
@@ -53,7 +54,7 @@ const SocialCreate = (): ReactElement => {
     }));
   };
 
-  const handleSubmit = async (
+  const handleSubmit: (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => Promise<void> = async (
     e: FormEvent<HTMLFormElement | HTMLButtonElement>
   ): Promise<void> => {
     e.preventDefault();
@@ -64,7 +65,7 @@ const SocialCreate = (): ReactElement => {
         tab: Number(form.tab),
       };
 
-      const res = await createSocialMutation({
+      const res: FetchResult<CreateSocialMutation> = await createSocialMutation({
         variables: { data: payload },
       });
 

@@ -12,13 +12,13 @@ export interface SelectOption<T extends string> {
   value: T;
 }
 
-export const getUserRoleOptions = (translations: Lang): SelectOption<UserRole>[] => [
+export const getUserRoleOptions: (translations: Lang) => SelectOption<UserRole>[] = (translations: Lang): SelectOption<UserRole>[] => [
   { label: translations.messageAdminUserRoleOptionsAdmin, value: UserRole.admin },
   { label: translations.messageAdminUserRoleOptionsEditor, value: UserRole.editor },
   { label: translations.messageAdminUserRoleOptionsView, value: UserRole.view },
 ];
 
-export const mapRoleToUserRole = (role: Role): UserRole => {
+export const mapRoleToUserRole: (role: Role) => UserRole = (role: Role): UserRole => {
   switch (role) {
     case "admin":
       return UserRole.admin;

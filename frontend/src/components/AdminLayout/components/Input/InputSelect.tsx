@@ -18,7 +18,7 @@ export interface InputSelectProps<T extends string | number> {
   readonly disabled?: boolean;
 }
 
-const InputSelect = <T extends string | number>({
+function InputSelect<T extends string | number>({
   id,
   label,
   name,
@@ -28,7 +28,7 @@ const InputSelect = <T extends string | number>({
   required = false,
   className = "",
   disabled = false,
-}: InputSelectProps<T>): ReactElement => {
+}: InputSelectProps<T>): ReactElement {
   return (
     <div className={`w-full ${className}`}>
       <label
@@ -45,7 +45,7 @@ const InputSelect = <T extends string | number>({
         onChange={onChange}
         required={required}
         disabled={disabled}
-        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-md text-text-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         <option value={0} disabled>
           Select an option...
@@ -58,7 +58,7 @@ const InputSelect = <T extends string | number>({
       </select>
     </div>
   );
-};
+}
 
 InputSelect.displayName = "InputSelect";
 

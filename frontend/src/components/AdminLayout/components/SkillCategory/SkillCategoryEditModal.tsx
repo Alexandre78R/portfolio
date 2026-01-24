@@ -23,9 +23,12 @@ import {
   useGetSkillCategoryByIdQuery,
   useGetSkillsListQuery,
   useSearchSkillsLazyQuery,
+  UpdateSkillCategoryMutation,
+  SearchSkillsQuery
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 interface SkillCategoryEditModalProps {
   category: SkillCategoryRow | null;
@@ -42,7 +45,7 @@ export interface SkillCategoryFormData {
   skillIds: number[];
 }
 
-const SkillCategoryEditModal = ({
+const SkillCategoryEditModal: React.FC<SkillCategoryEditModalProps> = ({
   category,
   onClose,
   onRefresh,
@@ -51,9 +54,9 @@ const SkillCategoryEditModal = ({
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<SkillCategoryFormData | null>(null);
-  const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [form, setForm]: [SkillCategoryFormData | null, React.Dispatch<React.SetStateAction<SkillCategoryFormData | null>>] = useState<SkillCategoryFormData | null>(null);
+  const [selectedSkillIds, setSelectedSkillIds]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateCategoryMutation] = useUpdateSkillCategoryMutation();
 
   const { data, loading: categoryLoading } = useGetSkillCategoryByIdQuery({
@@ -93,15 +96,17 @@ const SkillCategoryEditModal = ({
   const handleSkillSearch = useCallback(
     async (searchTerm: string): Promise<SelectOption<number>[]> => {
       try {
-        const result = await searchSkillsQuery({
+        const result: FetchResult<SearchSkillsQuery> = await searchSkillsQuery({
           variables: { searchTerm },
         });
 
-        if (!result.data?.searchSkills?.categories) return [];
+        const { data } = result;
+
+        if (!data?.searchSkillCategories?.categories) return [];
 
         const filteredSkills: SelectOption<number>[] = [];
 
-        result.data.searchSkills.categories.forEach(category => {
+        data.searchSkillCategories.categories.forEach(category => {
           if (category?.skills) {
             category.skills.forEach(skill => {
               if (skill) {
@@ -151,7 +156,7 @@ const SkillCategoryEditModal = ({
     );
   }
 
-  const handleChange = (
+  const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     if (typeof e === "string") {
@@ -162,7 +167,7 @@ const SkillCategoryEditModal = ({
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!form) return;
     
@@ -178,7 +183,7 @@ const SkillCategoryEditModal = ({
         updateData.skillIds = selectedSkillIds;
       }
 
-      const { data }= await updateCategoryMutation({
+      const { data }: FetchResult<UpdateSkillCategoryMutation> = await updateCategoryMutation({
         variables: { id: Number(form.id), data: updateData },
       });
 
@@ -189,7 +194,7 @@ const SkillCategoryEditModal = ({
       } else {
         showAlert("error", translations.messageAdminSkillCategoryEditError);
       }
-    } catch (err) {
+    } catch (err: Error | unknown) {
       console.error("Mutation error:", err);
       showAlert("error", translations.messageAdminSkillCategoryEditError);
     } finally {

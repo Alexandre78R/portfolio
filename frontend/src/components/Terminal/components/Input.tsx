@@ -6,7 +6,7 @@ import HomeTerminal from "../HomeTerminal";
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 // export const Input: React.FC<InputProps> = (props, ref) => {
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input: React.FC<InputProps> = forwardRef<HTMLInputElement, InputProps>(
   (props, ref): React.ReactElement => {
     return (
       <>

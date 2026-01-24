@@ -16,15 +16,15 @@ interface ActionButtonProps<T> {
   gap?: string;
 }
 
-function ActionButton<T>({
+const ActionButton = <T,>({
   row,
   actions,
   gap = "gap-2",
-}: ActionButtonProps<T>): React.ReactElement {
+}: ActionButtonProps<T>): React.ReactElement => {
   return (
     <div className={clsx("flex items-center", gap)}>
       {actions.map((action, index) => {
-        const Icon = action.icon;
+        const Icon: IconComponent = action.icon;
         return (
           <button
             key={index}

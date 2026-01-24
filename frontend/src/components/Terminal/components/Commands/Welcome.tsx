@@ -6,8 +6,8 @@ import { Term } from "@/components/Terminal/Terminal";
 import Lang from "@/lang/typeLang";
 
 const Welcome: React.FC = (): React.ReactElement => {
-  const { arg } = useContext<Term>(termContext);
-  const { translations } = useLang() as { translations : Lang };
+  const { arg }: Term = useContext<Term>(termContext);
+  const { translations }: { translations : Lang } = useLang() as { translations : Lang };
 
   return (
     <div className="flex flex-wrap-reverse">

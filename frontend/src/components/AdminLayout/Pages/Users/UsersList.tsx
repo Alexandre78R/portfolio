@@ -8,15 +8,15 @@ import UserTable, { UserRow } from "../../components/User/UserTable";
 import UserDeleteDialog from "../../components/User/UserDeleteDialog";
 import UserEditModal from "../../components/User/UserEditModal";
 
-const UserList = (): ReactElement => {
+const UserList: React.FC = (): ReactElement => {
   const { data, loading, error, refetch } = useGetUsersListQuery({
     fetchPolicy: "cache-and-network",
   });
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [editUser, setEditUser] = useState<UserRow | null>(null);
-  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [editUser, setEditUser]: [UserRow | null, React.Dispatch<React.SetStateAction<UserRow | null>>] = useState<UserRow | null>(null);
+  const [deleteUserId, setDeleteUserId]: [string | null, React.Dispatch<React.SetStateAction<string | null>>] = useState<string | null>(null);
 
   if (loading) return <LoadingCustom />;
 

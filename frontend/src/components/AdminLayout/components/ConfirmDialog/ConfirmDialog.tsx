@@ -1,6 +1,7 @@
 import React from "react";
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
 import ButtonCustom from "@/components/Button/Button";
+import TextAdmin from "../../components/Text/TextAdmin";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -32,8 +33,8 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       width={420}
       className="flex-col items-start"
     >
-      <h2 className="text-lg font-semibold text-text mb-4">{title}</h2>
-      <p className="text-sm text-text">{description}</p>
+      <TextAdmin type="h6" className="mb-4">{title}</TextAdmin>
+      <TextAdmin type="p" className="mb-4">{description}</TextAdmin>
       <div className="w-full flex justify-end gap-3">
         <ButtonCustom
           text={cancelLabel}

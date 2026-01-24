@@ -13,19 +13,17 @@ const SocialsList = (): ReactElement => {
     fetchPolicy: "cache-and-network",
   });
 
-  console.log("SocialsList data:", data);
   const { translations }: { translations: Lang } = useLang();
 
-  const [editSocial, setEditSocial] = useState<SocialRow | null>(null);
-  const [deleteSocialId, setDeleteSocialId] = useState<number | null>(null);
-
+  const [editSocial, setEditSocial]: [SocialRow | null, React.Dispatch<React.SetStateAction<SocialRow | null>>] = useState<SocialRow | null>(null);
+  const [deleteSocialId, setDeleteSocialId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);    
   if (loading) return <LoadingCustom />;
 
   if (error || !data?.listSocials) {
     return (
-      <p className="p-4 text-primary">
+      <TextAdmin type="p" className="p-4 text-primary">
         {translations.messageAdminSocialListNotFound}
-      </p>
+      </TextAdmin>
     );
   }
 

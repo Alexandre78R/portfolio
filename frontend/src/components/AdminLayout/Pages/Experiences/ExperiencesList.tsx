@@ -12,8 +12,8 @@ import ExperienceEditModal from "../../components/Experience/ExperienceEditModal
 const ExperienceList = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
 
-  const [selectedExperience, setSelectedExperience] = useState<ExperienceRow | null>(null);
-  const [experienceToDeleteId, setExperienceToDeleteId] = useState<number | null>(null);
+  const [selectedExperience, setSelectedExperience]: [ExperienceRow | null, React.Dispatch<React.SetStateAction<ExperienceRow | null>>] = useState<ExperienceRow | null>(null);
+  const [experienceToDeleteId, setExperienceToDeleteId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);
 
   const { data, loading, refetch } = useGetExperiencesListQuery({
     fetchPolicy: "network-only",

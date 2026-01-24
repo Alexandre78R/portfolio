@@ -58,8 +58,8 @@ describe('ConfirmDialog', (): void => {
     );
 
     const modalElement: HTMLElement = screen.getByTestId('modal');
-    const titleElement: HTMLElement = screen.getByText('Supprimer l’élément');
-    const descriptionElement: HTMLElement = screen.getByText('Êtes-vous sûr ?');
+    const titleElement: HTMLElement = screen.getByText(/Supprimer l.élément/);
+    const descriptionElement: HTMLElement = screen.getByText(/Êtes-vous sûr/);
 
     expect(modalElement).toBeInTheDocument();
     expect(titleElement).toBeInTheDocument();

@@ -15,8 +15,8 @@ const ProjectsList = (): ReactElement => {
   });
   const { translations }: { translations: Lang } = useLang();
 
-  const [editProject, setEditProject] = useState<ProjectRow | null>(null);
-  const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
+  const [editProject, setEditProject]: [ProjectRow | null, React.Dispatch<React.SetStateAction<ProjectRow | null>>] = useState<ProjectRow | null>(null);
+  const [deleteProjectId, setDeleteProjectId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);
 
   const projects: ProjectRow[] = useMemo(() => {
     if (!data?.listProjects?.projects) return [];
@@ -35,23 +35,23 @@ const ProjectsList = (): ReactElement => {
       }));
   }, [data]);
 
-  const handleEdit = useCallback((project: ProjectRow): void => {
+  const handleEdit: (project: ProjectRow) => void = useCallback((project: ProjectRow): void => {
     setEditProject(project);
   }, []);
 
-  const handleDelete = useCallback((projectId: number): void => {
+  const handleDelete: (projectId: number) => void = useCallback((projectId: number): void => {
     setDeleteProjectId(projectId);
   }, []);
 
-  const handleCloseEdit = useCallback((): void => {
+  const handleCloseEdit: () => void = useCallback((): void => {
     setEditProject(null);
   }, []);
 
-  const handleCloseDelete = useCallback((): void => {
+  const handleCloseDelete: () => void = useCallback((): void => {
     setDeleteProjectId(null);
   }, []);
 
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh: () => Promise<void> = useCallback(async (): Promise<void> => {
     await refetch();
   }, [refetch]);
 
@@ -63,9 +63,9 @@ const ProjectsList = (): ReactElement => {
         <TextAdmin type="h1">
           {translations.messageAdminProjectListTitle || "Projects"}
         </TextAdmin>
-        <p className="text-error mt-4">
+        <TextAdmin type="p" className="text-error mt-4">
           {translations.messageAdminProjectListNotFound || "No projects found"}
-        </p>
+        </TextAdmin>
       </div>
     );
   }

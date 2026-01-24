@@ -33,7 +33,6 @@ const Output: React.FC<Props> = ({ index, cmd }): React.ReactElement => {
     if (!specialCmds.includes(cmd) && arg.length > 0) {
       return <Message data-testid="usage-output">Usage: {cmd}</Message>;
     }
-    // if (!commandEnter) return null;
 
     return (
       {

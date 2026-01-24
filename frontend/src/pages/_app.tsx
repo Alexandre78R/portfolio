@@ -58,7 +58,7 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     //   credentials: "include",
     // });
 
-    const uploadLink = createUploadLink({
+    const uploadLink: ApolloLink = createUploadLink({
       uri: API_URL,
       credentials: "include",
       headers: {

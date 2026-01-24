@@ -17,17 +17,17 @@ export interface WysiwygEditorModeProps {
   readonly formats: QuillFormat;
 }
 
-const WysiwygEditorMode = ({
+const WysiwygEditorMode: React.FC<WysiwygEditorModeProps> = ({
   content,
   onChange,
   placeholder,
   modules,
   formats,
 }: WysiwygEditorModeProps): ReactElement => {
-  const langContext = useLang();
-  const translations = langContext?.translations || {};
+  const langContext: { translations: Lang } = useLang();
+  const translations: Lang = langContext?.translations || {};
 
-  const handleQuillChange = (value: string): void => {
+  const handleQuillChange: (value: string) => void = (value: string): void => {
     onChange(value);
   };
 

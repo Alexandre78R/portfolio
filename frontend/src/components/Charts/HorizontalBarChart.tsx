@@ -23,8 +23,8 @@ export interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ labels, data }): JSX.Element => {
-  const [primaryColor, setPrimaryColor] = useState<string>("#6366f1");
-  const [labelColor, setLabelColor] = useState<string>("#1f2937");
+  const [primaryColor, setPrimaryColor]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("#6366f1");
+  const [labelColor, setLabelColor]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("#1f2937");
 
   const { theme }: ThemeContextType = useTheme();
   const { translations }: { translations: Lang } = useLang();

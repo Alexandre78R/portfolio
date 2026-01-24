@@ -8,8 +8,8 @@ import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
 import Lang from "@/lang/typeLang";
 
 const Whoami = (): JSX.Element => {
-  const { arg } = useContext<Term>(termContext);
-  const { translations } = useLang() as { translations : Lang };
+  const { arg }: Term = useContext<Term>(termContext);
+  const { translations }: { translations : Lang } = useLang() as { translations : Lang };
 
   if (arg.length === 0) {
     return <WhoamiError message={translations.terminalWhoamiNotArg} />;

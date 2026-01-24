@@ -17,9 +17,9 @@ export type Socials = {
   tab: number;
 };
 
-const Socials = (): React.ReactNode => {
-  const socials = useAppSelector((state) => state.socials.dataSocials);
-  const { arg, history, rerender } = useContext<Term>(termContext);
+const Socials: React.FC = (): React.ReactNode => {
+  const socials: Socials[] = useAppSelector((state) => state.socials.dataSocials);
+  const { arg, history, rerender }: Term = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {
@@ -30,8 +30,8 @@ const Socials = (): React.ReactNode => {
     }
   }, [arg, rerender, currentCommand]);
 
-  const checkArg = (): React.ReactElement | null => {
-    const validIds = socials.map((social) => social.id.toString());
+  const checkArg: () => React.ReactElement | null = (): React.ReactElement | null => {
+    const validIds: string[] = socials.map((social) => social.id.toString());
     return isArgInvalid(arg, "go", validIds) ? <Usage cmd="socials" /> : null;
   };
 

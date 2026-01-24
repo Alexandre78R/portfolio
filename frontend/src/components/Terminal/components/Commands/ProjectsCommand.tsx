@@ -13,9 +13,9 @@ import { Project, SkillsProject } from "@/store/slices/projectsSlice";
 import Lang from "@/lang/typeLang";
 import { LangKey } from "@/context/Lang/LangContext";
 
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+const ReactPlayer: React.ComponentType<any> = dynamic(() => import("react-player"), { ssr: false });
 
-const ProjectsCommand = (): JSX.Element => {
+const ProjectsCommand: React.FC = (): JSX.Element => {
 
   const dataProjects: Project[] = useSelector(
     (state: RootState) => state.projects.dataProjects
@@ -23,15 +23,15 @@ const ProjectsCommand = (): JSX.Element => {
 
   const { translations, lang }: { translations : Lang, lang : LangKey } = useLang();
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(1);
   const datasPerPage: number = 1;
 
-  const [isClient, setIsClient] = useState<boolean>(false);
+  const [isClient, setIsClient]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [chunkSize, setChunkSize] = useState<number>(2);
+  const [chunkSize, setChunkSize]: [number, React.Dispatch<React.SetStateAction<number>>] = useState<number>(2);
 
-  const [expandedText, setExpandedText] = useState<Set<number>>(new Set());
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [expandedText, setExpandedText]: [Set<number>, React.Dispatch<React.SetStateAction<Set<number>>>] = useState<Set<number>>(new Set());
+  const [expandedCards, setExpandedCards]: [Set<number>, React.Dispatch<React.SetStateAction<Set<number>>>] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (dataProjects.length > 0) setIsClient(true);
@@ -47,21 +47,21 @@ const ProjectsCommand = (): JSX.Element => {
 
   useEffect(() => {
     setChunkSize(getChunkSize());
-    const handleResize = (): void => setChunkSize(getChunkSize());
+    const handleResize: () => void = (): void => setChunkSize(getChunkSize());
     window.addEventListener("resize", handleResize);
     return (): void => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const pagination = (): Project[] => {
+  const pagination: () => Project[] = (): Project[] => {
     const indexLast: number = currentPage * datasPerPage;
     const indexFirst: number = indexLast - datasPerPage;
     return dataProjects.slice(indexFirst, indexLast);
   };
 
-  const next = (): void => setCurrentPage((prev) => prev + 1);
-  const previous = (): void => setCurrentPage((prev) => prev - 1);
+  const next: () => void = (): void => setCurrentPage((prev) => prev + 1);
+  const previous: () => void = (): void => setCurrentPage((prev) => prev - 1);
 
-  const chunkArray = <T,>(array: T[], size: number): T[][] => {
+  const chunkArray: <T>(array: T[], size: number) => T[][] = <T,>(array: T[], size: number): T[][] => {
     const chunkedArr: T[][] = [];
     for (let i: number = 0; i < array.length; i += size) {
       chunkedArr.push(array.slice(i, i + size));
@@ -69,14 +69,14 @@ const ProjectsCommand = (): JSX.Element => {
     return chunkedArr;
   };
 
-  const handleExpandClick = (cardId: number): void => {
-    const newExpanded = new Set(expandedCards);
+  const handleExpandClick: (cardId: number) => void = (cardId: number): void => {
+    const newExpanded: Set<number> = new Set(expandedCards);
     expandedCards.has(cardId) ? newExpanded.delete(cardId) : newExpanded.add(cardId);
     setExpandedCards(newExpanded);
   };
 
-  const handleExpandTextClick = (cardId: number): void => {
-    const newExpanded = new Set(expandedText);
+  const handleExpandTextClick: (cardId: number) => void = (cardId: number): void => {
+    const newExpanded: Set<number> = new Set(expandedText);
     expandedText.has(cardId) ? newExpanded.delete(cardId) : newExpanded.add(cardId);
     setExpandedText(newExpanded);
   };

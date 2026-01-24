@@ -9,7 +9,7 @@ import { Term } from "../../Terminal";
 
 const Lang = (): React.ReactNode  => {
   const { listLang, setLang } = useLang();
-  const { arg, history, rerender } = useContext<Term>(termContext);
+  const { arg, history, rerender }: Term = useContext<Term>(termContext);
   const [currentLang, setCurrentLang]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
@@ -27,7 +27,7 @@ const Lang = (): React.ReactNode  => {
     }
   }, [rerender, currentCommand, currentLang]);
 
-  const checkArg = () =>
+  const checkArg: () => React.ReactNode = () =>
     isArgInvalid(arg, "set", listLang) ? <Usage cmd="themes" /> : null;
 
   return arg.length > 2

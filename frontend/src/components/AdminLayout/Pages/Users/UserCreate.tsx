@@ -12,8 +12,9 @@ import SelectField from "../../components/Input/SelectField";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useCreateUserMutation } from "@/types/graphql";
+import { CreateUserMutation, useCreateUserMutation } from "@/types/graphql";
 import { SelectOption, UserRole, getUserRoleOptions } from "./user.type";
+import { FetchResult } from "@apollo/client";
 
 interface CreateUserForm {
   firstname: string;
@@ -31,17 +32,17 @@ const defaultForm: CreateUserForm = {
   lang: "fr",
 };
 
-const UserCreate = (): ReactElement => {
+const UserCreate: React.FC = (): ReactElement => {
   const { translations, lang }: { translations: Lang; lang: "fr" | "en" } = useLang();
   const { showAlert } = CustomToast();
   
-  const [form, setForm] = useState<CreateUserForm>(defaultForm);
+  const [form, setForm]: [CreateUserForm, React.Dispatch<React.SetStateAction<CreateUserForm>>] = useState<CreateUserForm>(defaultForm);
   
   const [createUserMutation, { loading }] = useCreateUserMutation();
   
   const USER_ROLE_OPTIONS: SelectOption<UserRole>[] = getUserRoleOptions(translations);
   
-  const handleChange = (
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     const { name, value } = e.target;
@@ -51,12 +52,12 @@ const UserCreate = (): ReactElement => {
     }));
   };
 
-  const handleSubmit = async (
+  const handleSubmit: (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => Promise<void> = async (
     e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
     try {
-      const { data } = await createUserMutation({ 
+      const { data }: FetchResult<CreateUserMutation> = await createUserMutation({ 
         variables: { 
           data: {
             ...form,

@@ -43,7 +43,7 @@ const ForgotPasswordPage = (): ReactElement => {
     MutationResult<ForgotPasswordMutation>
   ] = useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(FORGOT_PASSWORD);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = event.target;
     setForm((prevForm: ForgotPasswordFormState) => ({
       ...prevForm,

@@ -7,7 +7,7 @@ export interface ToggleButtonProps {
   setSidebarOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const ToggleButton = ({ sidebarOpen, setSidebarOpen }: ToggleButtonProps): ReactElement => {
+const ToggleButton: React.FC<ToggleButtonProps> = ({ sidebarOpen, setSidebarOpen }: ToggleButtonProps): ReactElement => {
   return (
     <button
       className={clsx(

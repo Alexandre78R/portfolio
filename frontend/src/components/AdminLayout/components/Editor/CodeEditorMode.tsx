@@ -19,15 +19,15 @@ const SELF_CLOSING_TAGS: ReadonlyArray<string> = [
   "link",
 ];
 
-const CodeEditorMode = ({
+const CodeEditorMode: React.FC<CodeEditorModeProps> = ({
   content,
   onChange,
   onKeyDown,
 }: CodeEditorModeProps): ReactElement => {
-  const langContext = useLang();
-  const translations = langContext?.translations || {};
+  const langContext: ReturnType<typeof useLang> = useLang();
+  const translations: Lang = langContext?.translations || {};
 
-  const handleHtmlChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+  const handleHtmlChange: (e: ChangeEvent<HTMLTextAreaElement>) => void = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     const { value }: { readonly value: string } = e.currentTarget;
     onChange(value);
   };

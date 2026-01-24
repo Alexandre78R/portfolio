@@ -16,12 +16,12 @@ export interface UserProviderProps {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<GetMeQuery["me"] | null>(null);
-  const [hasToken, setHasToken] = useState<boolean>(false);
+  const [user, setUser]: [GetMeQuery["me"] | null, React.Dispatch<React.SetStateAction<GetMeQuery["me"] | null>>] = useState<GetMeQuery["me"] | null>(null);
+  const [hasToken, setHasToken]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   
   // Vérifier le token au montage
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const token: string | null = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     setHasToken(!!token);
   }, []);
   
@@ -44,8 +44,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   
   // Écouter les changements du localStorage (utile pour la synchronisation entre onglets)
   useEffect(() => {
-    const handleStorageChange = () => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const handleStorageChange: () => void = () => {
+      const token: string | null = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       setHasToken(!!token);
       if (!token) {
         setUser(null);
@@ -57,8 +57,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, []);
   
   // Fonction pour vérifier manuellement le token (utile après logout dans le même onglet)
-  const checkToken = () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const checkToken: () => void = () => {
+    const token: string | null = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     setHasToken(!!token);
     if (!token) {
       setUser(null);
@@ -76,7 +76,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
 
-export const useUser = (): UserContextType => {
+export const useUser: () => UserContextType = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");

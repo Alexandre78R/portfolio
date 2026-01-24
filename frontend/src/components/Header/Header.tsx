@@ -8,9 +8,9 @@ import type LangType from "@/lang/typeLang";
 
 const Header = (): JSX.Element => {
 
-  const { translations } = useLang() as { translations: LangType; lang: LangKey };
-  const { theme } = useTheme() as { theme: keyof typeof themes };
-  const { headerRef } = useSectionRefs() as { headerRef: RefObject<HTMLDivElement> };
+  const { translations }: { translations: LangType; lang: LangKey } = useLang() as { translations: LangType; lang: LangKey };
+  const { theme }: { theme: keyof typeof themes } = useTheme() as { theme: keyof typeof themes };
+  const { headerRef }: { headerRef: RefObject<HTMLDivElement> } = useSectionRefs() as { headerRef: RefObject<HTMLDivElement> };
 
   return (
     <header ref={headerRef} id="header">

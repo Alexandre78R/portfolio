@@ -16,7 +16,7 @@ const Careers: FC = (): React.ReactElement => {
   const combinedData: CombinedDataItem[] = useMemo(() => {
     const combined: CombinedDataItem[] = [...dataExperiences, ...dataEducations];
 
-    const parseDate = (dateString: string): number => {
+    const parseDate: (dateString: string) => number = (dateString: string): number => {
       const [month, year]: string[] = dateString.split(" ");
       return new Date(`${month} 1, ${year}`).getTime();
     };
@@ -24,16 +24,16 @@ const Careers: FC = (): React.ReactElement => {
     console.log("dataEducations", dataEducations);
 
     return combined.sort((a, b) => {
-      const dateAStart = parseDate(a.startDateEN);
-      const dateBStart = parseDate(b.startDateEN);
-      const dateAEnd = parseDate(a.endDateEN);
-      const dateBEnd = parseDate(b.endDateEN);
+      const dateAStart: number = parseDate(a.startDateEN);
+      const dateBStart: number = parseDate(b.startDateEN);
+      const dateAEnd: number = parseDate(a.endDateEN);
+      const dateBEnd: number = parseDate(b.endDateEN);
 
       if (a.month === null) return -1;
       if (b.month === null) return 1;
 
-      const yearA = new Date(a.startDateEN).getFullYear();
-      const yearB = new Date(b.startDateEN).getFullYear();
+      const yearA: number = new Date(a.startDateEN).getFullYear();
+      const yearB: number = new Date(b.startDateEN).getFullYear();
 
       // Expérience avant éducation si même année
       if (a.typeEN === "Experience" && b.typeEN === "Education" && yearA === yearB) {

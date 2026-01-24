@@ -9,11 +9,14 @@ import {
   useUpdateExperienceMutation,
   useGetExperienceByIdQuery,
   UpdateExperienceInput,
-  GetExperiencesListQuery
+  GetExperiencesListQuery,
+  UpdateExperienceMutation,
 } from "@/types/graphql";
 import { ExperienceRow } from "./ExperienceTable";
 import { useLang } from "@/context/Lang/LangContext";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import TextAdmin from "../../components/Text/TextAdmin";
+import { FetchResult } from "@apollo/client";
 
 interface ExperienceEditModalProps {
   experience: ExperienceRow | null;
@@ -37,12 +40,12 @@ export interface ExperienceFormData {
   typeEN: string;
 }
 
-const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditModalProps): ReactElement | null => {
+const ExperienceEditModal: React.FC<ExperienceEditModalProps> = ({ experience, onClose, onRefresh }: ExperienceEditModalProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const { showAlert } = CustomToast();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
-  const [form, setForm] = useState<ExperienceFormData | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [form, setForm]: [ExperienceFormData | null, React.Dispatch<React.SetStateAction<ExperienceFormData | null>>] = useState<ExperienceFormData | null>(null);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateExperienceMutation] = useUpdateExperienceMutation();
 
   const { data, loading: experienceLoading } = useGetExperienceByIdQuery({
@@ -51,7 +54,6 @@ const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditM
     fetchPolicy: "network-only",
   });
 
-  // Remplir le formulaire quand les données sont chargées
   useEffect(() => {
     if (data?.getExperienceById?.experience) {
       const exp = data.getExperienceById.experience;
@@ -69,7 +71,7 @@ const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditM
         month: exp.month,
         typeFR: exp.typeFR,
         typeEN: exp.typeEN ?? "",
-      });
+      } as ExperienceFormData);
     }
   }, [data]);
 
@@ -81,26 +83,24 @@ const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditM
       </ModalCustom>
     );
 
-  // Handle change pour inputs texte et nombre
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => prev ? { ...prev, [name]: value } : prev);
   };
 
-  // Handle change pour les dates (InputField avec picker="date" renvoie directement une string)
-  const handleDateChange = (field: keyof Pick<ExperienceFormData, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => {
+  const handleDateChange: (field: keyof Pick<ExperienceFormData, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => void = (field: keyof Pick<ExperienceFormData, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => {
     setForm(prev => prev ? { ...prev, [field]: value } : prev);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!form) return;
 
     setLoading(true);
     try {
       const updateData: UpdateExperienceInput = { ...form, month: Number(form.month) };
-      const { data } = await updateExperienceMutation({ variables: { data: updateData } });
-
+      const result: FetchResult<UpdateExperienceMutation> = await updateExperienceMutation({ variables: { data: updateData } });
+      const { data } = result;
       if (data?.updateExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceEditSuccess);
         await onRefresh();
@@ -116,7 +116,7 @@ const ExperienceEditModal = ({ experience, onClose, onRefresh }: ExperienceEditM
   return (
     <ModalCustom open={true} onClose={onClose} width="600px">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold">{translations.messageAdminExperienceEditTitle}</h2>
+        <TextAdmin type="h2">{translations.messageAdminExperienceEditTitle}</TextAdmin>
         <button onClick={onClose} className="text-red-500"><X className="h-5 w-5" /></button>
       </div>
 

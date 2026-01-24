@@ -50,21 +50,21 @@ const CaptchaModal: React.FC<ContactProps> = ({
   setAuthorizeGenerateCaptcha,
 }): ReactElement => {
   const { showAlert } = CustomToast();
-  const { translations } = useLang() as { translations: Lang };
+  const { translations }: { translations: Lang } = useLang();
 
-  const [images, setImages] = useState<CaptchaImage[]>([]);
-  const [selectedImages, setSelectedImages] = useState<number[]>([]);
-  const [challengeType, setChallengeType] = useState<string>("");
-  const [idCaptcha, setIdCaptcha] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [checkrefresh, setCheckRefresh] = useState<boolean>(false);
+  const [images, setImages]: [CaptchaImage[], React.Dispatch<React.SetStateAction<CaptchaImage[]>>] = useState<CaptchaImage[]>([]);
+  const [selectedImages, setSelectedImages]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
+  const [challengeType, setChallengeType]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+  const [idCaptcha, setIdCaptcha]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(true);
+  const [refreshing, setRefreshing]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [checkrefresh, setCheckRefresh]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
   const [clearCaptcha] = useClearCaptchaMutation();
 
-  const getErrorMessage = (error: Error): string => {
+  const getErrorMessage: (error: Error) => string = (error: Error): string => {
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -77,7 +77,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
     }
   };
 
-  const preloadImages = (imageUrls: string[]): Promise<void[]> =>
+  const preloadImages: (imageUrls: string[]) => Promise<void[]> = (imageUrls: string[]): Promise<void[]> =>
     Promise.all(
       imageUrls.map(
         (url) =>
@@ -99,7 +99,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
         .then((response) => {
           const captcha = response.data?.generateCaptcha;
           if (captcha) {
-            const imageUrls = captcha.images.map((img) => img.url);
+            const imageUrls: string[] = captcha.images.map((img) => img.url);
             preloadImages(imageUrls).then(() => {
               setImages(captcha.images);
               setChallengeType(captcha.challengeType);
@@ -118,7 +118,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
     }
   }, [open, authorizeGenerateCaptcha, checkrefresh, generateCaptcha, showAlert, setAuthorizeGenerateCaptcha]);
 
-  const regenerateCaptcha = (): void => {
+  const regenerateCaptcha: () => void = (): void => {
     if (refreshing) return;
     setCheckRefresh(true);
     setRefreshing(true);
@@ -132,7 +132,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
           .then((response) => {
             const captcha = response.data?.generateCaptcha;
             if (captcha) {
-              const imageUrls = captcha.images.map((img) => img.url);
+              const imageUrls: string[] = captcha.images.map((img) => img.url);
               preloadImages(imageUrls).then(() => {
                 setImages(captcha.images);
                 setChallengeType(captcha.challengeType);
@@ -157,13 +157,13 @@ const CaptchaModal: React.FC<ContactProps> = ({
     });
   };
 
-  const handleImageClick = (index: number): void => {
+  const handleImageClick: (index: number) => void = (index: number): void => {
     setSelectedImages((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
 
-  const handleSubmit = async (): Promise<void> => {
+  const handleSubmit: () => Promise<void> = async (): Promise<void> => {
     validateCaptcha({
       variables: { selectedIndices: selectedImages, challengeType, idCaptcha },
       onCompleted: (data: { validateCaptcha: { isValid: boolean } }) => {
@@ -187,7 +187,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
     });
   };
 
-  const generateCategoryName = (): string => {
+  const generateCategoryName: () => string = (): string => {
     switch (challengeType) {
       case "cat":
         return translations.messageInfoCategoryCatCaptcha;

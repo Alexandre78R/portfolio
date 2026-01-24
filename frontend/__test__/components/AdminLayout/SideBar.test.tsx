@@ -64,9 +64,11 @@ describe('SideBar', () => {
   it('renders all top-level items', (): void => {
     const result: RenderResult = render(<SideBar {...defaultProps} />)
 
+    const adminTitle: HTMLElement = result.getByText('Admin')
     const dashboard: HTMLElement = result.getByText('Dashboard')
     const projets: HTMLElement = result.getByText('Projets')
 
+    expect(adminTitle).toBeInTheDocument()
     expect(dashboard).toBeInTheDocument()
     expect(projets).toBeInTheDocument()
   })

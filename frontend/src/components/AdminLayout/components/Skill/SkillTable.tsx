@@ -19,7 +19,7 @@ interface SkillTableProps {
   onDelete: (skillId: number) => void;
 }
 
-const SkillTable = ({
+const SkillTable: React.FC<SkillTableProps> = ({
   skills,
   translations,
   onEdit,

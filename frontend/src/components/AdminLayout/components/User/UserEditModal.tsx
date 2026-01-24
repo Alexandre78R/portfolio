@@ -13,10 +13,12 @@ import {
   useGetUserByIdQuery,
   GetUsersListQuery,
   Role,
+  UpdateUserMutation,
 } from "@/types/graphql";
 import { UserRow } from "./UserTable";
 import SelectField from "../Input/SelectField";
 import { SelectOption, UserRole, getUserRoleOptions, mapRoleToUserRole } from "../../Pages/Users/user.type";
+import { FetchResult } from "@apollo/client";
 
 interface UserEditModalProps {
   user: UserRow | null;
@@ -32,14 +34,24 @@ const UserEditModal = ({
   const { translations }: { translations: Lang } = useLang();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
-  const [form, setForm] = useState<{
+  const [form, setForm]: [{
+    firstname: string;
+    lastname: string;
+    email: string;
+    role: UserRole;
+  } | null, React.Dispatch<React.SetStateAction<{
+    firstname: string;
+    lastname: string;
+    email: string;
+    role: UserRole;
+  } | null>>] = useState<{
     firstname: string;
     lastname: string;
     email: string;
     role: UserRole;
   } | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateUserMutation] = useUpdateUserMutation();
 
   const { data: userData, loading: userLoading } = useGetUserByIdQuery({
@@ -58,6 +70,11 @@ const UserEditModal = ({
         lastname: u.lastname,
         email: u.email,
         role: mapRoleToUserRole(u.role),
+      } as {
+        firstname: string;
+        lastname: string;
+        email: string;
+        role: UserRole;
       });
     } else if (!user) {
       setForm(null);
@@ -74,24 +91,24 @@ const UserEditModal = ({
     );
   }
 
-  const handleChange = (
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     const { name, value } = e.target;
     setForm((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form || !user) return;
 
     setLoading(true);
     try {
-      const { data } = await updateUserMutation({
+      const { data }: FetchResult<UpdateUserMutation> = await updateUserMutation({
         variables: {
           id: Number(user.id),
           firstname: form.firstname,
-          lastname: form.lastname,
+          lastname: form.lastname,  
           email: form.email,
           role: form.role,
         },

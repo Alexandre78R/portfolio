@@ -11,9 +11,11 @@ import {
   useUpdateProjectMutation,
   useGetSkillsListQuery,
   UpdateProjectInput,
+  UpdateProjectMutation,
 } from "@/types/graphql";
 import type { ProjectRow } from "./ProjectTable";
 import type Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client";
 
 interface ProjectEditModalProps {
   project: ProjectRow | null;
@@ -36,7 +38,7 @@ type SelectOption<T> = {
   value: T;
 };
 
-const ProjectEditModal = ({
+const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
   project,
   onClose,
   onRefresh,
@@ -69,7 +71,7 @@ const ProjectEditModal = ({
     );
   }, [skillsData]);
 
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm]: [FormData, React.Dispatch<React.SetStateAction<FormData>>] = useState<FormData>({
     title: project?.title || "",
     descriptionFR: project?.descriptionFR || "",
     descriptionEN: project?.descriptionEN || "",
@@ -89,11 +91,11 @@ const ProjectEditModal = ({
         contentDisplay: project.contentDisplay || "full",
         github: project.github || "",
         skillIds: project.skills.map((s) => Number(s.id)) || [],
-      });
+      } as FormData);
     }
   }, [project]);
 
-  const handleChange = useCallback(
+  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>  = useCallback(
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ): void => {
@@ -103,11 +105,11 @@ const ProjectEditModal = ({
     []
   );
 
-  const handleSkillsChange = useCallback((selectedSkills: number[]): void => {
+  const handleSkillsChange: (selectedSkills: number[]) => void = useCallback((selectedSkills: number[]): void => {
     setForm((prev) => ({ ...prev, skillIds: selectedSkills }));
   }, []);
 
-  const handleSubmit = useCallback(
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -125,13 +127,13 @@ const ProjectEditModal = ({
           skillIds: form.skillIds,
         };
 
-        const res = await updateProjectMutation({
+        const res: FetchResult<UpdateProjectMutation> = await updateProjectMutation({
           variables: {
             data: submitData,
           },
         });
 
-        const response = res.data?.updateProject;
+        const response: UpdateProjectMutation["updateProject"] | undefined = res.data?.updateProject;
 
         if (response?.code === 200) {
           showAlert(

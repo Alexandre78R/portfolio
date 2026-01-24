@@ -56,16 +56,16 @@ const SELF_CLOSING_TAGS: ReadonlyArray<string> = [
   "link",
 ];
 
-const HtmlEditor = ({
+const HtmlEditor: React.FC<HtmlEditorProps> = ({
   content,
   onChange,
   placeholder = "Entrez le contenu HTML de votre message...",
 }: HtmlEditorProps): ReactElement => {
-  const langContext = useLang();
-  const translations = langContext?.translations || {};
-  const [mode, setMode] = useState<EditorMode>("editor");
-  const [showCode, setShowCode] = useState<boolean>(false);
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const langContext: { translations: Lang } = useLang();
+  const translations: Lang = langContext?.translations || {};
+  const [mode, setMode]: [EditorMode, React.Dispatch<React.SetStateAction<EditorMode>>] = useState<EditorMode>("editor");
+  const [showCode, setShowCode]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const debounceTimer: React.MutableRefObject<NodeJS.Timeout | null> = useRef<NodeJS.Timeout | null>(null);
 
   const EDITOR_TABS: ReadonlyArray<TabOption> = [
     {

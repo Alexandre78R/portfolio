@@ -6,7 +6,8 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import Lang from "@/lang/typeLang";
 import { useLang } from "@/context/Lang/LangContext";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
-import { useCreateExperienceMutation, CreateExperienceInput } from "@/types/graphql";
+import { useCreateExperienceMutation, CreateExperienceInput, CreateExperienceMutation } from "@/types/graphql";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 const defaultForm: CreateExperienceInput = {
   jobFR: "",
@@ -26,25 +27,23 @@ const defaultForm: CreateExperienceInput = {
 const ExperienceCreate = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
   const { showAlert } = CustomToast();
-  const [form, setForm] = useState<CreateExperienceInput>(defaultForm);
+  const [form, setForm]: [CreateExperienceInput, React.Dispatch<React.SetStateAction<CreateExperienceInput>>] = useState<CreateExperienceInput>(defaultForm);
   const [createExperienceMutation, { loading }] = useCreateExperienceMutation();
 
-  // Texte et nombres
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  // Dates (picker="date" renvoie directement une string)
-  const handleDateChange = (field: keyof Pick<CreateExperienceInput, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => {
+  const handleDateChange: (field: keyof Pick<CreateExperienceInput, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => void = (field: keyof Pick<CreateExperienceInput, "startDateFR" | "startDateEN" | "endDateFR" | "endDateEN">, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault();
     try {
       const payload: CreateExperienceInput = { ...form, month: Number(form.month) };
-      const res = await createExperienceMutation({ variables: { data: payload } });
+      const res: FetchResult<CreateExperienceMutation> = await createExperienceMutation({ variables: { data: payload } });
       if (res.data?.createExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceCreateSuccess);
         setForm(defaultForm);

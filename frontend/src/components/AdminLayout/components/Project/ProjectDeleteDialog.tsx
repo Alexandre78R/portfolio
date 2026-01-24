@@ -1,9 +1,10 @@
 import { ReactElement } from "react";
-import { useDeleteProjectMutation } from "@/types/graphql";
+import { useDeleteProjectMutation, DeleteProjectMutation } from "@/types/graphql";
 import ConfirmDialog from "@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 interface ProjectDeleteDialogProps {
   projectId: number | null;
@@ -11,12 +12,12 @@ interface ProjectDeleteDialogProps {
   onRefresh: () => Promise<any>;
 }
 
-const ProjectDeleteDialog = ({
+const ProjectDeleteDialog: React.FC<ProjectDeleteDialogProps> = ({
   projectId,
   onClose,
   onRefresh,
 }: ProjectDeleteDialogProps): ReactElement | null => {
-  const [deleteProjectMutation]= useDeleteProjectMutation();
+  const [deleteProjectMutation] = useDeleteProjectMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
@@ -24,11 +25,12 @@ const ProjectDeleteDialog = ({
 
   const handleConfirm: () => Promise<void> = async (): Promise<void> => {
     try {
-      const { data } = await deleteProjectMutation({
+      const result: FetchResult<DeleteProjectMutation> = await deleteProjectMutation({
         variables: { id: projectId },
       });
+      const { data } = result;
 
-      const response = data?.deleteProject;
+      const response: { code: number; message?: string } | undefined = data?.deleteProject;
 
       if (response?.code === 200) {
         showAlert(

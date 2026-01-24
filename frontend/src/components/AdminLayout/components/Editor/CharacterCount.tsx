@@ -8,9 +8,9 @@ export interface CharacterCountProps {
   readonly content: string;
 }
 
-const CharacterCount = ({ content }: CharacterCountProps): ReactElement => {
-  const langContext = useLang();
-  const translations = langContext?.translations || {};
+const CharacterCount: React.FC<CharacterCountProps> = ({ content }: CharacterCountProps): ReactElement => {
+  const langContext: ReturnType<typeof useLang> = useLang();
+  const translations: Lang = langContext?.translations || {};
   
   const visibleCharacterCount: number = useMemo((): number => {
     return content.replace(/<[^>]*>/gu, "").length;

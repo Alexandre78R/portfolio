@@ -5,8 +5,10 @@ import Lang from "@/lang/typeLang";
 import {
   useDeleteSkillMutation,
   GetSkillsListQuery,
+  DeleteSkillMutation,
 } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { FetchResult } from "@apollo/client";
 
 interface SkillDeleteDialogProps {
   skillId: number | null;
@@ -16,13 +18,13 @@ interface SkillDeleteDialogProps {
   >;
 }
 
-const SkillDeleteDialog = ({
+const SkillDeleteDialog: React.FC<SkillDeleteDialogProps> = ({
   skillId,
   onClose,
   onRefresh,
 }: SkillDeleteDialogProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const [deleteSkillMutation] = useDeleteSkillMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
@@ -34,9 +36,10 @@ const SkillDeleteDialog = ({
     setLoading(true);
 
     try {
-      const { data } = await deleteSkillMutation({
+      const result: FetchResult<DeleteSkillMutation> = await deleteSkillMutation({
         variables: { id: skillId },
       });
+      const { data } = result;
 
       if (data?.deleteSkill?.code === 200) {
         showAlert("success", translations.messageAdminSkillDeleteSuccess || "Skill deleted successfully!");

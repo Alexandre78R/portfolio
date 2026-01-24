@@ -8,18 +8,17 @@ import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
-const SkillsList = (): ReactElement => {
+const SkillsList: React.FC = (): ReactElement => {
   const { data, loading, error, refetch } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
   });
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [editSkill, setEditSkill] = useState<SkillRow | null>(null);
-  const [deleteSkillId, setDeleteSkillId] = useState<number | null>(null);
+  const [editSkill, setEditSkill]: [SkillRow | null, React.Dispatch<React.SetStateAction<SkillRow | null>>] = useState<SkillRow | null>(null);
+  const [deleteSkillId, setDeleteSkillId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);
 
-  // Transformer les données pour le tableau
-  const skills = useMemo<SkillRow[]>(() => {
+  const skills: SkillRow[] = useMemo<SkillRow[]>(() => {
     if (!data?.listSkillCategories?.categories) return [];
 
     const allSkills: SkillRow[] = [];

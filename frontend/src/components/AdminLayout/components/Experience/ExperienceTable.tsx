@@ -28,7 +28,7 @@ interface ExperienceTableProps {
   onDelete: (experienceId: number) => void;
 }
 
-const ExperienceTable = ({
+const ExperienceTable: React.FC<ExperienceTableProps> = ({
   experiences,
   translations,
   onEdit,

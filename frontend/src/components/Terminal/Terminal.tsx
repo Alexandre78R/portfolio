@@ -11,7 +11,7 @@ import _ from "lodash";
 import Output from "./Output";
 import TermInfo from "./TermInfo";
 
-export type Command = {
+type Command = {
   cmd: string;
   descEN: string;
   descFR: string;
@@ -99,7 +99,7 @@ export const argTab = (
 };
 
 const Terminal: React.FC = (): React.ReactElement => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   const [inputVal, setInputVal]: [
     string,
@@ -240,7 +240,7 @@ const Terminal: React.FC = (): React.ReactElement => {
           value={inputVal}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
-          ref={inputRef}
+          // ref={inputRef}
         />
       </Form>
       {cmdHistory.map((cmdH, index) => {

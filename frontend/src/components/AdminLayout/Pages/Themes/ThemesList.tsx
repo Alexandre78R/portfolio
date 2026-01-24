@@ -15,8 +15,8 @@ const ThemeList = (): ReactElement => {
 
   const { translations }: { translations: Lang } = useLang();
 
-  const [editTheme, setEditTheme] = useState<ThemeRow | null>(null);
-  const [deleteThemeId, setDeleteThemeId] = useState<string | null>(null);
+  const [editTheme, setEditTheme]: [ThemeRow | null, React.Dispatch<React.SetStateAction<ThemeRow | null>>] = useState<ThemeRow | null>(null);
+  const [deleteThemeId, setDeleteThemeId]: [string | null, React.Dispatch<React.SetStateAction<string | null>>] = useState<string | null>(null);
 
   if (loading) return <LoadingCustom />;
 

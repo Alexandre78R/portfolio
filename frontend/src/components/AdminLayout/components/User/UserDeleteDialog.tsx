@@ -1,9 +1,10 @@
 import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
-import { useDeleteUserMutation, GetUsersListQuery } from "@/types/graphql";
+import { useDeleteUserMutation, GetUsersListQuery, DeleteUserMutation } from "@/types/graphql";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 interface UserDeleteDialogProps {
   userId: string | null;
@@ -11,13 +12,13 @@ interface UserDeleteDialogProps {
   onRefresh: () => Promise<void | import('@apollo/client').ApolloQueryResult<GetUsersListQuery>>;
 }
 
-const UserDeleteDialog = ({
+const UserDeleteDialog: React.FC<UserDeleteDialogProps> = ({
   userId,
   onClose,
   onRefresh,
 }: UserDeleteDialogProps): ReactElement | null => {
   const { translations }: { translations: Lang } = useLang();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const [deleteUserMutation] = useDeleteUserMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
@@ -27,7 +28,7 @@ const UserDeleteDialog = ({
     setLoading(true);
 
     try {
-      const { data } = await deleteUserMutation({ variables: { id: Number(userId) } });
+      const { data }: FetchResult<DeleteUserMutation> = await deleteUserMutation({ variables: { id: Number(userId) } });
 
       if (data?.deleteUser?.code === 200) {
         showAlert("success", translations.messageAdminUserDeleteSuccess);

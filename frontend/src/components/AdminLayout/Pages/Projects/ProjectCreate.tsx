@@ -41,7 +41,7 @@ const defaultForm: FormData = {
   skillIds: [],
 };
 
-const ProjectCreate = (): ReactElement => {
+const ProjectCreate: React.FC = (): ReactElement => {
   const [createProjectMutation, { loading }] = useCreateProjectMutation();
   const { data: skillsData, loading: skillsLoading } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
@@ -49,9 +49,9 @@ const ProjectCreate = (): ReactElement => {
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
-  const [form, setForm] = useState<FormData>(defaultForm);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [form, setForm]: [FormData, React.Dispatch<React.SetStateAction<FormData>>] = useState<FormData>(defaultForm);
+  const [selectedFile, setSelectedFile]: [File | null, React.Dispatch<React.SetStateAction<File | null>>] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview]: [string | null, React.Dispatch<React.SetStateAction<string | null>>] = useState<string | null>(null);
 
   const typeDisplayOptions: SelectOption<string>[] = [
     { label: "Image", value: "image" },
@@ -74,7 +74,7 @@ const ProjectCreate = (): ReactElement => {
     );
   }, [skillsData]);
 
-  const handleChange = useCallback(
+  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> = useCallback(
     (
       e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ): void => {
@@ -84,18 +84,18 @@ const ProjectCreate = (): ReactElement => {
     []
   );
 
-  const handleSkillsChange = useCallback((selectedSkills: number[]): void => {
+  const handleSkillsChange: (selectedSkills: number[]) => void = useCallback((selectedSkills: number[]): void => {
     setForm((prev) => ({ ...prev, skillIds: selectedSkills }));
   }, []);
 
-  const handleFileChange = useCallback(
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
     (e: ChangeEvent<HTMLInputElement>): void => {
-      const file = e.target.files?.[0];
+      const file: File | undefined = e.target.files?.[0];
       if (!file) return;
 
       setSelectedFile(file);
 
-      const reader = new FileReader();
+      const reader: FileReader = new FileReader();
       reader.onloadend = () => {
         setMediaPreview(reader.result as string);
       };
@@ -104,14 +104,14 @@ const ProjectCreate = (): ReactElement => {
     []
   );
 
-  const handleRemoveFile = useCallback((): void => {
+  const handleRemoveFile: React.MouseEventHandler<HTMLButtonElement> = useCallback((): void => {
     setSelectedFile(null);
     setMediaPreview(null);
-    const fileInput = document.getElementById("media-upload") as HTMLInputElement;
+    const fileInput: HTMLInputElement | null = document.getElementById("media-upload") as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   }, []);
 
-  const handleSubmit = useCallback(
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -130,13 +130,13 @@ const ProjectCreate = (): ReactElement => {
 
         if (selectedFile) {
           const formData = new FormData();
-          const isVideo = selectedFile.type.startsWith("video/");
-          const field = isVideo ? "video" : "image";
-          const endpoint = isVideo ? "/api/project-video-upload" : "/api/project-upload";
+          const isVideo: boolean = selectedFile.type.startsWith("video/");
+          const field: string = isVideo ? "video" : "image";
+          const endpoint: string = isVideo ? "/api/project-video-upload" : "/api/project-upload";
           
           formData.append(field, selectedFile);
 
-          const uploadResponse = await fetch(
+          const uploadResponse: Response = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
             {
               method: "POST",
@@ -145,14 +145,14 @@ const ProjectCreate = (): ReactElement => {
           );
 
           if (uploadResponse.ok) {
-            const uploadData = await uploadResponse.json();
+            const uploadData: { filePath: string } = await uploadResponse.json();
             if (isVideo) {
               videoPath = uploadData.filePath;
             } else {
               imagePath = uploadData.filePath;
             }
           } else {
-            const errorMsg = isVideo ? "Erreur lors de l'upload de la vidéo" : "Erreur lors de l'upload de l'image";
+            const errorMsg: string = isVideo ? "Erreur lors de l'upload de la vidéo" : "Erreur lors de l'upload de l'image";
             showAlert("error", errorMsg);
             return;
           }
@@ -318,10 +318,10 @@ const ProjectCreate = (): ReactElement => {
 
         {/* Media Upload Section */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-text">
+          <TextAdmin type= "p" className="block text-sm font-medium text-text">
             {translations.messageAdminProjectInputMedia ||
               "Media (Image/Video) - Optional"}
-          </label>
+          </TextAdmin>
 
           {!selectedFile && (
             <div className="flex items-center justify-center w-full">
@@ -331,13 +331,13 @@ const ProjectCreate = (): ReactElement => {
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <Upload className="w-8 h-8 mb-2 text-gray-400" />
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Click to upload</span> or
+                  <TextAdmin type="p" className="mb-2 text-sm text-gray-500">
+                    <TextAdmin type="span" className="font-semibold">Click to upload</TextAdmin> or
                     drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500">
+                  </TextAdmin>
+                  <TextAdmin type="p" className="text-xs text-gray-500">
                     Image or Video (MAX. 50MB)
-                  </p>
+                  </TextAdmin>
                 </div>
                 <input
                   id="media-upload"
@@ -374,10 +374,10 @@ const ProjectCreate = (): ReactElement => {
               >
                 <X size={20} />
               </button>
-              <p className="mt-2 text-sm text-gray-600">
+              <TextAdmin type="p" className="mt-2 text-sm text-gray-600">
                 {selectedFile.name} (
                 {(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-              </p>
+              </TextAdmin>
             </div>
           )}
         </div>

@@ -33,7 +33,7 @@ interface DatePickerProps extends BaseDatePickerProps {
   picker: "date";
   locale?: Locale;
   type?: never;
-  onChange: (value: string) => void;
+  onChange: (value: string) => void | Promise<void>;
 }
 
 interface TextFieldInputProps extends BaseDatePickerProps {
@@ -60,7 +60,7 @@ const MONTH_MAP: Readonly<MonthMapType> = {
   'Décembre': 'December'
 } as const;
 
-const parseDate = (value: string): Dayjs | null => {
+const parseDate: (value: string) => Dayjs | null = (value: string): Dayjs | null => {
   if (!value) return null;
 
   let parseValue: string = value;
@@ -77,7 +77,7 @@ const parseDate = (value: string): Dayjs | null => {
 };
 
 const formatDate: (date: Dayjs, locale: Locale) => string = (date: Dayjs, locale: Locale): string => {
-  const formatted = date.locale(locale).format("MMMM YYYY");
+  const formatted: string = date.locale(locale).format("MMMM YYYY");
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
@@ -99,7 +99,7 @@ const InputField: React.FC<InputFieldProps> = (props) => {
     const { locale = "en", onChange } = props;
     const dateValue: Dayjs | null = parseDate(value);
 
-    const handleDateChange = (newValue: Dayjs | null): void => {
+    const handleDateChange: (newValue: Dayjs | null) => void = (newValue: Dayjs | null): void => {
       if (newValue?.isValid()) {
         const formatted: string = formatDate(newValue, locale);
         onChange(formatted);
@@ -121,13 +121,16 @@ const InputField: React.FC<InputFieldProps> = (props) => {
               required,
               fullWidth: true,
               name,
-              className: `bg-white border border-gray-300 rounded-md text-text ${className}`,
+              className: `bg-secondary border border-gray-300 rounded-md text-text-300 ${className}`,
               sx: {
                 "& .MuiOutlinedInput-root": {
                   backgroundColor: "white",
-                  color: "var(--text-color)",
+                  color: "var(--text300-color)",
                   "& input": {
-                    color: "var(--text-color)",
+                    color: "var(--text300-color)",
+                  },
+                  "& textarea": {
+                    color: "var(--text300-color)",
                   },
                 },
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -152,10 +155,10 @@ const InputField: React.FC<InputFieldProps> = (props) => {
   const { type = "text", onChange } = props;
 
   const isPasswordType: boolean = type === "password";
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const inputType: string = isPasswordType && showPassword ? "text" : type;
 
-  const handleTextFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+  const handleTextFieldChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     onChange(e as ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>);
   };
 
@@ -189,24 +192,24 @@ const InputField: React.FC<InputFieldProps> = (props) => {
             }
           : undefined
       }
-      className={`bg-white border border-gray-300 rounded-md text-text ${className}`}
+      className={`bg-white border border-gray-300 rounded-md text-primary ${className}`}
       sx={{
         "& .MuiOutlinedInput-root": {
           backgroundColor: "white",
-          color: "var(--text-color)",
+          color: "var(--text300-color)",
           "& input": {
-            color: "var(--text-color)",
+            color: "var(--text300-color)",
           },
           "& textarea": {
-            color: "var(--text-color)",
+            color: "var(--text300-color)",
           },
         },
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "var(--primary-color)",
+          borderColor: "var(--text300-color)",
           borderWidth: "0.2rem",
         },
         "& .MuiFormLabel-root": {
-          color: "var(--primary-color)",
+          color: "var(--text300-color)",
           fontWeight: "bold",
           backgroundColor: "white",
         },

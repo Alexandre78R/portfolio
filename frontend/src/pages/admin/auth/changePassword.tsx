@@ -4,7 +4,7 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction } from "@apollo/client";
+import { useMutation, MutationResult, MutationFunction, FetchResult } from "@apollo/client";
 import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
 import { CHANGE_PASSWORD } from "@/requetes/mutations/user.mutations";
@@ -36,7 +36,7 @@ const ChangePasswordPage = (): React.ReactElement => {
   const { translations }: { translations: Lang } = useLang();
   const { user, loading: userLoading, refetch }: UserContextType = useUser();
 
-  const [form, setForm] = useState<ChangePasswordFormState>({
+  const [form, setForm]: [ChangePasswordFormState, React.Dispatch<React.SetStateAction<ChangePasswordFormState>>] = useState<ChangePasswordFormState>({
     newPassword: "",
     confirmPassword: "",
   });
@@ -49,7 +49,7 @@ const ChangePasswordPage = (): React.ReactElement => {
   useEffect((): void => {
     if (!userLoading) {
       if (!user) {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token: string | null = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (!token) {
           console.log("⚠️ Pas de token, redirection vers login");
           router.replace("/admin/auth/login");
@@ -61,7 +61,7 @@ const ChangePasswordPage = (): React.ReactElement => {
     }
   }, [user, userLoading, router]);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+  const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value }: { name: string; value: string } = e.target;
     setForm((prev: ChangePasswordFormState): ChangePasswordFormState => ({
       ...prev,
@@ -69,8 +69,8 @@ const ChangePasswordPage = (): React.ReactElement => {
     }));
   };
 
-  const handleChangePassword = async (
-    e: FormEvent<HTMLFormElement | HTMLButtonElement>
+  const handleChangePassword: (e: FormEvent<HTMLFormElement | HTMLButtonElement | HTMLAnchorElement>) => Promise<void> = async (
+    e: FormEvent<HTMLFormElement | HTMLButtonElement | HTMLAnchorElement>
   ): Promise<void> => {
     e.preventDefault();
 
@@ -90,7 +90,7 @@ const ChangePasswordPage = (): React.ReactElement => {
     }
 
     try {
-      const res = await changePassword({
+      const res: FetchResult<ChangePasswordMutation> = await changePassword({
         variables: {
           email: user.email,
           newPassword: form.newPassword,

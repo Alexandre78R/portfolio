@@ -1,3 +1,4 @@
+import Lang from "@/lang/typeLang";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type ExperienceType = {
@@ -36,8 +37,8 @@ const experiencesSlice = createSlice({
     setExperiences(state, action: PayloadAction<ExperienceType[]>) {
       state.dataExperiences = action.payload;
     },
-    updateExperiences(state, action: PayloadAction<string>) {
-      const lang = action.payload;
+    updateExperiences(state, action: PayloadAction<Lang["file"]>) {
+      const lang: Lang["file"] = action.payload;
       state.dataExperiences = state.dataExperiences.map((experience) => ({
         ...experience,
         job: lang === "fr" ? experience.jobFR : experience.jobEN,

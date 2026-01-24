@@ -26,6 +26,7 @@ import {
   useGetSkillsListQuery,
   useGetEducationsListQuery,
   useGetExperiencesListQuery,
+  GetSkillsListQuery,
 } from "@/types/graphql";
 import { useQuery } from "@apollo/client";
 import { GET_SOCIALS_LIST } from "@/requetes/queries/socials.queries";
@@ -52,7 +53,7 @@ const Home: React.FC = (): ReactElement => {
   const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef }: SectionRefsContextProps = useSectionRefs();
   const { selectedView }: ChoiceVieContextType = useChoiceView();
 
-  const dispatch = useAppDispatch();
+  const dispatch: ReturnType<typeof useAppDispatch> = useAppDispatch();
   const dataSkills: Skill[] = useAppSelector((state: any) => state.skills.dataSkills);
   const dataProjects: Project[] = useAppSelector((state: any) => state.projects.dataProjects);
   const dataEducations: EducationType[] = useAppSelector((state: any) => state.educations.dataEducations);

@@ -2,8 +2,9 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useDeleteExperienceMutation, GetExperiencesListQuery } from "@/types/graphql";
+import { useDeleteExperienceMutation, GetExperiencesListQuery, DeleteExperienceMutation  } from "@/types/graphql";
 import { useLang } from "@/context/Lang/LangContext";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 interface ExperienceDeleteDialogProps {
   experienceId: number | null;
@@ -11,19 +12,20 @@ interface ExperienceDeleteDialogProps {
   onRefresh: () => Promise<void | import("@apollo/client").ApolloQueryResult<GetExperiencesListQuery>>;
 }
 
-const ExperienceDeleteDialog = ({ experienceId, onClose, onRefresh }: ExperienceDeleteDialogProps): ReactElement | null => {
+const ExperienceDeleteDialog: React.FC<ExperienceDeleteDialogProps> = ({ experienceId, onClose, onRefresh }: ExperienceDeleteDialogProps): ReactElement | null => {
   
   const { translations }: { translations: Lang } = useLang();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
   const [deleteExperienceMutation] = useDeleteExperienceMutation();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const handleConfirm = async () => {
+  const handleConfirm: () => Promise<void> = async () => {
     if (!experienceId) return;
     setLoading(true);
     try {
-      const { data } = await deleteExperienceMutation({ variables: { id: experienceId } });
+      const result: FetchResult<DeleteExperienceMutation> = await deleteExperienceMutation({ variables: { id: experienceId } });
+      const { data } = result;
       if (data?.deleteExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceDeleteSuccess);
         await onRefresh();

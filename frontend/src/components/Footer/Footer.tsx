@@ -7,7 +7,7 @@ import { useAppSelector } from "@/store/hook";
 import { Social } from "@/store/slices/socialsSlice";
 import Lang from "@/lang/typeLang";
 
-const Footer = (): JSX.Element => {
+const Footer: React.FC = (): JSX.Element => {
   const { translations }: { translations: Lang } = useLang();
   const currentYear: number = new Date().getFullYear();
   const dataSocials: Social[] = useAppSelector((state) => state.socials.dataSocials);

@@ -14,10 +14,6 @@ import defaultThemes, {
   Theme,
 } from "./themes";
 
-/* =======================
-   Types
-======================= */
-
 export type ThemeKey = string;
 
 export interface ThemeContextType {
@@ -34,7 +30,7 @@ export interface ThemeProviderProps {
 
 const ThemeContext: React.Context<ThemeContextType | undefined> = createContext<ThemeContextType | undefined>(undefined);
 
-const getDefaultThemes = (): Record<string, Theme> => {
+const getDefaultThemes: () => Record<string, Theme> = (): Record<string, Theme> => {
   const themesObject: Record<string, Theme> = {};
 
   Object.entries(defaultThemes).forEach(([key, themeData]) => {
@@ -80,9 +76,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       return;
     }
 
-    const themesData = data.listThemes.themes;
+    const themesData: NonNullable<typeof data.listThemes.themes> = data.listThemes.themes;
 
-    const visibleThemes = themesData.filter(
+    const visibleThemes: NonNullable<typeof themesData> = themesData.filter(
       (t): t is NonNullable<typeof t> => !!t && t.visible === true
     );
 
@@ -132,7 +128,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setIsUsingFallback(false);
   }, [data, error]);
 
-  const setColorVarCSS = (newTheme: ThemeKey): void => {
+  const setColorVarCSS: (newTheme: ThemeKey) => void = (newTheme: ThemeKey): void => {
     const themeData = themes[newTheme];
     if (!themeData) return;
 
@@ -160,7 +156,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     });
   };
 
-  const toggleTheme = (newTheme: ThemeKey): void => {
+  const toggleTheme: (newTheme: ThemeKey) => void = (newTheme: ThemeKey): void => {
     if (!themes[newTheme]) {
       console.warn(`[ThemeContext] Theme "${newTheme}" not found`);
       return;
@@ -174,17 +170,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     if (Object.keys(themes).length === 0) return;
 
-    const storedTheme = localStorage.getItem("theme");
+    const storedTheme: ThemeKey | null = localStorage.getItem("theme");
 
     if (storedTheme && themes[storedTheme]) {
       toggleTheme(storedTheme);
     } else {
-      const firstTheme = Object.keys(themes)[0];
+      const firstTheme: ThemeKey = Object.keys(themes)[0];
       toggleTheme(firstTheme);
     }
   }, [themes]);
 
-  const value = useMemo(
+  const value: ThemeContextType = useMemo(
     () => ({
       theme,
       toggleTheme,
@@ -207,7 +203,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 };
 
 
-export const useTheme = (): ThemeContextType => {
+export const useTheme: () => ThemeContextType = (): ThemeContextType => {
   const context = useContext(ThemeContext);
   if (!context) {
     throw new Error("useTheme must be used within ThemeProvider");
@@ -215,8 +211,8 @@ export const useTheme = (): ThemeContextType => {
   return context;
 };
 
-export const getVisibleThemes = (themes: Record<string, Theme>): Theme[] =>
+export const getVisibleThemes: (themes: Record<string, Theme>) => Theme[] = (themes: Record<string, Theme>): Theme[] =>
   Object.values(themes).filter((theme) => theme.visible);
 
-export const getThemeNames = (themes: Record<string, Theme>): string[] =>
+export const getThemeNames: (themes: Record<string, Theme>) => string[] = (themes: Record<string, Theme>): string[] =>
   Object.keys(themes);

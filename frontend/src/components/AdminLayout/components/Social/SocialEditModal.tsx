@@ -18,9 +18,11 @@ import {
   GetSocialsListQuery,
   UpdateSocialInput,
   useGetSocialByIdQuery,
+  UpdateSocialMutation,
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client/link/core/types";
 
 interface SocialEditModalProps {
   social: SocialRow | null;
@@ -37,7 +39,7 @@ export interface SocialFormData {
   tab: number;
 }
 
-const SocialEditModal = ({
+const SocialEditModal: React.FC<SocialEditModalProps> = ({
   social,
   onClose,
   onRefresh,
@@ -46,8 +48,8 @@ const SocialEditModal = ({
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<SocialFormData | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [form, setForm]: [SocialFormData | null, React.Dispatch<React.SetStateAction<SocialFormData | null>>] = useState<SocialFormData | null>(null);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateSocialMutation] = useUpdateSocialMutation();
 
   const { data, loading: socialLoading } = useGetSocialByIdQuery({
@@ -64,7 +66,7 @@ const SocialEditModal = ({
         title: socialData.title ?? "",
         url: socialData.url ?? "",
         tab: socialData.tab ?? 0,
-      };
+      } as SocialFormData;
       setForm(newData);
     }
   }, [data]);
@@ -79,7 +81,7 @@ const SocialEditModal = ({
     );
   }
 
-  const handleChange = (
+  const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     if (typeof e === "string") {
@@ -95,21 +97,21 @@ const SocialEditModal = ({
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void> = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!form) return;
     
     setLoading(true);
     
     try {
-        console.log("Submitting form:", form);
+        // console.log("Submitting form:", form);
       const updateData: UpdateSocialInput = {
         title: form.title,
         url: form.url,
         tab: Number(form.tab),
       };
 
-      const { data } = await updateSocialMutation({
+      const { data }: FetchResult<UpdateSocialMutation> = await updateSocialMutation({
         variables: { id: Number(form.id), data: updateData },
       });
 

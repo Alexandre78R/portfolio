@@ -20,7 +20,7 @@ interface UserTableProps {
   onDelete: (userId: string) => void;
 }
 
-const UserTable = ({ users, translations, onEdit, onDelete }: UserTableProps): ReactElement => {
+const UserTable: React.FC<UserTableProps> = ({ users, translations, onEdit, onDelete }: UserTableProps): ReactElement => {
   const columns: ColumnDef<UserRow>[] = [
     {
       header: translations.messageAdminUserColumnFirstname,

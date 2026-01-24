@@ -20,9 +20,12 @@ import {
   useUpdateSkillMutation,
   GetSkillsListQuery,
   useGetSkillsListQuery,
+  UpdateSkillMutation,
+  UpdateSkillInput
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
+import { FetchResult } from "@apollo/client";
 
 interface SkillEditModalProps {
   skill: SkillRow | null;
@@ -48,17 +51,15 @@ const SkillEditModal = ({
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
-  const [form, setForm] = useState<SkillFormData | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [form, setForm]: [SkillFormData | null, React.Dispatch<React.SetStateAction<SkillFormData | null>>] = useState<SkillFormData | null>(null);
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateSkillMutation] = useUpdateSkillMutation();
 
-  // Récupérer la liste des catégories pour le select
   const { data: categoriesData, loading: categoriesLoading } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
   });
 
-  // Préparer les options de catégories pour le select
-  const categoryOptions = useMemo<SelectOption<number>[]>(() => {
+  const categoryOptions: SelectOption<number>[] = useMemo<SelectOption<number>[]>(() => {
     if (!categoriesData?.listSkillCategories?.categories) return [];
     
     return categoriesData.listSkillCategories.categories.map(category => ({
@@ -70,10 +71,10 @@ const SkillEditModal = ({
   useEffect(() => {
     if (skill) {
       // Trouver la catégorie du skill
-      let categoryId = 0;
+      let categoryId: number = 0;
       if (categoriesData?.listSkillCategories?.categories) {
         for (const category of categoriesData.listSkillCategories.categories) {
-          const foundSkill = category.skills?.find(s => Number(s.id) === skill.id);
+          const foundSkill: SkillRow | unknown = category.skills?.find(s => Number(s.id) === skill.id);
           if (foundSkill) {
             categoryId = Number(category.id);
             break;
@@ -86,7 +87,7 @@ const SkillEditModal = ({
         name: skill.name,
         image: skill.image,
         categoryId: categoryId,
-      });
+      } as SkillFormData);
     }
   }, [skill, categoriesData]);
 
@@ -100,29 +101,31 @@ const SkillEditModal = ({
     );
   }
 
-  const handleChange = (
+  const handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ): void => {
     const { name, value } = e.target;
     setForm((prev) => (prev ? { ...prev, [name]: name === "categoryId" ? Number(value) : value } : prev));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!form) return;
     
     setLoading(true);
     
     try {
-      const updateData = {
+      const updateData: UpdateSkillInput = {
         name: form.name,
         image: form.image,
         categoryId: form.categoryId,
       };
 
-      const { data } = await updateSkillMutation({
+      const result: FetchResult<UpdateSkillMutation> = await updateSkillMutation({
         variables: { id: Number(form.id), data: updateData },
       });
+
+      const { data } = result;
 
       if (data?.updateSkill?.code === 200) {
         showAlert("success", translations.messageAdminSkillEditSuccess || "Skill updated successfully!");

@@ -23,7 +23,7 @@ interface ProjectTableProps {
   onDelete: (projectId: number) => void;
 }
 
-const ProjectTable = ({
+const ProjectTable : React.FC<ProjectTableProps> = ({
   projects,
   translations,
   onEdit,

@@ -1,3 +1,4 @@
+import Lang from "@/lang/typeLang";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type SkillsProject = {
@@ -33,8 +34,8 @@ const projectsSlice = createSlice({
     setProjects(state, action: PayloadAction<Project[]>) {
       state.dataProjects = action.payload;
     },
-    updateProjectDescriptions(state, action: PayloadAction<string>) {
-      const lang = action.payload;
+    updateProjectDescriptions(state, action: PayloadAction<Lang["file"]>) {
+      const lang: Lang["file"] = action.payload;
       state.dataProjects = state.dataProjects.map((project) => ({
         ...project,
         description:

@@ -31,7 +31,7 @@ const fontSizeMap: Record<TextAdminType, string> = {
   span: "0.75rem",
 } as const;
 
-const getColorForType = (type: TextAdminType): string =>
+const getColorForType: (type: TextAdminType) => string = (type: TextAdminType): string =>
   type === "p" || type === "span" ? "var(--text-color)" : "var(--primary-color)";
 
 const TextAdmin: React.FC<TextAdminProps> = ({ type, children, className }): JSX.Element => (

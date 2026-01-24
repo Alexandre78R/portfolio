@@ -21,7 +21,7 @@ export interface EditorTabsProps {
   readonly onShowCodeChange: (showCode: boolean) => void;
 }
 
-const isTabActive = (
+const isTabActive: (tab: TabOption, mode: EditorMode, showCode: boolean) => boolean = (
   tab: TabOption,
   mode: EditorMode,
   showCode: boolean
@@ -40,7 +40,7 @@ const EditorTabs: React.FC<EditorTabsProps> = ({
   onShowCodeChange,
 }: EditorTabsProps): ReactElement => {
 
-  const handleTabClick = (tab: TabOption): void => {
+  const handleTabClick: (tab: TabOption) => void = (tab: TabOption): void => {
     if (tab.type === "toggle") {
       onShowCodeChange(!showCode);
     } else if (tab.value) {

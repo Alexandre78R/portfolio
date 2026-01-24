@@ -19,7 +19,7 @@ interface ThemeTableProps {
   onDelete: (themeId: string) => void;
 }
 
-const ThemeTable = ({
+const ThemeTable: React.FC<ThemeTableProps> = ({
   themes,
   translations,
   onEdit,

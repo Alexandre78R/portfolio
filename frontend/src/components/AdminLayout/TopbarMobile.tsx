@@ -12,11 +12,11 @@ export type TopbarMobileProps = {
   navigation: NavItem[]
 }
 
-const TopbarMobile = ({ activeTab, navigation }: TopbarMobileProps): React.ReactElement => {
-  const router = useRouter()
+const TopbarMobile: React.FC<TopbarMobileProps> = ({ activeTab, navigation }: TopbarMobileProps): React.ReactElement => {
+  const router: ReturnType<typeof useRouter> = useRouter()
   const { translations } = useLang()
 
-  const handleLogout = (): void => {
+  const handleLogout: () => void = (): void => {
     localStorage.removeItem("token");
     router.push("/admin/auth/login");
   };

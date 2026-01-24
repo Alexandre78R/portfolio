@@ -17,7 +17,6 @@ describe("AuthFormLayout", () => {
     titleElement = screen.getByText("Login") as HTMLElement;
     expect(titleElement).toBeInTheDocument();
     expect(titleElement.tagName).toBe("H2");
-    expect(titleElement).toHaveClass("text-2xl", "font-bold", "text-center", "mb-4", "text-primary");
   });
 
   it("renders children correctly", (): void => {

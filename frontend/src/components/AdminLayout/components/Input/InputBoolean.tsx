@@ -26,8 +26,8 @@ const InputBoolean: React.FC<InputBooleanProps> = ({
   optionClassName,
   selectedClassName,
 }) => {
-  const handleClick = (val: boolean) => {
-    const fakeEvent = {
+  const handleClick: (val: boolean) => void = (val: boolean) => {
+    const fakeEvent: ChangeEvent<HTMLInputElement> = {
       target: {
         name,
         type: "checkbox",
