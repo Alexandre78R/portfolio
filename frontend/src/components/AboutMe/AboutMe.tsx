@@ -5,11 +5,13 @@ import TitleH3 from "../Title/TitleH3";
 import Lang from "@/lang/typeLang";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useAppSelector } from "@/store/hook";
 
 const AboutMe: React.FC = (): JSX.Element => {
-  const { translations }: { translations: Lang } = useLang();
+  const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
+  const aboutMe: AboutMe | null = useAppSelector((state) => state.aboutMe.dataAboutMe);
 
-  const { data, loading, error }= useCvQuery();
+  const { data, loading, error } = useCvQuery();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
@@ -33,13 +35,22 @@ const AboutMe: React.FC = (): JSX.Element => {
     }
   };
 
+  const title: string = aboutMe ? (lang === "fr" ? aboutMe.titleFR : aboutMe.titleEN) : translations.titleAboutMe;
+  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : `${translations.descriptionAboutMe1} ${translations.descriptionAboutMe2} ${translations.descriptionAboutMe3}`;
+  
+  const paragraphs: string[] = description ? description.split('\n').filter(p => p.trim()) : [
+    description
+  ];
+
   return (
     <div className="flex flex-col items-center">
       <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-        <TitleH3 title={translations.titleAboutMe} />
-        <p className="text-text mt-4">
-          {translations.descriptionAboutMe1} {translations.descriptionAboutMe2} {translations.descriptionAboutMe3}
-        </p>
+        <TitleH3 title={title} />
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} className="text-text mt-4">
+            {paragraph}
+          </p>
+        ))}
         <div className="mt-2">
           <ButtonCustom text={translations.buttonCV} onClick={handleClick} />
         </div>

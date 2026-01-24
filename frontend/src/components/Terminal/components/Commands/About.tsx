@@ -2,9 +2,20 @@ import { Typography } from "@mui/material";
 import { useLang } from "@/context/Lang/LangContext";
 import { Message } from "../Message";
 import type Lang from "@/lang/typeLang";
+import { useAppSelector } from "@/store/hook";
 
-const About = (): JSX.Element => {
-  const { translations }: { translations: Lang } = useLang();
+const About: React.FC = (): JSX.Element => {
+  const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
+  const aboutMe: AboutMe | null = useAppSelector((state) => state.aboutMe.dataAboutMe);
+
+  const title: string = aboutMe ? (lang === "fr" ? aboutMe.titleFR : aboutMe.titleEN) : translations.titleAboutMe;
+  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : "";
+  
+  const paragraphs: string[] = description ? description.split('\n').filter(p => p.trim()) : [
+    translations.descriptionAboutMe1,
+    translations.descriptionAboutMe2,
+    translations.descriptionAboutMe3
+  ];
 
   return (
     <Message>
@@ -14,18 +25,14 @@ const About = (): JSX.Element => {
           component="h3"
           className="text-text text-2xl"
         >
-          {translations.titleAboutMe}
+          {title}
         </Typography>
 
-        <p className="text-text mt-4">
-          {translations.descriptionAboutMe1}
-        </p>
-        <p className="text-text mt-4">
-          {translations.descriptionAboutMe2}
-        </p>
-        <p className="text-text mt-4">
-          {translations.descriptionAboutMe3}
-        </p>
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} className="text-text mt-4">
+            {paragraph}
+          </p>
+        ))}
       </div>
     </Message>
   );

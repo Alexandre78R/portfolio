@@ -1,10 +1,11 @@
 ﻿import React from "react";
 import { render, screen, fireEvent } from '@test-utils';
 import ProjectsCommand from "@/components/Terminal/components/Commands/ProjectsCommand";
+import { Project } from "@/store/slices/projectsSlice";
 import { useLang } from "@/context/Lang/LangContext";
-import { useSelector } from "react-redux";
-import { Project, SkillsProject } from "@/store/slices/projectsSlice";
-import type Lang from "@/lang/typeLang";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import projectsReducer from "@/store/slices/projectsSlice";
 
 jest.mock("next/dynamic", () => () => {
   const DynamicComponent: React.FC = () => <div data-testid="react-player" />;
@@ -12,8 +13,9 @@ jest.mock("next/dynamic", () => () => {
   return DynamicComponent;
 });
 
-jest.mock("@/context/Lang/LangContext");
-jest.mock("react-redux");
+jest.mock("@/context/Lang/LangContext", () => ({
+  useLang: jest.fn(),
+}));
 
 jest.mock("@/components/Button/Button", () => {
   const ButtonMock: React.FC<{
@@ -61,6 +63,31 @@ const mockProjects: Project[] = [
 ];
 
 describe("ProjectsCommand", () => {
+  const renderWithStore = () => {
+    const store = configureStore({
+      reducer: {
+        projects: projectsReducer,
+      },
+      preloadedState: {
+        projects: {
+          dataProjects: mockProjects,
+        },
+      },
+    });
+
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
+
+    return render(
+      <Provider store={store}>
+        <ProjectsCommand />
+      </Provider>
+    );
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -71,39 +98,24 @@ describe("ProjectsCommand", () => {
         buttonPaginationNext: "Next",
         buttonPaginationPrevious: "Previous",
         navbarButtonSkill: "Skills",
-      } as Lang,
-      lang: "fr",
-    });
-
-    (useSelector as jest.MockedFunction<typeof useSelector>).mockImplementation(
-      (selector) =>
-        selector({
-          projects: {
-            dataProjects: mockProjects,
-          },
-        })
-    );
-
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 1024,
+      },
+      lang: "en",
     });
   });
 
   test("renders first project title", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     expect(screen.getByText("Project One")).toBeInTheDocument();
   });
 
   test("shows truncated description and see more button", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     expect(screen.getByText(/A{90}\.\.\./)).toBeInTheDocument();
     expect(screen.getByText("See more")).toBeInTheDocument();
   });
 
   test("expands and collapses description text", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     const seeMoreButton: HTMLParagraphElement = screen.getByText("See more");
     fireEvent.click(seeMoreButton);
     expect(screen.getByText("See less")).toBeInTheDocument();
@@ -113,20 +125,20 @@ describe("ProjectsCommand", () => {
   });
 
   test("navigates to next project with pagination", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     const nextButton: HTMLButtonElement = screen.getByText("Next");
     fireEvent.click(nextButton);
     expect(screen.getByText("Project Two")).toBeInTheDocument();
   });
 
   test("previous button is disabled on first page", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     const prevButton: HTMLButtonElement = screen.getByText("Previous");
     expect(prevButton).toBeDisabled();
   });
 
   test("expands skills section when clicking expand icon", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     const expandButton: HTMLButtonElement | null = screen.getByTitle(
       "Project One - Skills"
     );
@@ -137,7 +149,7 @@ describe("ProjectsCommand", () => {
   });
 
   test("renders github link when provided", () => {
-    render(<ProjectsCommand />);
+    renderWithStore();
     const link: HTMLAnchorElement = screen.getByTitle("Project One - Github");
     expect(link).toHaveAttribute("href", "https://github.com/test");
   });

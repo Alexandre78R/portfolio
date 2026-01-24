@@ -76,9 +76,7 @@ app.use(
     await mountGraphQL(app);
 
     /* ▸ Cleanup périodique captchas expirés */
-    if (process.env.NODE_ENV !== "test") {
-      setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);
-    }
+    setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);
 
     /* ▸ Load logos */
     loadLogos();

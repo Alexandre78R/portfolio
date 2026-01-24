@@ -5,6 +5,14 @@ import { useRouter } from "next/router";
 import { MockedProvider, MockedResponse } from "@apollo/client/testing";
 import { InMemoryCache } from "@apollo/client";
 import { useGetThemesListQuery } from "@/types/graphql";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import skillsReducer from "@/store/slices/skillsSlice";
+import projectsReducer from "@/store/slices/projectsSlice";
+import educationsReducer from "@/store/slices/educationsSlice";
+import experiencesReducer from "@/store/slices/experiencesSlice";
+import socialsReducer from "@/store/slices/socialsSlice";
+import aboutMeReducer from "@/store/slices/aboutMeSlice";
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
@@ -18,6 +26,19 @@ jest.mock("@/types/graphql", () => ({
 const createTestCache = () => {
   return new InMemoryCache({
     typePolicies: {},
+  });
+};
+
+const createTestStore = () => {
+  return configureStore({
+    reducer: {
+      skills: skillsReducer,
+      projects: projectsReducer,
+      educations: educationsReducer,
+      experiences: experiencesReducer,
+      socials: socialsReducer,
+      aboutMe: aboutMeReducer,
+    },
   });
 };
 
@@ -58,9 +79,11 @@ const AllProviders = ({ children, mocks = [] }: PropsWithChildren & { mocks?: Mo
   });
 
   return (
-    <MockedProvider mocks={mocks} cache={createTestCache()}>
-      <ThemeProvider>{children}</ThemeProvider>
-    </MockedProvider>
+    <Provider store={createTestStore()}>
+      <MockedProvider mocks={mocks} cache={createTestCache()}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </MockedProvider>
+    </Provider>
   );
 };
 

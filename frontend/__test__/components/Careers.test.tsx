@@ -1,13 +1,12 @@
 ﻿import React, { ReactElement } from "react";
 import { render, screen } from '@test-utils';
 import Careers from "@/components/Careers/Careers";
-import { useSelector } from "react-redux";
 import { EducationType } from "@/store/slices/educationsSlice";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
-
-jest.mock("react-redux", () => ({
-  useSelector: jest.fn(),
-}));
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import educationsReducer from "@/store/slices/educationsSlice";
+import experiencesReducer from "@/store/slices/experiencesSlice";
 
 const mockExperiences: ExperienceType[] = [
   {
@@ -58,22 +57,26 @@ const mockEducations: EducationType[] = [
 ];
 
 describe("Careers component", () => {
-  beforeEach(() => {
-    (useSelector as unknown as jest.Mock).mockImplementation(
-      (selectorFn: (state: any) => any) =>
-        selectorFn({
-          educations: { dataEducations: mockEducations },
-          experiences: { dataExperiences: mockExperiences },
-        })
+  const renderWithStore = () => {
+    const store = configureStore({
+      reducer: {
+        educations: educationsReducer,
+        experiences: experiencesReducer,
+      },
+      preloadedState: {
+        educations: { dataEducations: mockEducations },
+        experiences: { dataExperiences: mockExperiences },
+      },
+    });
+    return render(
+      <Provider store={store}>
+        <Careers />
+      </Provider>
     );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  };
 
   it("renders experiences and educations", () => {
-    render(<Careers /> as ReactElement);
+    renderWithStore();
 
     const expElement: HTMLElement = screen.getByText("Frontend Developer");
     const eduElement: HTMLElement = screen.getByText("Master Informatique");
@@ -83,7 +86,7 @@ describe("Careers component", () => {
   });
 
   it("prioritizes Experience over Education when same year", () => {
-    render(<Careers /> as React.ReactElement);
+    renderWithStore();
 
     const titles: HTMLElement[] = screen.getAllByText(
       /Frontend Developer|Master Informatique/
@@ -94,7 +97,7 @@ describe("Careers component", () => {
   });
 
   it("renders dates correctly", () => {
-    render(<Careers /> as ReactElement);
+    renderWithStore();
 
     const expDate: HTMLElement = screen.getByText("Janvier 2023 - Décembre 2023");
     const eduDate: HTMLElement = screen.getByText("Septembre 2023 - Juin 2024");
@@ -104,7 +107,7 @@ describe("Careers component", () => {
   });
 
   it("renders additional information fields", () => {
-    render(<Careers /> as ReactElement);
+    renderWithStore();
 
     const contractEl: HTMLElement = screen.getByText("CDI");
     const businessEl: HTMLElement = screen.getByText("Tech Corp");

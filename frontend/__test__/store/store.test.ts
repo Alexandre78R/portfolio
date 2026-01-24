@@ -4,6 +4,7 @@ import { Project } from "@/store/slices/projectsSlice";
 import { EducationType } from "@/store/slices/educationsSlice";
 import { ExperienceType } from "@/store/slices/experiencesSlice";
 import { Social } from "@/store/slices/socialsSlice";
+import { AboutMe } from "@/store/slices/aboutMeSlice";
 
 describe("Redux Store", () => {
   it("should initialize with the correct slices", () => {
@@ -14,6 +15,7 @@ describe("Redux Store", () => {
     expect(state).toHaveProperty("educations");
     expect(state).toHaveProperty("experiences");
     expect(state).toHaveProperty("socials");
+    expect(state).toHaveProperty("aboutMe");
   });
 
   it("should have correct initial state", () => {
@@ -24,11 +26,13 @@ describe("Redux Store", () => {
     const educations: EducationType[] = state.educations.dataEducations;
     const experiences: ExperienceType[] = state.experiences.dataExperiences;
     const socials: Social[] = state.socials.dataSocials;
+    const aboutMe: AboutMe | null = state.aboutMe.dataAboutMe;
 
     expect(skills).toEqual([]);
     expect(projects).toEqual([]);
     expect(educations).toEqual([]);
     expect(experiences).toEqual([]);
     expect(socials).toEqual([]);
+    expect(aboutMe).toBeNull();
   });
 });

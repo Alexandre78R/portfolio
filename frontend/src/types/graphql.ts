@@ -19,6 +19,22 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type AboutMe = {
+  __typename?: 'AboutMe';
+  descriptionEN: Scalars['String']['output'];
+  descriptionFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  titleEN: Scalars['String']['output'];
+  titleFR: Scalars['String']['output'];
+};
+
+export type AboutMeResponse = {
+  __typename?: 'AboutMeResponse';
+  aboutMe?: Maybe<AboutMe>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
 export type BackupFileInfo = {
   __typename?: 'BackupFileInfo';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -320,6 +336,7 @@ export type Mutation = {
   registerUser: UserResponse;
   sendContact: MessageType;
   sendMessage: MessageResponse;
+  updateAboutMe: AboutMeResponse;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
   updateExperience: ExperienceResponse;
@@ -468,6 +485,11 @@ export type MutationSendMessageArgs = {
 };
 
 
+export type MutationUpdateAboutMeArgs = {
+  data: UpdateAboutMeInput;
+};
+
+
 export type MutationUpdateCategoryArgs = {
   data: UpdateCategoryInput;
   id: Scalars['Int']['input'];
@@ -570,6 +592,7 @@ export type Query = {
   cvUrl: Scalars['String']['output'];
   educationListPagination: EducationsResponse;
   generateCaptcha: CaptchaResponse;
+  getAboutMe: AboutMeResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
   getEducationById: EducationResponse;
   getExperienceById: ExperienceResponse;
@@ -787,6 +810,14 @@ export type TopSkillsResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   skills: Array<TopSkillUsage>;
+};
+
+export type UpdateAboutMeInput = {
+  descriptionEN?: InputMaybe<Scalars['String']['input']>;
+  descriptionFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  titleEN?: InputMaybe<Scalars['String']['input']>;
+  titleFR?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCategoryInput = {
@@ -1183,6 +1214,11 @@ export type ForgotPasswordMutationVariables = Exact<{
 
 
 export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: { __typename?: 'Response', message: string, code: number } };
+
+export type GetAboutMeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAboutMeQuery = { __typename?: 'Query', getAboutMe: { __typename?: 'AboutMeResponse', message: string, code: number, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string } | null } };
 
 export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2724,6 +2760,56 @@ export function useForgotPasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswordMutation>;
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
+export const GetAboutMeDocument = gql`
+    query GetAboutMe {
+  getAboutMe {
+    aboutMe {
+      id
+      titleEN
+      titleFR
+      descriptionEN
+      descriptionFR
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetAboutMeQuery__
+ *
+ * To run a query within a React component, call `useGetAboutMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAboutMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAboutMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAboutMeQuery(baseOptions?: Apollo.QueryHookOptions<GetAboutMeQuery, GetAboutMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAboutMeQuery, GetAboutMeQueryVariables>(GetAboutMeDocument, options);
+      }
+export function useGetAboutMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAboutMeQuery, GetAboutMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAboutMeQuery, GetAboutMeQueryVariables>(GetAboutMeDocument, options);
+        }
+// @ts-ignore
+export function useGetAboutMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAboutMeQuery, GetAboutMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetAboutMeQuery, GetAboutMeQueryVariables>;
+export function useGetAboutMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAboutMeQuery, GetAboutMeQueryVariables>): Apollo.UseSuspenseQueryResult<GetAboutMeQuery | undefined, GetAboutMeQueryVariables>;
+export function useGetAboutMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAboutMeQuery, GetAboutMeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAboutMeQuery, GetAboutMeQueryVariables>(GetAboutMeDocument, options);
+        }
+export type GetAboutMeQueryHookResult = ReturnType<typeof useGetAboutMeQuery>;
+export type GetAboutMeLazyQueryHookResult = ReturnType<typeof useGetAboutMeLazyQuery>;
+export type GetAboutMeSuspenseQueryHookResult = ReturnType<typeof useGetAboutMeSuspenseQuery>;
+export type GetAboutMeQueryResult = Apollo.QueryResult<GetAboutMeQuery, GetAboutMeQueryVariables>;
 export const GetGlobalStatsDocument = gql`
     query GetGlobalStats {
   getGlobalStats {

@@ -29,26 +29,26 @@ jest.mock("@apollo/client", () => ({
 }));
 
 jest.mock("@/components/Seo/Seo", () => {
-  const MockSeo = (): ReactElement => <div>SeoComponent</div>;
+  const MockSeo: React.FC = (): ReactElement => <div>SeoComponent</div>;
   MockSeo.displayName = "Seo";
   return MockSeo;
 });
 
 jest.mock("@/components/Header/Header", () => {
-  const MockHeader = (): ReactElement => <div>HeaderComponent</div>;
+  const MockHeader: React.FC = (): ReactElement => <div>HeaderComponent</div>;
   MockHeader.displayName = "Header";
   return MockHeader;
 });
 
 jest.mock("@/components/AboutMe/AboutMe", () => {
-  const MockAboutMe = (): ReactElement => <div>AboutMeComponent</div>;
+  const MockAboutMe: React.FC = (): ReactElement => <div>AboutMeComponent</div>;
   MockAboutMe.displayName = "AboutMe";
   return MockAboutMe;
 });
 
 jest.mock("@/components/horizontalScroll/horizontalScroll", () => {
   type Props = { data: unknown[]; category: string; testId?: string };
-  const MockHorizontalScroll = ({ data, category, testId }: Props): ReactElement => (
+  const MockHorizontalScroll: React.FC<Props> = ({ data, category, testId }: Props): ReactElement => (
     <div data-testid={testId ?? `horizontal-scroll-${category}`}>
       HorizontalScroll {category} {data.length}
     </div>
@@ -58,31 +58,31 @@ jest.mock("@/components/horizontalScroll/horizontalScroll", () => {
 });
 
 jest.mock("@/components/Title/TitleH2", () => {
-  const MockTitleH2 = ({ title }: { title: string }): ReactElement => <h2>{title}</h2>;
+  const MockTitleH2: React.FC<{ title: string }> = ({ title }: { title: string }): ReactElement => <h2>{title}</h2>;
   MockTitleH2.displayName = "TitleH2";
   return MockTitleH2;
 });
 
 jest.mock("@/components/Footer/Footer", () => {
-  const MockFooter = (): ReactElement => <div>FooterComponent</div>;
+  const MockFooter: React.FC = (): ReactElement => <div>FooterComponent</div>;
   MockFooter.displayName = "Footer";
   return MockFooter;
 });
 
 jest.mock("@/components/Terminal/Terminal", () => {
-  const MockTerminal = (): ReactElement => <div>TerminalComponent</div>;
+  const MockTerminal: React.FC = (): ReactElement => <div>TerminalComponent</div>;
   MockTerminal.displayName = "Terminal";
   return MockTerminal;
 });
 
 jest.mock("@/components/Careers/Careers", () => {
-  const MockEducations = (): ReactElement => <div>EducationsComponent</div>;
+  const MockEducations: React.FC = (): ReactElement => <div>EducationsComponent</div>;
   MockEducations.displayName = "Educations";
   return MockEducations;
 });
 
 jest.mock("@/components/Contact/Contact", () => {
-  const MockContact = (): ReactElement => <div>ContactComponent</div>;
+  const MockContact: React.FC = (): ReactElement => <div>ContactComponent</div>;
   MockContact.displayName = "Contact";
   return MockContact;
 });
@@ -137,6 +137,7 @@ describe("Home Component", (): void => {
         educations: { dataEducations: [] },
         experiences: { dataExperiences: [] },
         socials: { dataSocials: [] },
+        aboutMe: { dataAboutMe: null },
       })
     );
   });

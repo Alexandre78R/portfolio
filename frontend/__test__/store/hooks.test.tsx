@@ -8,6 +8,7 @@ import { setEducations, EducationType } from "@/store/slices/educationsSlice";
 import { setExperiences, ExperienceType } from "@/store/slices/experiencesSlice";
 import { setProjects, Project, SkillsProject } from "@/store/slices/projectsSlice";
 import { setSocials, Social } from "@/store/slices/socialsSlice";
+import { setAboutMe, AboutMe } from "@/store/slices/aboutMeSlice";
 
 const TestHooksComponent: FC = () => {
   const dispatch = useAppDispatch();
@@ -17,8 +18,9 @@ const TestHooksComponent: FC = () => {
   const experiences: ExperienceType[] = useAppSelector((state) => state.experiences.dataExperiences);
   const projects: Project[] = useAppSelector((state) => state.projects.dataProjects);
   const socials: Social[] = useAppSelector((state) => state.socials.dataSocials);
+  const aboutMe: AboutMe | null = useAppSelector((state) => state.aboutMe.dataAboutMe);
 
-  const handleAddSkill = (): void => {
+  const handleAddSkill: () => void = (): void => {
     const newSkill: Skill = {
       id: 1,
       categoryFR: "Frontend",
@@ -28,7 +30,7 @@ const TestHooksComponent: FC = () => {
     dispatch(setSkills([newSkill]));
   };
 
-  const handleAddEducation = (): void => {
+  const handleAddEducation: () => void = (): void => {
     const newEdu: EducationType = {
       id: 1,
       titleFR: "Bac",
@@ -49,7 +51,7 @@ const TestHooksComponent: FC = () => {
     dispatch(setEducations([newEdu]));
   };
 
-  const handleAddExperience = (): void => {
+  const handleAddExperience: () => void = (): void => {
     const newExp: ExperienceType = {
       id: 1,
       jobFR: "Développeur Frontend",
@@ -66,7 +68,7 @@ const TestHooksComponent: FC = () => {
     dispatch(setExperiences([newExp]));
   };
 
-  const handleAddProject = (): void => {
+  const handleAddProject: () => void = (): void => {
     const newProj: Project = {
       id: 1,
       title: "Mon projet",
@@ -82,7 +84,7 @@ const TestHooksComponent: FC = () => {
     dispatch(setProjects([newProj]));
   };
 
-  const handleAddSocial = (): void => {
+  const handleAddSocial: () => void = (): void => {
     const newSocial: Social = {
       id: 1,
       title: "GitHub",
@@ -90,6 +92,17 @@ const TestHooksComponent: FC = () => {
       tab: 3,
     };
     dispatch(setSocials([newSocial]));
+  };
+
+  const handleSetAboutMe: () => void = (): void => {
+    const newAboutMe: AboutMe = {
+      id: 1,
+      titleEN: "About me",
+      titleFR: "À propos de moi",
+      descriptionEN: "Description EN",
+      descriptionFR: "Description FR",
+    };
+    dispatch(setAboutMe(newAboutMe));
   };
 
   return (
@@ -114,12 +127,16 @@ const TestHooksComponent: FC = () => {
         <span data-testid="socials-count">{socials.length}</span>
         <button type="button" onClick={handleAddSocial}>add-social</button>
       </div>
+      <div>
+        <span data-testid="aboutme-value">{aboutMe ? aboutMe.titleEN : ""}</span>
+        <button type="button" onClick={handleSetAboutMe}>set-aboutme</button>
+      </div>
     </div>
   );
 };
 
 describe("Redux Hooks - all slices", () => {
-  it("should select and dispatch correctly for skills, educations, experiences, projects and socials", () => {
+  it("should select and dispatch correctly for skills, educations, experiences, projects, socials and aboutMe", () => {
     render(
       <Provider store={store}>
         <TestHooksComponent />
@@ -131,18 +148,21 @@ describe("Redux Hooks - all slices", () => {
     const expCount: HTMLElement = screen.getByTestId("experience-count");
     const projCount: HTMLElement = screen.getByTestId("projects-count");
     const socialsCount: HTMLElement = screen.getByTestId("socials-count");
+    const aboutMeValue: HTMLElement = screen.getByTestId("aboutme-value");
 
     expect(skillsCount.textContent).toBe("0");
     expect(eduCount.textContent).toBe("0");
     expect(expCount.textContent).toBe("0");
     expect(projCount.textContent).toBe("0");
     expect(socialsCount.textContent).toBe("0");
+    expect(aboutMeValue.textContent).toBe("");
 
     const skillsButton: HTMLButtonElement = screen.getByText("add-skill") as HTMLButtonElement;
     const eduButton: HTMLButtonElement = screen.getByText("add-education") as HTMLButtonElement;
     const expButton: HTMLButtonElement = screen.getByText("add-experience") as HTMLButtonElement;
     const projButton: HTMLButtonElement = screen.getByText("add-project") as HTMLButtonElement;
     const socialsButton: HTMLButtonElement = screen.getByText("add-social") as HTMLButtonElement;
+    const aboutMeButton: HTMLButtonElement = screen.getByText("set-aboutme") as HTMLButtonElement;
 
     act(() => {
       fireEvent.click(skillsButton);
@@ -150,6 +170,7 @@ describe("Redux Hooks - all slices", () => {
       fireEvent.click(expButton);
       fireEvent.click(projButton);
       fireEvent.click(socialsButton);
+      fireEvent.click(aboutMeButton);
     });
 
     expect(skillsCount.textContent).toBe("1");
@@ -157,5 +178,6 @@ describe("Redux Hooks - all slices", () => {
     expect(expCount.textContent).toBe("1");
     expect(projCount.textContent).toBe("1");
     expect(socialsCount.textContent).toBe("1");
+    expect(aboutMeValue.textContent).toBe("About me");
   });
 });

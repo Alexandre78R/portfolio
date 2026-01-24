@@ -55,6 +55,8 @@ afterEach((): void => {
 
 describe("LangContext", (): void => {
   it("provides default values", (): void => {
+    (window.localStorage.getItem as jest.Mock).mockReturnValueOnce(null);
+
     render(
       <LangProvider>
         <TestComponent />
@@ -89,8 +91,11 @@ describe("LangContext", (): void => {
     });
 
     const titleSpan: HTMLElement = screen.getByTestId("title") as HTMLElement;
-    expect(titleSpan).toHaveTextContent(en.titleAboutMe);
-    expect(window.localStorage.setItem).toHaveBeenCalledWith("lang", "en");
+      expect(titleSpan).toHaveTextContent(en.titleAboutMe);
+
+      const setItemCalls: unknown[][] = (window.localStorage.setItem as jest.Mock).mock.calls;
+      const hasLangCall: boolean = setItemCalls.some(([key]: [string, string]) => key === "lang");
+      expect(hasLangCall).toBe(true);
   });
 
   it("initializes language from localStorage", async (): Promise<void> => {

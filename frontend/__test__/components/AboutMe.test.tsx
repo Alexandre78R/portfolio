@@ -5,6 +5,10 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import * as redux from "@/store/hook";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import aboutMeReducer from "@/store/slices/aboutMeSlice";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(),
@@ -12,6 +16,16 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 jest.mock("@/types/graphql", () => ({
   useCvQuery: jest.fn(),
+}));
+
+jest.mock("@/store/hook", () => ({
+  useAppSelector: jest.fn(),
+  useAppDispatch: jest.fn(),
+}));
+
+jest.mock("@/store/hook", () => ({
+  useAppSelector: jest.fn(),
+  useAppDispatch: jest.fn(),
 }));
 
 const showAlertMock: jest.Mock<(type: "success" | "error", message: string) => void> = jest.fn();
@@ -44,13 +58,23 @@ describe("AboutMe component", (): void => {
     messageCVNotFound: "CV not found",
   } as Lang;
 
+  const mockAboutMe = {
+    id: 1,
+    titleEN: "About Me",
+    titleFR: "À propos de moi",
+    descriptionEN: "Description 1\nDescription 2\nDescription 3",
+    descriptionFR: "Description FR 1\nDescription FR 2\nDescription FR 3",
+  };
+
   const mockWindowOpen: jest.SpyInstance = jest.spyOn(window, "open").mockImplementation(() => null);
 
   beforeEach((): void => {
-    (useLang as jest.Mock).mockReturnValue({ translations });
+    showAlertMock.mockClear();
+    mockWindowOpen.mockClear();
+    (useLang as jest.Mock).mockReturnValue({ translations, lang: "en" });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: showAlertMock });
     (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
-    jest.clearAllMocks();
+    (redux.useAppSelector as jest.Mock).mockReturnValue(mockAboutMe);
   });
 
   afterAll((): void => {
@@ -58,15 +82,17 @@ describe("AboutMe component", (): void => {
   });
 
   it("renders title and descriptions", (): void => {
+    (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
     render(<AboutMe />);
 
-    expect(screen.getByText(translations.titleAboutMe)).toBeInTheDocument();
-    expect(screen.getByText(translations.descriptionAboutMe1)).toBeInTheDocument();
-    expect(screen.getByText(translations.descriptionAboutMe2)).toBeInTheDocument();
-    expect(screen.getByText(translations.descriptionAboutMe3)).toBeInTheDocument();
+    expect(screen.getByText(mockAboutMe.titleEN)).toBeInTheDocument();
+    expect(screen.getByText("Description 1")).toBeInTheDocument();
+    expect(screen.getByText("Description 2")).toBeInTheDocument();
+    expect(screen.getByText("Description 3")).toBeInTheDocument();
   });
 
   it("renders the CV download button", (): void => {
+    (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
     render(<AboutMe />);
 
     const cvButton: HTMLButtonElement = screen.getByRole("button", { name: translations.buttonCV }) as HTMLButtonElement;

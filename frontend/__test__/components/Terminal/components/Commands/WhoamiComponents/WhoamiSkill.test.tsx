@@ -2,33 +2,17 @@
 import { render, screen, fireEvent, RenderResult } from '@test-utils';
 import "@testing-library/jest-dom";
 import WhoamiSkills from "@/components/Terminal/components/Commands/WhoamiComponents/WhoamiSkills";
-import { useSelector } from "react-redux";
-import { useLang } from "@/context/Lang/LangContext";
 import { SkillTab } from "@/components/Skills/typeSkills";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import skillsReducer from "@/store/slices/skillsSlice";
+import { useLang } from "@/context/Lang/LangContext";
 
 interface SkillTabData extends SkillTab {
   id: number;
   category: string;
   skills: { name: string; image: string };
 }
-
-interface LangContextType {
-  lang: string;
-  setLang: (lang: string) => void;
-  listLang: string[];
-  translations: {
-    buttonPaginationPrevious: string;
-    buttonPaginationNext: string;
-  };
-}
-
-jest.mock("react-redux", (): object => ({
-  useSelector: jest.fn(),
-}));
-
-jest.mock("@/context/Lang/LangContext", (): object => ({
-  useLang: jest.fn(),
-}));
 
 jest.mock("@/components/Button/Button", (): object => {
   const MockButton = (props: {
@@ -40,9 +24,13 @@ jest.mock("@/components/Button/Button", (): object => {
       {props.text}
     </button>
   );
-  MockButton.displayName = "MockButton";
-  return { __esModule: true, default: MockButton };
+  MockButton.displayName = "ButtonCustom";
+  return MockButton;
 });
+
+jest.mock("@/context/Lang/LangContext", () => ({
+  useLang: jest.fn(),
+}));
 
 jest.mock("@/components/Terminal/components/Message", (): object => ({
   Message: ({ children }: { children: React.ReactNode }): ReactElement => (
@@ -73,16 +61,6 @@ const mockSkills: SkillTabData[] = [
   },
 ];
 
-const mockLangContext: LangContextType = {
-  lang: "fr",
-  setLang: jest.fn(),
-  listLang: ["fr", "en"],
-  translations: {
-    buttonPaginationPrevious: "Previous",
-    buttonPaginationNext: "Next",
-  },
-};
-
 function getButton(text: string): HTMLButtonElement {
   const element: HTMLElement | null = screen.queryByText(text);
   if (!element || !(element instanceof HTMLButtonElement)) {
@@ -90,20 +68,38 @@ function getButton(text: string): HTMLButtonElement {
   }
   return element;
 }
+
 describe("WhoamiSkills Component", (): void => {
+  const renderComponent = (): RenderResult => {
+    const store = configureStore({
+      reducer: {
+        skills: skillsReducer,
+      },
+      preloadedState: {
+        skills: {
+          dataSkills: mockSkills,
+        },
+      },
+    });
+
+    return render(
+      <Provider store={store}>
+        <WhoamiSkills />
+      </Provider>
+    );
+  };
+
   beforeEach((): void => {
     jest.clearAllMocks();
 
-    const mockedUseSelector: jest.MockedFunction<typeof useSelector> =
-      useSelector as jest.MockedFunction<typeof useSelector>;
-    mockedUseSelector.mockReturnValue(mockSkills);
-
-    const mockedUseLang: jest.MockedFunction<typeof useLang> =
-      useLang as jest.MockedFunction<typeof useLang>;
-    mockedUseLang.mockReturnValue(mockLangContext as unknown as import("@/context/Lang/LangContext").LangContextType);
+    (useLang as jest.Mock).mockReturnValue({
+      translations: {
+        buttonPaginationPrevious: "Previous",
+        buttonPaginationNext: "Next",
+      },
+      lang: "en",
+    });
   });
-
-  const renderComponent = (): RenderResult => render(<WhoamiSkills />);
 
   it("renders first page of skills correctly", (): void => {
     const { getByText, queryByText }: RenderResult = renderComponent();

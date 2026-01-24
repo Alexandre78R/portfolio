@@ -19,7 +19,7 @@ const TestComponent: React.FC<TestComponentProps> = (): ReactElement => {
     contactRef,
   }: SectionRefsContextProps = useSectionRefs();
 
-  const renderRefStatus = (ref: React.RefObject<HTMLDivElement>): string =>
+  const renderRefStatus: (ref: React.RefObject<HTMLDivElement>) => string = (ref: React.RefObject<HTMLDivElement>): string =>
     ref.current === null ? "null" : "defined";
 
   return (
