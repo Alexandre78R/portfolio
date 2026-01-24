@@ -9,6 +9,8 @@ import {
   PanelsTopLeft,
   FileUser,
   Mail,
+  Text,
+  Signature
 } from 'lucide-react'
 
 export type Role = 'admin' | 'editor' | 'view'
@@ -134,6 +136,22 @@ const navigation: NavItem[] = [
     roles: ['admin'],
     children: [
       { name: 'Envoyer un message', key: 'messages/create', icon: FolderPlus, roles: ['admin'], parentKey: 'messages' },
+    ],
+  },
+  {
+    name: 'About Me',
+    key: 'aboutme/update',
+    icon: Text,
+    roles: ['admin', 'editor', 'view'],
+  },
+  {
+    name: "Signatures",
+    key: 'signatures',
+    icon: Signature,
+    roles: ['admin'],
+    children: [
+      { name: 'Envoyer un message', key: 'signatures/list', icon: Eye, roles: ['admin'], parentKey: 'signatures' },
+      { name: 'Envoyer un message', key: 'signatures/create', icon: FolderPlus, roles: ['admin'], parentKey: 'signatures' },
     ],
   },
 ]

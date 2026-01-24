@@ -156,6 +156,9 @@ const fr: Lang = {
   "sideBarAdmin-cv/update": "Modifier le CV",
   "sideBarAdmin-socials/list": "Voir les réseaux sociaux",
   "sideBarAdmin-socials/create": "Créer un réseau social",
+  "sideBarAdmin-aboutme/update": "Modification à propos de moi",
+  "sideBarAdmin-signatures/list": "Voir les signatures",
+  "sideBarAdmin-signatures/create": "Créer une signature",
   messagePageDashBoardTitle : "Tableau de bord",
   messagePageDashBoardErreurData : "Erreur lors du chargement des données statistiques.",
   messagePageDashBoardCardStatsProject : "Projets",
@@ -364,8 +367,6 @@ const fr: Lang = {
   "messageAdminSkillCategoryCreateConfirm": "Créer",
   "messageAdminSkillCategoryInputEN": "Nom en anglais",
   "messageAdminSkillCategoryInputFR": "Nom en français",
-  
-  // Skills
   "messageAdminSkillListTitle": "Compétences",
   "messageAdminSkillListNotFound": "Aucune compétence trouvée",
   "messageAdminSkillColumnName": "Nom",
@@ -396,8 +397,6 @@ const fr: Lang = {
   "messageAdminSkillCreateErrorCategory": "Veuillez sélectionner une catégorie",
   "messageAdminSkillNoCategoriesFound": "Aucune catégorie trouvée. Veuillez d'abord créer une catégorie.",
   "messageAdminSkillCategorySelectSkills": "Sélectionner des compétences (optionnel)",
-
-  // Projects
   "messageAdminProjectListTitle": "Projets",
   "messageAdminProjectListNotFound": "Aucun projet trouvé",
   "messageAdminProjectColumnTitle": "Titre",

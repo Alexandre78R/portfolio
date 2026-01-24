@@ -139,6 +139,9 @@ type Lang = {
   "sideBarAdmin-cv/update": string;
   "sideBarAdmin-socials/list": string;
   "sideBarAdmin-socials/create": string;
+  "sideBarAdmin-aboutme/update": string;
+  "sideBarAdmin-signatures/list": string;
+  "sideBarAdmin-signatures/create": string;
   messagePageDashBoardTitle : string;
   messagePageDashBoardErreurData : string;
   messagePageDashBoardCardStatsProject : string;
