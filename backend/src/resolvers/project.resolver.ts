@@ -20,7 +20,7 @@ type PrismaProjectWithSkills = PrismaProject & {
 
 @Resolver(() => Project)
 export class ProjectResolver {
-  private readonly db = new PrismaClient();
+  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => ProjectsResponse)
   async listProjects(): Promise<ProjectsResponse> {
