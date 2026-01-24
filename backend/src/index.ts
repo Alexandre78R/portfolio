@@ -45,12 +45,9 @@ app.use(
   })
 );
 
-
 /* --- Démarrage serveur --- */
 (async (): Promise<void> => {
   try {
-
-    await mountGraphQL(app);
 
     /* ▸ MAINTENANT on peut ajouter express.json() pour les autres routes */
     app.use(express.json({ limit: "50mb" }));
@@ -59,22 +56,24 @@ app.use(
     app.use("/api/badges", badgeRoutes);
     app.use("/api/backups", backupsRoutes);
     app.use("/api/dynamic-images", captchaRoutes);
-
+    
+    app.use("/api/doc/cv", express.static(path.join(__dirname, "../doc/cv")));
     app.use("/api/uploads", uploadRoutes);
     app.use("/api/upload", uploadRoutes);
 
-    app.use("/api/uploads/cv", express.static(path.join(__dirname, "../uploads/cv")));
     app.use("/api/uploads/images", express.static(path.join(__dirname, "../uploads/images")));
     app.use("/api/uploads/videos", express.static(path.join(__dirname, "../uploads/videos")));
 
-  /* --- Serve static files --- */
-  app.use(
-    "/uploads",
-    express.static(path.join(__dirname, "../uploads"), {
-      maxAge: "7d",
-      immutable: true,
-    })
-  );
+    /* --- Serve static files --- */
+    app.use(
+      "/uploads",
+      express.static(path.join(__dirname, "../uploads"), {
+        maxAge: "7d",
+        immutable: true,
+      })
+    );
+
+    await mountGraphQL(app);
 
     /* ▸ Cleanup périodique captchas expirés */
     setInterval(cleanUpExpiredCaptchas, 15 * 60 * 1000);

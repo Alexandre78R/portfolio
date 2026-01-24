@@ -4,10 +4,10 @@ import path from "path";
 import { GraphQLUpload, FileUpload } from "graphql-upload-ts";
 import { UploadResponse } from "../types/response.types";
 
-const UPLOAD_DIR: string = path.resolve(__dirname, "../../uploads/cv");
+const UPLOAD_DIR: string = path.resolve(__dirname, "../../doc/cv");
 const CV_FILENAME: string = "Alexandre-Renard-CV.pdf";
 const CV_PATH: string = path.join(UPLOAD_DIR, CV_FILENAME);
-const CV_URL: string = `/api/uploads/cv/${CV_FILENAME}`;
+const CV_URL: string = `/api/doc/cv/${CV_FILENAME}`;
 
 
 @Resolver()
@@ -15,6 +15,8 @@ export class CVResolver {
 
   @Query(() => String)
   cvUrl(): string {
+    console.log("🚀 cvUrl resolver appelé");
+    console.log("🔍 Vérification de l'existence du CV à l'emplacement:", CV_PATH);
     if (fs.existsSync(CV_PATH)) {
       return CV_URL;
     }

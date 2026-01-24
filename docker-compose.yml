@@ -21,7 +21,7 @@ services:
     volumes:
       - ./backend/src:/app/src
       - ./backend/backups:/app/backups
-      - ./backend/uploads/cv:/app/uploads/cv
+      - ./backend/doc/cv:/app/doc/cv
       - ./backend/uploads/images:/app/uploads/images
       - ./backend/uploads/videos:/app/uploads/videos
       # - ./backend/node_modules:/app/node_modules 
