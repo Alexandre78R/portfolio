@@ -104,12 +104,6 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    name: 'Sauvegarde',
-    key: 'backup/list',
-    icon: DatabaseBackup,
-    roles: ['admin', 'editor', 'view'],
-  },
-  {
     name: 'Socials',
     key: 'socials',
     icon: PanelsTopLeft,
@@ -139,12 +133,6 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    name: 'About Me',
-    key: 'aboutme/update',
-    icon: Text,
-    roles: ['admin', 'editor', 'view'],
-  },
-  {
     name: "Signatures",
     key: 'signatures',
     icon: Signature,
@@ -153,6 +141,18 @@ const navigation: NavItem[] = [
       { name: 'Envoyer un message', key: 'signatures/list', icon: Eye, roles: ['admin'], parentKey: 'signatures' },
       { name: 'Envoyer un message', key: 'signatures/create', icon: FolderPlus, roles: ['admin'], parentKey: 'signatures' },
     ],
+  },
+  {
+    name: 'About Me',
+    key: 'aboutme/update',
+    icon: Text,
+    roles: ['admin', 'editor', 'view'],
+  },
+  {
+    name: 'Sauvegarde',
+    key: 'backup/list',
+    icon: DatabaseBackup,
+    roles: ['admin', 'editor', 'view'],
   },
 ]
 
