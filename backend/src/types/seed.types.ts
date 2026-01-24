@@ -62,3 +62,10 @@ export interface SignatureData {
   name: string;
   description: string;
 }
+
+export interface AboutMeData {
+  titleEN: string;
+  titleFR: string;
+  descriptionEN: string;
+  descriptionFR: string;
+}

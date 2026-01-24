@@ -7,6 +7,7 @@ import {
   SkillCategorySkill,
   Social,
   Signature,
+  AboutMe,
 } from "@prisma/client";
 import readline from "readline";
 
@@ -17,6 +18,7 @@ import { educationsData } from "../seed/educationsData";
 import { themesData } from "../seed/themesData";
 import { socialsData } from "../seed/socialsData";
 import { signaturesData } from "../seed/signaturesData";
+import { aboutMeData } from "../seed/aboutmeData";
 
 import type {
   SkillCategoryData,
@@ -25,6 +27,7 @@ import type {
   EducationData,
   ExperienceData,
   SignatureData,
+  AboutMeData,
 } from "../../types/seed.types";
 
 // Prisma client
@@ -94,6 +97,7 @@ async function seed(): Promise<void> {
     await prisma.theme.deleteMany();
     await prisma.social.deleteMany();
     await prisma.signature.deleteMany();
+    await prisma.aboutMe.deleteMany();
     for (const key of Object.keys(themesData) as (keyof typeof themesData)[]) {
       const themeData = themesData[key];
 
@@ -244,6 +248,18 @@ for (const sig of signaturesData as SignatureData[]) {
         },
       });
       console.log(`✍️ Signature seeded: ${createdSignature.name}`);
+    }
+
+    for (const aboutMe of aboutMeData as AboutMeData[]) {
+      const createdAboutMe: AboutMe = await prisma.aboutMe.create({
+        data: {
+          titleEN: aboutMe.titleEN,
+          titleFR: aboutMe.titleFR,
+          descriptionEN: aboutMe.descriptionEN,
+          descriptionFR: aboutMe.descriptionFR,
+        },
+      });
+      console.log(`👤 AboutMe seeded: ${createdAboutMe.id}`);
     }
 
     

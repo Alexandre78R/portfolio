@@ -10,6 +10,7 @@ import { Theme } from "../entities/theme.entity";
 import { Social } from "../entities/social.entity";
 import { Message } from "../entities/message.entity";
 import { Signature } from "../entities/signature.entity";
+import { AboutMe } from "../entities/aboutme.entity";
 
 @ObjectType()
 export class Response {
@@ -256,4 +257,10 @@ export class SignaturesResponse extends Response {
 
   @Field(() => Int, { nullable: true })
   total?: number;
+}
+
+@ObjectType()
+export class AboutMeResponse extends Response {
+  @Field(() => AboutMe, { nullable: true })
+  aboutMe?: AboutMe;
 }
