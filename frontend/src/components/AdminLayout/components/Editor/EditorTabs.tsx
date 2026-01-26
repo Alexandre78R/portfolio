@@ -56,6 +56,7 @@ const EditorTabs: React.FC<EditorTabsProps> = ({
         return (
           <button
             key={tab.id}
+            type="button"
             onClick={(): void => handleTabClick(tab)}
             className={`cursor-pointer bg-none border-none text-sm font-medium transition-colors px-0 py-0 ${
               active
