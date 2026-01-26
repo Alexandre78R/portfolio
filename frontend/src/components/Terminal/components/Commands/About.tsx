@@ -3,6 +3,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import { Message } from "../Message";
 import type Lang from "@/lang/typeLang";
 import { useAppSelector } from "@/store/hook";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const About: React.FC = (): JSX.Element => {
   const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
@@ -29,9 +30,11 @@ const About: React.FC = (): JSX.Element => {
         </Typography>
 
         {paragraphs.map((paragraph, index) => (
-          <p key={index} className="text-text mt-4">
-            {paragraph}
-          </p>
+          <p 
+            key={index} 
+            className="text-text mt-4"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(paragraph) }}
+          />
         ))}
       </div>
     </Message>

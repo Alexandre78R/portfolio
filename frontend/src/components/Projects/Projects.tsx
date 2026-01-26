@@ -8,6 +8,7 @@ import { ProjectComponent } from "./typeProjects";
 import { useLang } from "@/context/Lang/LangContext";
 import ReactPlayer from "react-player";
 import Lang from "@/lang/typeLang";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
   
@@ -58,11 +59,16 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
               <p className="text-xl max-w-320px pt-0.5">{project?.title}</p>
               {project?.description && (
                 <>
-                  <p className="max-w-320px pt-2 leading-normal">
-                    {project.description.length > 150 && !expandedText.has(project.id)
-                      ? project.description.substring(0, 150) + "..."
-                      : project.description}
-                  </p>
+                  <p 
+                    className="max-w-320px pt-2 leading-normal"
+                    dangerouslySetInnerHTML={{ 
+                      __html: sanitizeHtml(
+                        project.description.length > 150 && !expandedText.has(project.id)
+                          ? project.description.substring(0, 150) + "..."
+                          : project.description
+                      ) 
+                    }}
+                  />
                   {project.description.length > 150 && (
                     <p
                       title={expandedText.has(project.id)
@@ -89,11 +95,16 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
               <p className="text-xl max-w-320px pt-0.5">{project?.title}</p>
               {project?.description && (
                 <>
-                  <p className="max-w-320px pt-2 leading-125%">
-                    {project.description.length > 150 && !expandedText.has(project.id)
-                      ? project.description.substring(0, 150) + "..."
-                      : project.description}
-                  </p>
+                  <p 
+                    className="max-w-320px pt-2 leading-125%"
+                    dangerouslySetInnerHTML={{ 
+                      __html: sanitizeHtml(
+                        project.description.length > 150 && !expandedText.has(project.id)
+                          ? project.description.substring(0, 150) + "..."
+                          : project.description
+                      ) 
+                    }}
+                  />
                   {project.description.length > 150 && (
                     <p
                       title={expandedText.has(project.id)
@@ -115,11 +126,16 @@ const Projects: React.FC<ProjectComponent> = ({ project }): JSX.Element => {
               <p className="text-xl max-w-320px pt-0.5">{project?.title}</p>
               {project?.description && (
                 <>
-                  <p className="max-w-320px pt-2 leading-125%">
-                    {project.description.length > 150 && !expandedText.has(project.id)
-                      ? project.description.substring(0, 150) + "..."
-                      : project.description}
-                  </p>
+                  <p 
+                    className="max-w-320px pt-2 leading-125%"
+                    dangerouslySetInnerHTML={{ 
+                      __html: sanitizeHtml(
+                        project.description.length > 150 && !expandedText.has(project.id)
+                          ? project.description.substring(0, 150) + "..."
+                          : project.description
+                      ) 
+                    }}
+                  />
                   {project.description.length > 150 && (
                     <p
                       title={expandedText.has(project.id)

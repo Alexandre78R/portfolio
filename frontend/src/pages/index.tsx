@@ -20,7 +20,7 @@ import type { Project } from "@/store/slices/projectsSlice";
 import type { EducationType } from "@/store/slices/educationsSlice";
 import type { ExperienceType } from "@/store/slices/experiencesSlice";
 import type { Social } from "@/store/slices/socialsSlice";
-import type { AboutMe } from "@/store/slices/aboutMeSlice";
+import type { AboutMe as AboutMeRedux } from "@/store/slices/aboutMeSlice";
 
 // GraphQL hooks
 import {
@@ -63,7 +63,7 @@ const Home: React.FC = (): ReactElement => {
   const dataEducations: EducationType[] = useAppSelector((state: any) => state.educations.dataEducations);
   const dataExperiences: ExperienceType[] = useAppSelector((state: any) => state.experiences.dataExperiences);
   const dataSocials: Social[] = useAppSelector((state: any) => state.socials.dataSocials);
-  const dataAboutMe: AboutMe | null = useAppSelector((state: any) => state.aboutMe.dataAboutMe);
+  const dataAboutMe: AboutMeRedux | null = useAppSelector((state: any) => state.aboutMe.dataAboutMe);
 
   useEffect(() => {
     const projectList = projectsData?.listProjects;
@@ -204,7 +204,7 @@ const Home: React.FC = (): ReactElement => {
       return;
     }
 
-    const aboutMe: AboutMe = {
+    const aboutMe: AboutMeRedux = {
       id: Number(aboutMeResponse.aboutMe.id),
       titleEN: aboutMeResponse.aboutMe.titleEN,
       titleFR: aboutMeResponse.aboutMe.titleFR,

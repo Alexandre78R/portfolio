@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import { Project, SkillsProject } from "@/store/slices/projectsSlice";
 import Lang from "@/lang/typeLang";
 import { LangKey } from "@/context/Lang/LangContext";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const ReactPlayer: React.ComponentType<any> = dynamic(() => import("react-player"), { ssr: false });
 
@@ -120,9 +121,10 @@ const ProjectsCommand: React.FC = (): JSX.Element => {
 
                 {description.length > 90 && !expandedText.has(project.id) ? (
                   <>
-                    <p className="max-w-320px pt-2 leading-125%">
-                      {description.substring(0, 90) + "..."}
-                    </p>
+                    <p 
+                      className="max-w-320px pt-2 leading-125%"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(description.substring(0, 90) + "...") }}
+                    />
                     <p
                       onClick={() => handleExpandTextClick(project.id)}
                       className="text-primary hover:text-secondary cursor-pointer"
@@ -132,7 +134,10 @@ const ProjectsCommand: React.FC = (): JSX.Element => {
                   </>
                 ) : (
                   <>
-                    <p className="max-w-320px pt-2 leading-125%">{description}</p>
+                    <p 
+                      className="max-w-320px pt-2 leading-125%"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
+                    />
                     {description.length > 90 && (
                       <p
                         onClick={() => handleExpandTextClick(project.id)}

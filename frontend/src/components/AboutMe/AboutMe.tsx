@@ -6,6 +6,7 @@ import Lang from "@/lang/typeLang";
 import { useCvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useAppSelector } from "@/store/hook";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const AboutMe: React.FC = (): JSX.Element => {
   const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
@@ -47,9 +48,11 @@ const AboutMe: React.FC = (): JSX.Element => {
       <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
         <TitleH3 title={title} />
         {paragraphs.map((paragraph, index) => (
-          <p key={index} className="text-text mt-4">
-            {paragraph}
-          </p>
+          <p 
+            key={index} 
+            className="text-text mt-4"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(paragraph) }}
+          />
         ))}
         <div className="mt-2">
           <ButtonCustom text={translations.buttonCV} onClick={handleClick} />

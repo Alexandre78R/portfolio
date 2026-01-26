@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import TextAdmin from "../Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 type QuillModule = Record<string, unknown>;
 type QuillFormat = string[];
@@ -54,7 +55,7 @@ const SplitViewMode: React.FC<SplitViewModeProps> = ({
           <TextAdmin type="h5">{translations?.messageAdminEditorPreviewLabel || "Aperçu"}</TextAdmin>
           <Box
             className="w-full h-96 p-4 bg-white text-gray-900 rounded-md border border-gray-600 overflow-auto prose prose-sm max-w-none"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
           />
         </Box>
       </Grid>
