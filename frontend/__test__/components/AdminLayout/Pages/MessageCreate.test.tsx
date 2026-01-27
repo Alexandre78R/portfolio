@@ -10,6 +10,7 @@ import {
   SendMessageMutation,
   SendMessageMutationVariables,
 } from "@/types/graphql";
+import { useQuery } from "@apollo/client";
 import { FetchResult } from "@apollo/client";
 import Lang from "@/lang/typeLang";
 import showAlert, { ToastShowAlert } from "@/components/ToastCustom/CustomToast";
@@ -37,6 +38,8 @@ const translationsMock: Lang = {
   messageAdminMessagePlaceholderSubject: "Enter the subject",
   messageAdminMessagePlaceholderRecipients: "Enter recipients",
   messageAdminEditorCodeTitle: "HTML Editor",
+  messageAdminMessageSignature: "Signature",
+  messageAdminMessageSelectSignature: "-- Choisir une signature --",
 } as Lang;
 
 jest.mock("@/context/Lang/LangContext", (): object => ({
@@ -53,7 +56,16 @@ jest.mock("@/types/graphql", (): object => ({
     [MockMutationFunction, { loading: boolean }],
     []
   >(),
+  useQuery: jest.fn(),
 }));
+
+jest.mock("@apollo/client", () => {
+  const actual = jest.requireActual("@apollo/client");
+  return {
+    ...actual,
+    useQuery: jest.fn(),
+  };
+});
 
 jest.mock("@/components/AdminLayout/components/Editor/HtmlEditor", (): object => ({
   __esModule: true,
@@ -75,6 +87,7 @@ describe("MessageCreate Component", (): void => {
   let mockSendMessage: jest.Mock<Promise<FetchResult<SendMessageMutation>>, [{ variables: SendMessageMutationVariables }]>;
   let mockShowAlert: jest.Mock<void, ["success" | "error", string]>;
   let mockUseLang: jest.Mock<MockLangContext, []>;
+  let mockUseQuery: jest.Mock;
 
   const getSubjectInput = (): HTMLInputElement => screen.getByRole("textbox", { name: /subject/i }) as HTMLInputElement;
   const getRecipientsInput = (): HTMLInputElement => screen.getByRole("textbox", { name: /recipients/i }) as HTMLInputElement;
@@ -96,6 +109,20 @@ describe("MessageCreate Component", (): void => {
       []
     >;
     mockUseSendMessage.mockReturnValue([mockSendMessage, { loading: false }]);
+
+    mockUseQuery = useQuery as jest.Mock;
+    mockUseQuery.mockReturnValue({
+      data: {
+        listAllSignatures: {
+          signatures: [
+            { id: "1", name: "Signature A", description: "<p>Signature A content</p>" },
+            { id: "2", name: "Signature B", description: "<p>Signature B content</p>" },
+          ],
+        },
+      },
+      loading: false,
+      error: null,
+    });
   });
 
   describe("Rendering", (): void => {
@@ -110,6 +137,7 @@ describe("MessageCreate Component", (): void => {
       expect(screen.getByRole("textbox", { name: /recipients/i })).toBeInTheDocument();
       expect(screen.getByTestId("html-editor")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
+      expect(screen.getByLabelText(/signature/i)).toBeInTheDocument();
     });
 
     it("should display the correct title", (): void => {
@@ -448,5 +476,41 @@ describe("MessageCreate Component", (): void => {
       });
     });
   });
-});
 
+  describe("Signature Select", (): void => {
+    it("should render signature options", (): void => {
+      render(
+        <MockedProvider>
+          <MessageCreate />
+        </MockedProvider>
+      );
+
+      const signatureSelect: HTMLSelectElement = screen.getByLabelText(/signature/i) as HTMLSelectElement;
+      
+      expect(signatureSelect).toBeInTheDocument();
+      expect(screen.getByText("-- Choisir une signature --")).toBeInTheDocument();
+    });
+
+    it("should apply signature to editor when selected", async (): Promise<void> => {
+      render(
+        <MockedProvider>
+          <MessageCreate />
+        </MockedProvider>
+      );
+
+      const htmlEditor: HTMLTextAreaElement = getHtmlEditor();
+      const signatureSelect: HTMLSelectElement = screen.getByLabelText(/signature/i) as HTMLSelectElement;
+
+      await userEvent.clear(htmlEditor);
+      await userEvent.type(htmlEditor, "Message content");
+
+      fireEvent.change(signatureSelect, { target: { value: "1" } });
+
+      await waitFor((): void => {
+        const editorValue: string = htmlEditor.value;
+        expect(editorValue).toContain("Message content");
+        expect(editorValue.includes("Signature A") || editorValue.includes("signature")).toBe(true);
+      }, { timeout: 3000 });
+    });
+  });
+});
