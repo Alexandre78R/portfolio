@@ -22,15 +22,16 @@ describe("AboutMeResolver - getAboutMe", () => {
     titleFR: "À propos de moi",
     descriptionEN: "Hi, I'm a passionate developer with experience in fullstack development.",
     descriptionFR: "Bonjour, je suis un développeur passionné avec de l'expérience en développement fullstack.",
+    isVisible: true,
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     mockDb = new PrismaClient() as jest.Mocked<PrismaClient>;
     resolver = new AboutMeResolver(mockDb);
   });
 
-  it("Should return AboutMe data", async () => {
+  it("Should return AboutMe data", async (): Promise<void> => {
     (mockDb.aboutMe.findFirst as jest.Mock).mockResolvedValueOnce(mockAboutMe);
 
     const result: AboutMeResponse = await resolver.getAboutMe();
@@ -41,7 +42,7 @@ describe("AboutMeResolver - getAboutMe", () => {
     expect(mockDb.aboutMe.findFirst).toHaveBeenCalled();
   });
 
-  it("Should return 404 when AboutMe not found", async () => {
+  it("Should return 404 when AboutMe not found", async (): Promise<void> => {
     (mockDb.aboutMe.findFirst as jest.Mock).mockResolvedValueOnce(null);
 
     const result: AboutMeResponse = await resolver.getAboutMe();
@@ -51,7 +52,7 @@ describe("AboutMeResolver - getAboutMe", () => {
     expect(result.aboutMe).toBeUndefined();
   });
 
-  it("Should handle database error", async () => {
+  it("Should handle database error", async (): Promise<void> => {
     const error: Error = new Error("Database connection failed");
     (mockDb.aboutMe.findFirst as jest.Mock).mockRejectedValueOnce(error);
 
@@ -62,13 +63,14 @@ describe("AboutMeResolver - getAboutMe", () => {
     expect(result.aboutMe).toBeUndefined();
   });
 
-  it("Should return correct AboutMe with both languages", async () => {
+  it("Should return correct AboutMe with both languages", async (): Promise<void> => {
     const multiLanguageAboutMe: PrismaAboutMe = {
       id: 1,
       titleEN: "About Me",
       titleFR: "À propos de moi",
       descriptionEN: "I am a developer",
       descriptionFR: "Je suis un développeur",
+      isVisible: true,
     };
 
     (mockDb.aboutMe.findFirst as jest.Mock).mockResolvedValueOnce(
@@ -84,18 +86,20 @@ describe("AboutMeResolver - getAboutMe", () => {
     expect(result.aboutMe?.descriptionFR).toBe("Je suis un développeur");
   });
 
-  it("Should call findFirst without parameters", async () => {
+  it("Should call findFirst without parameters", async (): Promise<void> => {
     (mockDb.aboutMe.findFirst as jest.Mock).mockResolvedValueOnce(mockAboutMe);
 
     await resolver.getAboutMe();
 
     expect(mockDb.aboutMe.findFirst).toHaveBeenCalledWith({
+      where: { isVisible: true },
       select: {
         id: true,
         titleEN: true,
         titleFR: true,
         descriptionEN: true,
         descriptionFR: true,
+        isVisible: true,
       },
     });
   });
