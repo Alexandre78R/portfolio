@@ -286,6 +286,19 @@ describe("AboutMeResolver", (): void => {
       expect(prismaMock.aboutMe.delete).not.toHaveBeenCalled();
     });
 
+    it("should return 409 when AboutMe is visible", async (): Promise<void> => {
+      const ctx: MyContext = { ...baseMockContext, user: mockAdminUser };
+      prismaMock.aboutMe.findUnique.mockResolvedValueOnce({
+        ...mockAboutMe,
+        isVisible: true,
+      });
+
+      const result: AboutMeResponse = await resolver.deleteAboutMe(deleteId, ctx);
+
+      expect(result.code).toBe(409);
+      expect(prismaMock.aboutMe.delete).not.toHaveBeenCalled();
+    });
+
     it("should delete AboutMe successfully when validation passes", async (): Promise<void> => {
       const ctx: MyContext = { ...baseMockContext, user: mockAdminUser };
       prismaMock.aboutMe.findUnique.mockResolvedValueOnce(mockAboutMe);

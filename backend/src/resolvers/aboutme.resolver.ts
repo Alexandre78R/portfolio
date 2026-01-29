@@ -57,6 +57,47 @@ export class AboutMeResolver {
     }
   }
 
+  @Query(() => AboutMeResponse)
+  async getAboutMeById(
+    @Arg("id", () => Int) id: number
+  ): Promise<AboutMeResponse> {
+    try {
+      const aboutMe: Pick<PrismaAboutMe, "id" | "titleEN" | "titleFR" | "descriptionEN" | "descriptionFR" | "isVisible"> | null =
+        await this.db.aboutMe.findUnique({
+          where: { id },
+          select: {
+            id: true,
+            titleEN: true,
+            titleFR: true,
+            descriptionEN: true,
+            descriptionFR: true,
+            isVisible: true,
+          },
+        });
+
+      if (!aboutMe) {
+        return {
+          code: 404,
+          message: `AboutMe with ID ${id} not found`,
+        };
+      }
+
+      return {
+        code: 200,
+        message: "AboutMe fetched successfully",
+        aboutMe,
+      };
+    } catch (error: Error | unknown) {
+      const errorMessage: string =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("❌ Error fetching AboutMe by ID:", errorMessage);
+      return {
+        code: 500,
+        message: "Error fetching AboutMe",
+      };
+    }
+  }
+
   @Query(() => AboutMesResponse)
   async listAboutMe(): Promise<AboutMesResponse> {
     try {
@@ -297,6 +338,13 @@ export class AboutMeResolver {
         return {
           code: 404,
           message: `AboutMe with ID ${id} not found`,
+        };
+      }
+
+      if (existingAboutMe.isVisible) {
+        return {
+          code: 409,
+          message: "Cannot delete the visible AboutMe. Disable it first.",
         };
       }
 
