@@ -26,6 +26,7 @@ describe("AboutMeResolver - updateAboutMe", () => {
     titleFR: "À propos de moi",
     descriptionEN: "Old English description",
     descriptionFR: "Ancienne description en français",
+    isVisible: true,
   };
 
   const mockAdminUser: User = {
@@ -205,6 +206,7 @@ describe("AboutMeResolver - updateAboutMe", () => {
         titleFR: true,
         descriptionEN: true,
         descriptionFR: true,
+        isVisible: true,
       },
     });
   });
@@ -238,6 +240,7 @@ describe("AboutMeResolver - updateAboutMe", () => {
         titleFR: true,
         descriptionEN: true,
         descriptionFR: true,
+        isVisible: true,
       },
     });
   });
