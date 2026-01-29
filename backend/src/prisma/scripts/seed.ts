@@ -257,6 +257,7 @@ for (const sig of signaturesData as SignatureData[]) {
           titleFR: aboutMe.titleFR,
           descriptionEN: aboutMe.descriptionEN,
           descriptionFR: aboutMe.descriptionFR,
+          isVisible: aboutMe.isVisible ?? false,
         },
       });
       console.log(`👤 AboutMe seeded: ${createdAboutMe.id}`);

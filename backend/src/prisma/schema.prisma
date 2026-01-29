@@ -164,6 +164,7 @@ model AboutMe {
   titleFR        String
   descriptionEN  String @db.LongText
   descriptionFR  String @db.LongText
+  isVisible      Boolean @default(false)
 
   @@map("aboutme")
 }

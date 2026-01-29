@@ -264,3 +264,9 @@ export class AboutMeResponse extends Response {
   @Field(() => AboutMe, { nullable: true })
   aboutMe?: AboutMe;
 }
+
+@ObjectType()
+export class AboutMesResponse extends Response {
+  @Field(() => [AboutMe], { nullable: true })
+  aboutMes?: AboutMe[];
+}

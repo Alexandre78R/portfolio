@@ -16,4 +16,7 @@ export class AboutMe {
 
   @Field()
   descriptionFR!: string;
+
+  @Field()
+  isVisible!: boolean;
 }

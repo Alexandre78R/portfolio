@@ -68,4 +68,5 @@ export interface AboutMeData {
   titleFR: string;
   descriptionEN: string;
   descriptionFR: string;
+  isVisible?: boolean;
 }
