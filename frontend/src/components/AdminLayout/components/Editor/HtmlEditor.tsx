@@ -23,10 +23,24 @@ export interface HtmlEditorProps {
   readonly placeholder?: string;
 }
 
+// Configure Quill Size format to use inline styles
+const configureSizeFormat = (): void => {
+  try {
+    const QuillModule = require("react-quill").Quill;
+    const SizeClass = QuillModule.import("formats/size");
+    
+    SizeClass.whitelist = ["small", "normal", "large", "huge"];
+    QuillModule.register(SizeClass, true);
+  } catch (error) {
+    console.warn("Failed to configure Quill size format:", error);
+  }
+};
+
 const QUILL_MODULES: QuillModule = {
   toolbar: [
     ["bold", "italic", "underline"],
     [{ color: [] }, { background: [] }],
+    [{ size: ["small", false, "large", "huge"] }],
     [{ header: [1, 2, 3, false] }],
     ["blockquote", "code-block"],
     ["link", "image"],
@@ -40,6 +54,7 @@ const QUILL_FORMATS: QuillFormat = [
   "underline",
   "color",
   "background",
+  "size",
   "header",
   "blockquote",
   "code-block",
@@ -94,6 +109,8 @@ const HtmlEditor: React.FC<HtmlEditorProps> = ({
   ];
 
   useEffect(() => {
+    configureSizeFormat();
+    
     return () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);

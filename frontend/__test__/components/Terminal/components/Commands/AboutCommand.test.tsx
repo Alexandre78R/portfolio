@@ -5,13 +5,12 @@ import "@testing-library/jest-dom";
 import Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
-  useLang: (): { translations: Lang } => ({
+  useLang: (): { translations: Lang; lang: string } => ({
     translations: {
-      titleAboutMe: "À propos de moi",
-      descriptionAboutMe1: "Je suis développeur fullstack.",
-      descriptionAboutMe2: "J'aime coder en React et Node.js.",
-      descriptionAboutMe3: "Je travaille aussi sur des projets personnels.",
+      titleAboutMe: "<h3 class='text-title font-bold text-2xl mb-4'>À propos de moi</h3>",
+      descriptionAboutMe: "Je suis développeur fullstack. J'aime coder en React et Node.js. Je travaille aussi sur des projets personnels.",
     } as Lang,
+    lang: "fr",
   }),
 }));
 
@@ -30,18 +29,10 @@ describe("About command component", () => {
     const messageWrapper: HTMLElement = screen.getByTestId("message");
     expect(messageWrapper).toBeInTheDocument();
 
-    const title: HTMLElement = screen.getByText("À propos de moi");
+    const title: HTMLElement = screen.getByText(/À propos de moi/);
     expect(title).toBeInTheDocument();
 
-    const heading: HTMLElement = screen.getByRole("heading", { level: 3 });
-    expect(heading).toHaveTextContent("À propos de moi");
-
-    const desc1: HTMLElement = screen.getByText("Je suis développeur fullstack.");
-    const desc2: HTMLElement = screen.getByText("J'aime coder en React et Node.js.");
-    const desc3: HTMLElement = screen.getByText("Je travaille aussi sur des projets personnels.");
-
-    expect(desc1).toBeInTheDocument();
-    expect(desc2).toBeInTheDocument();
-    expect(desc3).toBeInTheDocument();
+    const description: HTMLElement = screen.getByText(/Je suis développeur fullstack/);
+    expect(description).toBeInTheDocument();
   });
 });

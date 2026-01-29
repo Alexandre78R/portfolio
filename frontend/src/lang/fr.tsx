@@ -23,13 +23,8 @@ const fr: Lang = {
   navbarButtonLogout: "Déconnexion",
   headerTitle: "Développeur Fullstack",
   nameCategoryAboutMe: "A propos",
-  titleAboutMe: "Salut 👋, je m'appelle Alexandre",
-  descriptionAboutMe1:
-    "Je suis un développeur junior français, passionné par l'informatique et le développement web depuis mon enfance.",
-  descriptionAboutMe2:
-    "J'ai terminé ma formation en développement web, et je suis actuellement à la recherche d'une opportunité professionnelle.",
-  descriptionAboutMe3:
-    "Découvrez mon portfolio pour en apprendre davantage sur mon parcours et mes projets !",
+  titleAboutMe: "<h3 style='font-weight: bold; font-size: 1.875rem; margin-bottom: 1rem;'>Salut 👋, je m'appelle Alexandre</h3>",
+  descriptionAboutMe: "Je suis un développeur junior français, passionné par l'informatique et le développement web depuis mon enfance. J'ai terminé ma formation en développement web, et je suis actuellement à la recherche d'une opportunité professionnelle. Découvrez mon portfolio pour en apprendre davantage sur mon parcours et mes projets !",
   nameCategorySkills: "Compétences",
   skillCegory1: "fr",
   nameCategoryProjects: "Projets",

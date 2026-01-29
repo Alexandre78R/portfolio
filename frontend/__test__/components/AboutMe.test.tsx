@@ -48,10 +48,8 @@ jest.mock("@/components/Title/TitleH3", () => ({
 
 describe("AboutMe component", (): void => {
   const translations: Lang = {
-    titleAboutMe: "About Me",
-    descriptionAboutMe1: "Description 1",
-    descriptionAboutMe2: "Description 2",
-    descriptionAboutMe3: "Description 3",
+    titleAboutMe: "<h3 class='text-title font-bold text-2xl mb-4'>About Me</h3>",
+    descriptionAboutMe: "<p class='text-text mt-4'>Description 1</p><p class='text-text mt-4'>Description 2</p><p class='text-text mt-4'>Description 3</p>",
     buttonCV: "Download CV",
     messageCVLoading: "Loading CV...",
     messageCVNotFetch: "Error fetching CV",
@@ -60,10 +58,10 @@ describe("AboutMe component", (): void => {
 
   const mockAboutMe = {
     id: 1,
-    titleEN: "About Me",
-    titleFR: "À propos de moi",
-    descriptionEN: "Description 1\nDescription 2\nDescription 3",
-    descriptionFR: "Description FR 1\nDescription FR 2\nDescription FR 3",
+    titleEN: "<h3 class='text-title font-bold text-2xl mb-4'>About Me EN</h3>",
+    titleFR: "<h3 class='text-title font-bold text-2xl mb-4'>À propos de moi</h3>",
+    descriptionEN: "Description EN",
+    descriptionFR: "Description FR",
   };
 
   const mockWindowOpen: jest.SpyInstance = jest.spyOn(window, "open").mockImplementation(() => null);
@@ -85,10 +83,8 @@ describe("AboutMe component", (): void => {
     (useCvQuery as jest.Mock).mockReturnValue({ data: null, loading: false, error: null });
     render(<AboutMe />);
 
-    expect(screen.getByText(mockAboutMe.titleEN)).toBeInTheDocument();
-    expect(screen.getByText("Description 1")).toBeInTheDocument();
-    expect(screen.getByText("Description 2")).toBeInTheDocument();
-    expect(screen.getByText("Description 3")).toBeInTheDocument();
+    expect(screen.getByText(/About Me EN/)).toBeInTheDocument();
+    expect(screen.getByText(/Description EN/)).toBeInTheDocument();
   });
 
   it("renders the CV download button", (): void => {

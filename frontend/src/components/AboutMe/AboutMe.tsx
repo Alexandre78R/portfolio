@@ -37,28 +37,28 @@ const AboutMe: React.FC = (): JSX.Element => {
   };
 
   const title: string = aboutMe ? (lang === "fr" ? aboutMe.titleFR : aboutMe.titleEN) : translations.titleAboutMe;
-  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : `${translations.descriptionAboutMe1} ${translations.descriptionAboutMe2} ${translations.descriptionAboutMe3}`;
-  
-  const paragraphs: string[] = description ? description.split('\n').filter(p => p.trim()) : [
-    description
-  ];
+  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : translations.descriptionAboutMe;
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
-        <TitleH3 title={title} />
-        {paragraphs.map((paragraph, index) => (
-          <p 
-            key={index} 
+    <>
+      <style>{`
+        .ql-size-small { font-size: 0.875rem; }
+        .ql-size-large { font-size: 1.5rem; }
+        .ql-size-huge { font-size: 2.25rem; }
+      `}</style>
+      <div className="flex flex-col items-center">
+        <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(title) }} />
+          <div 
             className="text-text mt-4"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(paragraph) }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
           />
-        ))}
-        <div className="mt-2">
-          <ButtonCustom text={translations.buttonCV} onClick={handleClick} />
+          <div className="mt-2">
+            <ButtonCustom text={translations.buttonCV} onClick={handleClick} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

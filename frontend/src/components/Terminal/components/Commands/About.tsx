@@ -10,34 +10,25 @@ const About: React.FC = (): JSX.Element => {
   const aboutMe: AboutMe | null = useAppSelector((state) => state.aboutMe.dataAboutMe);
 
   const title: string = aboutMe ? (lang === "fr" ? aboutMe.titleFR : aboutMe.titleEN) : translations.titleAboutMe;
-  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : "";
-  
-  const paragraphs: string[] = description ? description.split('\n').filter(p => p.trim()) : [
-    translations.descriptionAboutMe1,
-    translations.descriptionAboutMe2,
-    translations.descriptionAboutMe3
-  ];
+  const description: string = aboutMe ? (lang === "fr" ? aboutMe.descriptionFR : aboutMe.descriptionEN) : translations.descriptionAboutMe;
 
   return (
-    <Message>
-      <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[40%]">
-        <Typography
-          variant="h3"
-          component="h3"
-          className="text-text text-2xl"
-        >
-          {title}
-        </Typography>
-
-        {paragraphs.map((paragraph, index) => (
-          <p 
-            key={index} 
+    <>
+      <style>{`
+        .ql-size-small { font-size: 0.875rem; }
+        .ql-size-large { font-size: 1.5rem; }
+        .ql-size-huge { font-size: 2.25rem; }
+      `}</style>
+      <Message>
+        <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[40%]">
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(title) }} />
+          <div 
             className="text-text mt-4"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(paragraph) }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
           />
-        ))}
-      </div>
-    </Message>
+        </div>
+      </Message>
+    </>
   );
 };
 

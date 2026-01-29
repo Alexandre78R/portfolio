@@ -17,5 +17,21 @@ export const sanitizeHtml: (dirty: string) => string = (dirty: string): string =
       'href', 'target', 'rel', 'class', 'style', 'src', 'alt', 
       'width', 'height', 'title'
     ],
+    ALLOW_DATA_ATTR: false,
+    ALLOWED_STYLES: {
+      '*': {
+        'color': [/.*/],
+        'background-color': [/.*/],
+        'font-size': [/.*/],
+        'font-weight': [/.*/],
+        'font-style': [/.*/],
+        'text-decoration': [/.*/],
+        'margin': [/.*/],
+        'margin-top': [/.*/],
+        'margin-bottom': [/.*/],
+        'padding': [/.*/],
+        'text-align': [/.*/],
+      }
+    },
   });
 };
