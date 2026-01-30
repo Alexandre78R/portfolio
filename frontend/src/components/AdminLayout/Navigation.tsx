@@ -138,15 +138,19 @@ const navigation: NavItem[] = [
     icon: Signature,
     roles: ['admin'],
     children: [
-      { name: 'Envoyer un message', key: 'signatures/list', icon: Eye, roles: ['admin'], parentKey: 'signatures' },
-      { name: 'Envoyer un message', key: 'signatures/create', icon: FolderPlus, roles: ['admin'], parentKey: 'signatures' },
+      { name: 'Voir les signatures', key: 'signatures/list', icon: Eye, roles: ['admin'], parentKey: 'signatures' },
+      { name: 'Créer une signature', key: 'signatures/create', icon: FolderPlus, roles: ['admin'], parentKey: 'signatures' },
     ],
   },
   {
     name: 'About Me',
-    key: 'aboutme/update',
+    key: 'aboutme',
     icon: Text,
     roles: ['admin', 'editor', 'view'],
+    children: [
+      { name: 'Voir les About Me', key: 'aboutme/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'aboutme' },
+      { name: 'Créer un About Me', key: 'aboutme/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'aboutme' },
+    ],
   },
   {
     name: 'Sauvegarde',

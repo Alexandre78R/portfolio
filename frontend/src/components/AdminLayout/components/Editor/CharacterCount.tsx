@@ -13,7 +13,7 @@ const CharacterCount: React.FC<CharacterCountProps> = ({ content }: CharacterCou
   const translations: Lang = langContext?.translations || {};
   
   const visibleCharacterCount: number = useMemo((): number => {
-    return content.replace(/<[^>]*>/gu, "").length;
+    return (content || "").replace(/<[^>]*>/gu, "").length;
   }, [content]);
 
   return (

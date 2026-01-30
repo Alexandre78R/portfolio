@@ -28,7 +28,9 @@ const pagesMap: Record<string, () => Promise<any>> = {
   'cv/view': () => import('@/components/AdminLayout/Pages/CV/CVView'),
   'cv/update': () => import('@/components/AdminLayout/Pages/CV/CVUpdate'),
   'messages/create': () => import('@/components/AdminLayout/Pages/Messages/MessageCreate'),
-  'aboutme/update': () => import('@/components/AdminLayout/Pages/AboutMe/AboutMeUpdate'),
+  'aboutme/list': () => import('@/components/AdminLayout/Pages/AboutMe/AboutMeList'),
+  'aboutme/create': () => import('@/components/AdminLayout/Pages/AboutMe/AboutMeCreate'),
+  // 'aboutme/update': () => import('@/components/AdminLayout/Pages/AboutMe/AboutMeUpdate'),
   'signatures/list': () => import('@/components/AdminLayout/Pages/Signatures/SignaturesList'),
   'signatures/create': () => import('@/components/AdminLayout/Pages/Signatures/SignaturesCreate'),
 };
