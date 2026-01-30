@@ -6,7 +6,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { useGetThemesListQuery } from "@/types/graphql";
+import { useGetThemesListQuery, GetThemesListQuery } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import defaultThemes, {
   ThemeColorsText,
@@ -55,7 +55,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themes, setThemes] = useState<Record<string, Theme>>({});
   const [isUsingFallback, setIsUsingFallback] = useState<boolean>(false);
 
-  const { data, loading, error } = useGetThemesListQuery({
+  const { data, loading, error } = useGetThemesListQuery<GetThemesListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

@@ -5,10 +5,11 @@ import AboutMeCreate from "@/components/AdminLayout/Pages/AboutMe/AboutMeCreate"
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import CustomToast, { type AlertType } from "@/components/ToastCustom/CustomToast";
-import { useMutation, type ApolloError, type FetchResult } from "@apollo/client";
+import { type ApolloError, type FetchResult } from "@apollo/client";
 import {
   CreateAboutMeMutation,
   CreateAboutMeMutationVariables,
+  useCreateAboutMeMutation,
 } from "@/types/graphql";
 
 type MockAuthFormLayoutProps = {
@@ -100,13 +101,13 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 }));
 
 const mockMutate: jest.Mock<
-  Promise<FetchResult<any>>,
+  Promise<FetchResult<CreateAboutMeMutation>>,
   [{ variables: CreateAboutMeMutationVariables }]
 > = jest.fn();
 
-jest.mock("@apollo/client", () => ({
-  ...jest.requireActual("@apollo/client"),
-  useMutation: jest.fn<
+jest.mock("@/types/graphql", () => ({
+  ...jest.requireActual("@/types/graphql"),
+  useCreateAboutMeMutation: jest.fn<
     [typeof mockMutate, { loading: boolean; error?: ApolloError }],
     []
   >(),
@@ -131,7 +132,7 @@ describe("AboutMeCreate Page", (): void => {
     jest.clearAllMocks();
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: mockShowAlert });
-    (useMutation as jest.Mock).mockReturnValue([mockMutate, { loading: false }]);
+    (useCreateAboutMeMutation as jest.Mock).mockReturnValue([mockMutate, { loading: false }]);
   });
 
   it("should render form with correct title", (): void => {

@@ -15,9 +15,8 @@ import {
   useSendMessageMutation,
   SendMessageMutation,
   SendMessageMutationVariables,
+  useGetSignaturesListQuery,
 } from "@/types/graphql";
-import { useQuery } from "@apollo/client";
-import { GET_SIGNATURES_LIST } from "@/requetes/queries/signatures.queries";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import HtmlEditor from "../../components/Editor/HtmlEditor";
 import { FetchResult } from "@apollo/client";
@@ -53,7 +52,7 @@ const MessageCreate: React.FC = (): ReactElement => {
   const [appliedSignatureId, setAppliedSignatureId]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
   const isApplyingSignature: React.MutableRefObject<boolean> = React.useRef<boolean>(false);
   const [sendMessageMutation, { loading }] = useSendMessageMutation();
-  const { data: signaturesData } = useQuery(GET_SIGNATURES_LIST, {
+  const { data: signaturesData } = useGetSignaturesListQuery({
     fetchPolicy: "cache-and-network",
   });
 

@@ -52,7 +52,7 @@ const SocialEditModal: React.FC<SocialEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateSocialMutation] = useUpdateSocialMutation();
 
-  const { data, loading: socialLoading } = useGetSocialByIdQuery({
+  const { data, loading: socialLoading } = useGetSocialByIdQuery<GetSocialByIdQuery>({
     variables: { id: social?.id ?? 0 },
     skip: !social,
     fetchPolicy: "network-only",

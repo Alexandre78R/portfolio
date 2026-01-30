@@ -22,6 +22,8 @@ jest.mock("@/types/graphql", () => ({
   useGetSkillsListQuery: jest.fn(() => ({})),
   useGetEducationsListQuery: jest.fn(() => ({})),
   useGetExperiencesListQuery: jest.fn(() => ({})),
+  useGetAboutMeQuery: jest.fn(() => ({})),
+  useGetSocialsListQuery: jest.fn(() => ({})),
 }));
 jest.mock("@apollo/client", () => ({
   ...jest.requireActual("@apollo/client"),

@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { termContext, Term } from "../../Terminal";
 import { getCurrentCmdArry } from "../../util";
-import { useCvQuery } from "@/types/graphql";
+import { useCvQuery, CvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
@@ -12,7 +12,7 @@ const CV = (): JSX.Element => {
 
   const { translations }: { translations: Lang } = useLang();
 
-  const { data, loading, error } = useCvQuery();
+  const { data, loading, error } = useCvQuery<CvQuery>();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
   CustomToast();
   

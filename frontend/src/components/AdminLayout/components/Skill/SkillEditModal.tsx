@@ -55,7 +55,7 @@ const SkillEditModal = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateSkillMutation] = useUpdateSkillMutation();
 
-  const { data: categoriesData, loading: categoriesLoading } = useGetSkillsListQuery({
+  const { data: categoriesData, loading: categoriesLoading } = useGetSkillsListQuery<GetSkillsListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

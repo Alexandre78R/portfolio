@@ -1,5 +1,4 @@
 import React, { ReactElement, useState } from "react";
-import { useQuery } from "@apollo/client";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
@@ -7,11 +6,10 @@ import Lang from "@/lang/typeLang";
 import AboutMeTable, { AboutMeRow } from "../../components/AboutMe/AboutMeTable";
 import AboutMeDeleteDialog from "../../components/AboutMe/AboutMeDeleteDialog";
 import AboutMeEditModal from "../../components/AboutMe/AboutMeEditModal";
-import { LIST_ABOUT_ME } from "@/requetes/queries/aboutme.queries";
-import { ListAboutMeQuery } from "@/types/graphql";
+import { ListAboutMeQuery, useListAboutMeQuery } from "@/types/graphql";
 
 const AboutMeList = (): ReactElement => {
-  const { data, loading, error, refetch } = useQuery<ListAboutMeQuery>(LIST_ABOUT_ME, {
+  const { data, loading, error, refetch } = useListAboutMeQuery({
     fetchPolicy: "cache-and-network",
   });
 

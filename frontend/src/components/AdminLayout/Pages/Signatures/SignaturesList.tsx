@@ -2,15 +2,14 @@ import React, { ReactElement, useState } from "react";
 import SignatureTable, { SignatureRow } from "../../components/Signature/SignatureTable";
 import SignatureEditModal from "../../components/Signature/SignatureEditModal";
 import SignatureDeleteDialog from "../../components/Signature/SignatureDeleteDialog";
-import { useQuery } from "@apollo/client";
-import { GET_SIGNATURES_LIST } from "@/requetes/queries/signatures.queries";
+import { useGetSignaturesListQuery, GetSignaturesListQuery } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
 const SignaturesList = (): ReactElement => {
-  const { data, loading, error, refetch } = useQuery(GET_SIGNATURES_LIST, {
+  const { data, loading, error, refetch } = useGetSignaturesListQuery<GetSignaturesListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

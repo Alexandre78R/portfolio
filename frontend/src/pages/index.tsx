@@ -29,10 +29,14 @@ import {
   useGetEducationsListQuery,
   useGetExperiencesListQuery,
   useGetAboutMeQuery,
+  useGetSocialsListQuery,
+  GetProjectsListQuery,
   GetSkillsListQuery,
+  GetEducationsListQuery,
+  GetExperiencesListQuery,
+  GetAboutMeQuery,
+  GetSocialsListQuery,
 } from "@/types/graphql";
-import { useQuery } from "@apollo/client";
-import { GET_SOCIALS_LIST } from "@/requetes/queries/socials.queries";
 
 // Composants
 import HorizontalScroll from "@/components/horizontalScroll/horizontalScroll";
@@ -46,12 +50,12 @@ import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
 
 const Home: React.FC = (): ReactElement => {
-  const { data: projectsData } = useGetProjectsListQuery();
-  const { data: skillsData } = useGetSkillsListQuery();
-  const { data: educationsData } = useGetEducationsListQuery();
-  const { data: experiencesData } = useGetExperiencesListQuery();
-  const { data: socialsData } = useQuery(GET_SOCIALS_LIST);
-  const { data: aboutMeData } = useGetAboutMeQuery();
+  const { data: projectsData } = useGetProjectsListQuery<GetProjectsListQuery>();
+  const { data: skillsData } = useGetSkillsListQuery<GetSkillsListQuery>();
+  const { data: educationsData } = useGetEducationsListQuery<GetEducationsListQuery>();
+  const { data: experiencesData } = useGetExperiencesListQuery<GetExperiencesListQuery>();
+  const { data: socialsData } = useGetSocialsListQuery<GetSocialsListQuery>();
+  const { data: aboutMeData } = useGetAboutMeQuery<GetAboutMeQuery>();
 
   const { translations }: LangContextType = useLang();
   const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef }: SectionRefsContextProps = useSectionRefs();

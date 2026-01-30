@@ -1,5 +1,5 @@
 import { ReactElement, useState, useMemo, useCallback } from "react";
-import { useGetProjectsListQuery } from "@/types/graphql";
+import { useGetProjectsListQuery, GetProjectsListQuery } from "@/types/graphql";
 import { useLang } from "@/context/Lang/LangContext";
 import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
@@ -10,7 +10,7 @@ import type { ProjectRow } from "@/components/AdminLayout/components/Project/Pro
 import type Lang from "@/lang/typeLang";
 
 const ProjectsList = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetProjectsListQuery({
+  const { data, loading, error, refetch } = useGetProjectsListQuery<GetProjectsListQuery>({
     fetchPolicy: "cache-and-network",
   });
   const { translations }: { translations: Lang } = useLang();

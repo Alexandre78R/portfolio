@@ -59,13 +59,13 @@ const SkillCategoryEditModal: React.FC<SkillCategoryEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateCategoryMutation] = useUpdateSkillCategoryMutation();
 
-  const { data, loading: categoryLoading } = useGetSkillCategoryByIdQuery({
+  const { data, loading: categoryLoading } = useGetSkillCategoryByIdQuery<GetSkillCategoryByIdQuery>({
     variables: { id: category?.id ?? 0 },
     skip: !category,
     fetchPolicy: "network-only",
   });
 
-  const { data: allSkillsData } = useGetSkillsListQuery({
+  const { data: allSkillsData } = useGetSkillsListQuery<GetSkillsListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

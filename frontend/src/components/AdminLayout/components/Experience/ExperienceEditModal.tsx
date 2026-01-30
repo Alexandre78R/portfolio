@@ -48,7 +48,7 @@ const ExperienceEditModal: React.FC<ExperienceEditModalProps> = ({ experience, o
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateExperienceMutation] = useUpdateExperienceMutation();
 
-  const { data, loading: experienceLoading } = useGetExperienceByIdQuery({
+  const { data, loading: experienceLoading } = useGetExperienceByIdQuery<GetExperienceByIdQuery>({
     variables: { id: experience?.id ?? 0 },
     skip: !experience,
     fetchPolicy: "network-only",

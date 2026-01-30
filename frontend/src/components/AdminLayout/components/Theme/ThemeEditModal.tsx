@@ -20,6 +20,7 @@ import {
   GetThemesListQuery, 
   UpdateThemeInput,
   useGetThemeByIdQuery,
+  GetThemeByIdQuery,
   UpdateThemeMutation
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
@@ -72,7 +73,7 @@ const ThemeEditModal: React.FC<ThemeEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateThemeMutation] = useUpdateThemeMutation();
 
-  const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery({
+  const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery<GetThemeByIdQuery>({
     variables: { id: Number(theme?.id) },
     skip: !theme?.id,
     fetchPolicy: "network-only",

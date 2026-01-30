@@ -3,7 +3,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import ButtonCustom from "../Button/Button";
 import TitleH3 from "../Title/TitleH3";
 import Lang from "@/lang/typeLang";
-import { useCvQuery } from "@/types/graphql";
+import { useCvQuery, CvQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useAppSelector } from "@/store/hook";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
@@ -12,7 +12,7 @@ const AboutMe: React.FC = (): JSX.Element => {
   const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
   const aboutMe: AboutMe | null = useAppSelector((state) => state.aboutMe.dataAboutMe);
 
-  const { data, loading, error } = useCvQuery();
+  const { data, loading, error } = useCvQuery<CvQuery>();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();

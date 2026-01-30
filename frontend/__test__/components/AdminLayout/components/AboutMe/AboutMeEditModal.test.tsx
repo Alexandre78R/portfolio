@@ -4,10 +4,12 @@ import "@testing-library/jest-dom";
 import AboutMeEditModal from "@/components/AdminLayout/components/AboutMe/AboutMeEditModal";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
-import { useMutation, useQuery, type ApolloError, type FetchResult, type ApolloQueryResult } from "@apollo/client";
+import { useMutation, type ApolloError, type FetchResult } from "@apollo/client";
 import type { AlertType } from "@/components/ToastCustom/CustomToast";
 import { 
   UpdateAboutMeMutationVariables,
+  GetAboutMeByIdQuery,
+  useGetAboutMeByIdQuery,
 } from "@/types/graphql";
 
 type MockModalProps = {
@@ -100,13 +102,17 @@ const mockMutate: jest.Mock<
 
 jest.mock("@apollo/client", () => ({
   ...jest.requireActual("@apollo/client"),
-  useQuery: jest.fn((query: unknown, options?: any) =>
-    mockQueryFn(options || {})
-  ),
   useMutation: jest.fn<
     [typeof mockMutate, { loading: boolean; error?: ApolloError }],
     []
   >(() => [mockMutate, { loading: false }]),
+}));
+
+jest.mock("@/types/graphql", () => ({
+  ...jest.requireActual("@/types/graphql"),
+  useGetAboutMeByIdQuery: jest.fn((options?: any) =>
+    mockQueryFn(options || {})
+  ),
 }));
 
 describe("AboutMeEditModal", (): void => {

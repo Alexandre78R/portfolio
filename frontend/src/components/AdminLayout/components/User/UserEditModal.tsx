@@ -12,6 +12,7 @@ import {
   useUpdateUserMutation,
   useGetUserByIdQuery,
   GetUsersListQuery,
+  GetUserByIdQuery,
   Role,
   UpdateUserMutation,
 } from "@/types/graphql";
@@ -54,7 +55,7 @@ const UserEditModal = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateUserMutation] = useUpdateUserMutation();
 
-  const { data: userData, loading: userLoading } = useGetUserByIdQuery({
+  const { data: userData, loading: userLoading } = useGetUserByIdQuery<GetUserByIdQuery>({
     variables: { id: Number(user?.id) },
     skip: !user?.id,
     fetchPolicy: "network-only",

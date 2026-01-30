@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { useGetEducationsListQuery } from "@/types/graphql";
+import { useGetEducationsListQuery, GetEducationsListQuery } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
@@ -11,7 +11,7 @@ import EducationDeleteDialog from "../../components/Education/EducationDeleteDia
 import EducationEditModal from "../../components/Education/EducationEditModal";
 
 const EducationList = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetEducationsListQuery({
+  const { data, loading, error, refetch } = useGetEducationsListQuery<GetEducationsListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

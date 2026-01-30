@@ -10,6 +10,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import {
   useUpdateProjectMutation,
   useGetSkillsListQuery,
+  GetSkillsListQuery,
   UpdateProjectInput,
   UpdateProjectMutation,
 } from "@/types/graphql";
@@ -44,7 +45,7 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
   onRefresh,
 }: ProjectEditModalProps): ReactElement | null => {
   const [updateProjectMutation, { loading }] = useUpdateProjectMutation();
-  const { data: skillsData } = useGetSkillsListQuery({
+  const { data: skillsData } = useGetSkillsListQuery<GetSkillsListQuery>({
     fetchPolicy: "cache-and-network",
   });
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();

@@ -1,5 +1,5 @@
 import React, { useState, ReactElement } from "react";
-import { useGetUsersListQuery } from "@/types/graphql";
+import { useGetUsersListQuery, GetUsersListQuery } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
@@ -9,7 +9,7 @@ import UserDeleteDialog from "../../components/User/UserDeleteDialog";
 import UserEditModal from "../../components/User/UserEditModal";
 
 const UserList: React.FC = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetUsersListQuery({
+  const { data, loading, error, refetch } = useGetUsersListQuery<GetUsersListQuery>({
     fetchPolicy: "cache-and-network",
   });
 

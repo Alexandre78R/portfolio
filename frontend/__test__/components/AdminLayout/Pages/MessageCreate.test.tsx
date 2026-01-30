@@ -9,6 +9,8 @@ import {
   useSendMessageMutation,
   SendMessageMutation,
   SendMessageMutationVariables,
+  GetSignaturesListQuery,
+  useGetSignaturesListQuery,
 } from "@/types/graphql";
 import { useQuery } from "@apollo/client";
 import { FetchResult } from "@apollo/client";
@@ -52,11 +54,15 @@ jest.mock("@/components/ToastCustom/CustomToast", (): object => ({
 }));
 
 jest.mock("@/types/graphql", (): object => ({
+  ...jest.requireActual("@/types/graphql"),
   useSendMessageMutation: jest.fn<
     [MockMutationFunction, { loading: boolean }],
     []
   >(),
-  useQuery: jest.fn(),
+  useGetSignaturesListQuery: jest.fn<
+    { data?: GetSignaturesListQuery; loading: boolean; error?: any },
+    [any?]
+  >(),
 }));
 
 jest.mock("@apollo/client", () => {
@@ -110,8 +116,8 @@ describe("MessageCreate Component", (): void => {
     >;
     mockUseSendMessage.mockReturnValue([mockSendMessage, { loading: false }]);
 
-    mockUseQuery = useQuery as jest.Mock;
-    mockUseQuery.mockReturnValue({
+    const mockUseGetSignatures = useGetSignaturesListQuery as jest.Mock;
+    mockUseGetSignatures.mockReturnValue({
       data: {
         listAllSignatures: {
           signatures: [

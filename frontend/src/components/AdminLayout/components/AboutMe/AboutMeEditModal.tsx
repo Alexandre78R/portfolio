@@ -1,7 +1,6 @@
 import { ChangeEvent, ReactElement, useState, useEffect, useCallback } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { UPDATE_ABOUT_ME } from "@/requetes/mutations/aboutme.mutations";
-import { GET_ABOUT_ME_BY_ID } from "@/requetes/queries/aboutme.queries";
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
 import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
 import HtmlEditor from "@/components/AdminLayout/components/Editor/HtmlEditor";
@@ -12,7 +11,7 @@ import InputBoolean from "@/components/AdminLayout/components/Input/InputBoolean
 import { useLang } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import { FetchResult } from "@apollo/client";
-import { UpdateAboutMeMutation, GetAboutMeByIdQuery } from "@/types/graphql";
+import { UpdateAboutMeMutation, GetAboutMeByIdQuery, useGetAboutMeByIdQuery } from "@/types/graphql";
 
 interface AboutMeEditModalProps {
   aboutMeId: number | null;
@@ -34,7 +33,7 @@ const AboutMeEditModal: React.FC<AboutMeEditModalProps> = ({
   onClose,
   onRefresh,
 }: AboutMeEditModalProps): ReactElement | null => {
-  const { data, loading: loadingData } = useQuery<GetAboutMeByIdQuery>(GET_ABOUT_ME_BY_ID, {
+  const { data, loading: loadingData } = useGetAboutMeByIdQuery({
     variables: { id: aboutMeId || 0 },
     skip: !aboutMeId,
   });

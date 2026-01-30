@@ -25,7 +25,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setHasToken(!!token);
   }, []);
   
-  const { data, loading, error, refetch } = useGetMeQuery({
+  const { data, loading, error, refetch } = useGetMeQuery<GetMeQuery>({
     skip: !hasToken, // Ne pas exécuter la requête s'il n'y a pas de token
   }) as {
     data?: GetMeQuery;
