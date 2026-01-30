@@ -24,6 +24,7 @@ export type AboutMe = {
   descriptionEN: Scalars['String']['output'];
   descriptionFR: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  isVisible: Scalars['Boolean']['output'];
   titleEN: Scalars['String']['output'];
   titleFR: Scalars['String']['output'];
 };
@@ -31,6 +32,13 @@ export type AboutMe = {
 export type AboutMeResponse = {
   __typename?: 'AboutMeResponse';
   aboutMe?: Maybe<AboutMe>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
+export type AboutMesResponse = {
+  __typename?: 'AboutMesResponse';
+  aboutMes?: Maybe<Array<AboutMe>>;
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
 };
@@ -91,6 +99,14 @@ export type ContactFrom = {
   email: Scalars['String']['input'];
   message: Scalars['String']['input'];
   object: Scalars['String']['input'];
+};
+
+export type CreateAboutMeInput = {
+  descriptionEN: Scalars['String']['input'];
+  descriptionFR: Scalars['String']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  titleEN: Scalars['String']['input'];
+  titleFR: Scalars['String']['input'];
 };
 
 export type CreateCategoryInput = {
@@ -310,6 +326,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   changePassword: Response;
   clearCaptcha: Scalars['Boolean']['output'];
+  createAboutMe: AboutMeResponse;
   createCategory: CategoryResponse;
   createEducation: EducationResponse;
   createExperience: ExperienceResponse;
@@ -318,6 +335,7 @@ export type Mutation = {
   createSkill: SubItemResponse;
   createSocial: SocialResponse;
   createTheme: ThemeResponse;
+  deleteAboutMe: AboutMeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
@@ -363,6 +381,11 @@ export type MutationClearCaptchaArgs = {
 };
 
 
+export type MutationCreateAboutMeArgs = {
+  data: CreateAboutMeInput;
+};
+
+
 export type MutationCreateCategoryArgs = {
   data: CreateCategoryInput;
 };
@@ -400,6 +423,11 @@ export type MutationCreateSocialArgs = {
 
 export type MutationCreateThemeArgs = {
   data: CreateThemeInput;
+};
+
+
+export type MutationDeleteAboutMeArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -593,6 +621,7 @@ export type Query = {
   educationListPagination: EducationsResponse;
   generateCaptcha: CaptchaResponse;
   getAboutMe: AboutMeResponse;
+  getAboutMeById: AboutMeResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
   getEducationById: EducationResponse;
   getExperienceById: ExperienceResponse;
@@ -606,6 +635,7 @@ export type Query = {
   getTopUsedSkills: TopSkillsResponse;
   getUserById: UserResponse;
   getUsersRoleDistribution: UserRolePercent;
+  listAboutMe: AboutMesResponse;
   listAllSignatures: SignaturesResponse;
   listBackupFiles: BackupFilesResponse;
   listEducations: EducationsResponse;
@@ -625,6 +655,11 @@ export type QueryEducationListPaginationArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAboutMeByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -816,6 +851,7 @@ export type UpdateAboutMeInput = {
   descriptionEN?: InputMaybe<Scalars['String']['input']>;
   descriptionFR?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
   titleEN?: InputMaybe<Scalars['String']['input']>;
   titleFR?: InputMaybe<Scalars['String']['input']>;
 };
@@ -962,6 +998,27 @@ export type ValidationResponse = {
   isValid: Scalars['Boolean']['output'];
 };
 
+export type CreateAboutMeMutationVariables = Exact<{
+  data: CreateAboutMeInput;
+}>;
+
+
+export type CreateAboutMeMutation = { __typename?: 'Mutation', createAboutMe: { __typename?: 'AboutMeResponse', code: number, message: string, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string, isVisible: boolean } | null } };
+
+export type UpdateAboutMeMutationVariables = Exact<{
+  data: UpdateAboutMeInput;
+}>;
+
+
+export type UpdateAboutMeMutation = { __typename?: 'Mutation', updateAboutMe: { __typename?: 'AboutMeResponse', code: number, message: string, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string, isVisible: boolean } | null } };
+
+export type DeleteAboutMeMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteAboutMeMutation = { __typename?: 'Mutation', deleteAboutMe: { __typename?: 'AboutMeResponse', code: number, message: string } };
+
 export type GenerateDatabaseBackupMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1087,6 +1144,27 @@ export type DeleteProjectMutationVariables = Exact<{
 
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'Response', code: number, message: string } };
+
+export type CreateSignatureMutationVariables = Exact<{
+  data: CreateSignatureInput;
+}>;
+
+
+export type CreateSignatureMutation = { __typename?: 'Mutation', createSignature: { __typename?: 'SignatureResponse', code: number, message: string, signature?: { __typename?: 'Signature', id: string, name: string, description: string } | null } };
+
+export type UpdateSignatureMutationVariables = Exact<{
+  data: UpdateSignatureInput;
+}>;
+
+
+export type UpdateSignatureMutation = { __typename?: 'Mutation', updateSignature: { __typename?: 'SignatureResponse', code: number, message: string, signature?: { __typename?: 'Signature', id: string, name: string, description: string } | null } };
+
+export type DeleteSignatureMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteSignatureMutation = { __typename?: 'Mutation', deleteSignature: { __typename?: 'SignatureResponse', code: number, message: string } };
 
 export type CreateSkillCategoryMutationVariables = Exact<{
   data: CreateCategoryInput;
@@ -1218,7 +1296,19 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 export type GetAboutMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAboutMeQuery = { __typename?: 'Query', getAboutMe: { __typename?: 'AboutMeResponse', message: string, code: number, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string } | null } };
+export type GetAboutMeQuery = { __typename?: 'Query', getAboutMe: { __typename?: 'AboutMeResponse', message: string, code: number, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string, isVisible: boolean } | null } };
+
+export type GetAboutMeByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetAboutMeByIdQuery = { __typename?: 'Query', getAboutMeById: { __typename?: 'AboutMeResponse', message: string, code: number, aboutMe?: { __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string, isVisible: boolean } | null } };
+
+export type ListAboutMeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListAboutMeQuery = { __typename?: 'Query', listAboutMe: { __typename?: 'AboutMesResponse', code: number, message: string, aboutMes?: Array<{ __typename?: 'AboutMe', id: string, titleEN: string, titleFR: string, descriptionEN: string, descriptionFR: string, isVisible: boolean }> | null } };
 
 export type GetGlobalStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1268,6 +1358,18 @@ export type GetProjectsListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetProjectsListQuery = { __typename?: 'Query', listProjects: { __typename?: 'ProjectsResponse', message: string, code: number, projects?: Array<{ __typename?: 'Project', contentDisplay: string, descriptionEN: string, descriptionFR: string, github?: string | null, id: string, image?: string | null, video?: string | null, title: string, typeDisplay: string, skills: Array<{ __typename?: 'SkillSubItem', categoryId?: number | null, id: string, image: string, name: string }> }> | null } };
+
+export type GetSignaturesListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSignaturesListQuery = { __typename?: 'Query', listAllSignatures: { __typename?: 'SignaturesResponse', code: number, message: string, signatures?: Array<{ __typename?: 'Signature', id: string, name: string, description: string }> | null } };
+
+export type GetSignatureByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetSignatureByIdQuery = { __typename?: 'Query', getSignatureById: { __typename?: 'SignatureResponse', code: number, message: string, signature?: { __typename?: 'Signature', id: string, name: string, description: string } | null } };
 
 export type GetSkillsListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1337,6 +1439,124 @@ export type GetUserByIdQueryVariables = Exact<{
 export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserResponse', message: string, code: number, user?: { __typename?: 'User', id: string, firstname: string, lastname: string, email: string, role: Role, isPasswordChange: boolean } | null } };
 
 
+export const CreateAboutMeDocument = gql`
+    mutation CreateAboutMe($data: CreateAboutMeInput!) {
+  createAboutMe(data: $data) {
+    aboutMe {
+      id
+      titleEN
+      titleFR
+      descriptionEN
+      descriptionFR
+      isVisible
+    }
+    code
+    message
+  }
+}
+    `;
+export type CreateAboutMeMutationFn = Apollo.MutationFunction<CreateAboutMeMutation, CreateAboutMeMutationVariables>;
+
+/**
+ * __useCreateAboutMeMutation__
+ *
+ * To run a mutation, you first call `useCreateAboutMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAboutMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAboutMeMutation, { data, loading, error }] = useCreateAboutMeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateAboutMeMutation(baseOptions?: Apollo.MutationHookOptions<CreateAboutMeMutation, CreateAboutMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAboutMeMutation, CreateAboutMeMutationVariables>(CreateAboutMeDocument, options);
+      }
+export type CreateAboutMeMutationHookResult = ReturnType<typeof useCreateAboutMeMutation>;
+export type CreateAboutMeMutationResult = Apollo.MutationResult<CreateAboutMeMutation>;
+export type CreateAboutMeMutationOptions = Apollo.BaseMutationOptions<CreateAboutMeMutation, CreateAboutMeMutationVariables>;
+export const UpdateAboutMeDocument = gql`
+    mutation UpdateAboutMe($data: UpdateAboutMeInput!) {
+  updateAboutMe(data: $data) {
+    aboutMe {
+      id
+      titleEN
+      titleFR
+      descriptionEN
+      descriptionFR
+      isVisible
+    }
+    code
+    message
+  }
+}
+    `;
+export type UpdateAboutMeMutationFn = Apollo.MutationFunction<UpdateAboutMeMutation, UpdateAboutMeMutationVariables>;
+
+/**
+ * __useUpdateAboutMeMutation__
+ *
+ * To run a mutation, you first call `useUpdateAboutMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAboutMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAboutMeMutation, { data, loading, error }] = useUpdateAboutMeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateAboutMeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAboutMeMutation, UpdateAboutMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAboutMeMutation, UpdateAboutMeMutationVariables>(UpdateAboutMeDocument, options);
+      }
+export type UpdateAboutMeMutationHookResult = ReturnType<typeof useUpdateAboutMeMutation>;
+export type UpdateAboutMeMutationResult = Apollo.MutationResult<UpdateAboutMeMutation>;
+export type UpdateAboutMeMutationOptions = Apollo.BaseMutationOptions<UpdateAboutMeMutation, UpdateAboutMeMutationVariables>;
+export const DeleteAboutMeDocument = gql`
+    mutation DeleteAboutMe($id: Int!) {
+  deleteAboutMe(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteAboutMeMutationFn = Apollo.MutationFunction<DeleteAboutMeMutation, DeleteAboutMeMutationVariables>;
+
+/**
+ * __useDeleteAboutMeMutation__
+ *
+ * To run a mutation, you first call `useDeleteAboutMeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAboutMeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAboutMeMutation, { data, loading, error }] = useDeleteAboutMeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAboutMeMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAboutMeMutation, DeleteAboutMeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAboutMeMutation, DeleteAboutMeMutationVariables>(DeleteAboutMeDocument, options);
+      }
+export type DeleteAboutMeMutationHookResult = ReturnType<typeof useDeleteAboutMeMutation>;
+export type DeleteAboutMeMutationResult = Apollo.MutationResult<DeleteAboutMeMutation>;
+export type DeleteAboutMeMutationOptions = Apollo.BaseMutationOptions<DeleteAboutMeMutation, DeleteAboutMeMutationVariables>;
 export const GenerateDatabaseBackupDocument = gql`
     mutation GenerateDatabaseBackup {
   generateDatabaseBackup {
@@ -2050,6 +2270,118 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const CreateSignatureDocument = gql`
+    mutation CreateSignature($data: CreateSignatureInput!) {
+  createSignature(data: $data) {
+    signature {
+      id
+      name
+      description
+    }
+    code
+    message
+  }
+}
+    `;
+export type CreateSignatureMutationFn = Apollo.MutationFunction<CreateSignatureMutation, CreateSignatureMutationVariables>;
+
+/**
+ * __useCreateSignatureMutation__
+ *
+ * To run a mutation, you first call `useCreateSignatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSignatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSignatureMutation, { data, loading, error }] = useCreateSignatureMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSignatureMutation(baseOptions?: Apollo.MutationHookOptions<CreateSignatureMutation, CreateSignatureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSignatureMutation, CreateSignatureMutationVariables>(CreateSignatureDocument, options);
+      }
+export type CreateSignatureMutationHookResult = ReturnType<typeof useCreateSignatureMutation>;
+export type CreateSignatureMutationResult = Apollo.MutationResult<CreateSignatureMutation>;
+export type CreateSignatureMutationOptions = Apollo.BaseMutationOptions<CreateSignatureMutation, CreateSignatureMutationVariables>;
+export const UpdateSignatureDocument = gql`
+    mutation UpdateSignature($data: UpdateSignatureInput!) {
+  updateSignature(data: $data) {
+    signature {
+      id
+      name
+      description
+    }
+    code
+    message
+  }
+}
+    `;
+export type UpdateSignatureMutationFn = Apollo.MutationFunction<UpdateSignatureMutation, UpdateSignatureMutationVariables>;
+
+/**
+ * __useUpdateSignatureMutation__
+ *
+ * To run a mutation, you first call `useUpdateSignatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSignatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSignatureMutation, { data, loading, error }] = useUpdateSignatureMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateSignatureMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSignatureMutation, UpdateSignatureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSignatureMutation, UpdateSignatureMutationVariables>(UpdateSignatureDocument, options);
+      }
+export type UpdateSignatureMutationHookResult = ReturnType<typeof useUpdateSignatureMutation>;
+export type UpdateSignatureMutationResult = Apollo.MutationResult<UpdateSignatureMutation>;
+export type UpdateSignatureMutationOptions = Apollo.BaseMutationOptions<UpdateSignatureMutation, UpdateSignatureMutationVariables>;
+export const DeleteSignatureDocument = gql`
+    mutation DeleteSignature($id: Int!) {
+  deleteSignature(id: $id) {
+    code
+    message
+  }
+}
+    `;
+export type DeleteSignatureMutationFn = Apollo.MutationFunction<DeleteSignatureMutation, DeleteSignatureMutationVariables>;
+
+/**
+ * __useDeleteSignatureMutation__
+ *
+ * To run a mutation, you first call `useDeleteSignatureMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSignatureMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSignatureMutation, { data, loading, error }] = useDeleteSignatureMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSignatureMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSignatureMutation, DeleteSignatureMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSignatureMutation, DeleteSignatureMutationVariables>(DeleteSignatureDocument, options);
+      }
+export type DeleteSignatureMutationHookResult = ReturnType<typeof useDeleteSignatureMutation>;
+export type DeleteSignatureMutationResult = Apollo.MutationResult<DeleteSignatureMutation>;
+export type DeleteSignatureMutationOptions = Apollo.BaseMutationOptions<DeleteSignatureMutation, DeleteSignatureMutationVariables>;
 export const CreateSkillCategoryDocument = gql`
     mutation CreateSkillCategory($data: CreateCategoryInput!) {
   createCategory(data: $data) {
@@ -2769,6 +3101,7 @@ export const GetAboutMeDocument = gql`
       titleFR
       descriptionEN
       descriptionFR
+      isVisible
     }
     message
     code
@@ -2810,6 +3143,109 @@ export type GetAboutMeQueryHookResult = ReturnType<typeof useGetAboutMeQuery>;
 export type GetAboutMeLazyQueryHookResult = ReturnType<typeof useGetAboutMeLazyQuery>;
 export type GetAboutMeSuspenseQueryHookResult = ReturnType<typeof useGetAboutMeSuspenseQuery>;
 export type GetAboutMeQueryResult = Apollo.QueryResult<GetAboutMeQuery, GetAboutMeQueryVariables>;
+export const GetAboutMeByIdDocument = gql`
+    query GetAboutMeById($id: Int!) {
+  getAboutMeById(id: $id) {
+    aboutMe {
+      id
+      titleEN
+      titleFR
+      descriptionEN
+      descriptionFR
+      isVisible
+    }
+    message
+    code
+  }
+}
+    `;
+
+/**
+ * __useGetAboutMeByIdQuery__
+ *
+ * To run a query within a React component, call `useGetAboutMeByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAboutMeByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAboutMeByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetAboutMeByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables> & ({ variables: GetAboutMeByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>(GetAboutMeByIdDocument, options);
+      }
+export function useGetAboutMeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>(GetAboutMeByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetAboutMeByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>;
+export function useGetAboutMeByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetAboutMeByIdQuery | undefined, GetAboutMeByIdQueryVariables>;
+export function useGetAboutMeByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>(GetAboutMeByIdDocument, options);
+        }
+export type GetAboutMeByIdQueryHookResult = ReturnType<typeof useGetAboutMeByIdQuery>;
+export type GetAboutMeByIdLazyQueryHookResult = ReturnType<typeof useGetAboutMeByIdLazyQuery>;
+export type GetAboutMeByIdSuspenseQueryHookResult = ReturnType<typeof useGetAboutMeByIdSuspenseQuery>;
+export type GetAboutMeByIdQueryResult = Apollo.QueryResult<GetAboutMeByIdQuery, GetAboutMeByIdQueryVariables>;
+export const ListAboutMeDocument = gql`
+    query ListAboutMe {
+  listAboutMe {
+    aboutMes {
+      id
+      titleEN
+      titleFR
+      descriptionEN
+      descriptionFR
+      isVisible
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useListAboutMeQuery__
+ *
+ * To run a query within a React component, call `useListAboutMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListAboutMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListAboutMeQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListAboutMeQuery(baseOptions?: Apollo.QueryHookOptions<ListAboutMeQuery, ListAboutMeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListAboutMeQuery, ListAboutMeQueryVariables>(ListAboutMeDocument, options);
+      }
+export function useListAboutMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListAboutMeQuery, ListAboutMeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListAboutMeQuery, ListAboutMeQueryVariables>(ListAboutMeDocument, options);
+        }
+// @ts-ignore
+export function useListAboutMeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ListAboutMeQuery, ListAboutMeQueryVariables>): Apollo.UseSuspenseQueryResult<ListAboutMeQuery, ListAboutMeQueryVariables>;
+export function useListAboutMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListAboutMeQuery, ListAboutMeQueryVariables>): Apollo.UseSuspenseQueryResult<ListAboutMeQuery | undefined, ListAboutMeQueryVariables>;
+export function useListAboutMeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListAboutMeQuery, ListAboutMeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListAboutMeQuery, ListAboutMeQueryVariables>(ListAboutMeDocument, options);
+        }
+export type ListAboutMeQueryHookResult = ReturnType<typeof useListAboutMeQuery>;
+export type ListAboutMeLazyQueryHookResult = ReturnType<typeof useListAboutMeLazyQuery>;
+export type ListAboutMeSuspenseQueryHookResult = ReturnType<typeof useListAboutMeSuspenseQuery>;
+export type ListAboutMeQueryResult = Apollo.QueryResult<ListAboutMeQuery, ListAboutMeQueryVariables>;
 export const GetGlobalStatsDocument = gql`
     query GetGlobalStats {
   getGlobalStats {
@@ -3319,6 +3755,103 @@ export type GetProjectsListQueryHookResult = ReturnType<typeof useGetProjectsLis
 export type GetProjectsListLazyQueryHookResult = ReturnType<typeof useGetProjectsListLazyQuery>;
 export type GetProjectsListSuspenseQueryHookResult = ReturnType<typeof useGetProjectsListSuspenseQuery>;
 export type GetProjectsListQueryResult = Apollo.QueryResult<GetProjectsListQuery, GetProjectsListQueryVariables>;
+export const GetSignaturesListDocument = gql`
+    query GetSignaturesList {
+  listAllSignatures {
+    signatures {
+      id
+      name
+      description
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useGetSignaturesListQuery__
+ *
+ * To run a query within a React component, call `useGetSignaturesListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSignaturesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSignaturesListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSignaturesListQuery(baseOptions?: Apollo.QueryHookOptions<GetSignaturesListQuery, GetSignaturesListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSignaturesListQuery, GetSignaturesListQueryVariables>(GetSignaturesListDocument, options);
+      }
+export function useGetSignaturesListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSignaturesListQuery, GetSignaturesListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSignaturesListQuery, GetSignaturesListQueryVariables>(GetSignaturesListDocument, options);
+        }
+// @ts-ignore
+export function useGetSignaturesListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSignaturesListQuery, GetSignaturesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSignaturesListQuery, GetSignaturesListQueryVariables>;
+export function useGetSignaturesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSignaturesListQuery, GetSignaturesListQueryVariables>): Apollo.UseSuspenseQueryResult<GetSignaturesListQuery | undefined, GetSignaturesListQueryVariables>;
+export function useGetSignaturesListSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSignaturesListQuery, GetSignaturesListQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSignaturesListQuery, GetSignaturesListQueryVariables>(GetSignaturesListDocument, options);
+        }
+export type GetSignaturesListQueryHookResult = ReturnType<typeof useGetSignaturesListQuery>;
+export type GetSignaturesListLazyQueryHookResult = ReturnType<typeof useGetSignaturesListLazyQuery>;
+export type GetSignaturesListSuspenseQueryHookResult = ReturnType<typeof useGetSignaturesListSuspenseQuery>;
+export type GetSignaturesListQueryResult = Apollo.QueryResult<GetSignaturesListQuery, GetSignaturesListQueryVariables>;
+export const GetSignatureByIdDocument = gql`
+    query GetSignatureById($id: Int!) {
+  getSignatureById(id: $id) {
+    signature {
+      id
+      name
+      description
+    }
+    code
+    message
+  }
+}
+    `;
+
+/**
+ * __useGetSignatureByIdQuery__
+ *
+ * To run a query within a React component, call `useGetSignatureByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSignatureByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSignatureByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetSignatureByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSignatureByIdQuery, GetSignatureByIdQueryVariables> & ({ variables: GetSignatureByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>(GetSignatureByIdDocument, options);
+      }
+export function useGetSignatureByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>(GetSignatureByIdDocument, options);
+        }
+// @ts-ignore
+export function useGetSignatureByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>;
+export function useGetSignatureByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>): Apollo.UseSuspenseQueryResult<GetSignatureByIdQuery | undefined, GetSignatureByIdQueryVariables>;
+export function useGetSignatureByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>(GetSignatureByIdDocument, options);
+        }
+export type GetSignatureByIdQueryHookResult = ReturnType<typeof useGetSignatureByIdQuery>;
+export type GetSignatureByIdLazyQueryHookResult = ReturnType<typeof useGetSignatureByIdLazyQuery>;
+export type GetSignatureByIdSuspenseQueryHookResult = ReturnType<typeof useGetSignatureByIdSuspenseQuery>;
+export type GetSignatureByIdQueryResult = Apollo.QueryResult<GetSignatureByIdQuery, GetSignatureByIdQueryVariables>;
 export const GetSkillsListDocument = gql`
     query GetSkillsList {
   listSkillCategories {
