@@ -38,23 +38,23 @@ const AboutMeCreate: React.FC = (): ReactElement => {
 
   const [createAboutMeMutation, { loading }] = useCreateAboutMeMutation();
 
-  const handleTitleFRChange = (content: string): void => {
+  const handleTitleFRChange: (content: string) => void = (content: string): void => {
     setForm((prev) => ({ ...prev, titleFR: content }));
   };
 
-  const handleTitleENChange = (content: string): void => {
+  const handleTitleENChange: (content: string) => void = (content: string): void => {
     setForm((prev) => ({ ...prev, titleEN: content }));
   };
 
-  const handleDescriptionFRChange = (content: string): void => {
+  const handleDescriptionFRChange: (content: string) => void = (content: string): void => {
     setForm((prev) => ({ ...prev, descriptionFR: content }));
   };
 
-  const handleDescriptionENChange = (content: string): void => {
+  const handleDescriptionENChange: (content: string) => void = (content: string): void => {
     setForm((prev) => ({ ...prev, descriptionEN: content }));
   };
 
-  const handleVisibleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const handleVisibleChange: (event: ChangeEvent<HTMLInputElement>) => void = (event: ChangeEvent<HTMLInputElement>): void => {
     setForm((prev) => ({ ...prev, isVisible: event.target.checked }));
   };
 
