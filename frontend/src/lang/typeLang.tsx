@@ -21,9 +21,7 @@ type Lang = {
   headerTitle: string;
   nameCategoryAboutMe: string;
   titleAboutMe: string;
-  descriptionAboutMe1: string;
-  descriptionAboutMe2: string;
-  descriptionAboutMe3: string;
+  descriptionAboutMe: string;
   nameCategorySkills: string;
   skillCegory1: string;
   nameCategoryProjects: string;
@@ -58,6 +56,7 @@ type Lang = {
   inputNameContactMessage: string;
   buttonSendMessageContact: string;
   messageErrorFillAllInput: string;
+  messageErrorFieldsRequired: string;
   messageErrorServerOff: string;
   messageErrorNotSend: string;
   messageErrorFormatEmail: string;
@@ -220,6 +219,35 @@ type Lang = {
   messageAdminThemeEditError: string;
   messageAdminThemeDeleteSuccess:string;
   messageAdminThemeDeleteError:string;
+  messageAdminAboutMeListTitle: string;
+  messageAdminAboutMeListNotFound: string;
+  messageAdminAboutMeColumnTitleFR: string;
+  messageAdminAboutMeColumnTitleEN: string;
+  messageAdminAboutMeColumnVisible: string;
+  messageAdminAboutMeColumnAction: string;
+  messageAdminAboutMeVisibleYes: string;
+  messageAdminAboutMeVisibleNo: string;
+  messageAdminAboutMeDeleteTitle: string;
+  messageAdminAboutMeDeleteDescription: string;
+  messageAdminAboutMeDeleteConfirm: string;
+  messageAdminAboutMeDeleteCancel: string;
+  messageAdminAboutMeDeleteSuccess: string;
+  messageAdminAboutMeDeleteError: string;
+  messageAdminAboutMeEditTitle: string;
+  messageAdminAboutMeEditCancel: string;
+  messageAdminAboutMeEditConfirm: string;
+  messageAdminAboutMeEditSuccess: string;
+  messageAdminAboutMeEditError: string;
+  messageAdminAboutMeCreateTitle: string;
+  messageAdminAboutMeCreateLoading: string;
+  messageAdminAboutMeCreateConfirm: string;
+  messageAdminAboutMeCreateSuccess: string;
+  messageAdminAboutMeCreateError: string;
+  messageAdminAboutMeInputTitleFR: string;
+  messageAdminAboutMeInputTitleEN: string;
+  messageAdminAboutMeInputDescFR: string;
+  messageAdminAboutMeInputDescEN: string;
+  messageAdminAboutMeInputVisible: string;
   messageAdminUserListTitle: string;
   messageAdminUserListNotFound: string;
   messageAdminUserColumnFirstname: string;
@@ -328,8 +356,6 @@ type Lang = {
   messageAdminSocialDeleteButton: string;
   messageAdminSocialNoData: string;
   messageAdminSocialTableEmptyMessage: string;
-  
-  // Skill Categories
   messageAdminSkillCategoryListTitle: string;
   messageAdminSkillCategoryListNotFound: string;
   messageAdminSkillCategoryColumnEN: string;
@@ -349,8 +375,6 @@ type Lang = {
   messageAdminSkillCategoryDeleteError: string;
   messageAdminSkillCategoryInputEN: string;
   messageAdminSkillCategoryInputFR: string;
-  
-  // Skills
   messageAdminSkillListTitle: string;
   messageAdminSkillListNotFound: string;
   messageAdminSkillColumnName: string;
@@ -381,8 +405,6 @@ type Lang = {
   messageAdminSkillSelectCategory: string;
   messageAdminSkillNoCategoriesFound: string;
   messageAdminSkillCategorySelectSkills: string;
-
-  // Projects
   messageAdminProjectListTitle: string;
   messageAdminProjectListNotFound: string;
   messageAdminProjectColumnTitle: string;
