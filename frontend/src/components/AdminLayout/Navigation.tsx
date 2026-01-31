@@ -10,7 +10,8 @@ import {
   FileUser,
   Mail,
   Text,
-  Signature
+  Signature,
+  Languages
 } from 'lucide-react'
 
 export type Role = 'admin' | 'editor' | 'view'
@@ -150,6 +151,15 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Voir les About Me', key: 'aboutme/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'aboutme' },
       { name: 'Créer un About Me', key: 'aboutme/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'aboutme' },
+    ],
+  },
+  {
+    name: 'Traductions',
+    key: 'translations',
+    icon: Languages,
+    roles: ['admin', 'editor'],
+    children: [
+      { name: 'Gérer les traductions', key: 'translations/list', icon: Eye, roles: ['admin', 'editor'], parentKey: 'translations' },
     ],
   },
   {

@@ -33,6 +33,7 @@ const pagesMap: Record<string, () => Promise<any>> = {
   // 'aboutme/update': () => import('@/components/AdminLayout/Pages/AboutMe/AboutMeUpdate'),
   'signatures/list': () => import('@/components/AdminLayout/Pages/Signatures/SignaturesList'),
   'signatures/create': () => import('@/components/AdminLayout/Pages/Signatures/SignaturesCreate'),
+  'translations/list': () => import('@/components/AdminLayout/Pages/Translations/TranslationsList'),
 };
 
 const AdminPage = (): ReactElement | null => {

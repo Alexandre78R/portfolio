@@ -335,6 +335,7 @@ export type Mutation = {
   createSkill: SubItemResponse;
   createSocial: SocialResponse;
   createTheme: ThemeResponse;
+  createTranslation: TranslationsResponse;
   deleteAboutMe: AboutMeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
@@ -346,6 +347,7 @@ export type Mutation = {
   deleteSkill: SubItemResponse;
   deleteSocial: SocialResponse;
   deleteTheme: Response;
+  deleteTranslation: TranslationsResponse;
   deleteUser: Response;
   forgotPassword: Response;
   generateDatabaseBackup: BackupResponse;
@@ -366,6 +368,7 @@ export type Mutation = {
   updateUser: UserResponse;
   uploadCV: UploadResponse;
   uploadProjectMedia: ProjectResponse;
+  upsertTranslation: TranslationsResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -426,6 +429,13 @@ export type MutationCreateThemeArgs = {
 };
 
 
+export type MutationCreateTranslationArgs = {
+  key: Scalars['String']['input'];
+  lang?: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteAboutMeArgs = {
   id: Scalars['Int']['input'];
 };
@@ -478,6 +488,12 @@ export type MutationDeleteSocialArgs = {
 
 export type MutationDeleteThemeArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteTranslationArgs = {
+  key: Scalars['String']['input'];
+  lang?: Scalars['String']['input'];
 };
 
 
@@ -581,6 +597,13 @@ export type MutationUploadProjectMediaArgs = {
 };
 
 
+export type MutationUpsertTranslationArgs = {
+  key: Scalars['String']['input'];
+  lang?: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
   idCaptcha: Scalars['String']['input'];
@@ -633,6 +656,7 @@ export type Query = {
   getSocialById: SocialResponse;
   getThemeById: ThemeResponse;
   getTopUsedSkills: TopSkillsResponse;
+  getTranslations: TranslationsResponse;
   getUserById: UserResponse;
   getUsersRoleDistribution: UserRolePercent;
   listAboutMe: AboutMesResponse;
@@ -645,6 +669,7 @@ export type Query = {
   listSkillCategories: CategoryResponse;
   listSocials: Array<Social>;
   listThemes: ThemesResponse;
+  listTranslationsPaginated: TranslationsPaginationResponse;
   listUsers: UsersResponse;
   me?: Maybe<User>;
   searchSkillCategories: CategoryResponse;
@@ -703,6 +728,11 @@ export type QueryGetThemeByIdArgs = {
 };
 
 
+export type QueryGetTranslationsArgs = {
+  lang?: Scalars['String']['input'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -711,6 +741,14 @@ export type QueryGetUserByIdArgs = {
 export type QueryListSignaturesArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryListTranslationsPaginatedArgs = {
+  lang?: InputMaybe<Scalars['String']['input']>;
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -845,6 +883,38 @@ export type TopSkillsResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   skills: Array<TopSkillUsage>;
+};
+
+export type TranslationEntry = {
+  __typename?: 'TranslationEntry';
+  key: Scalars['String']['output'];
+  lang: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type TranslationKeyValue = {
+  __typename?: 'TranslationKeyValue';
+  key: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type TranslationsPaginationResponse = {
+  __typename?: 'TranslationsPaginationResponse';
+  code: Scalars['Int']['output'];
+  limit?: Maybe<Scalars['Int']['output']>;
+  message: Scalars['String']['output'];
+  page?: Maybe<Scalars['Int']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  translations?: Maybe<Array<TranslationEntry>>;
+};
+
+export type TranslationsResponse = {
+  __typename?: 'TranslationsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success?: Maybe<Scalars['Boolean']['output']>;
+  translations?: Maybe<Array<TranslationKeyValue>>;
 };
 
 export type UpdateAboutMeInput = {
@@ -1253,6 +1323,15 @@ export type DeleteThemeMutationVariables = Exact<{
 
 export type DeleteThemeMutation = { __typename?: 'Mutation', deleteTheme: { __typename?: 'Response', code: number, message: string } };
 
+export type UpsertTranslationMutationVariables = Exact<{
+  key: Scalars['String']['input'];
+  lang?: InputMaybe<Scalars['String']['input']>;
+  value: Scalars['String']['input'];
+}>;
+
+
+export type UpsertTranslationMutation = { __typename?: 'Mutation', upsertTranslation: { __typename?: 'TranslationsResponse', code: number, success?: boolean | null, message: string, translations?: Array<{ __typename?: 'TranslationKeyValue', key: string, value: string }> | null } };
+
 export type DeleteUserMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
@@ -1420,6 +1499,23 @@ export type GetThemeByIdQueryVariables = Exact<{
 
 
 export type GetThemeByIdQuery = { __typename?: 'Query', getThemeById: { __typename?: 'ThemeResponse', message: string, code: number, theme?: { __typename?: 'Theme', id: string, name: string, nameEN: string, nameFR: string, visible: boolean, body: string, scrollHandle: string, scrollHandleHover: string, primary: string, secondary: string, success: string, error: string, warn: string, info: string, grey: string, placeholder: string, footer: string, admin: string, textDefault: string, text100: string, text200: string, text300: string, textButton: string } | null } };
+
+export type GetTranslationsQueryVariables = Exact<{
+  lang?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetTranslationsQuery = { __typename?: 'Query', getTranslations: { __typename?: 'TranslationsResponse', code: number, success?: boolean | null, message: string, translations?: Array<{ __typename?: 'TranslationKeyValue', key: string, value: string }> | null } };
+
+export type ListTranslationsPaginatedQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Float']['input']>;
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  lang?: InputMaybe<Scalars['String']['input']>;
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ListTranslationsPaginatedQuery = { __typename?: 'Query', listTranslationsPaginated: { __typename?: 'TranslationsPaginationResponse', code: number, success?: boolean | null, message: string, total?: number | null, page?: number | null, limit?: number | null, translations?: Array<{ __typename?: 'TranslationEntry', key: string, lang: string, value: string }> | null } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2895,6 +2991,47 @@ export function useDeleteThemeMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteThemeMutationHookResult = ReturnType<typeof useDeleteThemeMutation>;
 export type DeleteThemeMutationResult = Apollo.MutationResult<DeleteThemeMutation>;
 export type DeleteThemeMutationOptions = Apollo.BaseMutationOptions<DeleteThemeMutation, DeleteThemeMutationVariables>;
+export const UpsertTranslationDocument = gql`
+    mutation UpsertTranslation($key: String!, $lang: String = "fr", $value: String!) {
+  upsertTranslation(key: $key, lang: $lang, value: $value) {
+    code
+    success
+    message
+    translations {
+      key
+      value
+    }
+  }
+}
+    `;
+export type UpsertTranslationMutationFn = Apollo.MutationFunction<UpsertTranslationMutation, UpsertTranslationMutationVariables>;
+
+/**
+ * __useUpsertTranslationMutation__
+ *
+ * To run a mutation, you first call `useUpsertTranslationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpsertTranslationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upsertTranslationMutation, { data, loading, error }] = useUpsertTranslationMutation({
+ *   variables: {
+ *      key: // value for 'key'
+ *      lang: // value for 'lang'
+ *      value: // value for 'value'
+ *   },
+ * });
+ */
+export function useUpsertTranslationMutation(baseOptions?: Apollo.MutationHookOptions<UpsertTranslationMutation, UpsertTranslationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpsertTranslationMutation, UpsertTranslationMutationVariables>(UpsertTranslationDocument, options);
+      }
+export type UpsertTranslationMutationHookResult = ReturnType<typeof useUpsertTranslationMutation>;
+export type UpsertTranslationMutationResult = Apollo.MutationResult<UpsertTranslationMutation>;
+export type UpsertTranslationMutationOptions = Apollo.BaseMutationOptions<UpsertTranslationMutation, UpsertTranslationMutationVariables>;
 export const DeleteUserDocument = gql`
     mutation DeleteUser($id: Int!) {
   deleteUser(id: $id) {
@@ -4298,6 +4435,116 @@ export type GetThemeByIdQueryHookResult = ReturnType<typeof useGetThemeByIdQuery
 export type GetThemeByIdLazyQueryHookResult = ReturnType<typeof useGetThemeByIdLazyQuery>;
 export type GetThemeByIdSuspenseQueryHookResult = ReturnType<typeof useGetThemeByIdSuspenseQuery>;
 export type GetThemeByIdQueryResult = Apollo.QueryResult<GetThemeByIdQuery, GetThemeByIdQueryVariables>;
+export const GetTranslationsDocument = gql`
+    query GetTranslations($lang: String = "fr") {
+  getTranslations(lang: $lang) {
+    code
+    success
+    message
+    translations {
+      key
+      value
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTranslationsQuery__
+ *
+ * To run a query within a React component, call `useGetTranslationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTranslationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTranslationsQuery({
+ *   variables: {
+ *      lang: // value for 'lang'
+ *   },
+ * });
+ */
+export function useGetTranslationsQuery(baseOptions?: Apollo.QueryHookOptions<GetTranslationsQuery, GetTranslationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTranslationsQuery, GetTranslationsQueryVariables>(GetTranslationsDocument, options);
+      }
+export function useGetTranslationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTranslationsQuery, GetTranslationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTranslationsQuery, GetTranslationsQueryVariables>(GetTranslationsDocument, options);
+        }
+// @ts-ignore
+export function useGetTranslationsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTranslationsQuery, GetTranslationsQueryVariables>): Apollo.UseSuspenseQueryResult<GetTranslationsQuery, GetTranslationsQueryVariables>;
+export function useGetTranslationsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTranslationsQuery, GetTranslationsQueryVariables>): Apollo.UseSuspenseQueryResult<GetTranslationsQuery | undefined, GetTranslationsQueryVariables>;
+export function useGetTranslationsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTranslationsQuery, GetTranslationsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTranslationsQuery, GetTranslationsQueryVariables>(GetTranslationsDocument, options);
+        }
+export type GetTranslationsQueryHookResult = ReturnType<typeof useGetTranslationsQuery>;
+export type GetTranslationsLazyQueryHookResult = ReturnType<typeof useGetTranslationsLazyQuery>;
+export type GetTranslationsSuspenseQueryHookResult = ReturnType<typeof useGetTranslationsSuspenseQuery>;
+export type GetTranslationsQueryResult = Apollo.QueryResult<GetTranslationsQuery, GetTranslationsQueryVariables>;
+export const ListTranslationsPaginatedDocument = gql`
+    query ListTranslationsPaginated($page: Float = 1, $limit: Float = 20, $lang: String, $searchTerm: String) {
+  listTranslationsPaginated(
+    page: $page
+    limit: $limit
+    lang: $lang
+    searchTerm: $searchTerm
+  ) {
+    code
+    success
+    message
+    translations {
+      key
+      lang
+      value
+    }
+    total
+    page
+    limit
+  }
+}
+    `;
+
+/**
+ * __useListTranslationsPaginatedQuery__
+ *
+ * To run a query within a React component, call `useListTranslationsPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListTranslationsPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListTranslationsPaginatedQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      limit: // value for 'limit'
+ *      lang: // value for 'lang'
+ *      searchTerm: // value for 'searchTerm'
+ *   },
+ * });
+ */
+export function useListTranslationsPaginatedQuery(baseOptions?: Apollo.QueryHookOptions<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>(ListTranslationsPaginatedDocument, options);
+      }
+export function useListTranslationsPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>(ListTranslationsPaginatedDocument, options);
+        }
+// @ts-ignore
+export function useListTranslationsPaginatedSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>): Apollo.UseSuspenseQueryResult<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>;
+export function useListTranslationsPaginatedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>): Apollo.UseSuspenseQueryResult<ListTranslationsPaginatedQuery | undefined, ListTranslationsPaginatedQueryVariables>;
+export function useListTranslationsPaginatedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>(ListTranslationsPaginatedDocument, options);
+        }
+export type ListTranslationsPaginatedQueryHookResult = ReturnType<typeof useListTranslationsPaginatedQuery>;
+export type ListTranslationsPaginatedLazyQueryHookResult = ReturnType<typeof useListTranslationsPaginatedLazyQuery>;
+export type ListTranslationsPaginatedSuspenseQueryHookResult = ReturnType<typeof useListTranslationsPaginatedSuspenseQuery>;
+export type ListTranslationsPaginatedQueryResult = Apollo.QueryResult<ListTranslationsPaginatedQuery, ListTranslationsPaginatedQueryVariables>;
 export const GetMeDocument = gql`
     query GetMe {
   me {
