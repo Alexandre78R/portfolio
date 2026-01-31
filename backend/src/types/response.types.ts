@@ -270,3 +270,53 @@ export class AboutMesResponse extends Response {
   @Field(() => [AboutMe], { nullable: true })
   aboutMes?: AboutMe[];
 }
+
+@ObjectType()
+export class TranslationsResponse extends Response {
+  @Field(() => Boolean, { nullable: true })
+  success?: boolean;
+
+  @Field(() => [TranslationKeyValue], { nullable: true })
+  translations?: TranslationKeyValue[];
+}
+
+@ObjectType()
+export class TranslationKeyValue {
+  @Field()
+  key!: string;
+
+  @Field()
+  value!: string;
+}
+
+@ObjectType()
+export class TranslationEntry {
+  @Field()
+  key!: string;
+
+  @Field()
+  lang!: string;
+
+  @Field()
+  value!: string;
+}
+
+export type TranslationItem = TranslationKeyValue | TranslationEntry;
+
+@ObjectType()
+export class TranslationsPaginationResponse extends Response {
+  @Field(() => Boolean, { nullable: true })
+  success?: boolean;
+
+  @Field(() => [TranslationEntry], { nullable: true })
+  translations?: TranslationEntry[];
+
+  @Field(() => Int, { nullable: true })
+  total?: number;
+
+  @Field(() => Int, { nullable: true })
+  page?: number;
+
+  @Field(() => Int, { nullable: true })
+  limit?: number;
+}

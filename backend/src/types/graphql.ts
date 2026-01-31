@@ -16,6 +16,30 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type AboutMe = {
+  __typename?: 'AboutMe';
+  descriptionEN: Scalars['String']['output'];
+  descriptionFR: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isVisible: Scalars['Boolean']['output'];
+  titleEN: Scalars['String']['output'];
+  titleFR: Scalars['String']['output'];
+};
+
+export type AboutMeResponse = {
+  __typename?: 'AboutMeResponse';
+  aboutMe?: Maybe<AboutMe>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
+export type AboutMesResponse = {
+  __typename?: 'AboutMesResponse';
+  aboutMes?: Maybe<Array<AboutMe>>;
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+};
+
 export type BackupFileInfo = {
   __typename?: 'BackupFileInfo';
   createdAt: Scalars['DateTimeISO']['output'];
@@ -72,6 +96,14 @@ export type ContactFrom = {
   email: Scalars['String']['input'];
   message: Scalars['String']['input'];
   object: Scalars['String']['input'];
+};
+
+export type CreateAboutMeInput = {
+  descriptionEN: Scalars['String']['input'];
+  descriptionFR: Scalars['String']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  titleEN: Scalars['String']['input'];
+  titleFR: Scalars['String']['input'];
 };
 
 export type CreateCategoryInput = {
@@ -291,6 +323,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   changePassword: Response;
   clearCaptcha: Scalars['Boolean']['output'];
+  createAboutMe: AboutMeResponse;
   createCategory: CategoryResponse;
   createEducation: EducationResponse;
   createExperience: ExperienceResponse;
@@ -299,6 +332,8 @@ export type Mutation = {
   createSkill: SubItemResponse;
   createSocial: SocialResponse;
   createTheme: ThemeResponse;
+  createTranslation: TranslationsResponse;
+  deleteAboutMe: AboutMeResponse;
   deleteBackupFile: Response;
   deleteCategory: CategoryResponse;
   deleteEducation: EducationResponse;
@@ -317,6 +352,7 @@ export type Mutation = {
   registerUser: UserResponse;
   sendContact: MessageType;
   sendMessage: MessageResponse;
+  updateAboutMe: AboutMeResponse;
   updateCategory: CategoryResponse;
   updateEducation: EducationResponse;
   updateExperience: ExperienceResponse;
@@ -328,6 +364,7 @@ export type Mutation = {
   updateUser: UserResponse;
   uploadCV: UploadResponse;
   uploadProjectMedia: ProjectResponse;
+  upsertTranslation: TranslationsResponse;
   validateCaptcha: ValidationResponse;
 };
 
@@ -340,6 +377,11 @@ export type MutationChangePasswordArgs = {
 
 export type MutationClearCaptchaArgs = {
   idCaptcha: Scalars['String']['input'];
+};
+
+
+export type MutationCreateAboutMeArgs = {
+  data: CreateAboutMeInput;
 };
 
 
@@ -380,6 +422,18 @@ export type MutationCreateSocialArgs = {
 
 export type MutationCreateThemeArgs = {
   data: CreateThemeInput;
+};
+
+
+export type MutationCreateTranslationArgs = {
+  key: Scalars['String']['input'];
+  lang?: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteAboutMeArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -465,6 +519,11 @@ export type MutationSendMessageArgs = {
 };
 
 
+export type MutationUpdateAboutMeArgs = {
+  data: UpdateAboutMeInput;
+};
+
+
 export type MutationUpdateCategoryArgs = {
   data: UpdateCategoryInput;
   id: Scalars['Int']['input'];
@@ -528,6 +587,13 @@ export type MutationUploadProjectMediaArgs = {
 };
 
 
+export type MutationUpsertTranslationArgs = {
+  key: Scalars['String']['input'];
+  lang?: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+
 export type MutationValidateCaptchaArgs = {
   challengeType: Scalars['String']['input'];
   idCaptcha: Scalars['String']['input'];
@@ -567,6 +633,8 @@ export type Query = {
   cvUrl: Scalars['String']['output'];
   educationListPagination: EducationsResponse;
   generateCaptcha: CaptchaResponse;
+  getAboutMe: AboutMeResponse;
+  getAboutMeById: AboutMeResponse;
   getAverageSkillsPerProject: Scalars['Float']['output'];
   getEducationById: EducationResponse;
   getExperienceById: ExperienceResponse;
@@ -578,8 +646,10 @@ export type Query = {
   getSocialById: SocialResponse;
   getThemeById: ThemeResponse;
   getTopUsedSkills: TopSkillsResponse;
+  getTranslations: TranslationsResponse;
   getUserById: UserResponse;
   getUsersRoleDistribution: UserRolePercent;
+  listAboutMe: AboutMesResponse;
   listAllSignatures: SignaturesResponse;
   listBackupFiles: BackupFilesResponse;
   listEducations: EducationsResponse;
@@ -589,6 +659,7 @@ export type Query = {
   listSkillCategories: CategoryResponse;
   listSocials: Array<Social>;
   listThemes: ThemesResponse;
+  listTranslationsPaginated: TranslationsPaginationResponse;
   listUsers: UsersResponse;
   me?: Maybe<User>;
   searchSkillCategories: CategoryResponse;
@@ -599,6 +670,11 @@ export type QueryEducationListPaginationArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetAboutMeByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -642,6 +718,11 @@ export type QueryGetThemeByIdArgs = {
 };
 
 
+export type QueryGetTranslationsArgs = {
+  lang?: Scalars['String']['input'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -650,6 +731,14 @@ export type QueryGetUserByIdArgs = {
 export type QueryListSignaturesArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryListTranslationsPaginatedArgs = {
+  lang?: InputMaybe<Scalars['String']['input']>;
+  limit?: Scalars['Float']['input'];
+  page?: Scalars['Float']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -784,6 +873,47 @@ export type TopSkillsResponse = {
   code: Scalars['Int']['output'];
   message: Scalars['String']['output'];
   skills: Array<TopSkillUsage>;
+};
+
+export type TranslationEntry = {
+  __typename?: 'TranslationEntry';
+  key: Scalars['String']['output'];
+  lang: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type TranslationKeyValue = {
+  __typename?: 'TranslationKeyValue';
+  key: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type TranslationsPaginationResponse = {
+  __typename?: 'TranslationsPaginationResponse';
+  code: Scalars['Int']['output'];
+  limit?: Maybe<Scalars['Int']['output']>;
+  message: Scalars['String']['output'];
+  page?: Maybe<Scalars['Int']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  total?: Maybe<Scalars['Int']['output']>;
+  translations?: Maybe<Array<TranslationEntry>>;
+};
+
+export type TranslationsResponse = {
+  __typename?: 'TranslationsResponse';
+  code: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  success?: Maybe<Scalars['Boolean']['output']>;
+  translations?: Maybe<Array<TranslationKeyValue>>;
+};
+
+export type UpdateAboutMeInput = {
+  descriptionEN?: InputMaybe<Scalars['String']['input']>;
+  descriptionFR?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  isVisible?: InputMaybe<Scalars['Boolean']['input']>;
+  titleEN?: InputMaybe<Scalars['String']['input']>;
+  titleFR?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCategoryInput = {

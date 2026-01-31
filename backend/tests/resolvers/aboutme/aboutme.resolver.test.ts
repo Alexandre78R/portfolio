@@ -301,13 +301,14 @@ describe("AboutMeResolver", (): void => {
 
     it("should delete AboutMe successfully when validation passes", async (): Promise<void> => {
       const ctx: MyContext = { ...baseMockContext, user: mockAdminUser };
-      prismaMock.aboutMe.findUnique.mockResolvedValueOnce(mockAboutMe);
-      prismaMock.aboutMe.delete.mockResolvedValueOnce(mockAboutMe);
+      const nonVisibleAboutMe: PrismaAboutMe = { ...mockAboutMe, isVisible: false };
+      prismaMock.aboutMe.findUnique.mockResolvedValueOnce(nonVisibleAboutMe);
+      prismaMock.aboutMe.delete.mockResolvedValueOnce(nonVisibleAboutMe);
 
       const result: AboutMeResponse = await resolver.deleteAboutMe(deleteId, ctx);
 
       expect(result.code).toBe(200);
-      expect(result.aboutMe).toEqual(mockAboutMe);
+      expect(result.aboutMe).toEqual(nonVisibleAboutMe);
       expect(prismaMock.aboutMe.delete).toHaveBeenCalledTimes(1);
     });
   });

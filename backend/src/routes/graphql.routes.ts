@@ -29,6 +29,7 @@ import { SocialResolver } from "../resolvers/social.resolver";
 import { MessageResolver } from "../resolvers/message.resolver";
 import { SignatureResolver } from "../resolvers/signature.resolver";
 import { AboutMeResolver } from "../resolvers/aboutme.resolver";
+import { TranslationResolver } from "../resolvers/translation.resolver";
 
 /* --- Types context GraphQL --- */
 
@@ -71,6 +72,7 @@ export async function mountGraphQL(app: Express) {
       MessageResolver,
       SignatureResolver,
       AboutMeResolver,
+      TranslationResolver,
     ],
     validate: false,
     authChecker: customAuthChecker,
