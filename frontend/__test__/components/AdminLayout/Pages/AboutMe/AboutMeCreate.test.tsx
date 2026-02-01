@@ -114,7 +114,7 @@ jest.mock("@/types/graphql", () => ({
 }));
 
 describe("AboutMeCreate Page", (): void => {
-  const translationsMock = {
+  const translationsMock: Lang = {
     messageAdminAboutMeCreateTitle: "Create About Me",
     messageAdminAboutMeInputTitleFR: "Title FR",
     messageAdminAboutMeInputTitleEN: "Title EN",
@@ -126,7 +126,7 @@ describe("AboutMeCreate Page", (): void => {
     messageAdminAboutMeCreateSuccess: "Created successfully",
     messageAdminAboutMeCreateError: "Creation failed",
     messageErrorFieldsRequired: "All fields are required",
-  } as unknown as Lang;
+  } as Lang;
 
   beforeEach((): void => {
     jest.clearAllMocks();

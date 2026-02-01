@@ -3,27 +3,41 @@ import { render, screen, fireEvent } from '@test-utils';
 import Terminal from "../../../src/components/Terminal/Terminal";
 import "@testing-library/jest-dom";
 
+type WrapperProps = { children: React.ReactNode };
+
 jest.mock("@/components/Terminal/components/Wrapper", () => ({
-  Wrapper: ({ children }: any) => <div data-testid="wrapper">{children}</div>,
+  Wrapper: ({ children }: WrapperProps): ReactElement => <div data-testid="wrapper">{children}</div>,
 }));
 
+type FormProps = { 
+  children: React.ReactNode;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+};
+
 jest.mock("@/components/Terminal/components/Form", () => ({
-  Form: ({ children, onSubmit }: any) => (
+  Form: ({ children, onSubmit }: FormProps): ReactElement => (
     <form onSubmit={onSubmit}>{children}</form>
   ),
 }));
 
+type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+
 jest.mock("@/components/Terminal/components/Input", () => {
-  const MockInput: React.ForwardRefExoticComponent<any> = React.forwardRef((props: any, ref) => (
+  const MockInput: React.ForwardRefExoticComponent<InputProps & React.RefAttributes<HTMLInputElement>> = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => (
     <input {...props} ref={ref} />
   ));
-  MockInput.displayName = "Input" as string;
-  return { Input: MockInput } as any;
+  MockInput.displayName = "Input";
+  return { Input: MockInput };
 });
+
+type OutputProps = {
+  cmd: string;
+  index: number;
+};
 
 jest.mock("@/components/Terminal/Output", () => ({
   __esModule: true as const,
-  default: ({ cmd, index }: any) => (
+  default: ({ cmd, index }: OutputProps): ReactElement => (
     <div data-testid={`output-${index}`}>Output: {cmd}</div>
   ),
 }));
@@ -33,8 +47,12 @@ jest.mock("@/components/Terminal/TermInfo", () => ({
   default: () => <div data-testid="term-info">TermInfo</div>,
 }));
 
+type CmdNotFoundProps = {
+  cmdH: string;
+};
+
 jest.mock("@/components/Terminal/components/CmdNotFound", () => ({
-  CmdNotFound: ({ cmdH }: any) => (
+  CmdNotFound: ({ cmdH }: CmdNotFoundProps): ReactElement => (
     <div data-testid={`not-found-${cmdH}`}>CmdNotFound: {cmdH}</div>
   ),
 }));

@@ -18,25 +18,33 @@ jest.mock("@/context/Lang/LangContext", () => ({
   useLang: () => ({ translations: translationsMock as Lang }),
 }));
 
+type IconProps = React.SVGProps<SVGSVGElement> & { className?: string };
+
 jest.mock("@mui/icons-material/GitHub", () => ({
   __esModule: true,
-  default: (props: any) => <div data-testid="github-icon" {...props} />,
+  default: (props: IconProps): React.ReactElement => <div data-testid="github-icon" {...props} />,
 }));
 
 jest.mock("@mui/icons-material/LinkedIn", () => ({
   __esModule: true,
-  default: (props: any) => <div data-testid="linkedin-icon" {...props} />,
+  default: (props: IconProps): React.ReactElement => <div data-testid="linkedin-icon" {...props} />,
 }));
 
 jest.mock("@mui/icons-material/Link", () => ({
   __esModule: true,
-  default: (props: any) => <div data-testid="link-icon" {...props} />,
+  default: (props: IconProps): React.ReactElement => <div data-testid="link-icon" {...props} />,
 }));
 
-const createMockStore = (initialState: any) => {
+interface StoreState {
+  socials: {
+    dataSocials: Social[];
+  };
+}
+
+const createMockStore = (initialState: StoreState) => {
   return configureStore({
     reducer: socialsReducer,
-    preloadedState: initialState as any,
+    preloadedState: initialState,
   });
 };
 

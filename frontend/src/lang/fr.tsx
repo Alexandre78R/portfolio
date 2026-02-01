@@ -155,6 +155,7 @@ const fr: Lang = {
   "sideBarAdmin-aboutme/update": "Modification à propos de moi",
   "sideBarAdmin-signatures/list": "Voir les signatures",
   "sideBarAdmin-signatures/create": "Créer une signature",
+  "sideBarAdmin-translations/list": "Traductions",
   messagePageDashBoardTitle : "Tableau de bord",
   messagePageDashBoardErreurData : "Erreur lors du chargement des données statistiques.",
   messagePageDashBoardCardStatsProject : "Projets",

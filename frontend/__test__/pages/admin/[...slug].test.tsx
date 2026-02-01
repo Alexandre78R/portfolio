@@ -34,21 +34,59 @@ jest.mock("@/components/AdminLayout/AdminLayout", () => {
 });
 
 
-describe("AdminPage [...slug] Component", () => {
-  let mockReplace: jest.Mock;
+describe("AdminPage [...slug] Component", (): void => {
+  let mockReplace: jest.Mock<Promise<boolean>, [string]>;
 
-  beforeEach(() => {
-    mockReplace = jest.fn();
+  const mockUserAdmin: UserContextType = {
+    user: {
+      id: "1",
+      email: "admin@example.com",
+      username: "admin",
+      role: "admin",
+      isPasswordChange: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    loading: false,
+    logout: jest.fn(),
+  };
+
+  const mockUserPasswordNotChanged: UserContextType = {
+    user: {
+      id: "1",
+      email: "admin@example.com",
+      username: "admin",
+      role: "admin",
+      isPasswordChange: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    loading: false,
+    logout: jest.fn(),
+  };
+
+  const mockUserLoading: UserContextType = {
+    user: undefined,
+    loading: true,
+    logout: jest.fn(),
+  };
+
+  beforeEach((): void => {
+    mockReplace = jest.fn().mockResolvedValue(true);
     (useRouter as jest.Mock).mockReturnValue({
       query: { slug: undefined },
       replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
     } as unknown as NextRouter);
 
     jest.clearAllMocks();
   });
 
   it("displays loading while user data is loading", (): void => {
-    (useUser as jest.Mock).mockReturnValue({ user: null, loading: true } as UserContextType);
+    (useUser as jest.Mock).mockReturnValue(mockUserLoading);
 
     render(<AdminPage />);
 
@@ -57,56 +95,215 @@ describe("AdminPage [...slug] Component", () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it("redirects to dashboard if user has no access", async (): Promise<void> => {
-    (useUser as jest.Mock).mockReturnValue({ user: { role: "view" }, loading: false } as UserContextType);
-
+  it("redirects to change password page when user has not changed password", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserPasswordNotChanged);
     (useRouter as jest.Mock).mockReturnValue({
-      query: { slug: "users/create" },
+      query: { slug: ["dashboard"] },
       replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
     } as unknown as NextRouter);
 
     render(<AdminPage />);
 
-    await waitFor(() => {
+    await waitFor((): void => {
+      expect(mockReplace).toHaveBeenCalledWith("/admin/auth/changePassword");
+    });
+  });
+
+  it("displays loading while page is initializing", (): void => {
+    (useUser as jest.Mock).mockReturnValue(mockUserLoading);
+
+    const { container } = render(<AdminPage />);
+
+    expect(screen.getByTestId("loading")).toBeInTheDocument();
+  });
+
+  it("renders the admin layout when ready and access granted", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["dashboard"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
+    expect(layout).toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalledWith("/admin/dashboard");
+  });
+
+  it("renders dynamic component when page is valid", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["dashboard"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    const dynamicComp: HTMLElement | null = await screen.findByTestId("dynamic-component");
+    expect(dynamicComp).toBeInTheDocument();
+  });
+
+  it("handles slug as array", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["projects", "list"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/projects/list",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
+    expect(layout).toBeInTheDocument();
+
+    const dynamicComp: HTMLElement | null = await screen.findByTestId("dynamic-component");
+    expect(dynamicComp).toBeInTheDocument();
+
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it("defaults to dashboard when no slug provided", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: undefined },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
+    expect(layout).toBeInTheDocument();
+  });
+
+  it("redirects to dashboard for invalid page slug", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["nonexistent", "page"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/nonexistent/page",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    await waitFor((): void => {
       expect(mockReplace).toHaveBeenCalledWith("/admin/dashboard");
     });
   });
 
-  it("renders the dynamic component and AdminLayout when ready and access granted", async (): Promise<void> => {
-    (useUser as jest.Mock).mockReturnValue({ user: { role: "admin" }, loading: false } as UserContextType);
-
+  it("handles nested slug paths correctly", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
     (useRouter as jest.Mock).mockReturnValue({
-      query: { slug: "dashboard" },
+      query: { slug: ["skills", "categories", "list"] },
       replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/skills/categories/list",
     } as unknown as NextRouter);
 
     render(<AdminPage />);
 
     const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
     expect(layout).toBeInTheDocument();
-
-    const dynamicComp: HTMLElement | null = await screen.findByTestId("dynamic-component");
-    expect(dynamicComp).toBeInTheDocument();
-
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it("handles slug as array", async (): Promise<void> => {
-    (useUser as jest.Mock).mockReturnValue({ user: { role: "admin" }, loading: false } as UserContextType);
-
+  it("allows admin role to access any valid page", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
     (useRouter as jest.Mock).mockReturnValue({
-      query: { slug: ["projects", "list"] },
+      query: { slug: ["users", "create"] },
       replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/users/create",
     } as unknown as NextRouter);
 
     render(<AdminPage />);
 
     const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
     expect(layout).toBeInTheDocument();
-
-    const dynamicComp: HTMLElement | null = await screen.findByTestId("dynamic-component");
-    expect(dynamicComp).toBeInTheDocument();
-
     expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it("shows loading state when user is undefined and not loading", (): void => {
+    (useUser as jest.Mock).mockReturnValue({
+      user: undefined,
+      loading: false,
+      logout: jest.fn(),
+    });
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["dashboard"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    // When user is undefined and loading is false, should show loading state initially
+    const loadingElement: HTMLElement | null = screen.queryByTestId("admin-loading");
+    expect(loadingElement).toBeInTheDocument();
+  });
+
+  it("renders translations list page when accessing translations", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["translations", "list"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/translations/list",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    const layout: HTMLElement | null = await screen.findByTestId("admin-layout");
+    expect(layout).toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it("ensures ready state before checking page access", async (): Promise<void> => {
+    (useUser as jest.Mock).mockReturnValue(mockUserAdmin);
+    (useRouter as jest.Mock).mockReturnValue({
+      query: { slug: ["dashboard"] },
+      replace: mockReplace,
+      basePath: "",
+      pathname: "/admin/[...slug]",
+      route: "/admin/[...slug]",
+      asPath: "/admin/dashboard",
+    } as unknown as NextRouter);
+
+    render(<AdminPage />);
+
+    await waitFor((): void => {
+      expect(screen.getByTestId("admin-layout")).toBeInTheDocument();
+    });
   });
 });

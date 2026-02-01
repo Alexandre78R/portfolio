@@ -141,6 +141,7 @@ type Lang = {
   "sideBarAdmin-aboutme/update": string;
   "sideBarAdmin-signatures/list": string;
   "sideBarAdmin-signatures/create": string;
+  "sideBarAdmin-translations/list": string;
   messagePageDashBoardTitle : string;
   messagePageDashBoardErreurData : string;
   messagePageDashBoardCardStatsProject : string;

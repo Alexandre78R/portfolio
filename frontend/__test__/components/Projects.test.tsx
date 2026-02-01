@@ -37,13 +37,15 @@ jest.mock("@mui/icons-material/GitHub", () => {
   return GitHubMock;
 });
 
+type ExpandMoreProps = React.SVGProps<SVGSVGElement> & { className?: string };
+
 jest.mock("@mui/icons-material/ExpandMore", () => {
-  const ExpandMoreMock: React.FC<any> = (props) => <span data-testid="expand-icon" {...props} />;
+  const ExpandMoreMock: React.FC<ExpandMoreProps> = (props): React.ReactElement => <span data-testid="expand-icon" {...props} />;
   ExpandMoreMock.displayName = "ExpandMoreIcon";
   return ExpandMoreMock;
 });
 
-const mockProject: Project | any = {
+const mockProject: Project = {
   id: "1",
   title: "Test Project",
   description: "A".repeat(200),

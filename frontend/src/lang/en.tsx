@@ -143,6 +143,7 @@ const en: Lang = {
   "sideBarAdmin-aboutme/update": "Edit About Me",
   "sideBarAdmin-signatures/list": "View signatures",
   "sideBarAdmin-signatures/create": "Create a signature",
+  "sideBarAdmin-translations/list": "Translations",
   messagePageDashBoardTitle: "Dashboard",
   messagePageDashBoardErreurData: "Error loading statistics data.",
   messagePageDashBoardCardStatsProject: "Projects",

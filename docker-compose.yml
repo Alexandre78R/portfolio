@@ -20,6 +20,7 @@ services:
       - 4000:4000
     volumes:
       - ./backend/src:/app/src
+      - ./backend/translations:/app/translations
       - ./backend/backups:/app/backups
       - ./backend/doc/cv:/app/doc/cv
       - ./backend/uploads/images:/app/uploads/images

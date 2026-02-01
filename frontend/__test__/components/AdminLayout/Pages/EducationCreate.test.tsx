@@ -107,20 +107,25 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(),
 }));
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __mockUseCreateEducationMutation: jest.Mock;
+}
+
 jest.mock("@/types/graphql", () => {
-  const mockUseCreateEducationMutation = jest.fn();
-  (global as any).__mockUseCreateEducationMutation = mockUseCreateEducationMutation;
+  const mockUseCreateEducationMutation: jest.Mock = jest.fn();
+  (global as typeof globalThis).__mockUseCreateEducationMutation = mockUseCreateEducationMutation;
   return {
     __esModule: true,
     useCreateEducationMutation: mockUseCreateEducationMutation,
   };
 });
 
-const mockUseCreateEducationMutation = () => (global as any).__mockUseCreateEducationMutation;
+const mockUseCreateEducationMutation = (): jest.Mock => (global as typeof globalThis).__mockUseCreateEducationMutation;
 
 type TestMutationFn = jest.Mock<
   Promise<FetchResult<CreateEducationMutation>>,
-  [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<any>> | undefined]
+  [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<unknown>> | undefined]
 >;
 
 type TestMutationResult = {
@@ -128,7 +133,7 @@ type TestMutationResult = {
   error?: ApolloError | undefined; 
   data?: CreateEducationMutation | undefined;
   called: boolean;
-  client: any;
+  client: unknown;
   reset: jest.Mock<void, []>;
 };
 
@@ -167,7 +172,7 @@ describe("EducationCreate Component", (): void => {
 
     mockMutationFn = jest.fn<
       Promise<FetchResult<CreateEducationMutation>>,
-      [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<any>> | undefined]
+      [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<unknown>> | undefined]
     >() as TestMutationFn;
 
     mockUseCreateEducationMutation().mockReturnValue([
@@ -262,7 +267,9 @@ describe("EducationCreate Component", (): void => {
         createEducation: {
           __typename: "CreateEducationResponse",
           code: 200,
-        } as any,
+          message: null,
+          education: null,
+        },
       },
     };
 
@@ -288,8 +295,8 @@ describe("EducationCreate Component", (): void => {
         CreateEducationMutation,
         { data: CreateEducationInput },
         DefaultContext,
-        ApolloCache<any>
-      > | undefined = mockMutationFn.mock.calls[0][0] as any;
+        ApolloCache<unknown>
+      > | undefined = mockMutationFn.mock.calls[0][0];
 
       if (callArgs?.variables?.data) {
         expect(callArgs.variables.data.school).toBe("Test School");
@@ -310,7 +317,9 @@ describe("EducationCreate Component", (): void => {
         createEducation: {
           __typename: "CreateEducationResponse",
           code: 400,
-        } as any,
+          message: null,
+          education: null,
+        },
       },
     };
 

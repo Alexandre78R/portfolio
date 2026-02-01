@@ -155,12 +155,9 @@ const navigation: NavItem[] = [
   },
   {
     name: 'Traductions',
-    key: 'translations',
+    key: 'translations/list',
     icon: Languages,
     roles: ['admin', 'editor'],
-    children: [
-      { name: 'Gérer les traductions', key: 'translations/list', icon: Eye, roles: ['admin', 'editor'], parentKey: 'translations' },
-    ],
   },
   {
     name: 'Sauvegarde',

@@ -1,6 +1,6 @@
 ﻿import React from "react";
-import { render, screen, fireEvent } from '@test-utils';
-import ButtonCustom, { ButtonCustomProps} from "@/components/Button/Button";
+import { render, screen, fireEvent } from "@test-utils";
+import ButtonCustom, { type ButtonCustomProps } from "@/components/Button/Button";
 
 describe("ButtonCustom component", () => {
   const buttonText: string = "Click Me";
@@ -49,4 +49,5 @@ describe("ButtonCustom component", () => {
     const buttonElement: HTMLButtonElement = screen.getByRole("button", { name: buttonText }) as HTMLButtonElement;
     expect(buttonElement.disabled).toBe(true);
   });
+
 });

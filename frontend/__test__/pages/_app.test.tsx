@@ -95,12 +95,12 @@ const mockRouter = {
   isLocaleDomain: false,
   isPreview: false,
   forward: jest.fn(),
-} as any as NextRouter;
+} as unknown as NextRouter;
 
 describe("App component with Apollo Upload", (): void => {
   const MockPage: FC = (): ReactElement => <div data-testid="page-component">Page</div>;
 
-  const appProps: AppProps = { Component: MockPage, pageProps: {}, router: mockRouter as any };
+  const appProps: AppProps = { Component: MockPage, pageProps: {}, router: mockRouter as unknown as NextRouter };
 
   let renderResult: RenderResult;
 
