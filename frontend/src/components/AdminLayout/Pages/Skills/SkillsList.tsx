@@ -2,16 +2,14 @@ import React, { ReactElement, useState, useMemo } from "react";
 import SkillTable, { SkillRow } from "../../components/Skill/SkillTable";
 import SkillEditModal from "../../components/Skill/SkillEditModal";
 import SkillDeleteDialog from "../../components/Skill/SkillDeleteDialog";
-import { useGetSkillsListQuery, GetSkillsListQuery } from "@/types/graphql";
+import { useListSkillsAdmin } from "@/utils/hooks/useSkillAdmin";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
 const SkillsList: React.FC = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetSkillsListQuery<GetSkillsListQuery>({
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useListSkillsAdmin();
 
   const { translations }: { translations: Lang } = useLang();
 

@@ -1,6 +1,4 @@
 import { ChangeEvent, ReactElement, useState, useEffect, useCallback } from "react";
-import { useMutation } from "@apollo/client";
-import { UPDATE_ABOUT_ME } from "@/requetes/mutations/aboutme.mutations";
 import ModalCustom from "@/components/ModalCustom/ModalCustom";
 import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
 import HtmlEditor from "@/components/AdminLayout/components/Editor/HtmlEditor";
@@ -12,6 +10,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import { FetchResult } from "@apollo/client";
 import { UpdateAboutMeMutation, GetAboutMeByIdQuery, useGetAboutMeByIdQuery } from "@/types/graphql";
+import { useUpdateAboutMeAdmin } from "@/utils/hooks";
 
 interface AboutMeEditModalProps {
   aboutMeId: number | null;
@@ -38,10 +37,7 @@ const AboutMeEditModal: React.FC<AboutMeEditModalProps> = ({
     skip: !aboutMeId,
   });
 
-  const [updateAboutMeMutation, { loading }] = useMutation<
-    UpdateAboutMeMutation,
-    { data: FormData }
-  >(UPDATE_ABOUT_ME);
+  const [updateAboutMeMutation, { loading }] = useUpdateAboutMeAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
   const { translations }: { translations: Lang } = useLang();
@@ -102,16 +98,14 @@ const AboutMeEditModal: React.FC<AboutMeEditModalProps> = ({
     }
 
     try {
-      const res: FetchResult<UpdateAboutMeMutation> = await updateAboutMeMutation({
-        variables: {
-          data: {
-            id: form.id,
-            titleEN: form.titleEN,
-            titleFR: form.titleFR,
-            descriptionEN: form.descriptionEN,
-            descriptionFR: form.descriptionFR,
-            isVisible: form.isVisible,
-          },
+      const res = await updateAboutMeMutation({
+        data: {
+          id: form.id,
+          titleEN: form.titleEN,
+          titleFR: form.titleFR,
+          descriptionEN: form.descriptionEN,
+          descriptionFR: form.descriptionFR,
+          isVisible: form.isVisible,
         },
       });
 

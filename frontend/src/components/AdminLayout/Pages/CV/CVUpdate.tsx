@@ -1,12 +1,11 @@
 import { ChangeEvent, ReactElement, useState } from "react";
-import { UploadCvMutation, useUploadCvMutation } from "@/types/graphql";
+import { useUploadCVAdmin } from "@/utils/hooks";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import ConfirmDialog from "../../components/ConfirmDialog/ConfirmDialog";
 import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import TextAdmin from "../../components/Text/TextAdmin";
-import { FetchResult } from "@apollo/client";
 
 const formatBytes: (bytes: number) => string = (bytes: number): string => {
   if (!bytes) return "0 B";
@@ -18,7 +17,7 @@ const formatBytes: (bytes: number) => string = (bytes: number): string => {
 
 const CVUpdate: React.FC = (): JSX.Element => {
 
-  const [uploadCv] = useUploadCvMutation();
+  const { uploadCV, loading } = useUploadCVAdmin();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
@@ -28,7 +27,7 @@ const CVUpdate: React.FC = (): JSX.Element => {
   const [selectedFile, setSelectedFile]: [File | null, React.Dispatch<React.SetStateAction<File | null>>] = useState<File | null>(null);
   const [fileEvent, setFileEvent]: [ChangeEvent<HTMLInputElement> | null, React.Dispatch<React.SetStateAction<ChangeEvent<HTMLInputElement> | null>>] = useState<ChangeEvent<HTMLInputElement> | null>(null);
   const [openDialog, setOpenDialog]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [uploadLoading, setUploadLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
   const handleOpenDialog: (file: File, event: ChangeEvent<HTMLInputElement>) => void = (file: File, event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedFile(file);
@@ -44,14 +43,14 @@ const CVUpdate: React.FC = (): JSX.Element => {
   const handleUpload: () => Promise<void> = async (): Promise<void> => {
     if (!selectedFile) return;
 
-    setLoading(true);
+    setUploadLoading(true);
 
     try {
 
-      const { data }: FetchResult<UploadCvMutation> = await uploadCv({ variables: { file: selectedFile } });
+      const response = await uploadCV(selectedFile);
 
-      const resultCode: number = data?.uploadCV?.code ?? 500;
-      const resultMessage: string = data?.uploadCV?.message ?? "Upload failed";
+      const resultCode: number = response.data?.uploadCV?.code ?? 500;
+      const resultMessage: string = response.data?.uploadCV?.message ?? "Upload failed";
 
       if (resultCode === 200) {
         showAlert("success", translations.messagePageCvUploadSuccess);
@@ -68,7 +67,7 @@ const CVUpdate: React.FC = (): JSX.Element => {
         input.value = "";
         setFileEvent(null);
       }
-      setLoading(false);
+      setUploadLoading(false);
       setOpenDialog(false);
     }
   };
@@ -87,7 +86,7 @@ const CVUpdate: React.FC = (): JSX.Element => {
       <ButtonCustom
         text={translations.messagePageCvButtonSelectFile}
         onClick={() => document.getElementById("cv-input")?.click()}
-        disable={loading}
+        disable={uploadLoading}
       />
 
       <input
@@ -105,7 +104,7 @@ const CVUpdate: React.FC = (): JSX.Element => {
         </div>
       )}
 
-      {loading && <p>{translations.messagePageCvUploading}</p>}
+      {uploadLoading && <p>{translations.messagePageCvUploading}</p>}
 
       <ConfirmDialog
         open={openDialog}

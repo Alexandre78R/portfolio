@@ -27,8 +27,12 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 const mockUpdateThemeMutation: jest.Mock = jest.fn();
 const mockUseGetThemeByIdQuery: jest.Mock = jest.fn();
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateThemeAdmin: jest.fn<[typeof mockUpdateThemeMutation], []>(),
+}));
+
 jest.mock("@/types/graphql", () => ({
-  useUpdateThemeMutation: jest.fn(() => [mockUpdateThemeMutation, {}]),
   useGetThemeByIdQuery: jest.fn(() => mockUseGetThemeByIdQuery()),
 }));
 
@@ -109,6 +113,9 @@ describe("ThemeEditModal Component", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    
+    const { useUpdateThemeAdmin } = require("@/utils/hooks");
+    (useUpdateThemeAdmin as jest.Mock).mockReturnValue([mockUpdateThemeMutation]);
   });
 
   test("renders null if no theme provided", (): void => {

@@ -25,8 +25,13 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 }));
 
 const mockUpdateUserMutation: jest.Mock = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateUserAdmin: jest.fn<[typeof mockUpdateUserMutation], []>(),
+}));
+
 jest.mock("@/types/graphql", () => ({
-  useUpdateUserMutation: jest.fn(() => [mockUpdateUserMutation, {}]),
   useGetUserByIdQuery: jest.fn(),
 }));
 
@@ -127,6 +132,9 @@ describe("UserEditModal Component", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+
+    const { useUpdateUserAdmin } = require("@/utils/hooks");
+    (useUpdateUserAdmin as jest.Mock).mockReturnValue([mockUpdateUserMutation]);
 
     const { useGetUserByIdQuery } = require("@/types/graphql");
     (useGetUserByIdQuery as jest.Mock).mockReturnValue({

@@ -14,12 +14,12 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useUpdateSocialMutation,
   GetSocialsListQuery,
   UpdateSocialInput,
   useGetSocialByIdQuery,
   UpdateSocialMutation,
 } from "@/types/graphql";
+import { useUpdateSocialAdmin } from "@/utils/hooks";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { FetchResult } from "@apollo/client/link/core/types";
@@ -50,7 +50,7 @@ const SocialEditModal: React.FC<SocialEditModalProps> = ({
 
   const [form, setForm]: [SocialFormData | null, React.Dispatch<React.SetStateAction<SocialFormData | null>>] = useState<SocialFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateSocialMutation] = useUpdateSocialMutation();
+  const [updateSocialMutation] = useUpdateSocialAdmin();
 
   const { data, loading: socialLoading } = useGetSocialByIdQuery<GetSocialByIdQuery>({
     variables: { id: social?.id ?? 0 },
@@ -111,8 +111,9 @@ const SocialEditModal: React.FC<SocialEditModalProps> = ({
         tab: Number(form.tab),
       };
 
-      const { data }: FetchResult<UpdateSocialMutation> = await updateSocialMutation({
-        variables: { id: Number(form.id), data: updateData },
+      const { data } = await updateSocialMutation({
+        id: Number(form.id), 
+        data: updateData 
       });
 
       if (data?.updateSocial?.code === 200) {

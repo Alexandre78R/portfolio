@@ -4,9 +4,9 @@ import "@testing-library/jest-dom";
 import AboutMeDeleteDialog from "@/components/AdminLayout/components/AboutMe/AboutMeDeleteDialog";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
-import { useMutation, type ApolloError, type FetchResult } from "@apollo/client";
 import type { AlertType } from "@/components/ToastCustom/CustomToast";
-import { DeleteAboutMeMutation, DeleteAboutMeMutationVariables } from "@/types/graphql";
+import { DeleteAboutMeMutation } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 type MockConfirmDialogProps = {
   open: boolean;
@@ -48,17 +48,14 @@ jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn<LangContextType, []>(),
 }));
 
-const mockMutate: jest.Mock<
+const mockDeleteAboutMeMutation: jest.Mock<
   Promise<FetchResult<DeleteAboutMeMutation>>,
-  [{ variables: DeleteAboutMeMutationVariables }]
+  [{ variables: { id: number } }]
 > = jest.fn();
 
-jest.mock("@apollo/client", () => ({
-  ...jest.requireActual("@apollo/client"),
-  useMutation: jest.fn<
-    [typeof mockMutate, { loading: boolean; error?: ApolloError }],
-    []
-  >(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteAboutMeAdmin: jest.fn<[typeof mockDeleteAboutMeMutation], []>(),
 }));
 
 describe("AboutMeDeleteDialog", (): void => {
@@ -77,7 +74,10 @@ describe("AboutMeDeleteDialog", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
-    (useMutation as jest.Mock).mockReturnValue([mockMutate, { loading: false }]);
+    (mockDeleteAboutMeMutation as jest.Mock).mockClear();
+    
+    const { useDeleteAboutMeAdmin } = require("@/utils/hooks");
+    (useDeleteAboutMeAdmin as jest.Mock).mockReturnValue([mockDeleteAboutMeMutation]);
   });
 
   it("should not render when aboutMeId is null", (): void => {
@@ -117,7 +117,7 @@ describe("AboutMeDeleteDialog", (): void => {
 
   it("should call mutation with correct variables when confirm is clicked", async (): Promise<void> => {
     const testId: number = 42;
-    mockMutate.mockResolvedValueOnce({
+    mockDeleteAboutMeMutation.mockResolvedValueOnce({
       data: {
         deleteAboutMe: {
           code: 200,
@@ -134,13 +134,13 @@ describe("AboutMeDeleteDialog", (): void => {
     fireEvent.click(confirmButton);
 
     await waitFor((): void => {
-      expect(mockMutate).toHaveBeenCalledTimes(1);
-      expect(mockMutate).toHaveBeenCalledWith({ variables: { id: testId } });
+      expect(mockDeleteAboutMeMutation).toHaveBeenCalledTimes(1);
+      expect(mockDeleteAboutMeMutation).toHaveBeenCalledWith({ variables: { id: testId } });
     });
   });
 
   it("should call onRefresh and onClose on successful deletion", async (): Promise<void> => {
-    mockMutate.mockResolvedValueOnce({
+    mockDeleteAboutMeMutation.mockResolvedValueOnce({
       data: {
         deleteAboutMe: {
           code: 200,
@@ -163,7 +163,7 @@ describe("AboutMeDeleteDialog", (): void => {
   });
 
   it("should show error toast when deletion fails with non-200 code", async (): Promise<void> => {
-    mockMutate.mockResolvedValueOnce({
+    mockDeleteAboutMeMutation.mockResolvedValueOnce({
       data: {
         deleteAboutMe: {
           code: 409,
@@ -187,7 +187,7 @@ describe("AboutMeDeleteDialog", (): void => {
 
   it("should show error toast when mutation throws an error", async (): Promise<void> => {
     const mockError: Error = new Error("Network error");
-    mockMutate.mockRejectedValueOnce(mockError);
+    mockDeleteAboutMeMutation.mockRejectedValueOnce(mockError);
 
     render(
       <AboutMeDeleteDialog aboutMeId={1} onClose={mockOnClose} onRefresh={mockOnRefresh} />

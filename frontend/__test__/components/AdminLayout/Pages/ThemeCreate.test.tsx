@@ -5,7 +5,8 @@ import "@testing-library/jest-dom";
 import ThemeCreate from "@/components/AdminLayout/Pages/Themes/ThemeCreate"; // ✅ Chemin corrigé
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import useCustomToast, { type AlertType } from "@/components/ToastCustom/CustomToast";
-import { useCreateThemeMutation, type CreateThemeInput } from "@/types/graphql";
+import { type CreateThemeInput } from "@/types/graphql";
+import { useCreateThemeAdmin } from "@/utils/hooks";
 import type Lang from "@/lang/typeLang";
 import {
   type ApolloCache,
@@ -166,8 +167,9 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(),
 }));
 
-jest.mock("@/types/graphql", () => ({
-  useCreateThemeMutation: jest.fn(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateThemeAdmin: jest.fn(),
 }));
 
 type TestThemeMutationFn = jest.Mock<
@@ -226,21 +228,12 @@ describe("ThemeCreate Component", (): void => {
       Promise<FetchResult<any>>,
       [MutationFunctionOptions<any, { data: CreateThemeInput }, DefaultContext, ApolloCache<any>> | undefined]
     >() as TestThemeMutationFn;
+    mockThemeMutationFn.mockResolvedValue({ data: { createTheme: { theme: {} } } } as FetchResult<any>);
 
-    (useCreateThemeMutation as jest.MockedFunction<typeof useCreateThemeMutation>).mockReturnValue([
-      mockThemeMutationFn,
-      {
-        called: false,
-        loading: false,
-        data: undefined,
-        error: undefined,
-        reset: jest.fn(),
-        client: {
-          query: jest.fn(),
-          mutate: jest.fn(),
-        },
-      } as TestThemeMutationResult,
-    ]);
+    (useCreateThemeAdmin as jest.Mock).mockReturnValue({
+      createTheme: mockThemeMutationFn,
+      loading: false,
+    });
   });
 
   afterEach((): void => {
@@ -315,20 +308,10 @@ describe("ThemeCreate Component", (): void => {
   });
 
   it("displays loading state correctly", (): void => {
-    (useCreateThemeMutation as jest.MockedFunction<typeof useCreateThemeMutation>).mockReturnValue([
-        mockThemeMutationFn,
-        {
-        called: false,
-        loading: true,
-        data: undefined,
-        error: undefined,
-        reset: jest.fn(),
-        client: {
-            query: jest.fn(),
-            mutate: jest.fn(),
-        },
-        } as TestThemeMutationResult,
-    ]);
+    (useCreateThemeAdmin as jest.Mock).mockReturnValue({
+      createTheme: mockThemeMutationFn,
+      loading: true,
+    });
 
     render(<ThemeCreate />);
 

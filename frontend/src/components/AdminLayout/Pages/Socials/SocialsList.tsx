@@ -2,16 +2,14 @@ import React, { ReactElement, useState } from "react";
 import SocialTable, { SocialRow } from "../../components/Social/SocialTable";
 import SocialEditModal from "../../components/Social/SocialEditModal";
 import SocialDeleteDialog from "../../components/Social/SocialDeleteDialog";
-import { useGetSocialsListQuery, GetSocialsListQuery } from "@/types/graphql";
+import { useListSocialsAdmin } from "@/utils/hooks/useSocialAdmin";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
 const SocialsList = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetSocialsListQuery<GetSocialsListQuery>({
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useListSocialsAdmin();
 
   const { translations }: { translations: Lang } = useLang();
 

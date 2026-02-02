@@ -12,7 +12,8 @@ import SelectField from "../../components/Input/SelectField";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { CreateUserMutation, useCreateUserMutation } from "@/types/graphql";
+import { CreateUserMutation } from "@/types/graphql";
+import { useCreateUserAdmin } from "@/utils/hooks";
 import { SelectOption, UserRole, getUserRoleOptions } from "./user.type";
 import { FetchResult } from "@apollo/client";
 
@@ -38,7 +39,7 @@ const UserCreate: React.FC = (): ReactElement => {
   
   const [form, setForm]: [CreateUserForm, React.Dispatch<React.SetStateAction<CreateUserForm>>] = useState<CreateUserForm>(defaultForm);
   
-  const [createUserMutation, { loading }] = useCreateUserMutation();
+  const [createUserMutation, { loading }] = useCreateUserAdmin();
   
   const USER_ROLE_OPTIONS: SelectOption<UserRole>[] = getUserRoleOptions(translations);
   
@@ -57,13 +58,11 @@ const UserCreate: React.FC = (): ReactElement => {
   ) => {
     e.preventDefault();
     try {
-      const { data }: FetchResult<CreateUserMutation> = await createUserMutation({ 
-        variables: { 
-          data: {
-            ...form,
-            lang: lang,
-          }
-        } 
+      const { data } = await createUserMutation({ 
+        data: {
+          ...form,
+          lang: lang,
+        }
       });
 
       if (data?.registerUser.code === 201) {

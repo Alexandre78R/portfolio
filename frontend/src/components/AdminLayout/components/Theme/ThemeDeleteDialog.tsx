@@ -2,7 +2,8 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
-import { useDeleteThemeMutation, GetThemesListQuery, DeleteThemeMutation } from "@/types/graphql";
+import { useDeleteThemeAdmin } from "@/utils/hooks";
+import { GetThemesListQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { FetchResult } from "@apollo/client";
 
@@ -20,7 +21,7 @@ const ThemeDeleteDialog: React.FC<ThemeDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [deleteThemeMutation] = useDeleteThemeMutation();
+  const [deleteThemeMutation] = useDeleteThemeAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
 
   const handleConfirm: () => Promise<void> = async (): Promise<void> => {
@@ -31,9 +32,11 @@ const ThemeDeleteDialog: React.FC<ThemeDeleteDialogProps> = ({
     try {
       const id: number = Number(themeId);
 
-      const { data }: FetchResult<DeleteThemeMutation> = await deleteThemeMutation({
-        variables: { id },
+      const result = await deleteThemeMutation({
+        id,
       });
+      
+      const { data } = result;
 
       if (data?.deleteTheme?.code === 200) {
         showAlert("success", translations.messageAdminThemeDeleteSuccess);

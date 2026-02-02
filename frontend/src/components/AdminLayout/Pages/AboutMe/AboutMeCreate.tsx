@@ -16,8 +16,8 @@ import LoadingCustom from "@/components/Loading/LoadingCustom";
 import {
   CreateAboutMeInput,
   CreateAboutMeMutation,
-  useCreateAboutMeMutation,
 } from "@/types/graphql";
+import { useCreateAboutMeAdmin } from "@/utils/hooks";
 import { FetchResult } from "@apollo/client";
 
 const defaultForm: CreateAboutMeInput = {
@@ -36,7 +36,7 @@ const AboutMeCreate: React.FC = (): ReactElement => {
   const [form, setForm]: [CreateAboutMeInput, React.Dispatch<React.SetStateAction<CreateAboutMeInput>>] =
     useState<CreateAboutMeInput>(defaultForm);
 
-  const [createAboutMeMutation, { loading }] = useCreateAboutMeMutation();
+  const [createAboutMeMutation, { loading }] = useCreateAboutMeAdmin();
 
   const handleTitleFRChange: (content: string) => void = (content: string): void => {
     setForm((prev) => ({ ...prev, titleFR: content }));
@@ -69,15 +69,13 @@ const AboutMeCreate: React.FC = (): ReactElement => {
     }
 
     try {
-      const res: FetchResult<CreateAboutMeMutation> = await createAboutMeMutation({
-        variables: {
-          data: {
-            titleEN: form.titleEN,
-            titleFR: form.titleFR,
-            descriptionEN: form.descriptionEN,
-            descriptionFR: form.descriptionFR,
-            isVisible: form.isVisible,
-          },
+      const res = await createAboutMeMutation({
+        data: {
+          titleEN: form.titleEN,
+          titleFR: form.titleFR,
+          descriptionEN: form.descriptionEN,
+          descriptionFR: form.descriptionFR,
+          isVisible: form.isVisible,
         },
       });
 

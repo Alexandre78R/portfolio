@@ -2,11 +2,8 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
-import {
-  useDeleteSkillCategoryMutation,
-  GetSkillsListQuery,
-  DeleteSkillCategoryMutation,
-} from "@/types/graphql";
+import { useDeleteSkillCategoryAdmin } from "@/utils/hooks";
+import { GetSkillsListQuery } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { FetchResult } from "@apollo/client/link/core/types";
 
@@ -26,7 +23,7 @@ const SkillCategoryDeleteDialog: React.FC<SkillCategoryDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>]  = useState<boolean>(false);
 
-  const [deleteCategoryMutation] = useDeleteSkillCategoryMutation();
+  const [deleteCategoryMutation] = useDeleteSkillCategoryAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -37,8 +34,8 @@ const SkillCategoryDeleteDialog: React.FC<SkillCategoryDeleteDialogProps> = ({
 
     try {
 
-      const result: FetchResult<DeleteSkillCategoryMutation> = await deleteCategoryMutation({
-        variables: { id: categoryId },
+      const result = await deleteCategoryMutation({
+        id: categoryId,
       }); 
 
       const { data } = result;

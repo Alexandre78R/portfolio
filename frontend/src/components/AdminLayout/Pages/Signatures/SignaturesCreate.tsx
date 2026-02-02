@@ -11,8 +11,7 @@ import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation } from "@apollo/client";
-import { CREATE_SIGNATURE } from "@/requetes/mutations/signatures.mutations";
+import { useCreateSignatureAdmin } from "@/utils/hooks";
 import { CreateSignatureInput } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { FetchResult } from "@apollo/client/link/core/types";
@@ -30,7 +29,7 @@ const SignaturesCreate: React.FC = (): ReactElement => {
 
   const [form, setForm]: [CreateSignatureInput, React.Dispatch<React.SetStateAction<CreateSignatureInput>>] = useState<CreateSignatureInput>(defaultForm);
   
-  const [createSignatureMutation, { loading }] = useMutation(CREATE_SIGNATURE);
+  const [createSignatureMutation, { loading }] = useCreateSignatureAdmin();
 
   const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
@@ -62,8 +61,8 @@ const SignaturesCreate: React.FC = (): ReactElement => {
         description: form.description,
       };
 
-      const res: FetchResult = await createSignatureMutation({
-        variables: { data: payload },
+      const res = await createSignatureMutation({
+        data: payload,
       });
 
       const response = res.data?.createSignature;

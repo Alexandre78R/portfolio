@@ -13,9 +13,8 @@ import { SignatureRow } from "./SignatureTable";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation } from "@apollo/client";
-import { UPDATE_SIGNATURE } from "@/requetes/mutations/signatures.mutations";
-import { UpdateSignatureInput, useGetSignatureByIdQuery, GetSignatureByIdQuery } from "@/types/graphql";
+import { useUpdateSignatureAdmin } from "@/utils/hooks";
+import { UpdateSignatureInput, GetSignatureByIdQuery, useGetSignatureByIdQuery } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { FetchResult } from "@apollo/client/link/core/types";
@@ -44,7 +43,7 @@ const SignatureEditModal: React.FC<SignatureEditModalProps> = ({
 
   const [form, setForm]: [SignatureFormData | null, React.Dispatch<React.SetStateAction<SignatureFormData | null>>] = useState<SignatureFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateSignatureMutation] = useMutation(UPDATE_SIGNATURE);
+  const [updateSignatureMutation] = useUpdateSignatureAdmin();
 
   const { data, loading: signatureLoading } = useGetSignatureByIdQuery<GetSignatureByIdQuery>({
     variables: { id: signature?.id ?? 0 },
@@ -98,9 +97,11 @@ const SignatureEditModal: React.FC<SignatureEditModalProps> = ({
         description: form.description,
       };
 
-      const { data }: FetchResult = await updateSignatureMutation({
-        variables: { data: updateData },
+      const result = await updateSignatureMutation({
+        data: updateData,
       });
+      
+      const { data } = result;
 
       if (data?.updateSignature?.code === 200) {
         showAlert("success", translations.messageAdminSignatureEditSuccess);

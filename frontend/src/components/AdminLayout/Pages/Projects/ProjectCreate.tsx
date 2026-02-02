@@ -8,11 +8,8 @@ import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
-import {
-  useCreateProjectMutation,
-  useGetSkillsListQuery,
-  CreateProjectInput,
-} from "@/types/graphql";
+import { useListSkillsAdmin, useCreateProjectAdmin } from "@/utils/hooks";
+import { CreateProjectInput, GetSkillsListQuery } from "@/types/graphql";
 import type Lang from "@/lang/typeLang";
 import { Upload, X } from "lucide-react";
 
@@ -42,10 +39,8 @@ const defaultForm: FormData = {
 };
 
 const ProjectCreate: React.FC = (): ReactElement => {
-  const [createProjectMutation, { loading }] = useCreateProjectMutation();
-  const { data: skillsData, loading: skillsLoading } = useGetSkillsListQuery({
-    fetchPolicy: "cache-and-network",
-  });
+  const [createProjectMutation, { loading }] = useCreateProjectAdmin();
+  const { data: skillsData, loading: skillsLoading } = useListSkillsAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
@@ -171,7 +166,7 @@ const ProjectCreate: React.FC = (): ReactElement => {
         };
 
         const res = await createProjectMutation({
-          variables: { data: submitData },
+          data: submitData,
         });
 
         const response = res.data?.createProject;

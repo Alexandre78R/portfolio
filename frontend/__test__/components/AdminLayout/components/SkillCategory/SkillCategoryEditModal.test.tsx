@@ -114,10 +114,13 @@ const mockGetSkillsListQuery: jest.Mock<any, []> = jest.fn();
 
 const mockSearchSkillsLazyQuery: jest.Mock<any, any[]> = jest.fn();
 
+jest.mock("@/utils/hooks", (): object => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateSkillCategoryAdmin: jest.fn<[typeof mockUpdateCategoryMutation], []>(),
+}));
+
 jest.mock("@/types/graphql", (): object => ({
-  useUpdateSkillCategoryMutation: (): [typeof mockUpdateCategoryMutation] => [
-    mockUpdateCategoryMutation,
-  ],
+  ...jest.requireActual("@/types/graphql"),
   useGetSkillCategoryByIdQuery: (): any => mockGetCategoryByIdQuery(),
   useGetSkillsListQuery: (): any => mockGetSkillsListQuery(),
   useSearchSkillsLazyQuery: (): [typeof mockSearchSkillsLazyQuery, any] => [
@@ -187,6 +190,10 @@ describe("SkillCategoryEditModal", (): void => {
     mockUpdateCategoryMutation.mockResolvedValue({
       data: { updateSkillCategory: { code: 200, message: "Updated" } },
     });
+    
+    const { useUpdateSkillCategoryAdmin } = require("@/utils/hooks");
+    (useUpdateSkillCategoryAdmin as jest.Mock).mockReturnValue([mockUpdateCategoryMutation]);
+    
     mockGetCategoryByIdQuery.mockReturnValue({
       data: {
         getSkillCategoryById: {

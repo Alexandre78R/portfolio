@@ -13,16 +13,17 @@ import { EducationRow } from "./EducationTable";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import {
-  useUpdateEducationMutation,
+import { useUpdateEducationAdmin } from "@/utils/hooks";
+import { 
+  UpdateEducationInput, 
+  UpdateEducationMutation, 
   GetEducationsListQuery,
-  UpdateEducationInput,
   useGetEducationByIdQuery,
-  UpdateEducationMutation,
+  GetEducationByIdQuery,
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
-import { FetchResult } from "@apollo/client/link/core/types";
+import { FetchResult, ApolloError } from "@apollo/client";
 
 interface EducationEditModalProps {
   education: EducationRow | null;
@@ -61,11 +62,11 @@ const EducationEditModal: React.FC<EducationEditModalProps> = ({
 
   const [form, setForm]: [EducationFormData | null, React.Dispatch<React.SetStateAction<EducationFormData | null>>] = useState<EducationFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateEducationMutation] = useUpdateEducationMutation();
+  const [updateEducationMutation] = useUpdateEducationAdmin();
 
   const { data, loading: educationLoading } = useGetEducationByIdQuery<GetEducationByIdQuery>({
-    variables: { id: education?.id ?? 0 },
-    skip: !education,
+    variables: { id: Number(education?.id) },
+    skip: !education?.id,
     fetchPolicy: "network-only",
   });
 
@@ -131,9 +132,9 @@ const EducationEditModal: React.FC<EducationEditModalProps> = ({
         month: form.month ? Number(form.month) : null,
       };
 
-      const result: FetchResult<UpdateEducationMutation> =
+      const result =
         await updateEducationMutation({
-         variables: { data: updateData },
+         data: updateData,
         });
 
       const { data } = result;

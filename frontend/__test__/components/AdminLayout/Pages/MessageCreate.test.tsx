@@ -6,12 +6,11 @@ import MessageCreate from "@/components/AdminLayout/Pages/Messages/MessageCreate
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useSendMessageMutation,
   SendMessageMutation,
   SendMessageMutationVariables,
   GetSignaturesListQuery,
-  useGetSignaturesListQuery,
 } from "@/types/graphql";
+import { useSendMessageAdmin, useListSignaturesAdmin } from "@/utils/hooks";
 import { useQuery } from "@apollo/client";
 import { FetchResult } from "@apollo/client";
 import Lang from "@/lang/typeLang";
@@ -53,16 +52,10 @@ jest.mock("@/components/ToastCustom/CustomToast", (): object => ({
   default: jest.fn<ToastShowAlert, []>(),
 }));
 
-jest.mock("@/types/graphql", (): object => ({
-  ...jest.requireActual("@/types/graphql"),
-  useSendMessageMutation: jest.fn<
-    [MockMutationFunction, { loading: boolean }],
-    []
-  >(),
-  useGetSignaturesListQuery: jest.fn<
-    { data?: GetSignaturesListQuery; loading: boolean; error?: any },
-    [any?]
-  >(),
+jest.mock("@/utils/hooks", (): object => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useSendMessageAdmin: jest.fn(),
+  useListSignaturesAdmin: jest.fn(),
 }));
 
 jest.mock("@apollo/client", () => {
@@ -110,14 +103,19 @@ describe("MessageCreate Component", (): void => {
     mockCustomToast.mockReturnValue({ showAlert: mockShowAlert });
 
     mockSendMessage = jest.fn<Promise<FetchResult<SendMessageMutation>>, [{ variables: SendMessageMutationVariables }]>();
-    const mockUseSendMessage: jest.Mock<[MockMutationFunction, { loading: boolean }], []> = useSendMessageMutation as jest.Mock<
-      [MockMutationFunction, { loading: boolean }],
-      []
-    >;
-    mockUseSendMessage.mockReturnValue([mockSendMessage, { loading: false }]);
+    mockSendMessage.mockResolvedValue({ data: { sendMessage: { message: "Message sent" } } } as FetchResult<SendMessageMutation>);
+    const mockUseSendMessage = useSendMessageAdmin as jest.Mock;
+    mockUseSendMessage.mockReturnValue({
+      sendMessage: mockSendMessage,
+      loading: false,
+    });
 
-    const mockUseGetSignatures = useGetSignaturesListQuery as jest.Mock;
-    mockUseGetSignatures.mockReturnValue({
+    const mockUseListSignatures = useListSignaturesAdmin as jest.Mock;
+    mockUseListSignatures.mockReturnValue({
+      signatures: [
+        { id: "1", name: "Signature A", description: "<p>Signature A content</p>" },
+        { id: "2", name: "Signature B", description: "<p>Signature B content</p>" },
+      ],
       data: {
         listAllSignatures: {
           signatures: [
@@ -157,11 +155,11 @@ describe("MessageCreate Component", (): void => {
     });
 
     it("should render loading state when mutation is loading", (): void => {
-      const mockUseSendMessage: jest.Mock<[MockMutationFunction, { loading: boolean }], []> = useSendMessageMutation as jest.Mock<
-        [MockMutationFunction, { loading: boolean }],
-        []
-      >;
-      mockUseSendMessage.mockReturnValue([mockSendMessage, { loading: true }]);
+      const mockUseSendMessage = useSendMessageAdmin as jest.Mock;
+      mockUseSendMessage.mockReturnValue({
+        sendMessage: mockSendMessage,
+        loading: true,
+      });
 
       render(
         <MockedProvider>

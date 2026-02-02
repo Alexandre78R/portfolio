@@ -4,16 +4,8 @@ import "@testing-library/jest-dom";
 import SkillDeleteDialog from "@/components/AdminLayout/components/Skill/SkillDeleteDialog";
 import Lang from "@/lang/typeLang";
 import { useLang } from "@/context/Lang/LangContext";
-import { useDeleteSkillMutation } from "@/types/graphql";
-// import { SubItemResponse } from "@/types/graphql";
-interface DeleteSkillResponse {
-  data: {
-    deleteSkill: {
-      code: number;
-      message?: string;
-    };
-  };
-}
+import { DeleteSkillMutation } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 interface LangContextType {
   translations: Lang;
@@ -55,11 +47,14 @@ jest.mock("@/components/ToastCustom/CustomToast", (): object => ({
   }),
 }));
 
-const mockDeleteSkillMutation: jest.Mock<Promise<DeleteSkillResponse>, [any]> =
-  jest.fn();
+const mockDeleteSkillMutation: jest.Mock<
+  Promise<FetchResult<DeleteSkillMutation>>,
+  [{ variables: { id: number } }]
+> = jest.fn();
 
-jest.mock("@/types/graphql", (): object => ({
-  useDeleteSkillMutation: jest.fn(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteSkillAdmin: jest.fn<[typeof mockDeleteSkillMutation], []>(),
 }));
 
 const mockTranslations: Lang = {
@@ -96,12 +91,13 @@ describe("SkillDeleteDialog", (): void => {
     mockedUseLang.mockReturnValue({
       translations: mockTranslations as unknown as Lang,
     });
+    mockDeleteSkillMutation.mockClear();
     mockDeleteSkillMutation.mockResolvedValue({
       data: { deleteSkill: { code: 200 } },
     });
-    (useDeleteSkillMutation as jest.Mock).mockReturnValue([
-      mockDeleteSkillMutation,
-    ]);
+    
+    const { useDeleteSkillAdmin } = require("@/utils/hooks");
+    (useDeleteSkillAdmin as jest.Mock).mockReturnValue([mockDeleteSkillMutation]);
   });
 
   it("should not render when skillId is null", (): void => {

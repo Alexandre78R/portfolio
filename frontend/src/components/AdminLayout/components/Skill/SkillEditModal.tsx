@@ -17,12 +17,12 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useUpdateSkillMutation,
   GetSkillsListQuery,
   useGetSkillsListQuery,
   UpdateSkillMutation,
   UpdateSkillInput
 } from "@/types/graphql";
+import { useUpdateSkillAdmin } from "@/utils/hooks";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { FetchResult } from "@apollo/client";
@@ -53,7 +53,7 @@ const SkillEditModal = ({
 
   const [form, setForm]: [SkillFormData | null, React.Dispatch<React.SetStateAction<SkillFormData | null>>] = useState<SkillFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateSkillMutation] = useUpdateSkillMutation();
+  const [updateSkillMutation] = useUpdateSkillAdmin();
 
   const { data: categoriesData, loading: categoriesLoading } = useGetSkillsListQuery<GetSkillsListQuery>({
     fetchPolicy: "cache-and-network",
@@ -121,8 +121,9 @@ const SkillEditModal = ({
         categoryId: form.categoryId,
       };
 
-      const result: FetchResult<UpdateSkillMutation> = await updateSkillMutation({
-        variables: { id: Number(form.id), data: updateData },
+      const result = await updateSkillMutation({
+        id: Number(form.id), 
+        data: updateData 
       });
 
       const { data } = result;

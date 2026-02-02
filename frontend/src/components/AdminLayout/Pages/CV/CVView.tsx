@@ -3,14 +3,14 @@ import { useLang } from "@/context/Lang/LangContext";
 import ButtonCustom from "@/components/Button/Button";
 import TitleH3 from "@/components/Title/TitleH3";
 import Lang from "@/lang/typeLang";
-import { useCvQuery } from "@/types/graphql";
+import { useGetCVAdmin } from "@/utils/hooks";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import TextAdmin from "../../components/Text/TextAdmin";
 
 const CVView = (): React.ReactElement => {
   const { translations }: { translations: Lang } = useLang();
 
-  const { data, loading, error } = useCvQuery();
+  const { cvUrl, loading, error } = useGetCVAdmin();
 
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
@@ -26,9 +26,9 @@ const CVView = (): React.ReactElement => {
       return;
     }
 
-    if (data?.cvUrl) {
+    if (cvUrl) {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
-      window.open(`${baseUrl}${data.cvUrl}`, "_blank");
+      window.open(`${baseUrl}${cvUrl}`, "_blank");
     } else {
       showAlert("error", translations.messageCVNotFound);
     }

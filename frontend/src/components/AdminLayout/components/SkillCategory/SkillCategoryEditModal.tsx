@@ -16,14 +16,13 @@ import { SkillCategoryRow } from "./SkillCategoryTable";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useUpdateSkillCategoryAdmin } from "@/utils/hooks";
 import {
-  useUpdateSkillCategoryMutation,
   GetSkillsListQuery,
   UpdateCategoryInput,
   useGetSkillCategoryByIdQuery,
   useGetSkillsListQuery,
   useSearchSkillsLazyQuery,
-  UpdateSkillCategoryMutation,
   SearchSkillsQuery
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
@@ -57,7 +56,7 @@ const SkillCategoryEditModal: React.FC<SkillCategoryEditModalProps> = ({
   const [form, setForm]: [SkillCategoryFormData | null, React.Dispatch<React.SetStateAction<SkillCategoryFormData | null>>] = useState<SkillCategoryFormData | null>(null);
   const [selectedSkillIds, setSelectedSkillIds]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateCategoryMutation] = useUpdateSkillCategoryMutation();
+  const [updateCategoryMutation] = useUpdateSkillCategoryAdmin();
 
   const { data, loading: categoryLoading } = useGetSkillCategoryByIdQuery<GetSkillCategoryByIdQuery>({
     variables: { id: category?.id ?? 0 },
@@ -183,9 +182,12 @@ const SkillCategoryEditModal: React.FC<SkillCategoryEditModalProps> = ({
         updateData.skillIds = selectedSkillIds;
       }
 
-      const { data }: FetchResult<UpdateSkillCategoryMutation> = await updateCategoryMutation({
-        variables: { id: Number(form.id), data: updateData },
+      const result = await updateCategoryMutation({
+        id: Number(form.id), 
+        data: updateData,
       });
+      
+      const { data } = result;
 
       if (data?.updateCategory?.code === 200) {
         showAlert("success", translations.messageAdminSkillCategoryEditSuccess);

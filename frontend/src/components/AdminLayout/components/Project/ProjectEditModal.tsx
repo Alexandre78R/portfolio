@@ -7,16 +7,11 @@ import ButtonCustom from "@/components/Button/Button";
 import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
-import {
-  useUpdateProjectMutation,
-  useGetSkillsListQuery,
-  GetSkillsListQuery,
-  UpdateProjectInput,
-  UpdateProjectMutation,
-} from "@/types/graphql";
+import { useUpdateProjectAdmin, useListSkillsAdmin } from "@/utils/hooks";
 import type { ProjectRow } from "./ProjectTable";
 import type Lang from "@/lang/typeLang";
-import { FetchResult } from "@apollo/client";
+import { FetchResult, ApolloError } from "@apollo/client";
+import { UpdateProjectInput, UpdateProjectMutation, GetSkillsListQuery } from "@/types/graphql";
 
 interface ProjectEditModalProps {
   project: ProjectRow | null;
@@ -44,10 +39,8 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
   onClose,
   onRefresh,
 }: ProjectEditModalProps): ReactElement | null => {
-  const [updateProjectMutation, { loading }] = useUpdateProjectMutation();
-  const { data: skillsData } = useGetSkillsListQuery<GetSkillsListQuery>({
-    fetchPolicy: "cache-and-network",
-  });
+  const [updateProjectMutation, { loading }] = useUpdateProjectAdmin();
+  const { data: skillsData } = useListSkillsAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
 
@@ -128,10 +121,8 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
           skillIds: form.skillIds,
         };
 
-        const res: FetchResult<UpdateProjectMutation> = await updateProjectMutation({
-          variables: {
-            data: submitData,
-          },
+const res = await updateProjectMutation({
+        data: submitData,
         });
 
         const response: UpdateProjectMutation["updateProject"] | undefined = res.data?.updateProject;

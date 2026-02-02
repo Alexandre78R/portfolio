@@ -9,13 +9,13 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useUpdateUserMutation,
   useGetUserByIdQuery,
   GetUsersListQuery,
   GetUserByIdQuery,
   Role,
   UpdateUserMutation,
 } from "@/types/graphql";
+import { useUpdateUserAdmin } from "@/utils/hooks";
 import { UserRow } from "./UserTable";
 import SelectField from "../Input/SelectField";
 import { SelectOption, UserRole, getUserRoleOptions, mapRoleToUserRole } from "../../Pages/Users/user.type";
@@ -53,7 +53,7 @@ const UserEditModal = ({
   } | null>(null);
 
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateUserMutation] = useUpdateUserMutation();
+  const [updateUserMutation] = useUpdateUserAdmin();
 
   const { data: userData, loading: userLoading } = useGetUserByIdQuery<GetUserByIdQuery>({
     variables: { id: Number(user?.id) },
@@ -105,17 +105,15 @@ const UserEditModal = ({
 
     setLoading(true);
     try {
-      const { data }: FetchResult<UpdateUserMutation> = await updateUserMutation({
-        variables: {
-          id: Number(user.id),
-          firstname: form.firstname,
-          lastname: form.lastname,  
-          email: form.email,
-          role: form.role,
-        },
+      const result = await updateUserMutation({
+        id: Number(user.id),
+        firstname: form.firstname,
+        lastname: form.lastname,  
+        email: form.email,
+        role: form.role,
       });
 
-      if (data?.updateUser?.code === 200) {
+      if (result.data?.updateUser?.code === 200) {
         showAlert("success", translations.messageAdminUserEditSave);
         await onRefresh();
         onClose();

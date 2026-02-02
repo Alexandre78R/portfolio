@@ -3,7 +3,8 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ProjectDeleteDialog from "@/components/AdminLayout/components/Project/ProjectDeleteDialog";
 import Lang from "@/lang/typeLang";
-import { useDeleteProjectMutation } from "@/types/graphql";
+import { DeleteProjectMutation } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 jest.mock("@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", (): object => ({
   __esModule: true,
@@ -50,10 +51,14 @@ jest.mock("@/context/Lang/LangContext", (): object => ({
   })),
 }));
 
-const mockDeleteProjectMutation: jest.Mock<Promise<any>, any[]> = jest.fn();
+const mockDeleteProjectMutation: jest.Mock<
+  Promise<FetchResult<DeleteProjectMutation>>,
+  [{ variables: { id: number } }]
+> = jest.fn();
 
-jest.mock("@/types/graphql", (): object => ({
-  useDeleteProjectMutation: jest.fn(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteProjectAdmin: jest.fn<[typeof mockDeleteProjectMutation], []>(),
 }));
 
 describe("ProjectDeleteDialog", (): void => {
@@ -62,12 +67,13 @@ describe("ProjectDeleteDialog", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    mockDeleteProjectMutation.mockClear();
     mockDeleteProjectMutation.mockResolvedValue({
       data: { deleteProject: { code: 200, message: "Deleted" } },
     });
-    (useDeleteProjectMutation as jest.Mock).mockReturnValue([
-      mockDeleteProjectMutation,
-    ]);
+    
+    const { useDeleteProjectAdmin } = require("@/utils/hooks");
+    (useDeleteProjectAdmin as jest.Mock).mockReturnValue([mockDeleteProjectMutation]);
   });
 
   it("should not render when projectId is null", (): void => {

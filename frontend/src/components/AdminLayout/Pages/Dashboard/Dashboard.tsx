@@ -1,11 +1,12 @@
 import React from "react";
-import { useGetGlobalStatsQuery, GetGlobalStatsQuery } from "@/types/graphql";
+import { useGetDashboardAdmin } from "@/utils/hooks";
 import DashboardCard from "../../components/Dashboard/DashBordCard";
 import { Users, FolderKanban, Brain, GraduationCap, Briefcase } from "lucide-react";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import HorizontalBarChart from "@/components/Charts/HorizontalBarChart";
 import { useLang } from "@/context/Lang/LangContext";
 import TextAdmin from "../../components/Text/TextAdmin";
+import { GetGlobalStatsQuery } from "@/types/graphql";
 
 export interface MainStat {
   title: string;
@@ -20,7 +21,7 @@ export interface RoleStat {
 }
 
 const Dashboard: React.FC = (): React.ReactElement => {
-  const { data, loading, error } = useGetGlobalStatsQuery();
+  const { data, loading, error } = useGetDashboardAdmin();
 
   const { translations } = useLang();
 

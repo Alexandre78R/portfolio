@@ -3,13 +3,9 @@ import { render, screen, fireEvent, waitFor } from "@test-utils";
 import "@testing-library/jest-dom";
 
 import SocialDeleteDialog from "@/components/AdminLayout/components/Social/SocialDeleteDialog";
-import {
-  DeleteSocialDocument,
-  DeleteSocialMutation,
-  DeleteSocialMutationVariables,
-} from "@/types/graphql";
-import type { MockedResponse } from "@apollo/client/testing";
+import { DeleteSocialMutation } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client";
 
 type AlertType = "success" | "error";
 
@@ -20,11 +16,6 @@ interface ConfirmDialogProps {
   cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
-}
-
-interface MutationResult {
-  code?: number;
-  message?: string;
 }
 
 type RefreshHandler = () => Promise<void>;
@@ -69,32 +60,24 @@ jest.mock("@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () 
   )),
 }));
 
-const createMocks = (
-  mutationResult: MutationResult = { code: 200, message: "Deleted" }
-): MockedResponse<DeleteSocialMutation, DeleteSocialMutationVariables>[] => [
-  {
-    request: {
-      query: DeleteSocialDocument,
-      variables: {
-        id: 1,
-      },
-    },
-    result: {
-      data: {
-        deleteSocial: {
-          __typename: "SocialResponse",
-          code: mutationResult.code ?? 200,
-          message: mutationResult.message ?? "Deleted",
-        },
-      },
-    },
-  },
-];
+const mockDeleteSocialMutation: jest.Mock<
+  Promise<FetchResult<DeleteSocialMutation>>,
+  [{ variables: { id: number } }]
+> = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteSocialAdmin: jest.fn<[typeof mockDeleteSocialMutation], []>(),
+}));
 
 describe("SocialDeleteDialog", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockShowAlert.mockClear();
+    (mockDeleteSocialMutation as jest.Mock).mockClear();
+    
+    const { useDeleteSocialAdmin } = require("@/utils/hooks");
+    (useDeleteSocialAdmin as jest.Mock).mockReturnValue([mockDeleteSocialMutation]);
   });
 
   test("should return null when socialId is null", () => {
@@ -115,8 +98,7 @@ describe("SocialDeleteDialog", () => {
         socialId={1}
         onClose={jest.fn() as CloseHandler}
         onRefresh={jest.fn() as RefreshHandler}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     expect(screen.getByTestId("dialog-title")).toHaveTextContent("Delete Social");
@@ -131,8 +113,7 @@ describe("SocialDeleteDialog", () => {
         socialId={1}
         onClose={jest.fn() as CloseHandler}
         onRefresh={jest.fn() as RefreshHandler}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     expect(screen.getByTestId("confirm-button")).toHaveTextContent("Confirm");
@@ -146,8 +127,7 @@ describe("SocialDeleteDialog", () => {
         socialId={1}
         onClose={mockOnClose}
         onRefresh={jest.fn() as RefreshHandler}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     fireEvent.click(screen.getByTestId("cancel-button"));
@@ -156,14 +136,21 @@ describe("SocialDeleteDialog", () => {
 
   test("should show a success message on successful deletion", async () => {
     const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
+    mockDeleteSocialMutation.mockResolvedValueOnce({
+      data: {
+        deleteSocial: {
+          code: 200,
+          message: "Deleted",
+        },
+      },
+    });
 
     render(
       <SocialDeleteDialog
         socialId={1}
         onClose={jest.fn() as CloseHandler}
         onRefresh={mockRefresh}
-      />,
-      { mocks: createMocks({ code: 200, message: "Deleted" }) }
+      />
     );
 
     fireEvent.click(screen.getByTestId("confirm-button"));
@@ -175,14 +162,21 @@ describe("SocialDeleteDialog", () => {
 
   test("should show an error message on failed deletion", async () => {
     const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
+    mockDeleteSocialMutation.mockResolvedValueOnce({
+      data: {
+        deleteSocial: {
+          code: 400,
+          message: "Error",
+        },
+      },
+    });
 
     render(
       <SocialDeleteDialog
         socialId={1}
         onClose={jest.fn() as CloseHandler}
         onRefresh={mockRefresh}
-      />,
-      { mocks: createMocks({ code: 400, message: "Error" }) }
+      />
     );
 
     fireEvent.click(screen.getByTestId("confirm-button"));
@@ -195,14 +189,21 @@ describe("SocialDeleteDialog", () => {
   test("should call onClose after deletion", async () => {
     const mockOnClose: jest.Mock<void, []> = jest.fn();
     const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
+    mockDeleteSocialMutation.mockResolvedValueOnce({
+      data: {
+        deleteSocial: {
+          code: 200,
+          message: "Deleted",
+        },
+      },
+    });
 
     render(
       <SocialDeleteDialog
         socialId={1}
         onClose={mockOnClose}
         onRefresh={mockRefresh}
-      />,
-      { mocks: createMocks({ code: 200 }) }
+      />
     );
 
     fireEvent.click(screen.getByTestId("confirm-button"));
@@ -214,14 +215,21 @@ describe("SocialDeleteDialog", () => {
 
   test("should call onRefresh after successful deletion", async () => {
     const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
+    mockDeleteSocialMutation.mockResolvedValueOnce({
+      data: {
+        deleteSocial: {
+          code: 200,
+          message: "Deleted",
+        },
+      },
+    });
 
     render(
       <SocialDeleteDialog
         socialId={1}
         onClose={jest.fn() as CloseHandler}
         onRefresh={mockRefresh}
-      />,
-      { mocks: createMocks({ code: 200 }) }
+      />
     );
 
     fireEvent.click(screen.getByTestId("confirm-button"));

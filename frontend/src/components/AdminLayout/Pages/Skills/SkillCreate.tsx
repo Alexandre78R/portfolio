@@ -17,11 +17,11 @@ import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import {
-  useCreateSkillMutation,
   CreateSkillInput,
   useGetSkillsListQuery,
   CreateSkillMutation,
 } from "@/types/graphql";
+import { useCreateSkillAdmin } from "@/utils/hooks";
 import { FetchResult } from "@apollo/client";
 
 interface SkillFormData extends CreateSkillInput {
@@ -40,7 +40,7 @@ const SkillCreate: React.FC = (): ReactElement => {
 
   const [form, setForm]: [SkillFormData, React.Dispatch<React.SetStateAction<SkillFormData>>] = useState<SkillFormData>(defaultForm);
 
-  const [createSkillMutation, { loading }] = useCreateSkillMutation();
+  const [createSkillMutation, { loading }] = useCreateSkillAdmin();
 
   const { data: categoriesData, loading: categoriesLoading } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
@@ -85,8 +85,8 @@ const SkillCreate: React.FC = (): ReactElement => {
           categoryId: form.categoryId,
         };
 
-        const res: FetchResult<CreateSkillMutation> = await createSkillMutation({
-          variables: { data: submitData },
+const res = await createSkillMutation({
+        data: submitData,
         });
 
         const response = res.data?.createSkill; 

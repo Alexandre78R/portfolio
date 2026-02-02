@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { useGetExperiencesListQuery, GetExperiencesListQuery } from "@/types/graphql";
+import { useListExperiencesAdmin } from "@/utils/hooks/useExperienceAdmin";
 import ExperienceTable, { ExperienceRow } from "../../components/Experience/ExperienceTable";
 import ExperienceCreate from "./ExperienceCreate";
 import { useLang } from "@/context/Lang/LangContext";
@@ -15,9 +15,7 @@ const ExperienceList = (): ReactElement => {
   const [selectedExperience, setSelectedExperience]: [ExperienceRow | null, React.Dispatch<React.SetStateAction<ExperienceRow | null>>] = useState<ExperienceRow | null>(null);
   const [experienceToDeleteId, setExperienceToDeleteId]: [number | null, React.Dispatch<React.SetStateAction<number | null>>] = useState<number | null>(null);
 
-  const { data, loading, refetch } = useGetExperiencesListQuery<GetExperiencesListQuery>({
-    fetchPolicy: "network-only",
-  });
+  const { data, loading, refetch } = useListExperiencesAdmin();
 
   const experiences: ExperienceRow[] =
     data?.listExperiences?.experiences?.map((exp) => ({

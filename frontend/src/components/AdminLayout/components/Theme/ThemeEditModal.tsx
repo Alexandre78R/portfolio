@@ -15,13 +15,12 @@ import { ThemeRow } from "../../components/Theme/ThemeTable";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useUpdateThemeAdmin } from "@/utils/hooks";
 import { 
-  useUpdateThemeMutation, 
   GetThemesListQuery, 
   UpdateThemeInput,
   useGetThemeByIdQuery,
   GetThemeByIdQuery,
-  UpdateThemeMutation
 } from "@/types/graphql";
 import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
@@ -71,7 +70,7 @@ const ThemeEditModal: React.FC<ThemeEditModalProps> = ({
 
   const [form, setForm]: [ThemeFormData | null, React.Dispatch<React.SetStateAction<ThemeFormData | null>>] = useState<ThemeFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateThemeMutation] = useUpdateThemeMutation();
+  const [updateThemeMutation] = useUpdateThemeAdmin();
 
   const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery<GetThemeByIdQuery>({
     variables: { id: Number(theme?.id) },
@@ -188,9 +187,11 @@ const ThemeEditModal: React.FC<ThemeEditModalProps> = ({
         textButton: form.textButton,
       } as UpdateThemeInput;
 
-      const { data }: FetchResult<UpdateThemeMutation> = await updateThemeMutation({
-        variables: { data: updateData },
+      const result = await updateThemeMutation({
+        data: updateData,
       });
+
+      const { data } = result;
 
       if (data?.updateTheme?.code === 200) {
         showAlert("success", translations.messageAdminThemeEditSave);

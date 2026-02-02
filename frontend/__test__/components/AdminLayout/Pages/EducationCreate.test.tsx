@@ -8,10 +8,10 @@ import EducationCreate from "@/components/AdminLayout/Pages/Educations/Education
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import useCustomToast, { type AlertType } from "@/components/ToastCustom/CustomToast";
 import {
-  useCreateEducationMutation,
   type CreateEducationInput,
   type CreateEducationMutation,
 } from "@/types/graphql";
+import { useCreateEducationAdmin } from "@/utils/hooks";
 import type Lang from "@/lang/typeLang";
 import {
   type ApolloCache,
@@ -107,21 +107,10 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(),
 }));
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __mockUseCreateEducationMutation: jest.Mock;
-}
-
-jest.mock("@/types/graphql", () => {
-  const mockUseCreateEducationMutation: jest.Mock = jest.fn();
-  (global as typeof globalThis).__mockUseCreateEducationMutation = mockUseCreateEducationMutation;
-  return {
-    __esModule: true,
-    useCreateEducationMutation: mockUseCreateEducationMutation,
-  };
-});
-
-const mockUseCreateEducationMutation = (): jest.Mock => (global as typeof globalThis).__mockUseCreateEducationMutation;
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateEducationAdmin: jest.fn(),
+}));
 
 type TestMutationFn = jest.Mock<
   Promise<FetchResult<CreateEducationMutation>>,
@@ -174,21 +163,12 @@ describe("EducationCreate Component", (): void => {
       Promise<FetchResult<CreateEducationMutation>>,
       [MutationFunctionOptions<CreateEducationMutation, { data: CreateEducationInput }, DefaultContext, ApolloCache<unknown>> | undefined]
     >() as TestMutationFn;
+    mockMutationFn.mockResolvedValue({ data: { createEducation: { education: {} } } } as FetchResult<CreateEducationMutation>);
 
-    mockUseCreateEducationMutation().mockReturnValue([
-      mockMutationFn,
-      {
-        called: false,
-        loading: false,
-        data: undefined,
-        error: undefined,
-        reset: jest.fn(),
-        client: {
-          query: jest.fn(),
-          mutate: jest.fn(),
-        },
-      } as TestMutationResult,
-    ]);
+    (useCreateEducationAdmin as jest.Mock).mockReturnValue({
+      createEducation: mockMutationFn,
+      loading: false,
+    });
   });
 
   afterEach((): void => {
@@ -236,20 +216,10 @@ describe("EducationCreate Component", (): void => {
   });
 
   it("displays loading state correctly", (): void => {
-    mockUseCreateEducationMutation().mockReturnValue([
-      mockMutationFn,
-      {
-        called: false,
-        loading: true,
-        data: undefined,
-        error: undefined,
-        reset: jest.fn(),
-        client: {
-          query: jest.fn(),
-          mutate: jest.fn(),
-        },
-      } as TestMutationResult,
-    ]);
+    (useCreateEducationAdmin as jest.Mock).mockReturnValue({
+      createEducation: mockMutationFn,
+      loading: true,
+    });
 
     render(<EducationCreate />);
 

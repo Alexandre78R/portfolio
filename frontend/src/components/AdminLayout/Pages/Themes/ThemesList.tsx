@@ -1,5 +1,5 @@
 import React, { useState, ReactElement } from "react";
-import { useGetThemesListQuery, GetThemesListQuery } from "@/types/graphql";
+import { useListThemesAdmin } from "@/utils/hooks";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
@@ -9,9 +9,7 @@ import ThemeEditModal from "../../components/Theme/ThemeEditModal";
 import ThemeTable, { ThemeRow } from "../../components/Theme/ThemeTable";
 
 const ThemeList = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetThemesListQuery<GetThemesListQuery>({
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useListThemesAdmin();
 
   const { translations }: { translations: Lang } = useLang();
 

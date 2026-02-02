@@ -6,6 +6,7 @@ import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { CreateUserDocument, type CreateUserInput } from "@/types/graphql";
 import type Lang from "@/lang/typeLang";
+import { useCreateUserAdmin } from "@/utils/hooks";
 
 const mockShowAlert: jest.Mock<(type: "success" | "error", message: string) => void> = jest.fn();
 
@@ -89,6 +90,13 @@ jest.mock("@/components/AdminLayout/Pages/Users/user.type", () => ({
   ]),
 }));
 
+const mockCreateUser = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateUserAdmin: jest.fn(),
+}));
+
 const createUserVariables: Record<string, any> = {
   data: {
     firstname: "Jane",
@@ -167,6 +175,25 @@ const createDelayedMocks = (delayMs: number) => [
 describe("UserCreate Component", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
+    mockCreateUser.mockResolvedValue({
+      data: {
+        registerUser: {
+          __typename: "UserResponse",
+          code: 201,
+          message: "Created",
+          user: {
+            __typename: "User",
+            id: "1",
+            firstname: "Jane",
+            lastname: "Smith",
+            email: "jane@example.com",
+            role: "user",
+            isPasswordChange: false,
+          },
+        },
+      },
+    });
+    (useCreateUserAdmin as jest.Mock).mockReturnValue([mockCreateUser, { loading: false }]);
   });
 
   const fillForm = (): void => {
@@ -218,7 +245,7 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should submit form successfully and show success toast", async (): Promise<void> => {
-    render(<UserCreate />, { mocks: createMocks({ code: 201, message: "Created" }) });
+    render(<UserCreate />);
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -230,7 +257,7 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should reset form after successful submission", async (): Promise<void> => {
-    render(<UserCreate />, { mocks: createMocks({ code: 201, message: "Created" }) });
+    render(<UserCreate />);
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -245,7 +272,15 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should handle error response on form submission", async (): Promise<void> => {
-    render(<UserCreate />, { mocks: createMocks({ code: 500, message: "Error" }) });
+    mockCreateUser.mockResolvedValue({
+      data: {
+        registerUser: {
+          code: 500,
+          message: "Error",
+        },
+      },
+    });
+    render(<UserCreate />);
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -257,7 +292,8 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should handle mutation rejection error", async (): Promise<void> => {
-    render(<UserCreate />, { mocks: createErrorMocks(new Error("Network error")) });
+    mockCreateUser.mockRejectedValue(new Error("Network error"));
+    render(<UserCreate />);
     fillForm();
 
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
@@ -269,7 +305,8 @@ describe("UserCreate Component", (): void => {
   });
 
   test("should show loading state during submission", (): void => {
-    render(<UserCreate />, { mocks: createDelayedMocks(1000) });
+    (useCreateUserAdmin as jest.Mock).mockReturnValue([mockCreateUser, { loading: true }]);
+    render(<UserCreate />);
     fillForm();
     const submitButton: HTMLButtonElement = screen.getByTestId("submit-button") as HTMLButtonElement;
     fireEvent.click(submitButton);

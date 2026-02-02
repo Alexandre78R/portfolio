@@ -6,7 +6,8 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import Lang from "@/lang/typeLang";
 import { useLang } from "@/context/Lang/LangContext";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
-import { useCreateExperienceMutation, CreateExperienceInput, CreateExperienceMutation } from "@/types/graphql";
+import { CreateExperienceInput, CreateExperienceMutation } from "@/types/graphql";
+import { useCreateExperienceAdmin } from "@/utils/hooks";
 import { FetchResult } from "@apollo/client/link/core/types";
 
 const defaultForm: CreateExperienceInput = {
@@ -28,7 +29,7 @@ const ExperienceCreate = (): ReactElement => {
   const { translations }: { translations: Lang } = useLang();
   const { showAlert } = CustomToast();
   const [form, setForm]: [CreateExperienceInput, React.Dispatch<React.SetStateAction<CreateExperienceInput>>] = useState<CreateExperienceInput>(defaultForm);
-  const [createExperienceMutation, { loading }] = useCreateExperienceMutation();
+  const [createExperienceMutation, { loading }] = useCreateExperienceAdmin();
 
   const handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -43,7 +44,7 @@ const ExperienceCreate = (): ReactElement => {
     e.preventDefault();
     try {
       const payload: CreateExperienceInput = { ...form, month: Number(form.month) };
-      const res: FetchResult<CreateExperienceMutation> = await createExperienceMutation({ variables: { data: payload } });
+      const res = await createExperienceMutation({ data: payload });
       if (res.data?.createExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceCreateSuccess);
         setForm(defaultForm);

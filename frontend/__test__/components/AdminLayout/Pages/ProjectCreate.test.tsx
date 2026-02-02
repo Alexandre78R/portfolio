@@ -7,6 +7,7 @@ import {
 } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import type { GetSkillsListQuery, CreateProjectMutation, CreateProjectMutationVariables } from "@/types/graphql";
+import { useCreateProjectAdmin } from "@/utils/hooks";
 
 import ProjectCreate from "@/components/AdminLayout/Pages/Projects/ProjectCreate";
 import type Lang from "@/lang/typeLang";
@@ -83,13 +84,12 @@ type ButtonProps = {
 };
 
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateProjectAdmin: jest.fn(),
+}));
+
 jest.mock("@/types/graphql", () => ({
-  useCreateProjectMutation: jest.fn(
-    (): [
-      jest.Mock<Promise<CreateProjectMutationResponse>, [{ variables: CreateProjectMutationVariables }]>,
-      { loading: boolean }
-    ] => [mockCreateProjectMutationFn, { loading: false }]
-  ),
   useGetSkillsListQuery: jest.fn(
     (): { data: SkillListData; loading: boolean } => ({
       data: mockGetSkillsListQueryData,
@@ -258,6 +258,13 @@ describe("ProjectCreate", (): void => {
 
   beforeEach((): void => {
     clearAllMocks();
+    mockCreateProjectMutationFn.mockResolvedValue({
+      data: { createProject: { code: 200 } },
+    } as CreateProjectMutationResponse);
+    (useCreateProjectAdmin as jest.Mock).mockReturnValue({
+      createProject: mockCreateProjectMutationFn,
+      loading: false,
+    });
   });
 
   test("renders create form", (): void => {

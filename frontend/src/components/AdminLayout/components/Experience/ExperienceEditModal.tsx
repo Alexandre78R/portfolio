@@ -6,12 +6,12 @@ import { X } from "lucide-react";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useUpdateExperienceMutation,
   useGetExperienceByIdQuery,
   UpdateExperienceInput,
   GetExperiencesListQuery,
   UpdateExperienceMutation,
 } from "@/types/graphql";
+import { useUpdateExperienceAdmin } from "@/utils/hooks";
 import { ExperienceRow } from "./ExperienceTable";
 import { useLang } from "@/context/Lang/LangContext";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
@@ -46,7 +46,7 @@ const ExperienceEditModal: React.FC<ExperienceEditModalProps> = ({ experience, o
 
   const [form, setForm]: [ExperienceFormData | null, React.Dispatch<React.SetStateAction<ExperienceFormData | null>>] = useState<ExperienceFormData | null>(null);
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
-  const [updateExperienceMutation] = useUpdateExperienceMutation();
+  const [updateExperienceMutation] = useUpdateExperienceAdmin();
 
   const { data, loading: experienceLoading } = useGetExperienceByIdQuery<GetExperienceByIdQuery>({
     variables: { id: experience?.id ?? 0 },
@@ -99,7 +99,7 @@ const ExperienceEditModal: React.FC<ExperienceEditModalProps> = ({ experience, o
     setLoading(true);
     try {
       const updateData: UpdateExperienceInput = { ...form, month: Number(form.month) };
-      const result: FetchResult<UpdateExperienceMutation> = await updateExperienceMutation({ variables: { data: updateData } });
+      const result = await updateExperienceMutation({ data: updateData });
       const { data } = result;
       if (data?.updateExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceEditSuccess);

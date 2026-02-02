@@ -6,12 +6,11 @@ import Lang from "@/lang/typeLang";
 import AboutMeTable, { AboutMeRow } from "../../components/AboutMe/AboutMeTable";
 import AboutMeDeleteDialog from "../../components/AboutMe/AboutMeDeleteDialog";
 import AboutMeEditModal from "../../components/AboutMe/AboutMeEditModal";
-import { ListAboutMeQuery, useListAboutMeQuery } from "@/types/graphql";
+import { ListAboutMeQuery } from "@/types/graphql";
+import { useListAboutMeAdmin } from "@/utils/hooks/useAboutMeAdmin";
 
 const AboutMeList = (): ReactElement => {
-  const { data, loading, error, refetch } = useListAboutMeQuery({
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useListAboutMeAdmin();
 
   const { translations }: { translations: Lang } = useLang();
 

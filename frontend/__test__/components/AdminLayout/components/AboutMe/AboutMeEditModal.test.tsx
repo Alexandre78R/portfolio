@@ -4,12 +4,13 @@ import "@testing-library/jest-dom";
 import AboutMeEditModal from "@/components/AdminLayout/components/AboutMe/AboutMeEditModal";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
-import { useMutation, type ApolloError, type FetchResult } from "@apollo/client";
+import { type FetchResult } from "@apollo/client";
 import type { AlertType } from "@/components/ToastCustom/CustomToast";
 import { 
   UpdateAboutMeMutationVariables,
   GetAboutMeByIdQuery,
   useGetAboutMeByIdQuery,
+  UpdateAboutMeMutation,
 } from "@/types/graphql";
 
 type MockModalProps = {
@@ -95,17 +96,14 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 const mockQueryFn: jest.Mock<any, any> = jest.fn();
 
-const mockMutate: jest.Mock<
-  Promise<FetchResult<any>>,
+const mockUpdateAboutMeMutation: jest.Mock<
+  Promise<FetchResult<UpdateAboutMeMutation>>,
   [{ variables: UpdateAboutMeMutationVariables }]
 > = jest.fn();
 
-jest.mock("@apollo/client", () => ({
-  ...jest.requireActual("@apollo/client"),
-  useMutation: jest.fn<
-    [typeof mockMutate, { loading: boolean; error?: ApolloError }],
-    []
-  >(() => [mockMutate, { loading: false }]),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateAboutMeAdmin: jest.fn<[typeof mockUpdateAboutMeMutation, { loading: boolean }], []>(),
 }));
 
 jest.mock("@/types/graphql", () => ({
@@ -137,7 +135,9 @@ describe("AboutMeEditModal", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
-    (useMutation as jest.Mock).mockReturnValue([mockMutate, { loading: false }]);
+    
+    const { useUpdateAboutMeAdmin } = require("@/utils/hooks");
+    (useUpdateAboutMeAdmin as jest.Mock).mockReturnValue([mockUpdateAboutMeMutation, { loading: false }]);
     mockQueryFn.mockReturnValue({
       data: {
         getAboutMeById: {
@@ -195,7 +195,7 @@ describe("AboutMeEditModal", (): void => {
   });
 
   it("should submit update mutation with correct data", async (): Promise<void> => {
-    mockMutate.mockResolvedValueOnce({
+    mockUpdateAboutMeMutation.mockResolvedValueOnce({
       data: {
         updateAboutMe: {
           aboutMe: {
@@ -222,8 +222,8 @@ describe("AboutMeEditModal", (): void => {
     fireEvent.click(saveButton);
 
     await waitFor((): void => {
-      expect(mockMutate).toHaveBeenCalledTimes(1);
-      expect(mockMutate).toHaveBeenCalledWith({
+      expect(mockUpdateAboutMeMutation).toHaveBeenCalledTimes(1);
+      expect(mockUpdateAboutMeMutation).toHaveBeenCalledWith({
         variables: {
           data: {
             id: 1,
@@ -239,7 +239,7 @@ describe("AboutMeEditModal", (): void => {
   });
 
   it("should call onRefresh and onClose on successful update", async (): Promise<void> => {
-    mockMutate.mockResolvedValueOnce({
+    mockUpdateAboutMeMutation.mockResolvedValueOnce({
       data: {
         updateAboutMe: {
           aboutMe: {
@@ -268,7 +268,8 @@ describe("AboutMeEditModal", (): void => {
   });
 
   it("should show error toast on failed update", async (): Promise<void> => {
-    mockMutate.mockResolvedValueOnce({
+    mockUpdateAboutMeMutation.mockClear();
+    mockUpdateAboutMeMutation.mockResolvedValueOnce({
       data: {
         updateAboutMe: {
           aboutMe: null,

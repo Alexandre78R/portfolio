@@ -3,10 +3,10 @@ import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import {
-  useDeleteSocialMutation,
   GetSocialsListQuery,
   DeleteSocialMutation,
 } from "@/types/graphql";
+import { useDeleteSocialAdmin } from "@/utils/hooks";
 import { FetchResult } from "@apollo/client/link/core/types";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 
@@ -26,7 +26,7 @@ const SocialDeleteDialog: React.FC<SocialDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [deleteSocialMutation] = useDeleteSocialMutation();
+  const [deleteSocialMutation] = useDeleteSocialAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -36,11 +36,11 @@ const SocialDeleteDialog: React.FC<SocialDeleteDialogProps> = ({
     setLoading(true);
 
     try {
-      const { data }: FetchResult<DeleteSocialMutation> = await deleteSocialMutation({
-        variables: { id: socialId },
+      const result = await deleteSocialMutation({
+        id: socialId,
       });
 
-      if (data?.deleteSocial?.code === 200) {
+      if (result.data?.deleteSocial?.code === 200) {
         showAlert("success", translations.messageAdminSocialDeleteSuccess);
         await onRefresh();
       } else {

@@ -2,13 +2,10 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
-import {
-  useDeleteEducationMutation,
-  GetEducationsListQuery,
-  DeleteEducationMutation,
-} from "@/types/graphql";
+import { useDeleteEducationAdmin } from "@/utils/hooks";
+import { GetEducationsListQuery, DeleteEducationMutation } from "@/types/graphql";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { FetchResult } from "@apollo/client";
+import { FetchResult, ApolloError } from "@apollo/client";
 
 interface EducationDeleteDialogProps {
   educationId: number | null;
@@ -26,7 +23,7 @@ const EducationDeleteDialog: React.FC<EducationDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [deleteEducationMutation] = useDeleteEducationMutation();
+  const [deleteEducationMutation] = useDeleteEducationAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -37,8 +34,8 @@ const EducationDeleteDialog: React.FC<EducationDeleteDialogProps> = ({
 
     try {
 
-      const result: FetchResult<DeleteEducationMutation> = await deleteEducationMutation({
-        variables: { id: educationId },
+      const result = await deleteEducationMutation({
+        id: educationId,
       });
       
       const { data } = result;

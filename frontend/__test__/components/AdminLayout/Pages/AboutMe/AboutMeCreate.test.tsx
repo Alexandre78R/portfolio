@@ -9,8 +9,8 @@ import { type ApolloError, type FetchResult } from "@apollo/client";
 import {
   CreateAboutMeMutation,
   CreateAboutMeMutationVariables,
-  useCreateAboutMeMutation,
 } from "@/types/graphql";
+import { useCreateAboutMeAdmin } from "@/utils/hooks";
 
 type MockAuthFormLayoutProps = {
   title: React.ReactNode;
@@ -105,12 +105,9 @@ const mockMutate: jest.Mock<
   [{ variables: CreateAboutMeMutationVariables }]
 > = jest.fn();
 
-jest.mock("@/types/graphql", () => ({
-  ...jest.requireActual("@/types/graphql"),
-  useCreateAboutMeMutation: jest.fn<
-    [typeof mockMutate, { loading: boolean; error?: ApolloError }],
-    []
-  >(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateAboutMeAdmin: jest.fn(),
 }));
 
 describe("AboutMeCreate Page", (): void => {
@@ -132,7 +129,11 @@ describe("AboutMeCreate Page", (): void => {
     jest.clearAllMocks();
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: mockShowAlert });
-    (useCreateAboutMeMutation as jest.Mock).mockReturnValue([mockMutate, { loading: false }]);
+    mockMutate.mockResolvedValue({ data: { createAboutMe: { aboutMe: {} } } } as FetchResult<CreateAboutMeMutation>);
+    (useCreateAboutMeAdmin as jest.Mock).mockReturnValue({
+      createAboutMe: mockMutate,
+      loading: false,
+    });
   });
 
   it("should render form with correct title", (): void => {

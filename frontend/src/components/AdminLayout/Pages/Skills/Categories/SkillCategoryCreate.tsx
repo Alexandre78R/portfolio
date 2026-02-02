@@ -19,10 +19,12 @@ import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import {
-  useCreateSkillCategoryMutation,
+  useCreateSkillCategoryAdmin,
+  useListSkillCategoriesAdmin,
+} from "@/utils/hooks";
+import {
   CreateCategoryInput,
   useGetSkillsListQuery,
-  CreateSkillCategoryMutation,
 } from "@/types/graphql";
 import { FetchResult } from "@apollo/client";
 
@@ -43,7 +45,7 @@ const SkillCategoryCreate = (): ReactElement => {
   const [form, setForm]: [SkillCategoryFormWithSkills, React.Dispatch<React.SetStateAction<SkillCategoryFormWithSkills>>] = useState<SkillCategoryFormWithSkills>(defaultForm);
   const [selectedSkillIds, setSelectedSkillIds]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
 
-  const [createCategoryMutation, { loading }] = useCreateSkillCategoryMutation();
+  const [createCategoryMutation, { loading }] = useCreateSkillCategoryAdmin();
 
   const { data: skillsData, loading: skillsLoading } = useGetSkillsListQuery({
     fetchPolicy: "cache-and-network",
@@ -98,8 +100,8 @@ const SkillCategoryCreate = (): ReactElement => {
           submitData.skillIds = selectedSkillIds;
         }
 
-        const res: FetchResult<CreateSkillCategoryMutation> = await createCategoryMutation({
-          variables: { data: submitData },
+        const res = await createCategoryMutation({
+          data: submitData,
         });
 
         const response = res.data?.createCategory;

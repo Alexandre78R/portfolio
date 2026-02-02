@@ -133,10 +133,13 @@ const mockUpdateSkillMutation: jest.Mock<
 
 const mockGetSkillsList: jest.Mock<SkillsListData, []> = jest.fn();
 
+jest.mock("@/utils/hooks", (): object => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateSkillAdmin: jest.fn<[typeof mockUpdateSkillMutation], []>(),
+}));
+
 jest.mock("@/types/graphql", (): object => ({
-  useUpdateSkillMutation: (): [typeof mockUpdateSkillMutation] => [
-    mockUpdateSkillMutation,
-  ],
+  ...jest.requireActual("@/types/graphql"),
   useGetSkillsListQuery: (): { data: SkillsListData; loading: boolean } => ({
     data: mockGetSkillsList(),
     loading: false,
@@ -207,6 +210,9 @@ describe("SkillEditModal", (): void => {
       data: { updateSkill: { code: 200, message: "Updated" } },
     });
     mockGetSkillsList.mockReturnValue(mockSkillsListData);
+    
+    const { useUpdateSkillAdmin } = require("@/utils/hooks");
+    (useUpdateSkillAdmin as jest.Mock).mockReturnValue([mockUpdateSkillMutation]);
   });
 
   it("should not render when skill is null", (): void => {

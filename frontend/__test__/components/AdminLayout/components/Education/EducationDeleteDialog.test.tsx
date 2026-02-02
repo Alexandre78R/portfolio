@@ -3,11 +3,9 @@ import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 
 import EducationDeleteDialog from "@/components/AdminLayout/components/Education/EducationDeleteDialog";
-import {
-  GetEducationsListQuery,
-  DeleteEducationDocument,
-} from "@/types/graphql";
+import { DeleteEducationMutation } from "@/types/graphql";
 import Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
@@ -50,31 +48,29 @@ jest.mock("@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () 
   )),
 }));
 
-const createMocks = (mutationResult: any = { code: 200 }) => [
-  {
-    request: {
-      query: DeleteEducationDocument,
-      variables: {
-        id: 42,
-      },
-    },
-    result: {
-      data: {
-        deleteEducation: mutationResult,
-      },
-    },
-  },
-];
+const mockDeleteEducationMutation: jest.Mock<
+  Promise<FetchResult<DeleteEducationMutation>>,
+  [{ variables: { id: number } }]
+> = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteEducationAdmin: jest.fn<[typeof mockDeleteEducationMutation], []>(),
+}));
 
 describe("EducationDeleteDialog Component", (): void => {
   const mockOnClose: jest.Mock = jest.fn();
   const mockOnRefresh: jest.Mock<
-    Promise<void | import("@apollo/client").ApolloQueryResult<GetEducationsListQuery>>,
+    Promise<void>,
     []
   > = jest.fn();
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    (mockDeleteEducationMutation as jest.Mock).mockClear();
+    
+    const { useDeleteEducationAdmin } = require("@/utils/hooks");
+    (useDeleteEducationAdmin as jest.Mock).mockReturnValue([mockDeleteEducationMutation]);
   });
 
   test("renders nothing if educationId is null", (): void => {
@@ -96,8 +92,7 @@ describe("EducationDeleteDialog Component", (): void => {
         educationId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     const confirmDialog: HTMLElement = screen.getByTestId("confirm-dialog");
@@ -117,15 +112,21 @@ describe("EducationDeleteDialog Component", (): void => {
   });
 
   test("calls delete mutation and handles success correctly", async (): Promise<void> => {
-    mockOnRefresh.mockResolvedValue(undefined);
+    mockDeleteEducationMutation.mockResolvedValueOnce({
+      data: {
+        deleteEducation: {
+          code: 200,
+          message: "Success",
+        },
+      },
+    });
 
     render(
       <EducationDeleteDialog
         educationId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks({ code: 200 }) }
+      />
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
@@ -142,13 +143,21 @@ describe("EducationDeleteDialog Component", (): void => {
   });
 
   test("calls delete mutation and handles non-200 code as error", async (): Promise<void> => {
+    mockDeleteEducationMutation.mockResolvedValueOnce({
+      data: {
+        deleteEducation: {
+          code: 500,
+          message: "Error",
+        },
+      },
+    });
+
     render(
       <EducationDeleteDialog
         educationId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks({ code: 500 }) }
+      />
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
@@ -170,8 +179,7 @@ describe("EducationDeleteDialog Component", (): void => {
         educationId={5}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     const cancelButton: HTMLElement = screen.getByTestId("cancel-button");

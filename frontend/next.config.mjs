@@ -16,7 +16,6 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
-    disableOptimizedFontLoading: false,
   },
   onDemandEntries: {
     maxInactiveAge: 60000,

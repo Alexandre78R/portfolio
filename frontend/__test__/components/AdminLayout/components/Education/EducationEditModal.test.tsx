@@ -44,9 +44,14 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 const mockUpdateMutation: jest.Mock<any, any[]> = jest.fn();
 const mockUseGetEducationQuery: jest.Mock = jest.fn();
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateEducationAdmin: jest.fn(() => [mockUpdateMutation] as const),
+}));
+
 jest.mock("@/types/graphql", () => ({
   __esModule: true,
-  useUpdateEducationMutation: jest.fn(() => [mockUpdateMutation, {}] as const),
+  ...jest.requireActual("@/types/graphql"),
   useGetEducationByIdQuery: jest.fn(() => mockUseGetEducationQuery()),
 }));
 
@@ -123,6 +128,10 @@ describe("EducationEditModal Component", () => {
     } as any);
 
     mockUpdateMutation.mockResolvedValue({ data: { updateEducation: { code: 200 } } });
+    
+    const { useUpdateEducationAdmin } = require("@/utils/hooks");
+    (useUpdateEducationAdmin as jest.Mock).mockReturnValue([mockUpdateMutation]);
+    
     jest.clearAllMocks();
   });
 

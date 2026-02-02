@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import type { GetSkillsListQuery, CreateProjectMutation, CreateProjectMutationVariables } from "@/types/graphql";
+import { useCreateProjectAdmin } from "@/utils/hooks";
 
 import ProjectCreate from "@/components/AdminLayout/Pages/Projects/ProjectCreate";
 import type Lang from "@/lang/typeLang";
@@ -51,16 +52,12 @@ let mockGetSkillsListQueryData: SkillsListData = {
   },
 };
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateProjectAdmin: jest.fn(),
+}));
+
 jest.mock("@/types/graphql", () => ({
-  useCreateProjectMutation: jest.fn(
-    (): [
-      jest.Mock<Promise<CreateProjectMutationResponse>, [{ variables: CreateProjectMutationVariables }]>,
-      { loading: boolean }
-    ] => [
-      mockCreateProjectMutationFn,
-      { loading: false },
-    ]
-  ),
   useGetSkillsListQuery: jest.fn(
     (): { data: SkillsListData; loading: boolean } => ({
       data: mockGetSkillsListQueryData,
@@ -192,7 +189,14 @@ describe("ProjectCreate", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
     mockCreateProjectMutationFn.mockReset();
+    mockCreateProjectMutationFn.mockResolvedValue({
+      data: { createProject: { code: 200 } },
+    } as CreateProjectMutationResponse);
     mockShowAlert.mockReset();
+    (useCreateProjectAdmin as jest.Mock).mockReturnValue({
+      createProject: mockCreateProjectMutationFn,
+      loading: false,
+    });
     mockGetSkillsListQueryData = {
       listSkillCategories: {
         categories: [

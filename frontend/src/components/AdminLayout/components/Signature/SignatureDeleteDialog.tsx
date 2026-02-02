@@ -2,8 +2,7 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
-import { useMutation } from "@apollo/client";
-import { DELETE_SIGNATURE } from "@/requetes/mutations/signatures.mutations";
+import { useDeleteSignatureAdmin } from "@/utils/hooks";
 import { FetchResult } from "@apollo/client/link/core/types";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 
@@ -21,7 +20,7 @@ const SignatureDeleteDialog: React.FC<SignatureDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [deleteSignatureMutation] = useMutation(DELETE_SIGNATURE);
+  const [deleteSignatureMutation] = useDeleteSignatureAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -31,9 +30,11 @@ const SignatureDeleteDialog: React.FC<SignatureDeleteDialogProps> = ({
     setLoading(true);
 
     try {
-      const { data }: FetchResult = await deleteSignatureMutation({
-        variables: { id: signatureId },
+      const result = await deleteSignatureMutation({
+        id: signatureId,
       });
+      
+      const { data } = result;
 
       if (data?.deleteSignature?.code === 200) {
         showAlert("success", translations.messageAdminSignatureDeleteSuccess);

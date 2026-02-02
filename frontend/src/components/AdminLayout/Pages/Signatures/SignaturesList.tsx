@@ -2,16 +2,14 @@ import React, { ReactElement, useState } from "react";
 import SignatureTable, { SignatureRow } from "../../components/Signature/SignatureTable";
 import SignatureEditModal from "../../components/Signature/SignatureEditModal";
 import SignatureDeleteDialog from "../../components/Signature/SignatureDeleteDialog";
-import { useGetSignaturesListQuery, GetSignaturesListQuery } from "@/types/graphql";
+import { useListSignaturesAdmin } from "@/utils/hooks";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import TextAdmin from "../../components/Text/TextAdmin";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 
 const SignaturesList = (): ReactElement => {
-  const { data, loading, error, refetch } = useGetSignaturesListQuery<GetSignaturesListQuery>({
-    fetchPolicy: "cache-and-network",
-  });
+  const { data, loading, error, refetch } = useListSignaturesAdmin();
 
   const { translations }: { translations: Lang } = useLang();
 

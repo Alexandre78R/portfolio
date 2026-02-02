@@ -12,10 +12,10 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useCreateSocialMutation,
   CreateSocialInput,
   CreateSocialMutation,
 } from "@/types/graphql";
+import { useCreateSocialAdmin } from "@/utils/hooks";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import { FetchResult } from "@apollo/client/link/core/types";
 
@@ -33,7 +33,7 @@ const SocialCreate: React.FC = (): ReactElement => {
 
   const [form, setForm]: [CreateSocialInput, React.Dispatch<React.SetStateAction<CreateSocialInput>>] = useState<CreateSocialInput>(defaultForm);
   const [createSocialMutation, { loading }] =
-    useCreateSocialMutation();
+    useCreateSocialAdmin();
 
   const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
@@ -65,8 +65,8 @@ const SocialCreate: React.FC = (): ReactElement => {
         tab: Number(form.tab),
       };
 
-      const res: FetchResult<CreateSocialMutation> = await createSocialMutation({
-        variables: { data: payload },
+      const res = await createSocialMutation({
+        data: payload,
       });
 
       const response= res.data?.createSocial;

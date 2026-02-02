@@ -11,13 +11,10 @@ import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import {
-  useCreateEducationMutation,
-  CreateEducationInput,
-  CreateEducationMutation,
-} from "@/types/graphql";
+import { useCreateEducationAdmin } from "@/utils/hooks";
+import { CreateEducationInput, CreateEducationMutation } from "@/types/graphql";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
-import { FetchResult } from "@apollo/client";
+import { FetchResult, ApolloError } from "@apollo/client";
 
 const defaultForm: CreateEducationInput = {
   school: "",
@@ -43,7 +40,7 @@ const EducationCreate: React.FC = (): ReactElement => {
 
   const [form, setForm]: [CreateEducationInput, React.Dispatch<React.SetStateAction<CreateEducationInput>>] = useState<CreateEducationInput>(defaultForm);
   const [createEducationMutation, { loading }] =
-    useCreateEducationMutation();
+    useCreateEducationAdmin();
 
   const handleChange: (e: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
     e:
@@ -76,8 +73,8 @@ const EducationCreate: React.FC = (): ReactElement => {
         month: form.month ? Number(form.month) : 0,
       };
 
-      const res: FetchResult<CreateEducationMutation> = await createEducationMutation({
-        variables: { data: payload },
+      const res = await createEducationMutation({
+        data: payload,
       });
 
       const response = res.data?.createEducation;

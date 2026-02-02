@@ -93,11 +93,14 @@ jest.mock("@/components/Loading/Loading", (): object => ({
 
 const mockUpdateProjectMutation: jest.Mock<Promise<any>, any[]> = jest.fn();
 
+jest.mock("@/utils/hooks", (): object => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateProjectAdmin: jest.fn<[jest.Mock<Promise<any>, any[]>, { loading: boolean }], []>(),
+  useListSkillsAdmin: jest.fn(),
+}));
+
 jest.mock("@/types/graphql", (): object => ({
-  useUpdateProjectMutation: (): [jest.Mock<Promise<any>, any[]>, { loading: boolean }] => [
-    mockUpdateProjectMutation,
-    { loading: false },
-  ],
+  ...jest.requireActual("@/types/graphql"),
   useGetSkillsListQuery: jest.fn(),
 }));
 
@@ -124,6 +127,21 @@ describe("ProjectEditModal", (): void => {
     
     mockUpdateProjectMutation.mockResolvedValue({
       data: { updateProject: { code: 200, message: "Updated" } },
+    });
+    
+    const { useUpdateProjectAdmin, useListSkillsAdmin } = require("@/utils/hooks");
+    (useUpdateProjectAdmin as jest.Mock).mockReturnValue([mockUpdateProjectMutation, { loading: false }]);
+    (useListSkillsAdmin as jest.Mock).mockReturnValue({
+      data: {
+        listSkillCategories: {
+          categories: [],
+          code: 200,
+          message: "Success",
+        },
+      },
+      loading: false,
+      error: undefined,
+      refetch: jest.fn(),
     });
     
     const { useGetSkillsListQuery } = require("@/types/graphql");

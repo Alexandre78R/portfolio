@@ -1,18 +1,22 @@
 ﻿import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import BackUpList, { type BackupFileInfo }  from "@/components/AdminLayout/Pages/BackUp/BackUpList";
-import type Lang from "@/lang/typeLang";
+import type Lang from "@/lang/typeLang\";\nimport { useGenerateBackupAdmin, useDeleteBackupAdmin } from \"@/utils/hooks";
 
 const refetchMock: jest.Mock<Promise<void>, []> = jest.fn();
 const generateBackupMock: jest.Mock<Promise<any>, []> = jest.fn();
 const deleteBackupMock: jest.Mock<Promise<any>, []> = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useGenerateBackupAdmin: jest.fn(),
+  useDeleteBackupAdmin: jest.fn(),
+}));
 
 jest.mock("@/types/graphql", () => {
   const mockUseGetBackupsListQuery = jest.fn();
   (global as any).__mockUseGetBackupsListQuery = mockUseGetBackupsListQuery;
   return {
     useGetBackupsListQuery: mockUseGetBackupsListQuery,
-    useGenerateDatabaseBackupMutation: () => [generateBackupMock],
-    useDeleteBackupFileMutation: () => [deleteBackupMock],
   };
 });
 
@@ -115,6 +119,16 @@ describe("BackUpList Page", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    generateBackupMock.mockResolvedValue({ data: { generateBackup: { success: true } } });
+    deleteBackupMock.mockResolvedValue({ data: { deleteBackup: { success: true } } });
+    (useGenerateBackupAdmin as jest.Mock).mockReturnValue({
+      generateBackup: generateBackupMock,
+      loading: false,
+    });
+    (useDeleteBackupAdmin as jest.Mock).mockReturnValue({
+      deleteBackup: deleteBackupMock,
+      loading: false,
+    });
   });
 
   it("renders loading state", (): void => {

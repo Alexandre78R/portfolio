@@ -45,9 +45,14 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
 const mockUpdateMutation: jest.Mock<any, any[]> = jest.fn();
 const mockUseGetExperienceQuery: jest.Mock = jest.fn();
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateExperienceAdmin: jest.fn(() => [mockUpdateMutation] as const),
+}));
+
 jest.mock("@/types/graphql", () => ({
   __esModule: true,
-  useUpdateExperienceMutation: jest.fn(() => [mockUpdateMutation, {}] as const),
+  ...jest.requireActual("@/types/graphql"),
   useGetExperienceByIdQuery: jest.fn(() => mockUseGetExperienceQuery()),
 }));
 
@@ -119,6 +124,10 @@ describe("ExperienceEditModal Component", () => {
     } as any);
 
     mockUpdateMutation.mockResolvedValue({ data: { updateExperience: { code: 200 } } });
+    
+    const { useUpdateExperienceAdmin } = require("@/utils/hooks");
+    (useUpdateExperienceAdmin as jest.Mock).mockReturnValue([mockUpdateMutation]);
+    
     jest.clearAllMocks();
   });
 

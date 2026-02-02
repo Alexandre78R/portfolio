@@ -4,9 +4,10 @@ import "@testing-library/jest-dom";
 import ExperienceDeleteDialog from "@/components/AdminLayout/components/Experience/ExperienceDeleteDialog";
 import {
   type GetExperiencesListQuery,
-  DeleteExperienceDocument,
+  DeleteExperienceMutation,
 } from "@/types/graphql";
 import type Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(() => ({
@@ -49,21 +50,15 @@ jest.mock("@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog", () 
   )),
 }));
 
-const createMocks = (mutationResult: any = { code: 200 }) => [
-  {
-    request: {
-      query: DeleteExperienceDocument,
-      variables: {
-        id: 42,
-      },
-    },
-    result: {
-      data: {
-        deleteExperience: mutationResult,
-      },
-    },
-  },
-];
+const mockDeleteExperienceMutation: jest.Mock<
+  Promise<FetchResult<DeleteExperienceMutation>>,
+  [{ variables: { id: number } }]
+> = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteExperienceAdmin: jest.fn<[typeof mockDeleteExperienceMutation], []>(),
+}));
 
 describe("ExperienceDeleteDialog Component", (): void => {
   const mockOnClose: jest.Mock = jest.fn();
@@ -74,6 +69,13 @@ describe("ExperienceDeleteDialog Component", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    mockDeleteExperienceMutation.mockClear();
+    mockDeleteExperienceMutation.mockResolvedValue({
+      data: { deleteExperience: { code: 200 } },
+    });
+    
+    const { useDeleteExperienceAdmin } = require("@/utils/hooks");
+    (useDeleteExperienceAdmin as jest.Mock).mockReturnValue([mockDeleteExperienceMutation]);
   });
 
   test("renders nothing if experienceId is null", (): void => {
@@ -95,8 +97,7 @@ describe("ExperienceDeleteDialog Component", (): void => {
         experienceId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     const confirmDialog: HTMLElement = screen.getByTestId("confirm-dialog");
@@ -123,8 +124,7 @@ describe("ExperienceDeleteDialog Component", (): void => {
         experienceId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks({ code: 200 }) }
+      />
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
@@ -141,13 +141,16 @@ describe("ExperienceDeleteDialog Component", (): void => {
   });
 
   test("calls delete mutation and handles non-200 code as error", async (): Promise<void> => {
+    mockDeleteExperienceMutation.mockResolvedValueOnce({
+      data: { deleteExperience: { code: 500 } },
+    });
+    
     render(
       <ExperienceDeleteDialog
         experienceId={42}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks({ code: 500 }) }
+      />
     );
 
     const confirmButton: HTMLElement = screen.getByTestId("confirm-button");
@@ -169,8 +172,7 @@ describe("ExperienceDeleteDialog Component", (): void => {
         experienceId={5}
         onClose={mockOnClose}
         onRefresh={mockOnRefresh}
-      />,
-      { mocks: createMocks() }
+      />
     );
 
     const cancelButton: HTMLElement = screen.getByTestId("cancel-button");

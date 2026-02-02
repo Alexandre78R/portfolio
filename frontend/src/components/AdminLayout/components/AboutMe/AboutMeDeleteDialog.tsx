@@ -1,12 +1,11 @@
 import { ReactElement } from "react";
-import { useMutation } from "@apollo/client";
-import { DELETE_ABOUT_ME } from "@/requetes/mutations/aboutme.mutations";
 import ConfirmDialog from "@/components/AdminLayout/components/ConfirmDialog/ConfirmDialog";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import { FetchResult } from "@apollo/client/link/core/types";
 import { DeleteAboutMeMutation } from "@/types/graphql";
+import { useDeleteAboutMeAdmin } from "@/utils/hooks";
 
 interface AboutMeDeleteDialogProps {
   aboutMeId: number | null;
@@ -19,10 +18,7 @@ const AboutMeDeleteDialog: React.FC<AboutMeDeleteDialogProps> = ({
   onClose,
   onRefresh,
 }: AboutMeDeleteDialogProps): ReactElement | null => {
-  const [deleteAboutMeMutation] = useMutation<
-    DeleteAboutMeMutation,
-    { id: number }
-  >(DELETE_ABOUT_ME);
+  const [deleteAboutMeMutation] = useDeleteAboutMeAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
   const { translations }: { translations: Lang } = useLang();
@@ -31,8 +27,8 @@ const AboutMeDeleteDialog: React.FC<AboutMeDeleteDialogProps> = ({
 
   const handleConfirm: () => Promise<void> = async (): Promise<void> => {
     try {
-      const result: FetchResult<DeleteAboutMeMutation> = await deleteAboutMeMutation({
-        variables: { id: aboutMeId },
+      const result = await deleteAboutMeMutation({
+        id: aboutMeId,
       });
       const { data } = result;
 

@@ -1,14 +1,10 @@
 ﻿import React, { ReactElement } from "react";
-import { render, screen, fireEvent, waitFor, act } from '@test-utils';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import "@testing-library/jest-dom";
 
 import SocialEditModal from "@/components/AdminLayout/components/Social/SocialEditModal";
 import type { SocialRow } from "@/components/AdminLayout/components/Social/SocialTable";
 import type Lang from "@/lang/typeLang";
-import {
-  GetSocialByIdDocument,
-  UpdateSocialDocument,
-} from "@/types/graphql";
 
 const translationsMock: Lang = {
   messageAdminSocialEditTitle: "Edit Social",
@@ -41,59 +37,18 @@ jest.mock("@/components/ToastCustom/CustomToast", () => ({
   default: jest.fn(() => ({ showAlert: mockShowAlert })),
 }));
 
-const createGetSocialMock = (socialData: SocialRow = mockSocialData, delayMs?: number) => ({
-  request: {
-    query: GetSocialByIdDocument,
-    variables: { id: socialData.id },
-  },
-  result: {
-    data: {
-      getSocialById: {
-        __typename: "SocialResponse",
-        code: 200,
-        message: "Success",
-        social: {
-          __typename: "Social",
-          id: String(socialData.id),
-          title: socialData.title,
-          url: socialData.url,
-          tab: socialData.tab,
-        },
-      },
-    },
-  },
-  delay: delayMs,
-});
+const mockUpdateSocialMutation: jest.Mock = jest.fn();
+const mockGetSocialByIdQuery: jest.Mock = jest.fn();
 
-const createUpdateSocialMock = (code: number = 200) => ({
-  request: {
-    query: UpdateSocialDocument,
-    variables: {
-      id: mockSocialData.id,
-      data: {
-        title: mockSocialData.title,
-        url: mockSocialData.url,
-        tab: mockSocialData.tab,
-      },
-    },
-  },
-  result: {
-    data: {
-      updateSocial: {
-        __typename: "SocialResponse",
-        code,
-        message: code === 200 ? "Updated" : "Update failed",
-        social: {
-          __typename: "Social",
-          id: String(mockSocialData.id),
-          title: mockSocialData.title,
-          url: mockSocialData.url,
-          tab: mockSocialData.tab,
-        },
-      },
-    },
-  },
-});
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUpdateSocialAdmin: jest.fn<[typeof mockUpdateSocialMutation], []>(),
+}));
+
+jest.mock("@/types/graphql", () => ({
+  ...jest.requireActual("@/types/graphql"),
+  useGetSocialByIdQuery: jest.fn(() => mockGetSocialByIdQuery()),
+}));
 
 jest.mock("@/components/ModalCustom/ModalCustom", () => ({
   __esModule: true,
@@ -183,6 +138,29 @@ describe("SocialEditModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockShowAlert.mockClear();
+    
+    const { useUpdateSocialAdmin } = require("@/utils/hooks");
+    (useUpdateSocialAdmin as jest.Mock).mockReturnValue([mockUpdateSocialMutation]);
+    
+    mockGetSocialByIdQuery.mockReturnValue({
+      data: {
+        getSocialById: {
+          code: 200,
+          message: "Success",
+          social: {
+            id: String(mockSocialData.id),
+            title: mockSocialData.title,
+            url: mockSocialData.url,
+            tab: mockSocialData.tab,
+          },
+        },
+      },
+      loading: false,
+    });
+    
+    mockUpdateSocialMutation.mockResolvedValue({
+      data: { updateSocial: { code: 200, message: "Updated" } },
+    });
   });
 
   test("should return null when social is null", () => {
@@ -198,13 +176,14 @@ describe("SocialEditModal", () => {
   });
 
   test("should display loading state", () => {
+    mockGetSocialByIdQuery.mockReturnValue({ data: null, loading: true });
+    
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />,
-      { mocks: [createGetSocialMock(mockSocialData, 1000)] }
+      />
     );
 
     expect(screen.getByTestId("loading")).toBeInTheDocument();
@@ -216,8 +195,7 @@ describe("SocialEditModal", () => {
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />,
-      { mocks: [createGetSocialMock()] }
+      />
     );
 
     await waitFor(() => {
@@ -232,8 +210,7 @@ describe("SocialEditModal", () => {
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={jest.fn()}
-      />,
-      { mocks: [createGetSocialMock()] }
+      />
     );
 
     await waitFor(() => {
@@ -256,8 +233,7 @@ describe("SocialEditModal", () => {
         social={mockSocialData}
         onClose={mockOnClose}
         onRefresh={mockRefresh}
-      />,
-      { mocks: [createGetSocialMock(), createUpdateSocialMock(200)] }
+      />
     );
 
     await waitFor(() => {
@@ -280,13 +256,16 @@ describe("SocialEditModal", () => {
   test("should show error message on failed update", async () => {
     const mockRefresh: jest.Mock<Promise<void>, []> = jest.fn().mockResolvedValue(undefined);
 
+    mockUpdateSocialMutation.mockResolvedValueOnce({
+      data: { updateSocial: { code: 400, message: "Update failed" } },
+    });
+
     render(
       <SocialEditModal
         social={mockSocialData}
         onClose={jest.fn()}
         onRefresh={mockRefresh}
-      />,
-      { mocks: [createGetSocialMock(), createUpdateSocialMock(400)] }
+      />
     );
 
     await waitFor(() => {

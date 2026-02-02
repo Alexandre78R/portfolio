@@ -3,16 +3,8 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SkillCategoryDeleteDialog from "@/components/AdminLayout/components/SkillCategory/SkillCategoryDeleteDialog";
 import Lang from "@/lang/typeLang";
-import { useDeleteSkillCategoryMutation } from "@/types/graphql";
-
-interface DeleteCategoryResponse {
-  data: {
-    deleteCategory: {
-      code: number;
-      message: string;
-    };
-  };
-}
+import { DeleteSkillCategoryMutation } from "@/types/graphql";
+import { FetchResult } from "@apollo/client";
 
 interface LangContextType {
   translations: Lang;
@@ -54,13 +46,14 @@ jest.mock("@/components/ToastCustom/CustomToast", (): object => ({
   }),
 }));
 
-const mockDeleteCategoryMutation: jest.Mock<
-  Promise<DeleteCategoryResponse>,
-  [any]
+const mockDeleteSkillCategoryMutation: jest.Mock<
+  Promise<FetchResult<DeleteSkillCategoryMutation>>,
+  [{ variables: { id: number } }]
 > = jest.fn();
 
-jest.mock("@/types/graphql", (): object => ({
-  useDeleteSkillCategoryMutation: jest.fn(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteSkillCategoryAdmin: jest.fn<[typeof mockDeleteSkillCategoryMutation], []>(),
 }));
 
 jest.mock("@/context/Lang/LangContext", (): object => ({
@@ -92,12 +85,13 @@ describe("SkillCategoryDeleteDialog", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
-    mockDeleteCategoryMutation.mockResolvedValue({
+    mockDeleteSkillCategoryMutation.mockClear();
+    mockDeleteSkillCategoryMutation.mockResolvedValue({
       data: { deleteCategory: { code: 200, message: "Deleted" } },
     });
-    (useDeleteSkillCategoryMutation as jest.Mock).mockReturnValue([
-      mockDeleteCategoryMutation,
-    ]);
+    
+    const { useDeleteSkillCategoryAdmin } = require("@/utils/hooks");
+    (useDeleteSkillCategoryAdmin as jest.Mock).mockReturnValue([mockDeleteSkillCategoryMutation]);
   });
 
   it("should not render when categoryId is null", (): void => {
@@ -152,7 +146,7 @@ describe("SkillCategoryDeleteDialog", (): void => {
     fireEvent.click(confirmBtn);
 
     await waitFor((): void => {
-      expect(mockDeleteCategoryMutation).toHaveBeenCalled();
+      expect(mockDeleteSkillCategoryMutation).toHaveBeenCalled();
     });
   });
 

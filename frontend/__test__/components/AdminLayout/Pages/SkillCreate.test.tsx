@@ -4,7 +4,7 @@ import "@testing-library/jest-dom";
 import type { CreateSkillMutation, CreateSkillMutationVariables, GetSkillsListQuery } from "@/types/graphql";
 import { AlertType } from "@/components/ToastCustom/CustomToast";
 import SkillCreate from "@/components/AdminLayout/Pages/Skills/SkillCreate";
-import { useCreateSkillMutation } from "@/types/graphql";
+import { useCreateSkillAdmin } from "@/utils/hooks";
 import type Lang from "@/lang/typeLang";
 
 type SkillListData = GetSkillsListQuery;
@@ -216,14 +216,13 @@ const mockCreateMutation: jest.Mock<
 
 const mockGetSkillsListQuery: jest.Mock<QueryResult<SkillListData>, []> = jest.fn();
 
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useCreateSkillAdmin: jest.fn(),
+}));
+
 jest.mock("@/types/graphql", () => ({
   __esModule: true,
-  useCreateSkillMutation: jest.fn(
-    (): [typeof mockCreateMutation, { loading: boolean }] => [
-      mockCreateMutation,
-      { loading: false },
-    ]
-  ),
   useGetSkillsListQuery: jest.fn((): QueryResult<SkillListData> =>
     mockGetSkillsListQuery()
   ),
@@ -314,6 +313,13 @@ describe("SkillCreate", (): void => {
       data: mockCategoriesData,
       loading: false,
       error: null,
+    });
+    mockCreateMutation.mockResolvedValue({
+      data: { createSkill: { skill: {} } },
+    } as CreateSkillMutationResponse);
+    (useCreateSkillAdmin as jest.Mock).mockReturnValue({
+      createSkill: mockCreateMutation,
+      loading: false,
     });
   });
 
@@ -506,10 +512,10 @@ describe("SkillCreate", (): void => {
   });
 
   test("disables submit button while loading", async (): Promise<void> => {
-    (useCreateSkillMutation as jest.Mock).mockReturnValueOnce([
-      mockCreateMutation,
-      { loading: true },
-    ]);
+    (useCreateSkillAdmin as jest.Mock).mockReturnValueOnce({
+      createSkill: mockCreateMutation,
+      loading: true,
+    });
 
     render(<SkillCreate />);
 

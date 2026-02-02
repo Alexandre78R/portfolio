@@ -3,10 +3,10 @@ import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import {
-  useDeleteSkillMutation,
   GetSkillsListQuery,
   DeleteSkillMutation,
 } from "@/types/graphql";
+import { useDeleteSkillAdmin } from "@/utils/hooks";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { FetchResult } from "@apollo/client";
 
@@ -26,7 +26,7 @@ const SkillDeleteDialog: React.FC<SkillDeleteDialogProps> = ({
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const [deleteSkillMutation] = useDeleteSkillMutation();
+  const [deleteSkillMutation] = useDeleteSkillAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -36,8 +36,8 @@ const SkillDeleteDialog: React.FC<SkillDeleteDialogProps> = ({
     setLoading(true);
 
     try {
-      const result: FetchResult<DeleteSkillMutation> = await deleteSkillMutation({
-        variables: { id: skillId },
+      const result = await deleteSkillMutation({
+        id: skillId,
       });
       const { data } = result;
 

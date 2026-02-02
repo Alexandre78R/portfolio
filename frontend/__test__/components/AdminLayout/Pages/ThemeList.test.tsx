@@ -3,7 +3,8 @@ import { render, screen, fireEvent, waitFor, within } from '@testing-library/rea
 import "@testing-library/jest-dom";
 import ThemeList from "@/components/AdminLayout/Pages/Themes/ThemesList";
 import type { ThemeRow } from "@/components/AdminLayout/components/Theme/ThemeTable";
-import { useGetThemesListQuery, useDeleteThemeMutation } from "@/types/graphql";
+import { useGetThemesListQuery } from "@/types/graphql";
+import { useDeleteThemeAdmin } from "@/utils/hooks";
 import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -36,7 +37,11 @@ jest.mock("@/components/AdminLayout/components/Theme/ThemeDeleteDialog", () => (
 
 jest.mock("@/types/graphql", () => ({
   useGetThemesListQuery: jest.fn(),
-  useDeleteThemeMutation: jest.fn(),
+}));
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteThemeAdmin: jest.fn(),
 }));
 
 jest.mock("@/components/Loading/LoadingCustom", () => ({
@@ -50,7 +55,11 @@ describe("ThemeList Component", () => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
-    (useDeleteThemeMutation as jest.Mock).mockReturnValue([mockDelete, {}]);
+    mockDelete.mockResolvedValue({ data: { deleteTheme: { success: true } } });
+    (useDeleteThemeAdmin as jest.Mock).mockReturnValue({
+      deleteTheme: mockDelete,
+      loading: false,
+    });
   });
 
   test("renders loading state correctly", (): void => {

@@ -2,7 +2,8 @@ import React, { ReactElement, useState } from "react";
 import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useDeleteExperienceMutation, GetExperiencesListQuery, DeleteExperienceMutation  } from "@/types/graphql";
+import { GetExperiencesListQuery, DeleteExperienceMutation } from "@/types/graphql";
+import { useDeleteExperienceAdmin } from "@/utils/hooks";
 import { useLang } from "@/context/Lang/LangContext";
 import { FetchResult } from "@apollo/client/link/core/types";
 
@@ -16,7 +17,7 @@ const ExperienceDeleteDialog: React.FC<ExperienceDeleteDialogProps> = ({ experie
   
   const { translations }: { translations: Lang } = useLang();
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
-  const [deleteExperienceMutation] = useDeleteExperienceMutation();
+  const [deleteExperienceMutation] = useDeleteExperienceAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
     CustomToast();
 
@@ -24,7 +25,7 @@ const ExperienceDeleteDialog: React.FC<ExperienceDeleteDialogProps> = ({ experie
     if (!experienceId) return;
     setLoading(true);
     try {
-      const result: FetchResult<DeleteExperienceMutation> = await deleteExperienceMutation({ variables: { id: experienceId } });
+      const result = await deleteExperienceMutation({ id: experienceId });
       const { data } = result;
       if (data?.deleteExperience?.code === 200) {
         showAlert("success", translations.messageAdminExperienceDeleteSuccess);

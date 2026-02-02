@@ -1,7 +1,7 @@
 ﻿import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CVUpdate from "@/components/AdminLayout/Pages/CV/CVUpdate";
 import type Lang from "@/lang/typeLang";
-import { useUploadCvMutation } from "@/types/graphql";
+import { useUploadCVAdmin } from "@/utils/hooks";
 
 const uploadCvMock: jest.Mock<
   Promise<{ data?: { uploadCV?: { code: number; message: string } } }>,
@@ -10,8 +10,9 @@ const uploadCvMock: jest.Mock<
 
 const showAlertMock: jest.Mock<void, ["success" | "error", string]> = jest.fn();
 
-jest.mock("@/types/graphql", () => ({
-  useUploadCvMutation: jest.fn(),
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useUploadCVAdmin: jest.fn(),
 }));
 
 jest.mock("@/components/ToastCustom/CustomToast", () => ({
@@ -56,7 +57,11 @@ jest.mock("@/components/Button/Button", () => ({
 describe("CVUpdate Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    (useUploadCvMutation as jest.Mock).mockReturnValue([uploadCvMock]);
+    uploadCvMock.mockResolvedValue({ data: { uploadCV: { code: 200, message: "Success" } } });
+    (useUploadCVAdmin as jest.Mock).mockReturnValue({
+      uploadCV: uploadCvMock,
+      loading: false,
+    });
   });
 
   it("renders initial state", () => {
@@ -92,7 +97,7 @@ describe("CVUpdate Component", () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => {
-      expect(uploadCvMock).toHaveBeenCalledWith({ variables: { file } });
+      expect(uploadCvMock).toHaveBeenCalledWith(file);
       expect(showAlertMock).toHaveBeenCalledWith("success", "CV uploaded successfully");
     });
   });

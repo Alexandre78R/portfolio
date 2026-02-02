@@ -12,14 +12,12 @@ import { useLang } from "@/context/Lang/LangContext";
 import Lang from "@/lang/typeLang";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
-  useSendMessageMutation,
-  SendMessageMutation,
+  useSendMessageAdmin,
+  useListSignaturesAdmin,
   SendMessageMutationVariables,
-  useGetSignaturesListQuery,
-} from "@/types/graphql";
+} from "@/utils/hooks";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import HtmlEditor from "../../components/Editor/HtmlEditor";
-import { FetchResult } from "@apollo/client";
 import TextAdmin from "../../components/Text/TextAdmin";
 
 interface MessageFormState {
@@ -27,12 +25,6 @@ interface MessageFormState {
   readonly content: string;
   readonly recipients: string;
   readonly selectedSignatureId: string;
-}
-
-interface SignatureData {
-  readonly id: number | string;
-  readonly name: string;
-  readonly description: string;
 }
 
 const DEFAULT_FORM_STATE: MessageFormState = {
@@ -51,26 +43,9 @@ const MessageCreate: React.FC = (): ReactElement => {
   const [contentWithoutSignature, setContentWithoutSignature]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
   const [appliedSignatureId, setAppliedSignatureId]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
   const isApplyingSignature: React.MutableRefObject<boolean> = React.useRef<boolean>(false);
-  const [sendMessageMutation, { loading }] = useSendMessageMutation();
-  const { data: signaturesData } = useGetSignaturesListQuery({
-    fetchPolicy: "cache-and-network",
-  });
-
-  const signatures: SignatureData[] = React.useMemo(
-    (): SignatureData[] => {
-      if (!signaturesData?.listAllSignatures?.signatures) {
-        return [];
-      }
-      return (signaturesData.listAllSignatures.signatures as any[])
-        .filter((sig): sig is NonNullable<typeof sig> => !!sig)
-        .map((sig) => ({
-          id: Number(sig.id),
-          name: sig.name,
-          description: sig.description,
-        }));
-    },
-    [signaturesData]
-  );
+  
+  const { sendMessage, loading } = useSendMessageAdmin();
+  const { signatures } = useListSignaturesAdmin();
 
   const signatureOptions: readonly SelectOption<string>[] = React.useMemo(
     (): readonly SelectOption<string>[] => [
@@ -219,10 +194,7 @@ const MessageCreate: React.FC = (): ReactElement => {
         recipients: form.recipients.trim(),
       };
 
-      const result: FetchResult<SendMessageMutation> =
-        await sendMessageMutation({
-          variables,
-        });
+      const result = await sendMessage(variables);
 
       const response = result?.data?.sendMessage;
 

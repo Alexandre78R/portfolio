@@ -3,8 +3,9 @@ import { render, screen, fireEvent, waitFor } from '@test-utils';
 import "@testing-library/jest-dom";
 import UserDeleteDialog from "@/components/AdminLayout/components/User/UserDeleteDialog";
 import { useLang } from "@/context/Lang/LangContext";
-import { DeleteUserDocument } from "@/types/graphql";
+import { DeleteUserMutation } from "@/types/graphql";
 import type Lang from "@/lang/typeLang";
+import { FetchResult } from "@apollo/client";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(),
@@ -46,21 +47,15 @@ jest.mock(
   })
 );
 
-const createMocks = (mutationResult: any = { code: 200 }) => [
-  {
-    request: {
-      query: DeleteUserDocument,
-      variables: {
-        id: 1,
-      },
-    },
-    result: {
-      data: {
-        deleteUser: mutationResult,
-      },
-    },
-  },
-];
+const mockDeleteUserMutation: jest.Mock<
+  Promise<FetchResult<DeleteUserMutation>>,
+  [{ variables: { id: string } }]
+> = jest.fn();
+
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useDeleteUserAdmin: jest.fn<[typeof mockDeleteUserMutation], []>(),
+}));
 
 describe("UserDeleteDialog Component", (): void => {
   const mockOnClose: jest.Mock<() => void> = jest.fn();
@@ -81,6 +76,10 @@ describe("UserDeleteDialog Component", (): void => {
   beforeEach((): void => {
     jest.clearAllMocks();
     (useLang as jest.Mock).mockReturnValue({ translations });
+    (mockDeleteUserMutation as jest.Mock).mockClear();
+    
+    const { useDeleteUserAdmin } = require("@/utils/hooks");
+    (useDeleteUserAdmin as jest.Mock).mockReturnValue([mockDeleteUserMutation]);
   });
 
   test("renders null if userId is null", (): void => {
@@ -91,7 +90,7 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("renders ConfirmDialog with correct texts", (): void => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks() });
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
 
     expect(screen.getByTestId("confirm-dialog")).toBeInTheDocument();
     expect(screen.getByTestId("dialog-title")).toHaveTextContent(
@@ -109,7 +108,16 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("calls deleteUserMutation and shows success toast on confirm", async (): Promise<void> => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks({ code: 200 }) });
+    mockDeleteUserMutation.mockResolvedValueOnce({
+      data: {
+        deleteUser: {
+          code: 200,
+          message: "Success",
+        },
+      },
+    });
+
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
     const confirmButton: HTMLButtonElement = screen.getByTestId("confirm-button") as HTMLButtonElement;
     fireEvent.click(confirmButton);
 
@@ -124,7 +132,16 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("shows error toast if server returns error", async (): Promise<void> => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks({ code: 500 }) });
+    mockDeleteUserMutation.mockResolvedValueOnce({
+      data: {
+        deleteUser: {
+          code: 500,
+          message: "Error",
+        },
+      },
+    });
+
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
     const confirmButton: HTMLButtonElement = screen.getByTestId("confirm-button") as HTMLButtonElement;
     fireEvent.click(confirmButton);
 
@@ -138,7 +155,7 @@ describe("UserDeleteDialog Component", (): void => {
   });
 
   test("calls onClose when cancel button is clicked", (): void => {
-    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />, { mocks: createMocks() });
+    render(<UserDeleteDialog userId="1" onClose={mockOnClose} onRefresh={mockOnRefresh} />);
     const cancelButton: HTMLButtonElement = screen.getByTestId("cancel-button") as HTMLButtonElement;
     fireEvent.click(cancelButton);
     expect(mockOnClose).toHaveBeenCalled();
