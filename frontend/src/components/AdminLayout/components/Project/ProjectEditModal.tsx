@@ -7,11 +7,12 @@ import ButtonCustom from "@/components/Button/Button";
 import TextAdmin from "@/components/AdminLayout/components/Text/TextAdmin";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
-import { useUpdateProjectAdmin, useListSkillsAdmin } from "@/utils/hooks";
+import { useUpdateProjectAdmin, useListSkillsAdmin, useUploadProjectMediaAdmin } from "@/utils/hooks";
 import type { ProjectRow } from "./ProjectTable";
 import type Lang from "@/lang/typeLang";
 import { FetchResult, ApolloError } from "@apollo/client";
 import { UpdateProjectInput, UpdateProjectMutation, GetSkillsListQuery } from "@/types/graphql";
+import { Upload, X } from "lucide-react";
 
 interface ProjectEditModalProps {
   project: ProjectRow | null;
@@ -40,9 +41,13 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
   onRefresh,
 }: ProjectEditModalProps): ReactElement | null => {
   const [updateProjectMutation, { loading }] = useUpdateProjectAdmin();
+  const [uploadProjectMedia] = useUploadProjectMediaAdmin();
   const { data: skillsData } = useListSkillsAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
+  
+  const [selectedFile, setSelectedFile]: [File | null, React.Dispatch<React.SetStateAction<File | null>>] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview]: [string | null, React.Dispatch<React.SetStateAction<string | null>>] = useState<string | null>(null);
 
   const typeDisplayOptions: SelectOption<string>[] = [
     { label: "Image", value: "image" },
@@ -103,6 +108,29 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
     setForm((prev) => ({ ...prev, skillIds: selectedSkills }));
   }, []);
 
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (e: ChangeEvent<HTMLInputElement>): void => {
+      const file: File | undefined = e.target.files?.[0];
+      if (!file) return;
+
+      setSelectedFile(file);
+
+      const reader: FileReader = new FileReader();
+      reader.onloadend = () => {
+        setMediaPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    },
+    []
+  );
+
+  const handleRemoveFile: React.MouseEventHandler<HTMLButtonElement> = useCallback((): void => {
+    setSelectedFile(null);
+    setMediaPreview(null);
+    const fileInput: HTMLInputElement | null = document.getElementById("media-upload-edit") as HTMLInputElement;
+    if (fileInput) fileInput.value = "";
+  }, []);
+
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -110,6 +138,15 @@ const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
       if (!project) return;
 
       try {
+        if (selectedFile) {
+          const isVideo: boolean = selectedFile.type.startsWith("video/");
+          const isImage: boolean = selectedFile.type.startsWith("image/");
+          if (!isVideo && !isImage) {
+            showAlert("error", "Type de fichier non autorisé");
+            return;
+          }
+        }
+
         const submitData: UpdateProjectInput = {
           id: project.id,
           title: form.title,
@@ -128,6 +165,21 @@ const res = await updateProjectMutation({
         const response: UpdateProjectMutation["updateProject"] | undefined = res.data?.updateProject;
 
         if (response?.code === 200) {
+          if (selectedFile) {
+            const uploadResult = await uploadProjectMedia({
+              projectId: Number(project.id),
+              file: selectedFile,
+            });
+            if (uploadResult.data?.uploadProjectMedia.code !== 200) {
+              showAlert(
+                "error",
+                uploadResult.data?.uploadProjectMedia.message ||
+                  "Erreur lors de l'upload du média"
+              );
+              return;
+            }
+          }
+
           showAlert(
             "success",
             translations.messageAdminProjectUpdateSuccess || "Project updated successfully"
@@ -149,6 +201,8 @@ const res = await updateProjectMutation({
       project,
       form,
       updateProjectMutation,
+      uploadProjectMedia,
+      selectedFile,
       showAlert,
       translations,
       onRefresh,
@@ -235,6 +289,61 @@ const res = await updateProjectMutation({
             options={allSkills}
             onChange={handleSkillsChange}
           />
+
+          {/* Media Upload Section */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              {translations.messageAdminProjectInputMedia || "Upload Media (optional)"}
+            </label>
+            <input
+              type="file"
+              id="media-upload-edit"
+              accept="image/*,video/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <div className="flex items-center gap-4">
+              <ButtonCustom
+                text={
+                  <div className="flex items-center gap-2">
+                    <Upload size={18} />
+                    {translations.messageAdminProjectSelectFile || "Select File"}
+                  </div>
+                }
+                onClick={() => document.getElementById("media-upload-edit")?.click()}
+                type="button"
+              />
+              {selectedFile && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">{selectedFile.name}</span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+              )}
+            </div>
+            {mediaPreview && (
+              <div className="mt-4">
+                {selectedFile?.type.startsWith("image/") ? (
+                  <img
+                    src={mediaPreview}
+                    alt="Preview"
+                    className="max-w-full h-auto max-h-64 rounded-md"
+                  />
+                ) : (
+                  <video
+                    src={mediaPreview}
+                    controls
+                    className="max-w-full h-auto max-h-64 rounded-md"
+                  />
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="flex justify-end gap-4 mt-6">
             <ButtonCustom

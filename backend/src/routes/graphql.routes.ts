@@ -267,10 +267,10 @@ export async function mountGraphQL(app: Express) {
       credentials: true,
     }),
     graphqlUploadExpress({ 
-      maxFileSize: 50000000,
+      maxFileSize: 100000000,
       maxFiles: 10 
     }),
-    express.json({ limit: "50mb" }),
+    express.json({ limit: "100mb" }),
     expressMiddleware(server, {
       context: async ({ req, res }): Promise<GraphQLContext> => {
 

@@ -10,8 +10,7 @@ router.get("/:type/:filename", (req, res) => {
     return res.status(400).send('Type invalide (image ou video attendu)');
   }
 
-  // Essayer plusieurs chemins possibles
-  const possiblePaths = [
+  const possiblePaths: string[] = [
     path.join(__dirname, "..", "uploads", type, filename),
     path.join(__dirname, "../..", "uploads", type, filename),
   ];
