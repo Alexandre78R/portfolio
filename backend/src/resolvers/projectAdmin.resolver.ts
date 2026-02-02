@@ -243,12 +243,11 @@ export class ProjectAdminResolver {
 
       await fs.mkdir(uploadDir, { recursive: true });
 
-      const hasOldMedia: boolean = Boolean(project.contentDisplay && project.typeDisplay);
-      if (hasOldMedia) {
-        await this.deleteMediaFile(
-          project.contentDisplay, 
-          project.typeDisplay as MediaType
-        );
+      if (mediaType === "image" && project.image) {
+        await this.deleteMediaFile(project.image, "image");
+      }
+      if (mediaType === "video" && project.video) {
+        await this.deleteMediaFile(project.video, "video");
       }
 
       const uploadResult: FileUploadResult = await this.saveUploadedFile(
@@ -258,11 +257,14 @@ export class ProjectAdminResolver {
         projectId
       );
 
+      const mediaPath: string = `/uploads/${folder}/${uploadResult.filename}`;
+
       const updatedPrisma: PrismaProjectWithSkills = await this.db.project.update({
         where: { id: projectId },
         data: {
-          contentDisplay: uploadResult.filename,
-          typeDisplay: uploadResult.type
+          typeDisplay: uploadResult.type,
+          image: uploadResult.type === "image" ? mediaPath : project.image,
+          video: uploadResult.type === "video" ? mediaPath : project.video,
         },
         include: {
           skills: {
@@ -562,7 +564,8 @@ export class ProjectAdminResolver {
   private async deleteMediaFile(filename: string, type: MediaType): Promise<void> {
     try {
       const folder: string = type === "image" ? IMAGE_DIR : VIDEO_DIR;
-      const filePath: string = path.join(UPLOAD_BASE, folder, filename);
+      const safeName: string = path.basename(filename);
+      const filePath: string = path.join(UPLOAD_BASE, folder, safeName);
 
       const fileExists: boolean = fsSync.existsSync(filePath);
       if (fileExists) {

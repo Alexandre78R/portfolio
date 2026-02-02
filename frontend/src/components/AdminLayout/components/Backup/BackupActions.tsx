@@ -2,6 +2,7 @@ import React from "react";
 import { Eye, Download, Trash } from "lucide-react";
 import ActionButton, { ActionItem } from "../Button/ActionButton";
 import { BackupFileInfo } from "../../Pages/BackUp/BackUpList";
+import { API_URL } from "@/config";
 
 interface BackupActionsProps {
   row: BackupFileInfo;
@@ -12,13 +13,14 @@ const BackupActions: React.FC<BackupActionsProps> = ({
   row,
   onDelete,
 }: BackupActionsProps): React.ReactElement => {
+  const baseUrl: string = process.env.NEXT_PUBLIC_API_URL || API_URL.replace(/\/graphql$/, "") || window.location.origin;
   const actions: ActionItem<BackupFileInfo>[] = [
     {
       icon: Eye,
       label: "View",
       onClick: () =>
         window.open(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}`,
+          `${baseUrl}/api/backups/${row.fileName}`,
           "_blank"
         ),
     },
@@ -27,7 +29,7 @@ const BackupActions: React.FC<BackupActionsProps> = ({
       label: "Download",
       onClick: () =>
         window.open(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/backups/${row.fileName}/download`,
+          `${baseUrl}/api/backups/${row.fileName}/download`,
           "_blank"
         ),
     },

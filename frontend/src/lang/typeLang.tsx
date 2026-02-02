@@ -168,6 +168,7 @@ type Lang = {
   messagePageBackUpCreatedError1 : string;
   messagePageBackUpCreatedError2 : string;
   messagePageBackUpListNotFound : string;
+  messagePageBackUpListEmpty : string;
   messagePageBackUpButtomCreated : string;
   messagePageBackUpTitleConfirmCreated : string;
   messagePageBackUpDescConfirmCreated : string;

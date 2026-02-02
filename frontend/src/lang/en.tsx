@@ -170,6 +170,7 @@ const en: Lang = {
   messagePageBackUpCreatedError1: "An error occurred.",
   messagePageBackUpCreatedError2: "An error occurred while generating the backup.",
   messagePageBackUpListNotFound: "Error loading backup files.",
+  messagePageBackUpListEmpty: "No backups available.",
   messagePageBackUpButtomCreated: "New backup",
   messagePageBackUpTitleConfirmCreated: "Creation confirmation",
   messagePageBackUpDescConfirmCreated: "Are you sure you want to create a new database backup?",

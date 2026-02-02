@@ -10,6 +10,8 @@ import badgeRoutes from "./routes/badge.routes";
 import backupsRoutes from "./routes/backups.routes";
 import captchaRoutes from "./routes/captcha.routes";
 import uploadRoutes from "./routes/upload.routes";
+// import projectUploadRoutes from "./routes/projectUpload.routes";
+// import projectVideoUploadRoutes from "./routes/projectVideoUpload.routes";
 import { mountGraphQL } from "./routes/graphql.routes";
 import { cleanUpExpiredCaptchas } from "./CaptchaMap";
 import { loadLogos } from "./lib/logoLoader";
@@ -61,8 +63,8 @@ app.use(
     app.use("/api/uploads", uploadRoutes);
     app.use("/api/upload", uploadRoutes);
 
-    app.use("/api/uploads/images", express.static(path.join(__dirname, "../uploads/images")));
-    app.use("/api/uploads/videos", express.static(path.join(__dirname, "../uploads/videos")));
+    // app.use("/api/uploads/images", express.static(path.join(__dirname, "../uploads/images")));
+    // app.use("/api/uploads/videos", express.static(path.join(__dirname, "../uploads/videos")));
 
     /* --- Serve static files --- */
     app.use(

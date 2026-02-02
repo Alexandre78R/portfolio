@@ -58,3 +58,19 @@ export const DELETE_PROJECT = gql`
     }
   }
 `;
+
+export const UPLOAD_PROJECT_MEDIA = gql`
+  mutation UploadProjectMedia($projectId: Int!, $file: Upload!) {
+    uploadProjectMedia(projectId: $projectId, file: $file) {
+      code
+      message
+      project {
+        id
+        typeDisplay
+        contentDisplay
+        image
+        video
+      }
+    }
+  }
+`;

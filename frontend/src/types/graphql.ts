@@ -1215,6 +1215,14 @@ export type DeleteProjectMutationVariables = Exact<{
 
 export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: { __typename?: 'Response', code: number, message: string } };
 
+export type UploadProjectMediaMutationVariables = Exact<{
+  projectId: Scalars['Int']['input'];
+  file: Scalars['Upload']['input'];
+}>;
+
+
+export type UploadProjectMediaMutation = { __typename?: 'Mutation', uploadProjectMedia: { __typename?: 'ProjectResponse', code: number, message: string, project?: { __typename?: 'Project', id: string, typeDisplay: string, contentDisplay: string, image?: string | null, video?: string | null } | null } };
+
 export type CreateSignatureMutationVariables = Exact<{
   data: CreateSignatureInput;
 }>;
@@ -2366,6 +2374,48 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const UploadProjectMediaDocument = gql`
+    mutation UploadProjectMedia($projectId: Int!, $file: Upload!) {
+  uploadProjectMedia(projectId: $projectId, file: $file) {
+    code
+    message
+    project {
+      id
+      typeDisplay
+      contentDisplay
+      image
+      video
+    }
+  }
+}
+    `;
+export type UploadProjectMediaMutationFn = Apollo.MutationFunction<UploadProjectMediaMutation, UploadProjectMediaMutationVariables>;
+
+/**
+ * __useUploadProjectMediaMutation__
+ *
+ * To run a mutation, you first call `useUploadProjectMediaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadProjectMediaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadProjectMediaMutation, { data, loading, error }] = useUploadProjectMediaMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadProjectMediaMutation(baseOptions?: Apollo.MutationHookOptions<UploadProjectMediaMutation, UploadProjectMediaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadProjectMediaMutation, UploadProjectMediaMutationVariables>(UploadProjectMediaDocument, options);
+      }
+export type UploadProjectMediaMutationHookResult = ReturnType<typeof useUploadProjectMediaMutation>;
+export type UploadProjectMediaMutationResult = Apollo.MutationResult<UploadProjectMediaMutation>;
+export type UploadProjectMediaMutationOptions = Apollo.BaseMutationOptions<UploadProjectMediaMutation, UploadProjectMediaMutationVariables>;
 export const CreateSignatureDocument = gql`
     mutation CreateSignature($data: CreateSignatureInput!) {
   createSignature(data: $data) {

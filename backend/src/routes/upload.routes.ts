@@ -1,5 +1,6 @@
 import { Router } from "express";
 import path from "path";
+import fs from "fs";
 
 const router : Router = Router();
 
@@ -9,13 +10,26 @@ router.get("/:type/:filename", (req, res) => {
     return res.status(400).send('Type invalide (image ou video attendu)');
   }
 
-  const filePath : string = path.join(__dirname, "..", "uploads", `${type}`, filename);
-  res.sendFile(filePath, err => {
-    if (err && !res.headersSent) {
-      console.error("Fichier non trouvé:", filePath);
-      res.status(404).send("Fichier non trouvé");
+  // Essayer plusieurs chemins possibles
+  const possiblePaths = [
+    path.join(__dirname, "..", "uploads", type, filename),
+    path.join(__dirname, "../..", "uploads", type, filename),
+  ];
+
+  for (const filePath of possiblePaths) {
+    if (fs.existsSync(filePath)) {
+      console.log("Serving file:", filePath);
+      return res.sendFile(filePath, err => {
+        if (err && !res.headersSent) {
+          console.error("Erreur envoi fichier:", filePath);
+          res.status(500).send("Erreur lors de l'envoi du fichier");
+        }
+      });
     }
-  });
+  }
+
+  console.error("Fichier non trouvé dans aucun chemin:", possiblePaths);
+  res.status(404).send("Fichier non trouvé");
 });
 
 export default router;

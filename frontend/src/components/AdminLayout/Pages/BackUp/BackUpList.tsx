@@ -28,7 +28,11 @@ const BackUpList = (): React.ReactElement => {
         showAlert("success", translations.messagePageBackUpCreatedSuccess);
         await refetch();
       } else {
-        showAlert("error", translations.messagePageBackUpCreatedError1);
+        showAlert(
+          "error",
+          response.data?.generateDatabaseBackup.message ||
+            translations.messagePageBackUpCreatedError1
+        );
       }
     } catch {
       showAlert("error", translations.messagePageBackUpCreatedError2);
@@ -62,7 +66,7 @@ const BackUpList = (): React.ReactElement => {
   };
 
   if (loading) return <LoadingCustom />;
-  if (error || !backups || backups.length === 0)
+  if (error)
     return (
       <p className="p-4 text-primary">
         {translations.messagePageBackUpListNotFound}
@@ -81,14 +85,20 @@ const BackUpList = (): React.ReactElement => {
         disableHover={false}
       />
 
-      <BackUpTable
-        backups={backups}
-        translations={translations}
-        onDelete={(fileName) => {
-          setSelectedFileName(fileName);
-          setOpenDeleteDialog(true);
-        }}
-      />
+      {backups.length === 0 ? (
+        <p className="p-4 text-primary">
+          {translations.messagePageBackUpListEmpty}
+        </p>
+      ) : (
+        <BackUpTable
+          backups={backups}
+          translations={translations}
+          onDelete={(fileName) => {
+            setSelectedFileName(fileName);
+            setOpenDeleteDialog(true);
+          }}
+        />
+      )}
 
       <ConfirmDialog
         open={openCreateDialog}

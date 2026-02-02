@@ -8,7 +8,7 @@ import ButtonCustom from "@/components/Button/Button";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import { useLang } from "@/context/Lang/LangContext";
-import { useListSkillsAdmin, useCreateProjectAdmin } from "@/utils/hooks";
+import { useListSkillsAdmin, useCreateProjectAdmin, useUploadProjectMediaAdmin } from "@/utils/hooks";
 import { CreateProjectInput, GetSkillsListQuery } from "@/types/graphql";
 import type Lang from "@/lang/typeLang";
 import { Upload, X } from "lucide-react";
@@ -40,6 +40,7 @@ const defaultForm: FormData = {
 
 const ProjectCreate: React.FC = (): ReactElement => {
   const [createProjectMutation, { loading }] = useCreateProjectAdmin();
+  const [uploadProjectMedia] = useUploadProjectMediaAdmin();
   const { data: skillsData, loading: skillsLoading } = useListSkillsAdmin();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
   const { translations }: { translations: Lang } = useLang();
@@ -124,31 +125,10 @@ const ProjectCreate: React.FC = (): ReactElement => {
         let videoPath: string | null = null;
 
         if (selectedFile) {
-          const formData = new FormData();
           const isVideo: boolean = selectedFile.type.startsWith("video/");
-          const field: string = isVideo ? "video" : "image";
-          const endpoint: string = isVideo ? "/api/project-video-upload" : "/api/project-upload";
-          
-          formData.append(field, selectedFile);
-
-          const uploadResponse: Response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
-
-          if (uploadResponse.ok) {
-            const uploadData: { filePath: string } = await uploadResponse.json();
-            if (isVideo) {
-              videoPath = uploadData.filePath;
-            } else {
-              imagePath = uploadData.filePath;
-            }
-          } else {
-            const errorMsg: string = isVideo ? "Erreur lors de l'upload de la vidéo" : "Erreur lors de l'upload de l'image";
-            showAlert("error", errorMsg);
+          const isImage: boolean = selectedFile.type.startsWith("image/");
+          if (!isVideo && !isImage) {
+            showAlert("error", "Type de fichier non autorisé");
             return;
           }
         }
@@ -161,8 +141,8 @@ const ProjectCreate: React.FC = (): ReactElement => {
           contentDisplay: form.contentDisplay,
           github: form.github || null,
           skillIds: form.skillIds,
-          image: imagePath,
-          video: videoPath,
+          image: null,
+          video: null,
         };
 
         const res = await createProjectMutation({
@@ -172,6 +152,21 @@ const ProjectCreate: React.FC = (): ReactElement => {
         const response = res.data?.createProject;
 
         if (response?.code === 200) {
+          if (selectedFile && response.project?.id) {
+            const uploadResult = await uploadProjectMedia({
+              projectId: Number(response.project.id),
+              file: selectedFile,
+            });
+            if (uploadResult.data?.uploadProjectMedia.code !== 200) {
+              showAlert(
+                "error",
+                uploadResult.data?.uploadProjectMedia.message ||
+                  "Erreur lors de l'upload du média"
+              );
+              return;
+            }
+          }
+
           showAlert(
             "success",
             translations.messageAdminProjectCreateSuccess ||

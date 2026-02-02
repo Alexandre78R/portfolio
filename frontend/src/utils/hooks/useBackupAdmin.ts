@@ -62,7 +62,9 @@ export const useDeleteBackupAdmin = (): UseDeleteBackupAdminReturn => {
   const [deleteBackupMutation, { loading }] = useDeleteBackupFileMutation();
 
   const deleteBackup = async (fileName: string): Promise<FetchResult<DeleteBackupFileMutation>> => {
-    return await deleteBackupMutation({ fileName });
+    return await deleteBackupMutation({
+      variables: { fileName },
+    });
   };
 
   return {

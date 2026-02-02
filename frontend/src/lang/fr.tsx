@@ -182,6 +182,7 @@ const fr: Lang = {
   messagePageBackUpCreatedError1 : "Une erreur est survenue.",
   messagePageBackUpCreatedError2 : "Une erreur est survenue lors de la génération de la sauvegarde.",
   messagePageBackUpListNotFound : "Erreur lors du chargement des fichiers de sauvegarde.",
+  messagePageBackUpListEmpty : "Aucune sauvegarde disponible.",
   messagePageBackUpButtomCreated : "Nouvelle sauvegarde",
   messagePageBackUpTitleConfirmCreated : "Confirmation de la création",
   messagePageBackUpDescConfirmCreated : "Voulez-vous vraiment créer une nouvelle sauvegarde de la base de données ?",

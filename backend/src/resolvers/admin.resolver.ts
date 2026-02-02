@@ -38,26 +38,38 @@ export class AdminResolver {
   @Authorized([UserRole.admin])
   @Mutation(() => BackupResponse)
   async generateDatabaseBackup(): Promise<BackupResponse> {
+    let filePath: string = "";
     try {
       if (!fs.existsSync(BACKUP_DIR)) fs.mkdirSync(BACKUP_DIR, { recursive: true });
 
       const now: Date = new Date();
       const timestamp: string = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
       const fileName: string = `bdd_${timestamp}.sql`;
-      const filePath: string = path.join(BACKUP_DIR, fileName);
+      filePath = path.join(BACKUP_DIR, fileName);
 
       const dbUrl: string | undefined = process.env.DATABASE_URL;
       if (!dbUrl) throw new Error("DATABASE_URL is not defined");
 
       const url: URL = new URL(dbUrl);
+      const authPlugin: string = process.env.MYSQL_AUTH_PLUGIN || "mysql_native_password";
+      const extraArgs: string = process.env.MYSQLDUMP_EXTRA_ARGS || "";
       const command: string = `
-        mysqldump -h ${url.hostname} -P ${url.port || "3306"} -u ${url.username} -p"${url.password}" ${url.pathname.slice(1)} > "${filePath}"
+        mysqldump --default-auth=${authPlugin} -h ${url.hostname} -P ${url.port || "3306"} -u ${url.username} -p"${url.password}" ${extraArgs} ${url.pathname.slice(1)} > "${filePath}"
       `.replace(/\s+/g, " ");
 
       await execPromise(command);
 
+      const stats: fs.Stats = await fs.promises.stat(filePath);
+      if (!stats.isFile() || stats.size === 0) {
+        await fs.promises.unlink(filePath).catch(() => undefined);
+        return { code: 500, message: "Backup generated an empty file", path: "" };
+      }
+
       return { code: 200, message: "Database backup generated successfully", path: fileName };
     } catch (error: unknown) {
+      await fs.promises
+        .unlink(filePath)
+        .catch(() => undefined);
       const err: Error = error instanceof Error ? error : new Error("Unknown backup error");
       return { code: 500, message: err.message, path: "" };
     }

@@ -14,9 +14,11 @@ import {
   UpdateProjectMutationVariables,
   DeleteProjectMutation,
   DeleteProjectMutationVariables,
+  UploadProjectMediaMutation,
+  UploadProjectMediaMutationVariables,
 } from "@/types/graphql";
 import { GET_PROJECTS_LIST } from "@/requetes/queries/projects.queries";
-import { CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT } from "@/requetes/mutations/projects.mutations";
+import { CREATE_PROJECT, UPDATE_PROJECT, DELETE_PROJECT, UPLOAD_PROJECT_MEDIA } from "@/requetes/mutations/projects.mutations";
 
 interface ProjectAdminResult {
   loading: boolean;
@@ -114,6 +116,29 @@ export const useDeleteProjectAdmin = (): [
         return result;
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete project error:", err.message);
+        throw err;
+      }
+    },
+    { loading, error },
+  ];
+};
+
+export const useUploadProjectMediaAdmin = (): [
+  (variables: UploadProjectMediaMutationVariables) => Promise<{ data?: UploadProjectMediaMutation }>,
+  { loading: boolean; error: ApolloError | undefined }
+] => {
+  const [uploadProjectMedia, { loading, error }] = useMutation<
+    UploadProjectMediaMutation,
+    UploadProjectMediaMutationVariables
+  >(UPLOAD_PROJECT_MEDIA);
+
+  return [
+    async (variables: UploadProjectMediaMutationVariables) => {
+      try {
+        const result = await uploadProjectMedia({ variables });
+        return result;
+      } catch (err: unknown) {
+        if (err instanceof Error) console.error("Upload project media error:", err.message);
         throw err;
       }
     },

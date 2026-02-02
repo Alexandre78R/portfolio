@@ -58,6 +58,22 @@ const App = ({ Component, pageProps }: AppProps): React.ReactElement => {
     //   credentials: "include",
     // });
 
+    // const uploadLink: ApolloLink = createUploadLink({
+    //   uri: API_URL,
+    //   credentials: "include",
+    //   headers: () => ({
+    //     "Apollo-Require-Preflight": "true",
+    //   }),
+    //   fetch: (uri: RequestInfo | URL, options?: RequestInit) => {
+    //     return fetch(uri, options).then(async (response) => {
+    //       if (!response.ok) {
+    //         // const text = await response.text();
+    //       }
+    //       return response;
+    //     });
+    //   },
+    // }) as unknown as ApolloLink;
+
     const uploadLink: ApolloLink = createUploadLink({
       uri: API_URL,
       credentials: "include",
