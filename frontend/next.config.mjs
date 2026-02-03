@@ -20,25 +20,10 @@ const nextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
   },
-  onDemandEntries: {
-    maxInactiveAge: 60000,
-    pagesBufferLength: 5,
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.watchOptions = {
-        poll: false,
-        aggregateTimeout: 800,
-      };
-    }
-    return config;
-  },
+  turbopack: {},
   async headers() {
     return [
       {
