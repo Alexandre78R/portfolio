@@ -103,7 +103,7 @@ const mockUpdateAboutMeMutation: jest.Mock<
 
 jest.mock("@/utils/hooks", () => ({
   ...jest.requireActual("@/utils/hooks"),
-  useUpdateAboutMeAdmin: jest.fn<[typeof mockUpdateAboutMeMutation, { loading: boolean }], []>(),
+  useUpdateAboutMeAdmin: jest.fn(() => [mockUpdateAboutMeMutation, { loading: false }]),
 }));
 
 jest.mock("@/types/graphql", () => ({
@@ -224,15 +224,13 @@ describe("AboutMeEditModal", (): void => {
     await waitFor((): void => {
       expect(mockUpdateAboutMeMutation).toHaveBeenCalledTimes(1);
       expect(mockUpdateAboutMeMutation).toHaveBeenCalledWith({
-        variables: {
-          data: {
-            id: 1,
-            titleFR: "Updated Title FR",
-            titleEN: "Updated Title EN",
-            descriptionFR: "Description FR",
-            descriptionEN: "Description EN",
-            isVisible: true,
-          },
+        data: {
+          id: 1,
+          titleFR: "Updated Title FR",
+          titleEN: "Updated Title EN",
+          descriptionFR: "Description FR",
+          descriptionEN: "Description EN",
+          isVisible: true,
         },
       });
     });

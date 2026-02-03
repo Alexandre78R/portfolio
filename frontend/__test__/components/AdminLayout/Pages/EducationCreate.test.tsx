@@ -165,10 +165,10 @@ describe("EducationCreate Component", (): void => {
     >() as TestMutationFn;
     mockMutationFn.mockResolvedValue({ data: { createEducation: { education: {} } } } as FetchResult<CreateEducationMutation>);
 
-    (useCreateEducationAdmin as jest.Mock).mockReturnValue({
-      createEducation: mockMutationFn,
-      loading: false,
-    });
+    (useCreateEducationAdmin as jest.Mock).mockReturnValue([
+      mockMutationFn,
+      { loading: false, error: undefined },
+    ]);
   });
 
   afterEach((): void => {
@@ -216,10 +216,10 @@ describe("EducationCreate Component", (): void => {
   });
 
   it("displays loading state correctly", (): void => {
-    (useCreateEducationAdmin as jest.Mock).mockReturnValue({
-      createEducation: mockMutationFn,
-      loading: true,
-    });
+    (useCreateEducationAdmin as jest.Mock).mockReturnValue([
+      mockMutationFn,
+      { loading: true, error: undefined },
+    ]);
 
     render(<EducationCreate />);
 

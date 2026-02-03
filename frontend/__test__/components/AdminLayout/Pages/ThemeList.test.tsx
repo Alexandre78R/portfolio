@@ -3,8 +3,7 @@ import { render, screen, fireEvent, waitFor, within } from '@testing-library/rea
 import "@testing-library/jest-dom";
 import ThemeList from "@/components/AdminLayout/Pages/Themes/ThemesList";
 import type { ThemeRow } from "@/components/AdminLayout/components/Theme/ThemeTable";
-import { useGetThemesListQuery } from "@/types/graphql";
-import { useDeleteThemeAdmin } from "@/utils/hooks";
+import { useListThemesAdmin, useDeleteThemeAdmin } from "@/utils/hooks";
 import type Lang from "@/lang/typeLang";
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -35,12 +34,9 @@ jest.mock("@/components/AdminLayout/components/Theme/ThemeDeleteDialog", () => (
   )),
 }));
 
-jest.mock("@/types/graphql", () => ({
-  useGetThemesListQuery: jest.fn(),
-}));
-
 jest.mock("@/utils/hooks", () => ({
   ...jest.requireActual("@/utils/hooks"),
+  useListThemesAdmin: jest.fn(),
   useDeleteThemeAdmin: jest.fn(),
 }));
 
@@ -63,7 +59,7 @@ describe("ThemeList Component", () => {
   });
 
   test("renders loading state correctly", (): void => {
-    (useGetThemesListQuery as jest.Mock).mockReturnValue({
+    (useListThemesAdmin as jest.Mock).mockReturnValue({
       loading: true,
       error: null,
       data: null,
@@ -77,7 +73,7 @@ describe("ThemeList Component", () => {
   });
 
   test("renders error state correctly", (): void => {
-    (useGetThemesListQuery as jest.Mock).mockReturnValue({
+    (useListThemesAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: new Error("GraphQL error"),
       data: null,
@@ -91,7 +87,7 @@ describe("ThemeList Component", () => {
   });
 
   test("renders empty data correctly", (): void => {
-    (useGetThemesListQuery as jest.Mock).mockReturnValue({
+    (useListThemesAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listThemes: { themes: [] } },
@@ -110,7 +106,7 @@ describe("ThemeList Component", () => {
       { id: "2", name: "Theme2", nameEN: "Theme2EN", nameFR: "Theme2FR", visible: false },
     ];
 
-    (useGetThemesListQuery as jest.Mock).mockReturnValue({
+    (useListThemesAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listThemes: { themes: mockThemes } },
@@ -146,7 +142,7 @@ describe("ThemeList Component", () => {
       null,
     ];
 
-    (useGetThemesListQuery as jest.Mock).mockReturnValue({
+    (useListThemesAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listThemes: { themes: mockThemes } },

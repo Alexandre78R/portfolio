@@ -230,10 +230,10 @@ describe("ThemeCreate Component", (): void => {
     >() as TestThemeMutationFn;
     mockThemeMutationFn.mockResolvedValue({ data: { createTheme: { theme: {} } } } as FetchResult<any>);
 
-    (useCreateThemeAdmin as jest.Mock).mockReturnValue({
-      createTheme: mockThemeMutationFn,
-      loading: false,
-    });
+    (useCreateThemeAdmin as jest.Mock).mockReturnValue([
+      mockThemeMutationFn,
+      { loading: false, error: undefined },
+    ]);
   });
 
   afterEach((): void => {
@@ -308,10 +308,10 @@ describe("ThemeCreate Component", (): void => {
   });
 
   it("displays loading state correctly", (): void => {
-    (useCreateThemeAdmin as jest.Mock).mockReturnValue({
-      createTheme: mockThemeMutationFn,
-      loading: true,
-    });
+    (useCreateThemeAdmin as jest.Mock).mockReturnValue([
+      mockThemeMutationFn,
+      { loading: true, error: undefined },
+    ]);
 
     render(<ThemeCreate />);
 

@@ -8,6 +8,7 @@ import {
 import "@testing-library/jest-dom";
 import type { GetSkillsListQuery } from "@/types/graphql";
 import type { QueryResult } from "@apollo/client";
+import { useListSkillCategoriesAdmin } from "@/utils/hooks";
 
 import SkillCategoriesList from "@/components/AdminLayout/Pages/Skills/Categories/SkillCategoriesList";
 import type Lang from "@/lang/typeLang";
@@ -135,9 +136,9 @@ jest.mock("@/components/AdminLayout/components/SkillCategory/SkillCategoryDelete
 
 const mockRefetch: jest.Mock<Promise<{ data: SkillListData }>, []> = jest.fn();
 
-jest.mock("@/types/graphql", () => ({
-  __esModule: true,
-  useGetSkillsListQuery: jest.fn(
+jest.mock("@/utils/hooks", () => ({
+  ...jest.requireActual("@/utils/hooks"),
+  useListSkillCategoriesAdmin: jest.fn(
     (): Partial<QueryResult<SkillListData>> => ({
       data: undefined,
       loading: false,
@@ -172,8 +173,7 @@ function setupQueryMock(
   loading: boolean = false,
   error: Error | undefined = undefined
 ): void {
-  const { useGetSkillsListQuery } = require("@/types/graphql");
-  (useGetSkillsListQuery as jest.Mock).mockReturnValue({
+  (useListSkillCategoriesAdmin as jest.Mock).mockReturnValue({
     data,
     loading,
     error,
@@ -346,7 +346,7 @@ describe("SkillCategoriesList", (): void => {
       {
         id: "1",
         categoryEN: "Empty Category",
-        categoryFR: "Catégorie Vide",
+        categoryFR: "Catï¿½gorie Vide",
         skills: [],
       },
     ];
@@ -603,14 +603,10 @@ describe("SkillCategoriesList", (): void => {
     expect(screen.queryByTestId("delete-dialog")).not.toBeInTheDocument();
   });
 
-  test("should use cache-and-network fetch policy", (): void => {
-    const { useGetSkillsListQuery } = require("@/types/graphql");
-
+  test("should call hook correctly", (): void => {
     render(<SkillCategoriesList />);
 
-    expect(useGetSkillsListQuery).toHaveBeenCalledWith({
-      fetchPolicy: "cache-and-network",
-    });
+    expect(useListSkillCategoriesAdmin).toHaveBeenCalled();
   });
 });
 

@@ -6,10 +6,8 @@ import type { AboutMeRow } from "@/components/AdminLayout/components/AboutMe/Abo
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import { type ApolloError, type ApolloQueryResult } from "@apollo/client";
-import {
-  ListAboutMeQuery,
-  useListAboutMeQuery,
-} from "@/types/graphql";
+import type { ListAboutMeQuery } from "@/types/graphql";
+import { useListAboutMeAdmin } from "@/utils/hooks/useAboutMeAdmin";
 
 type MockTextAdminProps = {
   children: React.ReactNode;
@@ -85,9 +83,8 @@ jest.mock("@/context/Lang/LangContext", () => ({
 
 const mockRefetch: jest.Mock<Promise<ApolloQueryResult<ListAboutMeQuery>>, []> = jest.fn();
 
-jest.mock("@/types/graphql", () => ({
-  ...jest.requireActual("@/types/graphql"),
-  useListAboutMeQuery: jest.fn<
+jest.mock("@/utils/hooks/useAboutMeAdmin", () => ({
+  useListAboutMeAdmin: jest.fn<
     {
       loading: boolean;
       data?: ListAboutMeQuery;
@@ -121,7 +118,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should render loading state when data is being fetched", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: true,
       data: null,
       error: null,
@@ -135,7 +132,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should render empty state when no data is available", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listAboutMe: { aboutMes: null, code: 200, message: "No data" } },
@@ -149,7 +146,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should render list with about me entries", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listAboutMe: { aboutMes: mockAboutMes, code: 200, message: "Success" } },
@@ -163,7 +160,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should open edit modal when edit button is clicked", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listAboutMe: { aboutMes: mockAboutMes, code: 200, message: "Success" } },
@@ -181,7 +178,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should open delete dialog when delete button is clicked", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listAboutMe: { aboutMes: mockAboutMes, code: 200, message: "Success" } },
@@ -199,7 +196,7 @@ describe("AboutMeList Page", (): void => {
   });
 
   it("should render page title", (): void => {
-    (useListAboutMeQuery as jest.Mock).mockReturnValue({
+    (useListAboutMeAdmin as jest.Mock).mockReturnValue({
       loading: false,
       error: null,
       data: { listAboutMe: { aboutMes: mockAboutMes, code: 200, message: "Success" } },

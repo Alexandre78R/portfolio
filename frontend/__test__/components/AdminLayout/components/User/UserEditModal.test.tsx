@@ -267,13 +267,11 @@ describe("UserEditModal Component", (): void => {
 
     await waitFor(() => {
       expect(mockUpdateUserMutation).toHaveBeenCalledWith({
-        variables: {
-          id: Number(sampleUser.id),
-          firstname: sampleUser.firstname,
-          lastname: sampleUser.lastname,
-          email: sampleUser.email,
-          role: sampleUser.role,
-        },
+        id: Number(sampleUser.id),
+        firstname: sampleUser.firstname,
+        lastname: sampleUser.lastname,
+        email: sampleUser.email,
+        role: sampleUser.role,
       });
     });
   });

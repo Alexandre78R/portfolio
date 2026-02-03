@@ -8,7 +8,7 @@ import {
 import "@testing-library/jest-dom";
 
 import EducationList from "@/components/AdminLayout/Pages/Educations/EducationsList";
-import { useGetEducationsListQuery } from "@/types/graphql";
+import { useListEducationsAdmin } from "@/utils/hooks/useEducationAdmin";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import type { EducationRow } from "@/components/AdminLayout/components/Education/EducationTable";
@@ -150,8 +150,11 @@ jest.mock("@/components/AdminLayout/components/Education/EducationEditModal", ()
   },
 }));
 
-jest.mock("@/types/graphql", () => ({
-  useGetEducationsListQuery: jest.fn(),
+jest.mock("@/utils/hooks/useEducationAdmin", () => ({
+  useListEducationsAdmin: jest.fn(),
+  useCreateEducationAdmin: jest.fn(),
+  useUpdateEducationAdmin: jest.fn(),
+  useDeleteEducationAdmin: jest.fn(),
 }));
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -200,7 +203,7 @@ describe("EducationList Component", () => {
   });
 
   it("displays loading state correctly", (): void => {
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: undefined,
       loading: true,
       error: undefined,
@@ -215,7 +218,7 @@ describe("EducationList Component", () => {
   it("displays error state with proper message", (): void => {
     const mockError: Error = new Error("API Error");
     
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: undefined,
       loading: false,
       error: mockError,
@@ -228,7 +231,7 @@ describe("EducationList Component", () => {
   });
 
   it("displays no data state correctly", (): void => {
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: { listEducations: { educations: null } },
       loading: false,
       error: undefined,
@@ -241,7 +244,7 @@ describe("EducationList Component", () => {
   });
 
   it("renders education list successfully with title and table", (): void => {
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: mockEducationGraphQLData,
       loading: false,
       error: undefined,
@@ -258,7 +261,7 @@ describe("EducationList Component", () => {
   });
 
   it("passes transformed data correctly to EducationTable", (): void => {
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: mockEducationGraphQLData,
       loading: false,
       error: undefined,
@@ -273,7 +276,7 @@ describe("EducationList Component", () => {
   it("opens edit modal when edit button is clicked", async (): Promise<void> => {
     const mockRefetchCallback: jest.Mock<void, []> = jest.fn();
     
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: mockEducationGraphQLData,
       loading: false,
       error: undefined,
@@ -297,7 +300,7 @@ describe("EducationList Component", () => {
   it("opens delete dialog when delete button is clicked", async (): Promise<void> => {
     const mockRefetchCallback: jest.Mock<void, []> = jest.fn();
     
-    (useGetEducationsListQuery as jest.Mock).mockReturnValue({
+    (useListEducationsAdmin as jest.Mock).mockReturnValue({
       data: mockEducationGraphQLData,
       loading: false,
       error: undefined,

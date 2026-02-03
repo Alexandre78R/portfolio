@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import type { GetSkillsListQuery, CreateProjectMutation, CreateProjectMutationVariables } from "@/types/graphql";
-import { useCreateProjectAdmin } from "@/utils/hooks";
+import { useCreateProjectAdmin, useUploadProjectMediaAdmin, useListSkillsAdmin } from "@/utils/hooks";
 
 import ProjectCreate from "@/components/AdminLayout/Pages/Projects/ProjectCreate";
 import type Lang from "@/lang/typeLang";
@@ -87,6 +87,8 @@ type ButtonProps = {
 jest.mock("@/utils/hooks", () => ({
   ...jest.requireActual("@/utils/hooks"),
   useCreateProjectAdmin: jest.fn(),
+  useUploadProjectMediaAdmin: jest.fn(),
+  useListSkillsAdmin: jest.fn(),
 }));
 
 jest.mock("@/types/graphql", () => ({
@@ -261,9 +263,19 @@ describe("ProjectCreate", (): void => {
     mockCreateProjectMutationFn.mockResolvedValue({
       data: { createProject: { code: 200 } },
     } as CreateProjectMutationResponse);
-    (useCreateProjectAdmin as jest.Mock).mockReturnValue({
-      createProject: mockCreateProjectMutationFn,
+    (useCreateProjectAdmin as jest.Mock).mockReturnValue([
+      mockCreateProjectMutationFn,
+      { loading: false, error: undefined },
+    ]);
+    (useUploadProjectMediaAdmin as jest.Mock).mockReturnValue([
+      jest.fn().mockResolvedValue({ data: { uploadProjectMedia: { success: true } } }),
+      { loading: false, error: undefined },
+    ]);
+    (useListSkillsAdmin as jest.Mock).mockReturnValue({
+      data: mockGetSkillsListQueryData,
       loading: false,
+      error: undefined,
+      refetch: jest.fn(),
     });
   });
 

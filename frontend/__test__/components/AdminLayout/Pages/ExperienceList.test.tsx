@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { 
   render, 
   screen, 
@@ -10,7 +10,7 @@ import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import type { ExperienceRow } from "@/components/AdminLayout/components/Experience/ExperienceTable";
 import ExperienceList from "@/components/AdminLayout/Pages/Experiences/ExperiencesList";
-import { useGetExperiencesListQuery } from "@/types/graphql"; 
+import { useListExperiencesAdmin } from "@/utils/hooks/useExperienceAdmin"; 
 
 type MockQueryResult = {
   data?: {
@@ -151,8 +151,11 @@ jest.mock("@/components/AdminLayout/components/Experience/ExperienceEditModal", 
   },
 }));
 
-jest.mock("@/types/graphql", () => ({
-  useGetExperiencesListQuery: jest.fn(),
+jest.mock("@/utils/hooks/useExperienceAdmin", () => ({
+  useListExperiencesAdmin: jest.fn(),
+  useCreateExperienceAdmin: jest.fn(),
+  useUpdateExperienceAdmin: jest.fn(),
+  useDeleteExperienceAdmin: jest.fn(),
 }));
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -170,7 +173,7 @@ const mockExperienceGraphQLData: MockQueryResult["data"] = {
         __typename: "Experience",
         id: "1",
         jobEN: "Software Engineer",
-        jobFR: "Ingénieur Logiciel",
+        jobFR: "Ing�nieur Logiciel",
         business: "TechCorp",
         employmentContractEN: "Full-time",
         employmentContractFR: "Temps plein",
@@ -201,7 +204,7 @@ describe("ExperienceList Component", () => {
   });
 
   it("displays loading state correctly", (): void => {
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: undefined,
       loading: true,
       error: undefined,
@@ -214,7 +217,7 @@ describe("ExperienceList Component", () => {
   });
 
   it("displays experience list successfully with title and table", (): void => {
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: mockExperienceGraphQLData,
       loading: false,
       error: undefined,
@@ -231,7 +234,7 @@ describe("ExperienceList Component", () => {
   });
 
   it("passes transformed data correctly to ExperienceTable", (): void => {
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: mockExperienceGraphQLData,
       loading: false,
       error: undefined,
@@ -246,7 +249,7 @@ describe("ExperienceList Component", () => {
   it("opens edit modal when edit button is clicked", async (): Promise<void> => {
     const mockRefetchCallback: jest.Mock<void, []> = jest.fn();
     
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: mockExperienceGraphQLData,
       loading: false,
       error: undefined,
@@ -263,14 +266,14 @@ describe("ExperienceList Component", () => {
     await waitFor((): void => {
       const editModalElement: HTMLElement = screen.getByTestId("edit-modal");
       expect(editModalElement).toBeInTheDocument();
-      expect(editModalElement).toHaveTextContent("Ingénieur Logiciel");
+      expect(editModalElement).toHaveTextContent("Ing�nieur Logiciel");
     });
   });
 
   it("opens delete dialog when delete button is clicked", async (): Promise<void> => {
     const mockRefetchCallback: jest.Mock<void, []> = jest.fn();
     
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: mockExperienceGraphQLData,
       loading: false,
       error: undefined,
@@ -292,7 +295,7 @@ describe("ExperienceList Component", () => {
   });
 
   it("handles empty experiences list", (): void => {
-    (useGetExperiencesListQuery as jest.Mock).mockReturnValue({
+    (useListExperiencesAdmin as jest.Mock).mockReturnValue({
       data: { listExperiences: { experiences: [] } },
       loading: false,
       error: undefined,

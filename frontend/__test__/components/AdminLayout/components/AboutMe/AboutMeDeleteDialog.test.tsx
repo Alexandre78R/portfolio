@@ -55,7 +55,7 @@ const mockDeleteAboutMeMutation: jest.Mock<
 
 jest.mock("@/utils/hooks", () => ({
   ...jest.requireActual("@/utils/hooks"),
-  useDeleteAboutMeAdmin: jest.fn<[typeof mockDeleteAboutMeMutation], []>(),
+  useDeleteAboutMeAdmin: jest.fn(() => [mockDeleteAboutMeMutation]),
 }));
 
 describe("AboutMeDeleteDialog", (): void => {
@@ -135,7 +135,7 @@ describe("AboutMeDeleteDialog", (): void => {
 
     await waitFor((): void => {
       expect(mockDeleteAboutMeMutation).toHaveBeenCalledTimes(1);
-      expect(mockDeleteAboutMeMutation).toHaveBeenCalledWith({ variables: { id: testId } });
+      expect(mockDeleteAboutMeMutation).toHaveBeenCalledWith({ id: testId });
     });
   });
 

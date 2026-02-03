@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import ProjectEditModal from "@/components/AdminLayout/components/Project/ProjectEditModal";
@@ -95,13 +95,14 @@ const mockUpdateProjectMutation: jest.Mock<Promise<any>, any[]> = jest.fn();
 
 jest.mock("@/utils/hooks", (): object => ({
   ...jest.requireActual("@/utils/hooks"),
-  useUpdateProjectAdmin: jest.fn<[jest.Mock<Promise<any>, any[]>, { loading: boolean }], []>(),
-  useListSkillsAdmin: jest.fn(),
-}));
-
-jest.mock("@/types/graphql", (): object => ({
-  ...jest.requireActual("@/types/graphql"),
-  useGetSkillsListQuery: jest.fn(),
+  useUpdateProjectAdmin: jest.fn(() => [mockUpdateProjectMutation, { loading: false }]),
+  useListSkillsAdmin: jest.fn(() => ({
+    data: undefined,
+    loading: false,
+    error: undefined,
+    refetch: jest.fn(),
+  })),
+  useUploadProjectMediaAdmin: jest.fn(() => [jest.fn(), { loading: false }]),
 }));
 
 describe("ProjectEditModal", (): void => {
@@ -144,8 +145,8 @@ describe("ProjectEditModal", (): void => {
       refetch: jest.fn(),
     });
     
-    const { useGetSkillsListQuery } = require("@/types/graphql");
-    (useGetSkillsListQuery as jest.Mock).mockReturnValue({
+    
+    (useListSkillsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSkillCategories: {
           categories: [],

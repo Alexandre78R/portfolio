@@ -130,10 +130,10 @@ describe("AboutMeCreate Page", (): void => {
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: mockShowAlert });
     mockMutate.mockResolvedValue({ data: { createAboutMe: { aboutMe: {} } } } as FetchResult<CreateAboutMeMutation>);
-    (useCreateAboutMeAdmin as jest.Mock).mockReturnValue({
-      createAboutMe: mockMutate,
-      loading: false,
-    });
+    (useCreateAboutMeAdmin as jest.Mock).mockReturnValue([
+      mockMutate,
+      { loading: false, error: undefined },
+    ]);
   });
 
   it("should render form with correct title", (): void => {
@@ -204,14 +204,12 @@ describe("AboutMeCreate Page", (): void => {
     await waitFor((): void => {
       expect(mockMutate).toHaveBeenCalledTimes(1);
       expect(mockMutate).toHaveBeenCalledWith({
-        variables: {
-          data: {
-            titleEN: "Test Title EN",
-            titleFR: "Test Title FR",
-            descriptionEN: "Test Description EN",
-            descriptionFR: "Test Description FR",
-            isVisible: true,
-          },
+        data: {
+          titleEN: "Test Title EN",
+          titleFR: "Test Title FR",
+          descriptionEN: "Test Description EN",
+          descriptionFR: "Test Description FR",
+          isVisible: true,
         },
       });
     });

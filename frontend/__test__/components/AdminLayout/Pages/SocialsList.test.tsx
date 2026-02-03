@@ -1,4 +1,4 @@
-﻿import { 
+import { 
   render, 
   screen, 
   waitFor, 
@@ -7,7 +7,7 @@
 import "@testing-library/jest-dom";
 
 import SocialsList from "@/components/AdminLayout/Pages/Socials/SocialsList";
-import { useGetSocialsListQuery } from "@/types/graphql";
+import { useListSocialsAdmin } from "@/utils/hooks/useSocialAdmin";
 import { useLang, type LangContextType } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 import type { SocialRow } from "@/components/AdminLayout/components/Social/SocialTable";
@@ -129,9 +129,11 @@ jest.mock("@/components/AdminLayout/components/Social/SocialDeleteDialog", () =>
     ) : null,
 }));
 
-jest.mock("@/types/graphql", () => ({
-  __esModule: true,
-  useGetSocialsListQuery: jest.fn(),
+jest.mock("@/utils/hooks/useSocialAdmin", () => ({
+  useListSocialsAdmin: jest.fn(),
+  useCreateSocialAdmin: jest.fn(),
+  useUpdateSocialAdmin: jest.fn(),
+  useDeleteSocialAdmin: jest.fn(),
 }));
 
 jest.mock("@/context/Lang/LangContext", () => ({
@@ -162,7 +164,7 @@ describe("SocialsList", () => {
   });
 
   test("should display loading state", () => {
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: null,
       loading: true,
       error: null,
@@ -175,7 +177,7 @@ describe("SocialsList", () => {
   });
 
   test("should display error message when query fails", () => {
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: null,
       loading: false,
       error: new Error("Network error"),
@@ -188,7 +190,7 @@ describe("SocialsList", () => {
   });
 
   test("should display error message when no data", () => {
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: null,
       loading: false,
       error: null,
@@ -201,7 +203,7 @@ describe("SocialsList", () => {
   });
 
   test("should display list title", () => {
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: [],
       },
@@ -233,7 +235,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -260,7 +262,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -289,7 +291,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -324,7 +326,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -353,7 +355,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -396,7 +398,7 @@ describe("SocialsList", () => {
       },
     ];
 
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: mockSocials,
       },
@@ -412,9 +414,9 @@ describe("SocialsList", () => {
     expect(screen.queryByTestId("social-row-null")).not.toBeInTheDocument();
   });
 
-  test("should call refetch on query", () => {
+  test("should call refetch when needed", () => {
     const mockRefetch: jest.Mock = jest.fn();
-    (useGetSocialsListQuery as jest.Mock).mockReturnValue({
+    (useListSocialsAdmin as jest.Mock).mockReturnValue({
       data: {
         listSocials: [],
       },
@@ -425,8 +427,6 @@ describe("SocialsList", () => {
 
     render(<SocialsList />);
 
-    expect(useGetSocialsListQuery).toHaveBeenCalledWith({
-      fetchPolicy: "cache-and-network",
-    });
+    expect(useListSocialsAdmin).toHaveBeenCalled();
   });
 });

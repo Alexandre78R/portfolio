@@ -9,6 +9,8 @@ import "@testing-library/jest-dom";
 import type { GetSkillsListQuery } from "@/types/graphql";
 
 import SkillsList from "@/components/AdminLayout/Pages/Skills/SkillsList";
+import { useListSkillsAdmin } from "@/utils/hooks/useSkillAdmin";
+import { useLang } from "@/context/Lang/LangContext";
 import type Lang from "@/lang/typeLang";
 
 type SkillListData = GetSkillsListQuery;
@@ -141,11 +143,15 @@ jest.mock("@/components/AdminLayout/components/Skill/SkillDeleteDialog", () => (
     ) : null,
 }));
 
-const mockUseGetSkillsListQuery: jest.Mock<QueryResult<SkillListData>, []> = jest.fn();
+jest.mock("@/utils/hooks/useSkillAdmin", () => ({
+  useListSkillsAdmin: jest.fn(),
+  useCreateSkillAdmin: jest.fn(),
+  useUpdateSkillAdmin: jest.fn(),
+  useDeleteSkillAdmin: jest.fn(),
+}));
 
-jest.mock("@/types/graphql", () => ({
-  __esModule: true,
-  useGetSkillsListQuery: jest.fn(() => mockUseGetSkillsListQuery()),
+jest.mock("@/context/Lang/LangContext", () => ({
+  useLang: jest.fn(),
 }));
 
 const translationsMock: Lang = {
@@ -200,7 +206,7 @@ function setupQueryMock(
   error: Error | null = null
 ): void {
   const mockRefetch: jest.Mock<Promise<{ data: SkillListData }>, []> = jest.fn();
-  (mockUseGetSkillsListQuery as jest.Mock<QueryResult<SkillListData>, []>).mockReturnValue({
+  (useListSkillsAdmin as jest.Mock).mockReturnValue({
     data,
     loading,
     error,
@@ -346,7 +352,7 @@ describe("SkillsList", (): void => {
 
   test("refetches data after edit", async (): Promise<void> => {
     const mockRefetch: jest.Mock<Promise<{ data: SkillListData }>, []> = jest.fn();
-    (mockUseGetSkillsListQuery as jest.Mock<QueryResult<SkillListData>, []>).mockReturnValue({
+    (useListSkillsAdmin as jest.Mock).mockReturnValue({
       data: mockSkillsData,
       loading: false,
       error: null,

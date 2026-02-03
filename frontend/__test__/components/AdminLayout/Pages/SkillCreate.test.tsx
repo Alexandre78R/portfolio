@@ -317,10 +317,10 @@ describe("SkillCreate", (): void => {
     mockCreateMutation.mockResolvedValue({
       data: { createSkill: { skill: {} } },
     } as CreateSkillMutationResponse);
-    (useCreateSkillAdmin as jest.Mock).mockReturnValue({
-      createSkill: mockCreateMutation,
-      loading: false,
-    });
+    (useCreateSkillAdmin as jest.Mock).mockReturnValue([
+      mockCreateMutation,
+      { loading: false, error: undefined },
+    ]);
   });
 
   test("renders page title", (): void => {
@@ -512,10 +512,10 @@ describe("SkillCreate", (): void => {
   });
 
   test("disables submit button while loading", async (): Promise<void> => {
-    (useCreateSkillAdmin as jest.Mock).mockReturnValueOnce({
-      createSkill: mockCreateMutation,
-      loading: true,
-    });
+    (useCreateSkillAdmin as jest.Mock).mockReturnValueOnce([
+      mockCreateMutation,
+      { loading: true, error: undefined },
+    ]);
 
     render(<SkillCreate />);
 

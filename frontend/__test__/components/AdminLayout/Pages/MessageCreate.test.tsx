@@ -296,11 +296,9 @@ describe("MessageCreate Component", (): void => {
 
       await waitFor((): void => {
         expect(mockSendMessage).toHaveBeenCalledWith({
-          variables: {
-            subject: "Test Subject",
-            recipients: "user1@example.com, user2@example.com",
-            content: "<p>Test content</p>",
-          },
+          subject: "Test Subject",
+          recipients: "user1@example.com, user2@example.com",
+          content: "<p>Test content</p>",
         });
       });
     });
