@@ -55,7 +55,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themes, setThemes] = useState<Record<string, Theme>>({});
   const [isUsingFallback, setIsUsingFallback] = useState<boolean>(false);
 
-  const { data, loading, error } = useGetThemesListQuery<GetThemesListQuery>({
+  const { data, loading, error } = useGetThemesListQuery({
     fetchPolicy: "cache-and-network",
   });
 

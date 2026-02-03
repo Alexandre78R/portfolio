@@ -82,7 +82,7 @@ const TranslationsTable = ({
     },
   ];
 
-  return <Table columns={columns} data={translations} />;
+  return <Table columns={columns} data={[...translations]} />;
 };
 
 TranslationsTable.displayName = "TranslationsTable";

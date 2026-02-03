@@ -55,7 +55,9 @@ export const useCreateSocialAdmin = (): [
     async (variables: CreateSocialMutationVariables) => {
       try {
         const result = await createSocial({ variables });
-        return result;
+        // Ensure data is never null, only undefined or CreateSocialMutation
+        const { data, ...rest } = result;
+        return { data: data === null ? undefined : data, ...rest };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create social error:", err.message);
         throw err;
@@ -78,7 +80,9 @@ export const useUpdateSocialAdmin = (): [
     async (variables: UpdateSocialMutationVariables) => {
       try {
         const result = await updateSocial({ variables });
-        return result;
+        // Ensure data is never null, only undefined or UpdateSocialMutation
+        const { data, ...rest } = result;
+        return { data: data === null ? undefined : data, ...rest };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update social error:", err.message);
         throw err;
@@ -101,7 +105,9 @@ export const useDeleteSocialAdmin = (): [
     async (variables: DeleteSocialMutationVariables) => {
       try {
         const result = await deleteSocial({ variables });
-        return result;
+        // Ensure data is never null, only undefined or DeleteSocialMutation
+        const { data, ...rest } = result;
+        return { data: data === null ? undefined : data, ...rest };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete social error:", err.message);
         throw err;

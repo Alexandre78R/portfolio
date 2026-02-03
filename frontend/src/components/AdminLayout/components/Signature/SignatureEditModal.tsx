@@ -45,7 +45,7 @@ const SignatureEditModal: React.FC<SignatureEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateSignatureMutation] = useUpdateSignatureAdmin();
 
-  const { data, loading: signatureLoading } = useGetSignatureByIdQuery<GetSignatureByIdQuery>({
+  const { data, loading: signatureLoading } = useGetSignatureByIdQuery({
     variables: { id: signature?.id ?? 0 },
     skip: !signature,
     fetchPolicy: "network-only",

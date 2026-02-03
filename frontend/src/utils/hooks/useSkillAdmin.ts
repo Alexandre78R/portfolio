@@ -55,7 +55,8 @@ export const useCreateSkillAdmin = (): [
     async (variables: CreateSkillMutationVariables) => {
       try {
         const result = await createSkill({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create skill error:", err.message);
         throw err;
@@ -78,7 +79,8 @@ export const useUpdateSkillAdmin = (): [
     async (variables: UpdateSkillMutationVariables) => {
       try {
         const result = await updateSkill({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update skill error:", err.message);
         throw err;
@@ -89,7 +91,7 @@ export const useUpdateSkillAdmin = (): [
 };
 
 export const useDeleteSkillAdmin = (): [
-  (variables: DeleteSkillMutationVariables) => Promise<{ data?: DeleteSkillMutation }>,
+  (variables: DeleteSkillMutationVariables) => Promise<{ data?: DeleteSkillMutation }> ,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [deleteSkill, { loading, error }] = useMutation<
@@ -101,7 +103,8 @@ export const useDeleteSkillAdmin = (): [
     async (variables: DeleteSkillMutationVariables) => {
       try {
         const result = await deleteSkill({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete skill error:", err.message);
         throw err;

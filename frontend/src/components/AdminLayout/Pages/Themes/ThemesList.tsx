@@ -51,14 +51,18 @@ const ThemeList = (): ReactElement => {
       <ThemeEditModal
         theme={editTheme}
         onClose={() => setEditTheme(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <ThemeDeleteDialog
         themeId={deleteThemeId}
         onClose={() => setDeleteThemeId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );

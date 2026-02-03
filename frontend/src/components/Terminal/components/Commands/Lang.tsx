@@ -19,7 +19,7 @@ const Lang = (): React.ReactNode  => {
 
   useEffect(() => {
     if (
-      checkLangSwitch(rerender, currentCommand, listLang) &&
+      checkLangSwitch(rerender, currentCommand, [...listLang]) &&
       currentCommand[2] !== currentLang
     ) {
       setLang(currentCommand[2]);
@@ -28,7 +28,7 @@ const Lang = (): React.ReactNode  => {
   }, [rerender, currentCommand, currentLang]);
 
   const checkArg: () => React.ReactNode = () =>
-    isArgInvalid(arg, "set", listLang) ? <Usage cmd="themes" /> : null;
+    isArgInvalid(arg, "set", [...listLang]) ? <Usage cmd="themes" /> : null;
 
   return arg.length > 2
     ? checkArg()

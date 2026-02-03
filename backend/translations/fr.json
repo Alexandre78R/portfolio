@@ -489,6 +489,7 @@
   "messageAdminSignatureColumnName": "Nom",
   "messageAdminSignatureColumnDescription": "Description",
   "messageAdminSignatureColumnAction": "Actions",
+  "messageAdminMessageSelectSignature": "-- Choisir une signature --",
   "messageAdminTranslationsTitle": "Gestion des traductions",
   "messageAdminTranslationsDescription": "Gérez les traductions de votre portfolio",
   "messageAdminTranslationsTableColumnKey": "Clé",

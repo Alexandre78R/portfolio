@@ -76,7 +76,12 @@ export const useCreateSkillCategoryAdmin = (): [
     async (variables: CreateSkillCategoryMutationVariables) => {
       try {
         const result = await createCategory({ variables });
-        return result;
+        // Ensure data is never null, only undefined or CreateSkillCategoryMutation
+        const { data, ...rest } = result;
+        return {
+          ...rest,
+          data: data === null ? undefined : data,
+        };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create skill category error:", err.message);
         throw err;
@@ -101,7 +106,12 @@ export const useUpdateSkillCategoryAdmin = (): [
     async (variables: UpdateSkillCategoryMutationVariables) => {
       try {
         const result = await updateCategory({ variables });
-        return result;
+        // Ensure data is never null, only undefined or UpdateSkillCategoryMutation
+        const { data, ...rest } = result;
+        return {
+          ...rest,
+          data: data === null ? undefined : data,
+        };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update skill category error:", err.message);
         throw err;
@@ -114,7 +124,7 @@ export const useUpdateSkillCategoryAdmin = (): [
 export const useDeleteSkillCategoryAdmin = (): [
   (variables: DeleteSkillCategoryMutationVariables) => Promise<{
     data?: DeleteSkillCategoryMutation;
-  }>,
+  }> ,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [deleteCategory, { loading, error }] = useMutation<
@@ -126,7 +136,12 @@ export const useDeleteSkillCategoryAdmin = (): [
     async (variables: DeleteSkillCategoryMutationVariables) => {
       try {
         const result = await deleteCategory({ variables });
-        return result;
+        // Ensure data is never null, only undefined or DeleteSkillCategoryMutation
+        const { data, ...rest } = result;
+        return {
+          ...rest,
+          data: data === null ? undefined : data,
+        };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete skill category error:", err.message);
         throw err;

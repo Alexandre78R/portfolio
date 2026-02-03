@@ -12,7 +12,7 @@ const CV = (): JSX.Element => {
 
   const { translations }: { translations: Lang } = useLang();
 
-  const { data, loading, error } = useCvQuery<CvQuery>();
+  const { data, loading, error } = useCvQuery();
   const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
   CustomToast();
   

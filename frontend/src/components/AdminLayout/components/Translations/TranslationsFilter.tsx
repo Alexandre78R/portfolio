@@ -32,9 +32,12 @@ const TranslationsFilter = ({
   /**
    * Handle search input change
    */
-  const handleSearchChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+  const handleSearchChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): void => {
     setSearchInput(e.currentTarget.value);
-  }, []);
+    },
+    []
+  );
 
   /**
    * Handle search form submission

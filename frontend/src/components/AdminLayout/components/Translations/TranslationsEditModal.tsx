@@ -89,10 +89,13 @@ const TranslationsEditModal = ({
   /**
    * Handle textarea change
    */
-  const handleValueChange: (e: ChangeEvent<HTMLTextAreaElement>) => void = useCallback((e: ChangeEvent<HTMLTextAreaElement>): void => {
+  const handleValueChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): void => {
     setEditValue(e.currentTarget.value);
     setSaveError(null);
-  }, []);
+    },
+    []
+  );
 
   /**
    * Handle close button click
@@ -120,7 +123,7 @@ const TranslationsEditModal = ({
     <ModalCustom open={isOpen} onClose={handleClose} width="600px">
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
-        <TextAdmin type="h2" id="modal-title">
+        <TextAdmin type="h2">
           {titleLabel}
         </TextAdmin>
         <button

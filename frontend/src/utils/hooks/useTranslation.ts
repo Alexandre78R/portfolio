@@ -1,7 +1,7 @@
 import { useMutation, useQuery, ApolloError, OperationVariables, DocumentNode } from "@apollo/client";
 import {
   LIST_TRANSLATIONS_PAGINATED,
-  UPSERT_TRANSLATION,
+  // UPSERT_TRANSLATION,
 } from "../../requetes/queries/translation.queries";
 import { UPSERT_TRANSLATION as UPSERT_TRANSLATION_MUTATION } from "../../requetes/mutations/translation.mutations";
 import type {
@@ -102,7 +102,7 @@ export const useUpsertTranslation = (): UseUpsertTranslationReturn => {
       const result = await upsertTranslation({
         variables: { key, value, lang } as unknown as UpsertTranslationMutationVariables,
       });
-      return result.data;
+      return result.data ?? undefined;
     } catch (err: unknown) {
       const errorMessage: string = err instanceof Error ? err.message : "Unknown error";
       console.error(`Error upserting translation for key ${key}:`, errorMessage);

@@ -55,7 +55,7 @@ const UserEditModal = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateUserMutation] = useUpdateUserAdmin();
 
-  const { data: userData, loading: userLoading } = useGetUserByIdQuery<GetUserByIdQuery>({
+  const { data: userData, loading: userLoading } = useGetUserByIdQuery({
     variables: { id: Number(user?.id) },
     skip: !user?.id,
     fetchPolicy: "network-only",

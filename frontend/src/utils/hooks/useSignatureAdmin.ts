@@ -22,7 +22,7 @@ import {
   DELETE_SIGNATURE,
 } from "@/requetes/mutations/signatures.mutations";
 
-interface SignatureAdminResult {
+export interface SignatureAdminResult {
   loading: boolean;
   error: ApolloError | undefined;
   refetch: () => Promise<{ data: GetSignaturesListQuery }>;
@@ -78,7 +78,8 @@ export const useCreateSignatureAdmin = (): [
     async (variables: CreateSignatureMutationVariables) => {
       try {
         const result = await createSignature({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create signature error:", err.message);
         throw err;
@@ -103,7 +104,7 @@ export const useUpdateSignatureAdmin = (): [
     async (variables: UpdateSignatureMutationVariables) => {
       try {
         const result = await updateSignature({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update signature error:", err.message);
         throw err;
@@ -128,7 +129,7 @@ export const useDeleteSignatureAdmin = (): [
     async (variables: DeleteSignatureMutationVariables) => {
       try {
         const result = await deleteSignature({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete signature error:", err.message);
         throw err;

@@ -63,7 +63,7 @@ export const useGetCurrentTranslations = (): UseGetCurrentTranslationsReturn => 
   );
 
   return {
-    translations: data?.getTranslations,
+    translations: data?.getTranslations?.translations ?? undefined,
     loading,
     error,
     refetch: async (): Promise<unknown> => {
@@ -100,7 +100,7 @@ export const useListCurrentTranslationsPaginated = (
   });
 
   return {
-    translations: data?.listTranslationsPaginated,
+    translations: data?.listTranslationsPaginated?.translations ?? undefined,
     loading,
     error,
     refetch: async (): Promise<unknown> => {
@@ -196,7 +196,7 @@ export const useUpsertCurrentTranslation = () => {
       const result = await upsertTranslation({
         variables: { key, value, lang } as unknown as UpsertTranslationMutationVariables,
       });
-      return result.data;
+      return result.data ?? undefined;
     } catch (err: unknown) {
       const errorMessage: string = err instanceof Error ? err.message : "Unknown error";
       console.error("Error upserting translation:", errorMessage);
@@ -240,7 +240,7 @@ export const useUpsertTranslationForLang = () => {
       const result = await upsertTranslation({
         variables: { key, value, lang: targetLang } as unknown as UpsertTranslationMutationVariables,
       });
-      return result.data;
+      return result.data ?? undefined;
     } catch (err: unknown) {
       const errorMessage: string = err instanceof Error ? err.message : "Unknown error";
       console.error("Error upserting translation:", errorMessage);

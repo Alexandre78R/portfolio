@@ -57,8 +57,10 @@ const ForgotPasswordPage = (): ReactElement => {
 
     try {
       const res = await forgotPassword({
-        email: form.email,
-        lang: lang,
+        data: {
+          email: form.email,
+          lang: lang,
+        },
       });
 
       const response = res.data?.forgotPassword;

@@ -61,7 +61,7 @@ const CaptchaModal: React.FC<ContactProps> = ({
   const [refreshing, setRefreshing]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [checkrefresh, setCheckRefresh]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
 
-  const generateCaptcha = useGenerateCaptchaQuery<GenerateCaptchaQuery>();
+  const generateCaptcha = useGenerateCaptchaQuery();
   const [validateCaptcha] = useValidateCaptchaMutation();
   const [clearCaptcha] = useClearCaptchaMutation();
 

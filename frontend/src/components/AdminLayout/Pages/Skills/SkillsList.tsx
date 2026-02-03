@@ -67,14 +67,18 @@ const SkillsList: React.FC = (): ReactElement => {
       <SkillEditModal
         skill={editSkill}
         onClose={() => setEditSkill(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <SkillDeleteDialog
         skillId={deleteSkillId}
         onClose={() => setDeleteSkillId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );
