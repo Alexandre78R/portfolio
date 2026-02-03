@@ -23,7 +23,7 @@ RUN npx prisma generate --schema=src/prisma/schema.prisma
 
 COPY translations translations
 COPY doc doc
-COPY uploads uploads
+# COPY uploads uploads
 COPY src src
 COPY tests tests
 COPY jest.config.ts jest.config.ts
