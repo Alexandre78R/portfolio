@@ -1,6 +1,6 @@
 // Translation Admin Hooks
 export * from "./useTranslation";
-export * from "./useTranslationAdmin";
+export { useUpsertMultipleTranslations } from "./useTranslationAdmin";
 
 // Auth Hooks
 export * from "./useAuthHooks";
@@ -43,5 +43,5 @@ export * from "./useCVAdmin";
 // Dashboard Admin Hooks
 export * from "./useDashboardAdmin";
 
-// Message Admin Hooks
-export * from "./useMessageAdmin";
+// Message Admin Hook
+export { useSendMessageAdmin } from "./useMessageAdmin";

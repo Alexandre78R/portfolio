@@ -43,7 +43,7 @@ export const useListUsersAdmin = (): UserAdminResult => {
 };
 
 export const useCreateUserAdmin = (): [
-  (variables: CreateUserMutationVariables) => Promise<{ data?: CreateUserMutation }>,
+  (variables: CreateUserMutationVariables) => Promise<{ data?: CreateUserMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [createUser, { loading, error }] = useMutation<
@@ -66,7 +66,7 @@ export const useCreateUserAdmin = (): [
 };
 
 export const useUpdateUserAdmin = (): [
-  (variables: UpdateUserMutationVariables) => Promise<{ data?: UpdateUserMutation }>,
+  (variables: UpdateUserMutationVariables) => Promise<{ data?: UpdateUserMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [updateUser, { loading, error }] = useMutation<
@@ -89,7 +89,7 @@ export const useUpdateUserAdmin = (): [
 };
 
 export const useDeleteUserAdmin = (): [
-  (variables: DeleteUserMutationVariables) => Promise<{ data?: DeleteUserMutation }>,
+  (variables: DeleteUserMutationVariables) => Promise<{ data?: DeleteUserMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [deleteUser, { loading, error }] = useMutation<

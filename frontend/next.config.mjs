@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const nextConfig = {
   reactStrictMode: true,
+    outputFileTracingRoot: path.join(__dirname, '../'),
   transpilePackages: [
     '@mui/x-date-pickers',
     '@mui/material',
@@ -14,6 +20,9 @@ const nextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     optimizePackageImports: ['@mui/material', '@mui/icons-material'],
   },

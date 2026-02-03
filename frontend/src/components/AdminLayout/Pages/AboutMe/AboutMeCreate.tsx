@@ -147,7 +147,7 @@ const AboutMeCreate: React.FC = (): ReactElement => {
         <InputBoolean
           id="aboutme-visible"
           label={translations.messageAdminAboutMeInputVisible}
-          value={form.isVisible}
+          value={form.isVisible ?? false}
           onChange={handleVisibleChange}
         />
 

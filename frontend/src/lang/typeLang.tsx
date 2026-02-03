@@ -426,6 +426,7 @@ type Lang = {
   messageAdminProjectDeleteCancel: string;
   messageAdminProjectDeleteSuccess: string;
   messageAdminProjectDeleteError: string;
+  messageAdminProjectSelectFile: string;
   messageAdminProjectCreateTitle: string;
   messageAdminProjectCreateSuccess: string;
   messageAdminProjectCreateError: string;
@@ -490,6 +491,7 @@ type Lang = {
   messageAdminSignatureColumnName: string;
   messageAdminSignatureColumnDescription: string;
   messageAdminSignatureColumnAction: string;
+  messageAdminMessageSelectSignature: string;
   messageAdminTranslationsTitle: string;
   messageAdminTranslationsDescription: string;
   messageAdminTranslationsTableColumnKey: string;
@@ -515,6 +517,7 @@ type Lang = {
   messageAdminTranslationsPaginationOf: string;
   messageAdminTranslationsLoading: string;
   messageAdminTranslationsError: string;
+  messageAdminTranslationsEditButton: string;
 };
 
 export default Lang;

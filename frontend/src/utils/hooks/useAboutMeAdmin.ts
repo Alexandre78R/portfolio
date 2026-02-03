@@ -55,7 +55,7 @@ export const useCreateAboutMeAdmin = (): [
     async (variables: CreateAboutMeMutationVariables) => {
       try {
         const result = await createAboutMe({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create about me error:", err.message);
         throw err;
@@ -78,7 +78,7 @@ export const useUpdateAboutMeAdmin = (): [
     async (variables: UpdateAboutMeMutationVariables) => {
       try {
         const result = await updateAboutMe({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update about me error:", err.message);
         throw err;
@@ -101,7 +101,7 @@ export const useDeleteAboutMeAdmin = (): [
     async (variables: DeleteAboutMeMutationVariables) => {
       try {
         const result = await deleteAboutMe({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete about me error:", err.message);
         throw err;

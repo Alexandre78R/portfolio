@@ -42,8 +42,10 @@ const LoginPage = (): React.ReactElement => {
     e.preventDefault();
     try {
       const res = await login({
-        email: form.email,
-        password: form.password,
+        data : {
+          email: form.email,
+          password: form.password,
+        }
       });
 
       const response = res.data?.login;

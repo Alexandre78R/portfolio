@@ -72,7 +72,7 @@ const ThemeEditModal: React.FC<ThemeEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateThemeMutation] = useUpdateThemeAdmin();
 
-  const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery<GetThemeByIdQuery>({
+  const { data: themeData, loading: themeLoading } = useGetThemeByIdQuery({
     variables: { id: Number(theme?.id) },
     skip: !theme?.id,
     fetchPolicy: "network-only",

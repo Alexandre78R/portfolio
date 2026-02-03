@@ -56,7 +56,7 @@ export const useListThemesAdmin = (): ThemeAdminResult => {
 };
 
 export const useCreateThemeAdmin = (): [
-  (variables: CreateThemeMutationVariables) => Promise<{ data?: CreateThemeMutation }>,
+  (variables: CreateThemeMutationVariables) => Promise<{ data?: CreateThemeMutation | null | undefined }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [createTheme, { loading, error }] = useMutation<
@@ -79,7 +79,7 @@ export const useCreateThemeAdmin = (): [
 };
 
 export const useUpdateThemeAdmin = (): [
-  (variables: UpdateThemeMutationVariables) => Promise<{ data?: UpdateThemeMutation }>,
+  (variables: UpdateThemeMutationVariables) => Promise<{ data?: UpdateThemeMutation | null | undefined }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [updateTheme, { loading, error }] = useMutation<
@@ -102,7 +102,7 @@ export const useUpdateThemeAdmin = (): [
 };
 
 export const useDeleteThemeAdmin = (): [
-  (variables: DeleteThemeMutationVariables) => Promise<{ data?: DeleteThemeMutation }>,
+  (variables: DeleteThemeMutationVariables) => Promise<{ data?: DeleteThemeMutation | null | undefined }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [deleteTheme, { loading, error }] = useMutation<

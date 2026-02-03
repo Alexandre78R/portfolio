@@ -51,14 +51,18 @@ const UserList: React.FC = (): ReactElement => {
       <UserEditModal
         user={editUser}
         onClose={() => setEditUser(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <UserDeleteDialog
         userId={deleteUserId}
         onClose={() => setDeleteUserId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
     </div>

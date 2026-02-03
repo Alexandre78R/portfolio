@@ -64,7 +64,7 @@ const EducationEditModal: React.FC<EducationEditModalProps> = ({
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
   const [updateEducationMutation] = useUpdateEducationAdmin();
 
-  const { data, loading: educationLoading } = useGetEducationByIdQuery<GetEducationByIdQuery>({
+  const { data, loading: educationLoading } = useGetEducationByIdQuery({
     variables: { id: Number(education?.id) },
     skip: !education?.id,
     fetchPolicy: "network-only",

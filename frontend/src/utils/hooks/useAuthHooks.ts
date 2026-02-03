@@ -3,8 +3,8 @@ import {
   ApolloError,
 } from "@apollo/client";
 import {
-  LoginMutation,
-  LoginMutationVariables,
+  MutationMutation,
+  MutationMutationVariables,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
   ForgotPasswordMutation,
@@ -16,18 +16,18 @@ import { CHANGE_PASSWORD, FORGOT_PASSWORD } from "@/requetes/mutations/user.muta
 
 // Login Hook
 export const useLogin = (): [
-  (variables: LoginMutationVariables) => Promise<{ data?: LoginMutation }>,
+  (variables: MutationMutationVariables) => Promise<{ data?: MutationMutation }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [login, { loading, error }] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
+    MutationMutation,
+    MutationMutationVariables
   >(LOGIN);
 
   return [
-    async (variables: LoginMutationVariables) => {
+    async (variables: MutationMutationVariables) => {
       const result = await login({ variables });
-      return result;
+      return { data: result.data ?? undefined };
     },
     { loading, error },
   ];
@@ -35,7 +35,7 @@ export const useLogin = (): [
 
 // Logout Hook
 export const useLogout = (): [
-  () => Promise<{ data?: LogoutMutation }>,
+  () => Promise<{ data?: LogoutMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [logout, { loading, error }] = useMutation<LogoutMutation>(LOGOUT);
@@ -51,7 +51,7 @@ export const useLogout = (): [
 
 // Change Password Hook
 export const useChangePassword = (): [
-  (variables: ChangePasswordMutationVariables) => Promise<{ data?: ChangePasswordMutation }>,
+  (variables: ChangePasswordMutationVariables) => Promise<{ data?: ChangePasswordMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [changePassword, { loading, error }] = useMutation<
@@ -70,7 +70,7 @@ export const useChangePassword = (): [
 
 // Forgot Password Hook
 export const useForgotPassword = (): [
-  (variables: ForgotPasswordMutationVariables) => Promise<{ data?: ForgotPasswordMutation }>,
+  (variables: ForgotPasswordMutationVariables) => Promise<{ data?: ForgotPasswordMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [forgotPassword, { loading, error }] = useMutation<

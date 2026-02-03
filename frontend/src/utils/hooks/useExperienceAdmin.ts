@@ -55,7 +55,7 @@ export const useCreateExperienceAdmin = (): [
     async (variables: CreateExperienceMutationVariables) => {
       try {
         const result = await createExperience({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create experience error:", err.message);
         throw err;
@@ -78,7 +78,7 @@ export const useUpdateExperienceAdmin = (): [
     async (variables: UpdateExperienceMutationVariables) => {
       try {
         const result = await updateExperience({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update experience error:", err.message);
         throw err;
@@ -101,7 +101,7 @@ export const useDeleteExperienceAdmin = (): [
     async (variables: DeleteExperienceMutationVariables) => {
       try {
         const result = await deleteExperience({ variables });
-        return result;
+        return { data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete experience error:", err.message);
         throw err;

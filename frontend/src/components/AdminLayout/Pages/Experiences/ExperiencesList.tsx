@@ -52,13 +52,17 @@ const ExperienceList = (): ReactElement => {
         <ExperienceEditModal
           experience={selectedExperience}
           onClose={() => setSelectedExperience(null)}
-          onRefresh={refetch}
+          onRefresh={async () => {
+          await refetch();
+        }}
         />
 
       <ExperienceDeleteDialog
         experienceId={experienceToDeleteId}
         onClose={() => setExperienceToDeleteId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );

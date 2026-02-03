@@ -52,14 +52,18 @@ const SkillCategoriesList: React.FC = (): ReactElement => {
       <SkillCategoryEditModal
         category={editCategory}
         onClose={() => setEditCategory(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <SkillCategoryDeleteDialog
         categoryId={deleteCategoryId}
         onClose={() => setDeleteCategoryId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );

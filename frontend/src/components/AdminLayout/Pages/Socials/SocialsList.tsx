@@ -51,14 +51,18 @@ const SocialsList = (): ReactElement => {
       <SocialEditModal
         social={editSocial}
         onClose={() => setEditSocial(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <SocialDeleteDialog
         socialId={deleteSocialId}
         onClose={() => setDeleteSocialId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );

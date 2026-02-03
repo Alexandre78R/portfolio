@@ -14,11 +14,12 @@ import CustomToast from "@/components/ToastCustom/CustomToast";
 import {
   useSendMessageAdmin,
   useListSignaturesAdmin,
-  SendMessageMutationVariables,
 } from "@/utils/hooks";
 import LoadingCustom from "@/components/Loading/LoadingCustom";
 import HtmlEditor from "../../components/Editor/HtmlEditor";
 import TextAdmin from "../../components/Text/TextAdmin";
+import { SendMessageMutationVariables } from "@/types/graphql";
+import { SignatureData } from "@/utils/hooks/useMessageAdmin";
 
 interface MessageFormState {
   readonly subject: string;
@@ -247,7 +248,7 @@ const MessageCreate: React.FC = (): ReactElement => {
 
         <InputSelect<string>
           id="signature-select"
-          label={translations?.messageAdminMessageSignature || "Sélectionner une signature"}
+          label={translations?.messageAdminMessageSelectSignature || "Sélectionner une signature"}
           name="signature-select"
           value={form.selectedSignatureId}
           options={signatureOptions}

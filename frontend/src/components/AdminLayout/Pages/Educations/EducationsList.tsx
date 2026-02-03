@@ -63,14 +63,18 @@ const EducationList = (): ReactElement => {
       <EducationEditModal
         education={editEducation}
         onClose={() => setEditEducation(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
 
       {/* DELETE */}
       <EducationDeleteDialog
         educationId={deleteEducationId}
         onClose={() => setDeleteEducationId(null)}
-        onRefresh={refetch}
+        onRefresh={async () => {
+          await refetch();
+        }}
       />
     </div>
   );

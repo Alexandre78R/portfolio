@@ -43,7 +43,7 @@ export const useListEducationsAdmin = (): EducationAdminResult => {
 };
 
 export const useCreateEducationAdmin = (): [
-  (variables: CreateEducationMutationVariables) => Promise<{ data?: CreateEducationMutation }>,
+  (variables: CreateEducationMutationVariables) => Promise<{ data?: CreateEducationMutation | null }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [createEducation, { loading, error }] = useMutation<
@@ -66,7 +66,7 @@ export const useCreateEducationAdmin = (): [
 };
 
 export const useUpdateEducationAdmin = (): [
-  (variables: UpdateEducationMutationVariables) => Promise<{ data?: UpdateEducationMutation }>,
+  (variables: UpdateEducationMutationVariables) => Promise<{ data?: UpdateEducationMutation | undefined }>,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [updateEducation, { loading, error }] = useMutation<
@@ -78,7 +78,8 @@ export const useUpdateEducationAdmin = (): [
     async (variables: UpdateEducationMutationVariables) => {
       try {
         const result = await updateEducation({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update education error:", err.message);
         throw err;
@@ -101,7 +102,8 @@ export const useDeleteEducationAdmin = (): [
     async (variables: DeleteEducationMutationVariables) => {
       try {
         const result = await deleteEducation({ variables });
-        return result;
+        // Ensure data is undefined if null
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete education error:", err.message);
         throw err;

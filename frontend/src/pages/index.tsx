@@ -50,12 +50,12 @@ import Educations from "@/components/Careers/Careers";
 import Contact from "@/components/Contact/Contact";
 
 const Home: React.FC = (): ReactElement => {
-  const { data: projectsData } = useGetProjectsListQuery<GetProjectsListQuery>();
-  const { data: skillsData } = useGetSkillsListQuery<GetSkillsListQuery>();
-  const { data: educationsData } = useGetEducationsListQuery<GetEducationsListQuery>();
-  const { data: experiencesData } = useGetExperiencesListQuery<GetExperiencesListQuery>();
-  const { data: socialsData } = useGetSocialsListQuery<GetSocialsListQuery>();
-  const { data: aboutMeData } = useGetAboutMeQuery<GetAboutMeQuery>();
+  const { data: projectsData } = useGetProjectsListQuery();
+  const { data: skillsData } = useGetSkillsListQuery();
+  const { data: educationsData } = useGetEducationsListQuery();
+  const { data: experiencesData } = useGetExperiencesListQuery();
+  const { data: socialsData } = useGetSocialsListQuery();
+  const { data: aboutMeData } = useGetAboutMeQuery();
 
   const { translations }: LangContextType = useLang();
   const { aboutMeRef, projectRef, skillRef, terminalRef, educationRef, contactRef }: SectionRefsContextProps = useSectionRefs();

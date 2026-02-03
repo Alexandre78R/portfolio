@@ -67,7 +67,8 @@ export const useCreateProjectAdmin = (): [
     async (variables: CreateProjectMutationVariables) => {
       try {
         const result = await createProject({ variables });
-        return result;
+        // Ensure data is undefined if null, to match the expected type
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Create project error:", err.message);
         throw err;
@@ -90,7 +91,8 @@ export const useUpdateProjectAdmin = (): [
     async (variables: UpdateProjectMutationVariables) => {
       try {
         const result = await updateProject({ variables });
-        return result;
+        // Ensure data is undefined if null, to match the expected type
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Update project error:", err.message);
         throw err;
@@ -101,7 +103,7 @@ export const useUpdateProjectAdmin = (): [
 };
 
 export const useDeleteProjectAdmin = (): [
-  (variables: DeleteProjectMutationVariables) => Promise<{ data?: DeleteProjectMutation }>,
+  (variables: DeleteProjectMutationVariables) => Promise<{ data?: DeleteProjectMutation }> ,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [deleteProject, { loading, error }] = useMutation<
@@ -113,7 +115,8 @@ export const useDeleteProjectAdmin = (): [
     async (variables: DeleteProjectMutationVariables) => {
       try {
         const result = await deleteProject({ variables });
-        return result;
+        // Ensure data is undefined if null, to match the expected type
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Delete project error:", err.message);
         throw err;
@@ -124,7 +127,7 @@ export const useDeleteProjectAdmin = (): [
 };
 
 export const useUploadProjectMediaAdmin = (): [
-  (variables: UploadProjectMediaMutationVariables) => Promise<{ data?: UploadProjectMediaMutation }>,
+  (variables: UploadProjectMediaMutationVariables) => Promise<{ data?: UploadProjectMediaMutation }> ,
   { loading: boolean; error: ApolloError | undefined }
 ] => {
   const [uploadProjectMedia, { loading, error }] = useMutation<
@@ -136,7 +139,8 @@ export const useUploadProjectMediaAdmin = (): [
     async (variables: UploadProjectMediaMutationVariables) => {
       try {
         const result = await uploadProjectMedia({ variables });
-        return result;
+        // Ensure data is undefined if null, to match the expected type
+        return { ...result, data: result.data ?? undefined };
       } catch (err: unknown) {
         if (err instanceof Error) console.error("Upload project media error:", err.message);
         throw err;

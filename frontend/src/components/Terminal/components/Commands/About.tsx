@@ -4,6 +4,7 @@ import { Message } from "../Message";
 import type Lang from "@/lang/typeLang";
 import { useAppSelector } from "@/store/hook";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { AboutMe } from "@/store/slices/aboutMeSlice";
 
 const About: React.FC = (): JSX.Element => {
   const { translations, lang }: { translations: Lang; lang: Lang["file"] } = useLang();
