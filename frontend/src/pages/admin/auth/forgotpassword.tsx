@@ -4,10 +4,9 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction } from "@apollo/client";
-import { FORGOT_PASSWORD } from "@/requetes/mutations/user.mutations";
 import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
+import { useForgotPassword } from "@/utils/hooks";
 
 export type ForgotPasswordFormState = {
   email: string;
@@ -38,10 +37,7 @@ const ForgotPasswordPage = (): ReactElement => {
     email: "",
   });
 
-  const [forgotPassword, { loading }]: [
-    MutationFunction<ForgotPasswordMutation, ForgotPasswordMutationVariables>,
-    MutationResult<ForgotPasswordMutation>
-  ] = useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(FORGOT_PASSWORD);
+  const [forgotPassword, { loading }] = useForgotPassword();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = event.target;
@@ -61,12 +57,8 @@ const ForgotPasswordPage = (): ReactElement => {
 
     try {
       const res = await forgotPassword({
-        variables: {
-          data: {
-            email: form.email,
-            lang: lang,
-          },
-        },
+        email: form.email,
+        lang: lang,
       });
 
       const response = res.data?.forgotPassword;

@@ -1,9 +1,6 @@
 ﻿import { type ReactElement } from "react";
 import { render, screen, fireEvent, waitFor, type RenderResult } from '@testing-library/react';
 import "@testing-library/jest-dom";
-import { MockedProvider, type MockedResponse } from "@apollo/client/testing";
-import { type ApolloError } from "@apollo/client";
-import { FORGOT_PASSWORD } from "@/requetes/mutations/user.mutations";
 import type Lang from "@/lang/typeLang";
 
 const mockRouterPush: jest.Mock<Promise<boolean>, [pathname: string]> = jest.fn(async (pathname: string): Promise<boolean> => true);
@@ -15,10 +12,12 @@ jest.mock("next/router", () => ({
 
 jest.mock("@/context/Lang/LangContext");
 jest.mock("@/components/ToastCustom/CustomToast");
+jest.mock("@/utils/hooks");
 
 import ForgotPasswordPage, { ForgotPasswordFormState, ForgotPasswordMutation, ForgotPasswordMutationVariables } from "@/pages/admin/auth/forgotpassword";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
+import { useForgotPassword } from "@/utils/hooks";
 
 type TranslationsMock = Pick<
   Lang,
@@ -65,13 +64,13 @@ describe("ForgotPasswordPage Component", (): void => {
   });
 
   it("should render forgot password form with correct title", (): void => {
-    const mocks: MockedResponse[] = [];
+    const mockForgotPasswordFn = jest.fn();
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
     
-    const renderResult: RenderResult = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    const renderResult: RenderResult = render(<ForgotPasswordPage />);
     
     const titleElement: HTMLElement = screen.getByText(translationsMock.messagePageForgotPasswordTitle);
     expect(titleElement).toBeInTheDocument();
@@ -80,13 +79,13 @@ describe("ForgotPasswordPage Component", (): void => {
   });
 
   it("should render email input field and submit button", (): void => {
-    const mocks: MockedResponse[] = [];
+    const mockForgotPasswordFn = jest.fn();
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
     
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
     
     const emailInput: HTMLInputElement = getEmailInput();
     const submitButton: HTMLButtonElement = screen.getByRole("button", {
@@ -99,13 +98,13 @@ describe("ForgotPasswordPage Component", (): void => {
   });
 
   it("should update form state when typing email", async (): Promise<void> => {
-    const mocks: MockedResponse[] = [];
+    const mockForgotPasswordFn = jest.fn();
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
     
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
     
     const emailInput: HTMLInputElement = getEmailInput();
     const testEmail: string = "test@example.com";
@@ -118,13 +117,13 @@ describe("ForgotPasswordPage Component", (): void => {
   });
 
   it("should display error when email is empty and form submitted", async (): Promise<void> => {
-    const mocks: MockedResponse[] = [];
+    const mockForgotPasswordFn = jest.fn();
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
     
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const submitButton: HTMLButtonElement = screen.getByRole("button", {
       name: translationsMock.messagePageForgotPasswordButton,
@@ -143,33 +142,21 @@ describe("ForgotPasswordPage Component", (): void => {
   it("should successfully handle forgot password request and redirect to login", async (): Promise<void> => {
     const testEmail: string = "test@example.com";
     
-    const forgotPasswordMock: MockedResponse<ForgotPasswordMutation> = {
-      request: {
-        query: FORGOT_PASSWORD,
-        variables: {
-          data: {
-            email: testEmail,
-            lang: "fr",
-          },
+    const mockForgotPasswordFn = jest.fn(async () => ({
+      data: {
+        forgotPassword: {
+          message: "Success",
+          code: 200,
         },
       },
-      result: {
-        data: {
-          forgotPassword: {
-            message: "Success",
-            code: 200,
-          },
-        },
-      },
-    };
+    }));
     
-    const mocks: MockedResponse[] = [forgotPasswordMock];
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
 
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const emailInput: HTMLInputElement = getEmailInput();
     fireEvent.change(emailInput, { target: { value: testEmail } });
@@ -197,33 +184,21 @@ describe("ForgotPasswordPage Component", (): void => {
   it("should display server error message on mutation failure", async (): Promise<void> => {
     const testEmail: string = "test@example.com";
     
-    const forgotPasswordErrorMock: MockedResponse<ForgotPasswordMutation> = {
-      request: {
-        query: FORGOT_PASSWORD,
-        variables: {
-          data: {
-            email: testEmail,
-            lang: "fr",
-          },
+    const mockForgotPasswordFn = jest.fn(async () => ({
+      data: {
+        forgotPassword: {
+          message: "Server error",
+          code: 500,
         },
       },
-      result: {
-        data: {
-          forgotPassword: {
-            message: "Server error",
-            code: 500,
-          },
-        },
-      },
-    };
+    }));
     
-    const mocks: MockedResponse[] = [forgotPasswordErrorMock];
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
 
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const emailInput: HTMLInputElement = getEmailInput();
     fireEvent.change(emailInput, { target: { value: testEmail } });
@@ -244,28 +219,17 @@ describe("ForgotPasswordPage Component", (): void => {
 
   it("should display server error message on network error", async (): Promise<void> => {
     const testEmail: string = "test@example.com";
-    const networkError: Error = new Error("Network error");
     
-    const forgotPasswordNetworkErrorMock: MockedResponse<ForgotPasswordMutation> = {
-      request: {
-        query: FORGOT_PASSWORD,
-        variables: {
-          data: {
-            email: testEmail,
-            lang: "fr",
-          },
-        },
-      },
-      error: networkError as unknown as ApolloError,
-    };
+    const mockForgotPasswordFn = jest.fn(async () => {
+      throw new Error("Network error");
+    });
     
-    const mocks: MockedResponse[] = [forgotPasswordNetworkErrorMock];
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
 
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const emailInput: HTMLInputElement = getEmailInput();
     fireEvent.change(emailInput, { target: { value: testEmail } });
@@ -285,13 +249,13 @@ describe("ForgotPasswordPage Component", (): void => {
   });
 
   it("should show error when email is empty", async (): Promise<void> => {
-    const mocks: MockedResponse[] = [];
+    const mockForgotPasswordFn = jest.fn();
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
     
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const submitButton: HTMLButtonElement = screen.getByRole("button", {
       name: translationsMock.messagePageForgotPasswordButton,
@@ -310,80 +274,52 @@ describe("ForgotPasswordPage Component", (): void => {
   it("should show loading text during form submission", async (): Promise<void> => {
     const testEmail: string = "test@example.com";
     
-    const forgotPasswordMock: MockedResponse<ForgotPasswordMutation> = {
-      request: {
-        query: FORGOT_PASSWORD,
-        variables: {
-          data: {
-            email: testEmail,
-            lang: "fr",
-          },
+    const mockForgotPasswordFn = jest.fn(async () => ({
+      data: {
+        forgotPassword: {
+          message: "Success",
+          code: 200,
         },
       },
-      result: {
-        data: {
-          forgotPassword: {
-            message: "Success",
-            code: 200,
-          },
-        },
-      },
-    };
+    }));
     
-    const mocks: MockedResponse[] = [forgotPasswordMock];
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: true, error: undefined }
+    ]);
 
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const emailInput: HTMLInputElement = getEmailInput();
     fireEvent.change(emailInput, { target: { value: testEmail } });
 
     const submitButton: HTMLButtonElement = screen.getByRole("button", {
-      name: translationsMock.messagePageForgotPasswordButton,
+      name: translationsMock.messagePageForgotPasswordButton + "...",
     }) as HTMLButtonElement;
     
-    fireEvent.click(submitButton);
-
-    await waitFor((): void => {
-      expect(submitButton).toHaveTextContent(
-        translationsMock.messagePageForgotPasswordButton + "..."
-      );
-    });
+    expect(submitButton).toHaveTextContent(
+      translationsMock.messagePageForgotPasswordButton + "..."
+    );
   });
 
   it("should clear email input after successful password reset request", async (): Promise<void> => {
     const testEmail: string = "test@example.com";
     
-    const forgotPasswordMock: MockedResponse<ForgotPasswordMutation> = {
-      request: {
-        query: FORGOT_PASSWORD,
-        variables: {
-          data: {
-            email: testEmail,
-            lang: "fr",
-          },
+    const mockForgotPasswordFn = jest.fn(async () => ({
+      data: {
+        forgotPassword: {
+          message: "Success",
+          code: 200,
         },
       },
-      result: {
-        data: {
-          forgotPassword: {
-            message: "Success",
-            code: 200,
-          },
-        },
-      },
-    };
+    }));
     
-    const mocks: MockedResponse[] = [forgotPasswordMock];
+    (useForgotPassword as jest.Mock).mockReturnValue([
+      mockForgotPasswordFn,
+      { loading: false, error: undefined }
+    ]);
 
-    render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <ForgotPasswordPage />
-      </MockedProvider>
-    );
+    render(<ForgotPasswordPage />);
 
     const emailInput: HTMLInputElement = getEmailInput();
     fireEvent.change(emailInput, { target: { value: testEmail } });

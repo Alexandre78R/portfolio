@@ -4,10 +4,9 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction, FetchResult } from "@apollo/client";
 import { useRouter, NextRouter } from "next/router";
 import Lang from "@/lang/typeLang";
-import { CHANGE_PASSWORD } from "@/requetes/mutations/user.mutations";
+import { useChangePassword } from "@/utils/hooks";
 import { useUser, UserContextType } from "@/context/UserContext/UserContext";
 
 export type ChangePasswordFormState = {
@@ -41,10 +40,7 @@ const ChangePasswordPage = (): React.ReactElement => {
     confirmPassword: "",
   });
 
-  const [changePassword, { loading }]: [
-    MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>,
-    MutationResult<ChangePasswordMutation>
-  ] = useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(CHANGE_PASSWORD);
+  const [changePassword, { loading }] = useChangePassword();
 
   useEffect((): void => {
     if (!userLoading) {
@@ -90,11 +86,9 @@ const ChangePasswordPage = (): React.ReactElement => {
     }
 
     try {
-      const res: FetchResult<ChangePasswordMutation> = await changePassword({
-        variables: {
-          email: user.email,
-          newPassword: form.newPassword,
-        },
+      const res = await changePassword({
+        email: user.email,
+        newPassword: form.newPassword,
       });
 
       const response = res.data?.changePassword;

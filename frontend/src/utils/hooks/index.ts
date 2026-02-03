@@ -2,6 +2,9 @@
 export * from "./useTranslation";
 export * from "./useTranslationAdmin";
 
+// Auth Hooks
+export * from "./useAuthHooks";
+
 // Project Admin Hooks
 export * from "./useProjectAdmin";
 

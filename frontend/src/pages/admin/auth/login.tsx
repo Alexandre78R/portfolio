@@ -4,17 +4,10 @@ import ButtonCustom from "@/components/Button/Button";
 import InputField from "@/components/InputField/InputField";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, MutationResult, MutationFunction, useLazyQuery, FetchResult } from "@apollo/client";
-import {
-  MutationDocument,
-  MutationMutation,
-  MutationMutationVariables,
-  GetMeQuery,
-} from "@/types/graphql";
 import { useRouter, NextRouter } from "next/router";
 import Link from "next/link";
 import Lang from "@/lang/typeLang";
-import { GET_ME } from "@/requetes/queries/users.queries";
+import { useLogin } from "@/utils/hooks";
 
 export type LoginFormState = {
   email: string;
@@ -35,10 +28,7 @@ const LoginPage = (): React.ReactElement => {
     password: "",
   });
 
-  const [login, { data, loading, error }]: [
-    MutationFunction<MutationMutation, MutationMutationVariables>,
-    MutationResult<MutationMutation>
-  ] = useMutation<MutationMutation, MutationMutationVariables>(MutationDocument);
+  const [login, { loading }] = useLogin();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value }: { name: string; value: string } = e.target;
@@ -51,13 +41,9 @@ const LoginPage = (): React.ReactElement => {
   const handleLogin = async (e: FormEvent<HTMLFormElement | HTMLButtonElement>): Promise<void> => {
     e.preventDefault();
     try {
-      const res: FetchResult<MutationMutation> = await login({
-        variables: {
-          data: {
-            email: form.email,
-            password: form.password,
-          },
-        },
+      const res = await login({
+        email: form.email,
+        password: form.password,
       });
 
       const response = res.data?.login;

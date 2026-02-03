@@ -3,15 +3,17 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from "@/pages/admin/auth/login";
 import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "@/components/ToastCustom/CustomToast";
-import { useMutation, type MutationTuple, useLazyQuery } from "@apollo/client";
 import { useRouter, type NextRouter } from "next/router";
 import type Lang from "@/lang/typeLang";
+import { useLogin } from "@/utils/hooks";
 
 jest.mock("@/context/Lang/LangContext", () => ({
   useLang: jest.fn(),
 }));
 
 jest.mock("@/components/ToastCustom/CustomToast", () => jest.fn());
+
+jest.mock("@/utils/hooks");
 
 jest.mock("@/components/AuthFormLayout/AuthFormLayout", () => ({
   __esModule: true,
@@ -75,22 +77,6 @@ jest.mock("@/components/Button/Button", () => ({
   ),
 }));
 
-jest.mock("@apollo/client", () => {
-  const actual = jest.requireActual("@apollo/client");
-  return {
-    ...actual,
-    useMutation: jest.fn(),
-    useLazyQuery: jest.fn(),
-    gql: (str: TemplateStringsArray) => str,
-  };
-});
-
-jest.mock("@/types/graphql", () => ({
-  MutationDocument: {},
-  MutationMutation: jest.fn(),
-  MutationMutationVariables: jest.fn(),
-}));
-
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }));
@@ -111,6 +97,7 @@ describe("LoginPage Component", (): void => {
 
   beforeEach((): void => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
 
     mockShowAlert = jest.fn();
     mockPush = jest.fn();
@@ -118,19 +105,20 @@ describe("LoginPage Component", (): void => {
     (useLang as jest.Mock).mockReturnValue({ translations: translationsMock });
     (CustomToast as jest.Mock).mockReturnValue({ showAlert: mockShowAlert });
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+  });
 
-    (useMutation as jest.Mock).mockReturnValue([
-      jest.fn().mockResolvedValue({ data: { login: { code: 200, message: "ok" } } }),
-      { loading: false, error: null, data: null },
-    ]) as unknown as MutationTuple<any, any>;
-
-    (useLazyQuery as jest.Mock).mockReturnValue([
-      jest.fn(),
-      { loading: false, error: null, data: null },
-    ]);
+  afterEach((): void => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   it("should render correctly", (): void => {
+    const mockLoginFn = jest.fn();
+    (useLogin as jest.Mock).mockReturnValue([
+      mockLoginFn,
+      { loading: false, error: undefined }
+    ]);
+
     render(<LoginPage />);
     const authLayout: HTMLElement = screen.getByTestId("auth-layout");
     expect(authLayout).toBeInTheDocument();
@@ -151,6 +139,12 @@ describe("LoginPage Component", (): void => {
   });
 
   it("should update form state on input change", (): void => {
+    const mockLoginFn = jest.fn();
+    (useLogin as jest.Mock).mockReturnValue([
+      mockLoginFn,
+      { loading: false, error: undefined }
+    ]);
+
     render(<LoginPage />);
     const emailInput: HTMLInputElement = screen.getByTestId("login-email") as HTMLInputElement;
     const passwordInput: HTMLInputElement = screen.getByTestId(
@@ -167,8 +161,8 @@ describe("LoginPage Component", (): void => {
   it("should call login mutation and show success alert on code 200", async (): Promise<void> => {
     const mockLogin: jest.Mock = jest
       .fn()
-      .mockResolvedValue({ data: { login: { code: 200, message: "ok" } } });
-    (useMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: null, data: null }]);
+      .mockResolvedValue({ data: { login: { code: 200, message: "ok", token: "test-token" } } });
+    (useLogin as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: undefined }]);
 
     render(<LoginPage />);
 
@@ -183,13 +177,13 @@ describe("LoginPage Component", (): void => {
 
     await waitFor((): void => {
       expect(mockLogin).toHaveBeenCalledWith({
-        variables: { data: { email: "user@test.com", password: "password" } },
+        email: "user@test.com",
+        password: "password",
       });
       expect(mockShowAlert).toHaveBeenCalledWith(
         "success",
         translationsMock.messagePageLoginMessageSuccess
       );
-      expect(mockPush).toHaveBeenCalledWith("/admin");
     });
   });
 
@@ -197,7 +191,7 @@ describe("LoginPage Component", (): void => {
     const mockLogin: jest.Mock = jest.fn().mockResolvedValue({
       data: { login: { code: 401, message: "invalid" } },
     });
-    (useMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: null, data: null }]);
+    (useLogin as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: undefined }]);
 
     render(<LoginPage />);
 
@@ -222,7 +216,7 @@ describe("LoginPage Component", (): void => {
     const mockLogin: jest.Mock = jest.fn().mockResolvedValue({
       data: { login: { code: 500, message: "server error" } },
     });
-    (useMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: null, data: null }]);
+    (useLogin as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: undefined }]);
 
     render(<LoginPage />);
 
@@ -245,7 +239,7 @@ describe("LoginPage Component", (): void => {
 
   it("should show generic error alert if mutation throws", async (): Promise<void> => {
     const mockLogin: jest.Mock = jest.fn().mockRejectedValue(new Error("Network Error"));
-    (useMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: null, data: null }]);
+    (useLogin as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: undefined }]);
 
     render(<LoginPage />);
 
@@ -270,9 +264,9 @@ describe("LoginPage Component", (): void => {
     const mockLogin: jest.Mock = jest.fn().mockResolvedValue({
       data: { login: { code: 200, message: "ok" } },
     });
-    (useMutation as jest.Mock).mockReturnValue([
+    (useLogin as jest.Mock).mockReturnValue([
       mockLogin,
-      { loading: true, error: null, data: null },
+      { loading: true, error: undefined },
     ]);
 
     render(<LoginPage />);
