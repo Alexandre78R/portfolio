@@ -1,10 +1,16 @@
-import { ObjectType, Field, Int, Float } from "type-graphql";
+import { ObjectType, Field, Int, Float, ArgsType } from "type-graphql";
 import { Project } from "../entities/project.entity";
 import { Skill } from "../entities/skill.entity";
+import { SkillCategoryWithSkillsDTO } from "../entities/skillCategoryWithSkillsDTO.entity";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
 import { Education } from "../entities/education.entity";
 import { Experience } from "../entities/experience.entity";
 import { User } from "../entities/user.entity";
+import { Theme } from "../entities/theme.entity";
+import { Social } from "../entities/social.entity";
+import { Message } from "../entities/message.entity";
+import { Signature } from "../entities/signature.entity";
+import { AboutMe } from "../entities/aboutme.entity";
 
 @ObjectType()
 export class Response {
@@ -41,8 +47,8 @@ export class ProjectsResponse {
 
 @ObjectType()
 export class CategoryResponse extends Response {
-  @Field(() => [Skill], { nullable: true })
-  categories?: Skill[];
+  @Field(() => [SkillCategoryWithSkillsDTO], { nullable: true })
+  categories?: SkillCategoryWithSkillsDTO[];
 }
 
 @ObjectType()
@@ -55,6 +61,7 @@ export class SubItemResponse extends Response {
 export class EducationsResponse extends Response {
   @Field(() => [Education], { nullable: true })
   educations?: Education[];
+  total?: number;
 }
 
 @ObjectType()
@@ -141,8 +148,8 @@ export class BackupFileInfo {
 
 @ObjectType()
 export class BackupFilesResponse extends Response {
-
-  @Field(() => [BackupFileInfo], { nullable: true })
+  // @Field(() => [BackupFileInfo], { nullable: true })
+  @Field(() => [BackupFileInfo])
   files?: BackupFileInfo[];
 }
 
@@ -180,4 +187,136 @@ export class TopSkillUsage {
 export class TopSkillsResponse extends Response {
   @Field(() => [TopSkillUsage])
   skills: TopSkillUsage[];
+}
+
+@ArgsType()
+export class PaginationArgs {
+  @Field(() => Int, { defaultValue: 1 })
+  page: number;
+
+  @Field(() => Int, { defaultValue: 10 })
+  limit: number;
+
+  @Field(() => String, { nullable: true })
+  searchTerm?: string;
+}
+
+@ObjectType()
+export class UploadResponse {
+  @Field(() => Int)
+  code!: number;
+
+  @Field()
+  message!: string;
+
+  @Field({ nullable: true })
+  url?: string;
+}
+
+@ObjectType()
+export class ThemeResponse extends Response {
+  @Field(() => Theme, { nullable: true })
+  theme?: Theme;
+}
+@ObjectType()
+export class SocialResponse extends Response {
+  @Field(() => Social, { nullable: true })
+  social?: Social;
+}
+
+@ObjectType()
+export class SocialsResponse extends Response {
+  @Field(() => [Social], { nullable: true })
+  socials?: Social[];
+}
+@ObjectType()
+export class ThemesResponse extends Response {
+  @Field(() => [Theme], { nullable: true })
+  themes?: Theme[];
+}
+
+@ObjectType()
+export class MessageResponse extends Response {}
+
+@ObjectType()
+export class MessagesResponse extends Response {
+  @Field(() => [Message], { nullable: true })
+  messages?: Message[];
+}
+
+@ObjectType()
+export class SignatureResponse extends Response {
+  @Field(() => Signature, { nullable: true })
+  signature?: Signature;
+}
+
+@ObjectType()
+export class SignaturesResponse extends Response {
+  @Field(() => [Signature], { nullable: true })
+  signatures?: Signature[];
+
+  @Field(() => Int, { nullable: true })
+  total?: number;
+}
+
+@ObjectType()
+export class AboutMeResponse extends Response {
+  @Field(() => AboutMe, { nullable: true })
+  aboutMe?: AboutMe;
+}
+
+@ObjectType()
+export class AboutMesResponse extends Response {
+  @Field(() => [AboutMe], { nullable: true })
+  aboutMes?: AboutMe[];
+}
+
+@ObjectType()
+export class TranslationsResponse extends Response {
+  @Field(() => Boolean, { nullable: true })
+  success?: boolean;
+
+  @Field(() => [TranslationKeyValue], { nullable: true })
+  translations?: TranslationKeyValue[];
+}
+
+@ObjectType()
+export class TranslationKeyValue {
+  @Field()
+  key!: string;
+
+  @Field()
+  value!: string;
+}
+
+@ObjectType()
+export class TranslationEntry {
+  @Field()
+  key!: string;
+
+  @Field()
+  lang!: string;
+
+  @Field()
+  value!: string;
+}
+
+export type TranslationItem = TranslationKeyValue | TranslationEntry;
+
+@ObjectType()
+export class TranslationsPaginationResponse extends Response {
+  @Field(() => Boolean, { nullable: true })
+  success?: boolean;
+
+  @Field(() => [TranslationEntry], { nullable: true })
+  translations?: TranslationEntry[];
+
+  @Field(() => Int, { nullable: true })
+  total?: number;
+
+  @Field(() => Int, { nullable: true })
+  page?: number;
+
+  @Field(() => Int, { nullable: true })
+  limit?: number;
 }

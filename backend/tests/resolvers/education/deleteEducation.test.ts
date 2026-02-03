@@ -4,13 +4,13 @@ import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
 import { EducationResponse } from "../../../src/types/response.types";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import { Education as PrismaEducation } from "@prisma/client";
+import Cookies from "cookies";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
 
 describe("EducationResolver - deleteEducation", () => {
   let resolver: EducationResolver;
-
-  const mockCookies = mockDeep<Cookies>();
+  let mockCookies: DeepMockProxy<Cookies>;
 
   const mockAdminUser: User = {
     id: 1,
@@ -33,12 +33,13 @@ describe("EducationResolver - deleteEducation", () => {
   const baseMockContext: MyContext = {
     req: {} as any,
     res: {} as any,
-    cookies: mockCookies,
+    cookies: mockDeep<Cookies>(),
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
-  const mockExistingEducation = {
+  const mockExistingEducation: PrismaEducation = {
     id: 1,
     titleFR: "Diplôme à Supprimer",
     titleEN: "Degree to Delete",
@@ -56,37 +57,50 @@ describe("EducationResolver - deleteEducation", () => {
     typeFR: "Université",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.education.findUnique.mockReset();
     prismaMock.education.delete.mockReset();
+
     resolver = new EducationResolver(prismaMock);
+
+    mockCookies = mockDeep<Cookies>();
+    baseMockContext.cookies = mockCookies;
     mockCookies.set.mockClear();
     mockCookies.get.mockClear();
   });
 
-  it("should successfully delete an education record by an admin user", async () => {
+  it("should successfully delete an education record by an admin user", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
     prismaMock.education.findUnique.mockResolvedValueOnce(mockExistingEducation);
     prismaMock.education.delete.mockResolvedValueOnce(mockExistingEducation);
 
-    const result: EducationResponse = await resolver.deleteEducation(mockExistingEducation.id, adminContext);
+    const result: EducationResponse = await resolver.deleteEducation(
+      mockExistingEducation.id,
+      adminContext
+    );
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Education deleted");
-    expect(result.education).toBeUndefined(); // Assuming delete operation doesn't return the deleted entity in the response
+    expect(result.education).toBeUndefined();
 
     expect(prismaMock.education.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({ where: { id: mockExistingEducation.id } });
+    expect(prismaMock.education.findUnique).toHaveBeenCalledWith({
+      where: { id: mockExistingEducation.id },
+    });
     expect(prismaMock.education.delete).toHaveBeenCalledTimes(1);
-    expect(prismaMock.education.delete).toHaveBeenCalledWith({ where: { id: mockExistingEducation.id } });
+    expect(prismaMock.education.delete).toHaveBeenCalledWith({
+      where: { id: mockExistingEducation.id },
+    });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
+  it("should return 401 if no user is authenticated", async (): Promise<void> => {
     const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
 
-    const result: EducationResponse = await resolver.deleteEducation(mockExistingEducation.id, unauthenticatedContext);
+    const result: EducationResponse = await resolver.deleteEducation(
+      mockExistingEducation.id,
+      unauthenticatedContext
+    );
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
@@ -96,10 +110,13 @@ describe("EducationResolver - deleteEducation", () => {
     expect(prismaMock.education.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
+  it("should return 403 if authenticated user is not an admin", async (): Promise<void> => {
     const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
 
-    const result: EducationResponse = await resolver.deleteEducation(mockExistingEducation.id, regularUserContext);
+    const result: EducationResponse = await resolver.deleteEducation(
+      mockExistingEducation.id,
+      regularUserContext
+    );
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
@@ -109,7 +126,7 @@ describe("EducationResolver - deleteEducation", () => {
     expect(prismaMock.education.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the education record to delete is not found", async () => {
+  it("should return 404 if the education record to delete is not found", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
     prismaMock.education.findUnique.mockResolvedValueOnce(null);
 
@@ -124,12 +141,14 @@ describe("EducationResolver - deleteEducation", () => {
     expect(prismaMock.education.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during finding the education record", async () => {
+  it("should return 500 for a database error during finding the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "DB error during findUnique";
-    prismaMock.education.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.education.findUnique.mockRejectedValueOnce(new Error("DB error during findUnique"));
 
-    const result: EducationResponse = await resolver.deleteEducation(mockExistingEducation.id, adminContext);
+    const result: EducationResponse = await resolver.deleteEducation(
+      mockExistingEducation.id,
+      adminContext
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error deleting education");
@@ -139,14 +158,16 @@ describe("EducationResolver - deleteEducation", () => {
     expect(prismaMock.education.delete).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during deleting the education record", async () => {
+  it("should return 500 for a database error during deleting the education record", async (): Promise<void> => {
     const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "DB error during delete";
 
     prismaMock.education.findUnique.mockResolvedValueOnce(mockExistingEducation);
-    prismaMock.education.delete.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.education.delete.mockRejectedValueOnce(new Error("DB error during delete"));
 
-    const result: EducationResponse = await resolver.deleteEducation(mockExistingEducation.id, adminContext);
+    const result: EducationResponse = await resolver.deleteEducation(
+      mockExistingEducation.id,
+      adminContext
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error deleting education");

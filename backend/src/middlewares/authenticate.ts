@@ -1,14 +1,13 @@
 import { RequestHandler } from "express";
 import Cookies from "cookies";
-import { jwtVerify } from "jose";
-import { PrismaClient } from "@prisma/client";
+import { jwtVerify, JWTPayload } from "jose";
+import { PrismaClient, User as PrismaUser } from "@prisma/client";
 import { JwtPayload } from "../index";
-import { User } from "../entities/user.entity";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: PrismaUser;
     }
   }
 }
@@ -17,28 +16,29 @@ const prisma = new PrismaClient();
 
 export const authenticate: RequestHandler = async (req, res, next) => {
   const cookies = new Cookies(req, res);
-  const token = cookies.get("token");
+  const token: string | undefined = cookies.get("token");
 
   if (!token || !process.env.JWT_SECRET) {
     return res.status(401).send("Unauthenticated");
   }
 
   try {
-    const { payload } = await jwtVerify<JwtPayload>(
+    const { payload }: { payload: JwtPayload & JWTPayload } = await jwtVerify(
       token,
       new TextEncoder().encode(process.env.JWT_SECRET)
     );
 
-    const prismaUser = await prisma.user.findUnique({
+    const prismaUser: PrismaUser | null = await prisma.user.findUnique({
       where: { id: payload.id },
     });
+
     if (!prismaUser) {
       return res.status(401).send("User not found");
     }
 
-    req.user = prismaUser as unknown as User;
+    req.user = prismaUser;
     next();
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("JWT invalide :", err);
     return res.status(401).send("Invalid or expired token");
   }

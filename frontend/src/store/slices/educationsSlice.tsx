@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import Lang from "@/lang/typeLang";
 export type EducationType = {
   id: number;
   title?: string;
@@ -38,8 +38,8 @@ const educationsSlice = createSlice({
     setEducations(state, action: PayloadAction<EducationType[]>) {
       state.dataEducations = action.payload;
     },
-    updateEducationsTitle(state, action: PayloadAction<string>) {
-      const lang = action.payload;
+    updateEducationsTitle(state, action: PayloadAction<Lang["file"]>) {
+      const lang: Lang["file"] = action.payload;
       state.dataEducations = state.dataEducations.map((education) => ({
         ...education,
         title: lang === "fr" ? education.titleFR : education.titleEN,

@@ -1,18 +1,19 @@
 import "reflect-metadata";
+
 import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
-import { MyContext } from "../../../src";
+import type { MyContext } from "../../../src";
 import { User, UserRole } from "../../../src/entities/user.entity";
-import { UpdateExperienceInput } from "../../../src/entities/inputs/experience.input";
-import { ExperienceResponse } from "../../../src/types/response.types";
-import { Experience as PrismaExperience } from "@prisma/client";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import type { UpdateExperienceInput } from "../../../src/entities/inputs/experience.input";
+import type { ExperienceResponse } from "../../../src/types/response.types";
+import type { Experience as PrismaExperience } from "@prisma/client";
+import Cookies from "cookies";
+import { mockDeep, type DeepMockProxy } from "jest-mock-extended";
 
 describe("ExperienceResolver - updateExperience", () => {
   let resolver: ExperienceResolver;
 
-  const mockCookies = mockDeep<Cookies>();
+  const mockCookies: DeepMockProxy<Cookies> = mockDeep<Cookies>();
 
   const mockAdminUser: User = {
     id: 1,
@@ -42,11 +43,12 @@ describe("ExperienceResolver - updateExperience", () => {
   };
 
   const baseMockContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
     cookies: mockCookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
   const mockExistingExperience: PrismaExperience = {
@@ -65,38 +67,52 @@ describe("ExperienceResolver - updateExperience", () => {
     typeEN: "Full-time",
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
+
     prismaMock.experience.findUnique.mockReset();
     prismaMock.experience.update.mockReset();
-    resolver = new ExperienceResolver(prismaMock);
-    mockCookies.set.mockClear();
+
     mockCookies.get.mockClear();
+    mockCookies.set.mockClear();
+
+    resolver = new ExperienceResolver(prismaMock);
   });
 
-  it("should successfully update an experience record by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should successfully update an experience record when user is admin", async (): Promise<void> => {
+    const adminContext: MyContext = {
+      ...baseMockContext,
+      user: mockAdminUser,
+    };
+
     const updateInput: UpdateExperienceInput = {
       id: mockExistingExperience.id,
       jobEN: "Updated Job EN",
       business: "New Business Inc.",
     };
-    const mockUpdatedExperience: PrismaExperience = {
+
+    const updatedExperience: PrismaExperience = {
       ...mockExistingExperience,
       ...updateInput,
     };
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExistingExperience);
-    prismaMock.experience.update.mockResolvedValueOnce(mockUpdatedExperience);
+    prismaMock.experience.update.mockResolvedValueOnce(updatedExperience);
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, adminContext);
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      adminContext,
+    );
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experience updated");
-    expect(result.experience).toEqual(mockUpdatedExperience);
+    expect(result.experience).toEqual(updatedExperience);
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: updateInput.id } });
+    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({
+      where: { id: updateInput.id },
+    });
+
     expect(prismaMock.experience.update).toHaveBeenCalledTimes(1);
     expect(prismaMock.experience.update).toHaveBeenCalledWith({
       where: { id: updateInput.id },
@@ -117,36 +133,49 @@ describe("ExperienceResolver - updateExperience", () => {
     });
   });
 
-  it("should successfully update an experience record by an editor user", async () => {
-    const editorContext: MyContext = { ...baseMockContext, user: mockEditorUser };
+  it("should successfully update an experience record when user is editor", async (): Promise<void> => {
+    const editorContext: MyContext = {
+      ...baseMockContext,
+      user: mockEditorUser,
+    };
+
     const updateInput: UpdateExperienceInput = {
       id: mockExistingExperience.id,
       jobFR: "Nouveau Poste FR",
       typeEN: "Part-time",
     };
-    const mockUpdatedExperience: PrismaExperience = {
+
+    const updatedExperience: PrismaExperience = {
       ...mockExistingExperience,
       ...updateInput,
     };
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExistingExperience);
-    prismaMock.experience.update.mockResolvedValueOnce(mockUpdatedExperience);
+    prismaMock.experience.update.mockResolvedValueOnce(updatedExperience);
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, editorContext);
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      editorContext,
+    );
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experience updated");
-    expect(result.experience).toEqual(mockUpdatedExperience);
+    expect(result.experience).toEqual(updatedExperience);
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.experience.update).toHaveBeenCalledTimes(1);
   });
 
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
-    const updateInput: UpdateExperienceInput = { id: 1, jobEN: "Test" };
+  it("should return 401 when no user is authenticated", async (): Promise<void> => {
+    const updateInput: UpdateExperienceInput = {
+      id: 1,
+      jobEN: "Test",
+    };
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, unauthenticatedContext);
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      baseMockContext,
+    );
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
@@ -156,11 +185,21 @@ describe("ExperienceResolver - updateExperience", () => {
     expect(prismaMock.experience.update).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin or editor", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
-    const updateInput: UpdateExperienceInput = { id: 1, jobEN: "Test" };
+  it("should return 403 when user does not have admin or editor role", async (): Promise<void> => {
+    const regularUserContext: MyContext = {
+      ...baseMockContext,
+      user: mockRegularUser,
+    };
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, regularUserContext);
+    const updateInput: UpdateExperienceInput = {
+      id: 1,
+      jobEN: "Test",
+    };
+
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      regularUserContext,
+    );
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin or Editor role required.");
@@ -170,31 +209,51 @@ describe("ExperienceResolver - updateExperience", () => {
     expect(prismaMock.experience.update).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the experience record is not found", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const updateInput: UpdateExperienceInput = { id: 999, jobEN: "Non Existent" };
+  it("should return 404 when experience does not exist", async (): Promise<void> => {
+    const adminContext: MyContext = {
+      ...baseMockContext,
+      user: mockAdminUser,
+    };
+
+    const updateInput: UpdateExperienceInput = {
+      id: 999,
+      jobEN: "Non Existent",
+    };
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(null);
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, adminContext);
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      adminContext,
+    );
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Experience not found");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.findUnique).toHaveBeenCalledWith({ where: { id: updateInput.id } });
     expect(prismaMock.experience.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during finding the experience record", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const updateInput: UpdateExperienceInput = { id: mockExistingExperience.id, jobEN: "Test" };
-    const errorMessage = "DB error during findUnique";
+  it("should return 500 when database error occurs during findUnique", async (): Promise<void> => {
+    const adminContext: MyContext = {
+      ...baseMockContext,
+      user: mockAdminUser,
+    };
 
-    prismaMock.experience.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+    const updateInput: UpdateExperienceInput = {
+      id: mockExistingExperience.id,
+      jobEN: "Test",
+    };
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, adminContext);
+    prismaMock.experience.findUnique.mockRejectedValueOnce(
+      new Error("DB error during findUnique"),
+    );
+
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      adminContext,
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error updating experience");
@@ -204,15 +263,26 @@ describe("ExperienceResolver - updateExperience", () => {
     expect(prismaMock.experience.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during updating the experience record", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const updateInput: UpdateExperienceInput = { id: mockExistingExperience.id, jobEN: "Test" };
-    const errorMessage = "DB error during update";
+  it("should return 500 when database error occurs during update", async (): Promise<void> => {
+    const adminContext: MyContext = {
+      ...baseMockContext,
+      user: mockAdminUser,
+    };
+
+    const updateInput: UpdateExperienceInput = {
+      id: mockExistingExperience.id,
+      jobEN: "Test",
+    };
 
     prismaMock.experience.findUnique.mockResolvedValueOnce(mockExistingExperience);
-    prismaMock.experience.update.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.experience.update.mockRejectedValueOnce(
+      new Error("DB error during update"),
+    );
 
-    const result: ExperienceResponse = await resolver.updateExperience(updateInput, adminContext);
+    const result: ExperienceResponse = await resolver.updateExperience(
+      updateInput,
+      adminContext,
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error updating experience");

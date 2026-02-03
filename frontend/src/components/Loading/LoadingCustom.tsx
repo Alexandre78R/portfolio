@@ -1,6 +1,6 @@
 import { CircularProgress } from "@mui/material";
 
-const LoadingCustom: React.FC = () => {
+const LoadingCustom: React.FC = (): JSX.Element => {
   return (
     <div className="flex justify-center items-center h-52">
       <CircularProgress

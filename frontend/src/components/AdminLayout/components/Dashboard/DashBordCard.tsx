@@ -1,4 +1,6 @@
-type DashboardCardProps = {
+import TextAdmin from "../../components/Text/TextAdmin";
+
+export type DashboardCardProps = {
   key ?: number | string;
   title: string;
   value: number;
@@ -6,12 +8,12 @@ type DashboardCardProps = {
   color?: string;
 };
 
-export default function DashboardCard({
+const DashboardCard: React.FC<DashboardCardProps> =  ({
   title,
   value,
   icon,
   color = "from-blue-500 to-blue-400",
-}: DashboardCardProps) {
+}: DashboardCardProps) => {
   return (
     <div
       className={`
@@ -29,7 +31,7 @@ export default function DashboardCard({
         {icon}
       </div>
       <div className="flex flex-col gap-1 mt-2">
-        <h4 className="text-xs uppercase tracking-wide text-gray-500 text-gray-400 font-semibold">{title}</h4>
+        <TextAdmin type="h4" className="text-xs uppercase tracking-wide text-gray-500 text-gray-400 font-semibold">{title}</TextAdmin>
         <span className="
           text-3xl font-extrabold text-text animate-pulse
         ">
@@ -39,3 +41,5 @@ export default function DashboardCard({
     </div>
   );
 }
+
+export default DashboardCard;

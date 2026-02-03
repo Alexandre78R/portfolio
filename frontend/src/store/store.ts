@@ -1,16 +1,23 @@
-import { configureStore } from '@reduxjs/toolkit';
-import skillsReducer from './slices/skillsSlice';
-import projectsSlice from './slices/projectsSlice';
-import educationsSlice from './slices/educationsSlice';
-import experiencesSlice from './slices/experiencesSlice';
+import { configureStore } from "@reduxjs/toolkit";
 
-const store = configureStore({
+import skillsReducer from "./slices/skillsSlice";
+import projectsReducer from "./slices/projectsSlice";
+import educationsReducer from "./slices/educationsSlice";
+import experiencesReducer from "./slices/experiencesSlice";
+import socialsReducer from "./slices/socialsSlice";
+import aboutMeReducer from "./slices/aboutMeSlice";
+
+export const store = configureStore({
   reducer: {
     skills: skillsReducer,
-    projects: projectsSlice,
-    educations: educationsSlice,
-    experiences: experiencesSlice,
+    projects: projectsReducer,
+    educations: educationsReducer,
+    experiences: experiencesReducer,
+    socials: socialsReducer,
+    aboutMe: aboutMeReducer,
   },
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

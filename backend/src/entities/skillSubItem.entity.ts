@@ -1,23 +1,22 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-  } from "typeorm";
-  import { Field, ID, ObjectType } from "type-graphql";
-  import { Skill } from "./skill.entity";
-  
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Field, ID, ObjectType } from "type-graphql";
+import { Skill } from "./skill.entity";
+
+/**
+ * SkillSubItem entity - Represents a skill as it appears within a category
+ * categoryId is optional since skills are now independent, linked via junction table
+ */
 @ObjectType()
 export class SkillSubItem {
   @Field(() => ID)
-  id: number;
+  readonly id: number;
 
   @Field()
-  name: string;
+  readonly name: string;
 
   @Field()
-  image: string;
+  readonly image: string;
 
-  @Field()
-  categoryId: number;
+  @Field({ nullable: true })
+  readonly categoryId?: number;
 }

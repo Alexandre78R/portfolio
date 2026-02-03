@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { useLang } from "@/context/Lang/LangContext";
-import { Typography } from "@mui/material";
 import { Message } from "../Message";
 import { termContext } from "../../Terminal";
 import Usage from "../Usage";
 import { checkLangSwitch, getCurrentCmdArry, isArgInvalid } from "../../util";
+// import type LangType from "@/lang/typeLang";
+import { Term } from "../../Terminal";
 
-const Lang: React.FC = (): React.ReactNode => {
+const Lang = (): React.ReactNode  => {
   const { listLang, setLang } = useLang();
-  const { arg, history, rerender } = useContext(termContext);
+  const { arg, history, rerender }: Term = useContext<Term>(termContext);
   const [currentLang, setCurrentLang]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
@@ -26,7 +27,7 @@ const Lang: React.FC = (): React.ReactNode => {
     }
   }, [rerender, currentCommand, currentLang]);
 
-  const checkArg = () =>
+  const checkArg: () => React.ReactNode = () =>
     isArgInvalid(arg, "set", listLang) ? <Usage cmd="themes" /> : null;
 
   return arg.length > 2

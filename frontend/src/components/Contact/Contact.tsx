@@ -1,93 +1,109 @@
+import React, { useState, useEffect, ChangeEvent, MouseEvent } from "react";
+
 import { useLang } from "@/context/Lang/LangContext";
-import { useState, ChangeEvent, useEffect } from "react";
-import { Typography } from "@mui/material";
 import ButtonCustom from "@/components/Button/Button";
 import CustomToast from "@/components/ToastCustom/CustomToast";
 import InputField from "@/components/InputField/InputField";
-import { useSendContactMutation } from "@/types/graphql";
 import Captcha from "../Captcha/Captcha";
-import { checkRegex, emailRegex } from "@/regex";
 import TitleH3 from "../Title/TitleH3";
 
+import { useSendContactMutation, SendContactMutation, SendContactMutationVariables } from "@/types/graphql";
+import { checkRegex, emailRegex } from "@/regex";
+import Lang from "@/lang/typeLang";
+
+interface FormData {
+  email: string;
+  object: string;
+  message: string;
+}
+
 const Contact: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
-  const { showAlert } = CustomToast();
+  const { translations }: { translations: Lang } = useLang();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } = CustomToast();
+
   const [sendContact] = useSendContactMutation();
 
-  const [captchaValid, setCaptchaValid] = useState<boolean | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha] =
-    useState<boolean>(false);
-
-  const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
-
-  const handleCaptchaValidation = (isValid: boolean) => {
-    setCaptchaValid(isValid);
-  };
-
-  const [formData, setFormData] = useState<{
-    email: string;
-    object: string;
-    message: string;
-  }>({
+  const [formData, setFormData]: [FormData, React.Dispatch<React.SetStateAction<FormData>>] = useState<FormData>({
     email: "",
     object: "",
     message: "",
   });
 
-  const handleInputChange = (
+  const [captchaValid, setCaptchaValid]: [boolean | null, React.Dispatch<React.SetStateAction<boolean | null>>] = useState<boolean | null>(null);
+  const [open, setOpen]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [authorizeGenerateCaptcha, setAuthorizeGenerateCaptcha]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+
+  const handleOpen: () => void = (): void => setOpen(true);
+  const handleClose: () => void = (): void => setOpen(false);
+
+  const handleCaptchaValidation: (isValid: boolean) => void = (isValid: boolean): void => {
+    setCaptchaValid(isValid);
+  };
+
+  const handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
+  ): void => {
+    const { id, value }: { id: string; value: string } = e.target;
+    setFormData(prevData => ({
       ...prevData,
       [id]: value,
     }));
   };
 
-  useEffect(() => {
-    if (captchaValid) {
-      sendContact({
-        variables: {
-          data: formData,
-        },
-        onCompleted(data) {
-          if (data?.sendContact.status) {
-            showAlert("success", translations.messageSuccessFormulaireSend);
-            setCaptchaValid(false);
-            setFormData({
-              email: "",
-              object: "",
-              message: "",
-            });
-          } else {
-            showAlert("error", translations.messageErrorNotSend);
-            setCaptchaValid(true);
-          }
-        },
-        onError(error) {
-          console.log("error", error);
-          let errorMessage: string = translations.messageErrorServerOff;
-          if (error.message === "Invaid format email.") {
-            errorMessage = translations.messageErrorFormatEmail;
-          }
-          showAlert("error", errorMessage);
-          setCaptchaValid(true);
-          handleOpen();
-        },
-      });
+  const handleInputChangeWrapper: (value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void = (
+    value: string | ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ): void => {
+    if (typeof value === 'string') {
+      // For date picker
+      return;
     }
-  }, [captchaValid]);
+    // For text input
+    handleInputChange(value as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
+  };
 
-  const handleClick = (): void => {
-    const { email, object, message } = formData;
+  useEffect(() => {
+    if (!captchaValid) return;
 
-    if (!email || !object || !message)
-      return showAlert("error", translations.messageErrorFillAllInput);
+    sendContact({
+      variables: { data: formData } as SendContactMutationVariables,
+      onCompleted: (data: SendContactMutation | undefined): void => {
+        if (data?.sendContact.status) {
+          showAlert("success", translations.messageSuccessFormulaireSend);
+          setFormData({ email: "", object: "", message: "" });
+          setCaptchaValid(false);
+        } else {
+          showAlert("error", translations.messageErrorNotSend);
+          setCaptchaValid(true);
+        }
+      },
+      onError: (error: Error): void => {
+        console.error("Contact error:", error);
+        const errorMessage: string =
+          error.message === "Invaid format email."
+            ? translations.messageErrorFormatEmail
+            : translations.messageErrorServerOff;
 
-    if (!checkRegex(emailRegex, email))
-      return showAlert("error", translations.messageErrorFormatEmail);
+        showAlert("error", errorMessage);
+        setCaptchaValid(true);
+        handleOpen();
+      },
+    });
+  }, [captchaValid, formData, sendContact, showAlert, translations]);
+
+  const handleClick: (e: MouseEvent<HTMLButtonElement>) => void = (e: MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+
+    const { email, object, message } : FormData = formData;
+
+    if (!email || !object || !message) {
+      showAlert("error", translations.messageErrorFillAllInput);
+      return;
+    }
+
+    if (!checkRegex(emailRegex, email)) {
+      showAlert("error", translations.messageErrorFormatEmail);
+      return;
+    }
 
     setAuthorizeGenerateCaptcha(true);
     handleOpen();
@@ -103,25 +119,25 @@ const Contact: React.FC = (): React.ReactElement => {
             label={translations.inputNameContactEmail}
             type="email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
-
           <InputField
             id="object"
             label={translations.inputNameContactObject}
             value={formData.object}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
-
           <InputField
             id="message"
             label={translations.inputNameContactMessage}
+            value={formData.message}
             multiline
             rows={6}
-            value={formData.message}
-            onChange={handleInputChange}
+            onChange={handleInputChangeWrapper}
+            picker={undefined}
           />
-
           <ButtonCustom
             onClick={handleClick}
             text={translations.buttonSendMessageContact}

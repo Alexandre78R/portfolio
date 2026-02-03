@@ -12,3 +12,37 @@ export const GET_ME = gql`
         }
     }
 `;
+
+export const GET_USERS_LIST = gql`
+  query GetUsersList {
+    listUsers {
+      users {
+        id
+        firstname
+        lastname
+        email
+        role
+        isPasswordChange
+      }
+      message
+      code
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query GetUserById($id: Int!) {
+    getUserById(id: $id) {
+      user {
+        id
+        firstname
+        lastname
+        email
+        role
+        isPasswordChange
+      }
+      message
+      code
+    }
+  }
+`;

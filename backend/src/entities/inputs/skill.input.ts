@@ -3,41 +3,47 @@ import { InputType, Field, Int } from "type-graphql";
 @InputType()
 export class CreateCategoryInput {
   @Field()
-  categoryEN: string;
+  readonly categoryEN: string;
 
   @Field()
-  categoryFR: string;
+  readonly categoryFR: string;
+
+  @Field(() => [Int], { nullable: true })
+  readonly skillIds?: number[];
 }
 
 @InputType()
 export class CreateSkillInput {
   @Field()
-  name: string;
+  readonly name: string;
 
   @Field()
-  image: string;
+  readonly image: string;
 
-  @Field(() => Int)
-  categoryId: number;
+  @Field(() => Int, { nullable: true })
+  readonly categoryId?: number;
 }
 
 @InputType()
 export class UpdateCategoryInput {
   @Field({ nullable: true })
-  categoryEN?: string;
+  readonly categoryEN?: string;
 
   @Field({ nullable: true })
-  categoryFR?: string;
+  readonly categoryFR?: string;
+
+  @Field(() => [Int], { nullable: true })
+  readonly skillIds?: number[];
 }
 
 @InputType()
 export class UpdateSkillInput {
   @Field({ nullable: true })
-  name?: string;
+  readonly name?: string;
 
   @Field({ nullable: true })
-  image?: string;
+  readonly image?: string;
 
-  @Field(() => Int)
-  categoryId?: number;
+  @Field(() => Int, { nullable: true })
+  readonly categoryId?: number;
 }

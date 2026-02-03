@@ -14,6 +14,9 @@ export class CreateUserInput {
 
   @Field()
   role: UserRole;
+
+  @Field()
+  lang: string;
 }
 
 @InputType()
@@ -23,4 +26,13 @@ export class LoginInput {
 
   @Field()
   password!: string;
+}
+
+@InputType()
+export class ForgotPasswordInput {
+  @Field()
+  email!: string;
+
+  @Field()
+  lang!: string;
 }

@@ -1,14 +1,15 @@
 import { useContext } from "react";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import { useLang } from "@/context/Lang/LangContext";
 import WhoamiError from "./WhoamiComponents/WhoamiError";
 import WhoamiEducation from "./WhoamiComponents/WhoamiEducation";
 import WhoamiExperience from "./WhoamiComponents/WhoamiExperience";
 import WhoamiSkills from "./WhoamiComponents/WhoamiSkills";
+import Lang from "@/lang/typeLang";
 
-const Whoami: React.FC = (): React.ReactElement => {
-  const { arg } = useContext(termContext);
-  const { translations } = useLang();
+const Whoami = (): JSX.Element => {
+  const { arg }: Term = useContext<Term>(termContext);
+  const { translations }: { translations : Lang } = useLang() as { translations : Lang };
 
   if (arg.length === 0) {
     return <WhoamiError message={translations.terminalWhoamiNotArg} />;

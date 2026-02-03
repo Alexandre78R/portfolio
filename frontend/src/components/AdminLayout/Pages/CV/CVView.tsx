@@ -1,7 +1,49 @@
+import React from "react";
+import { useLang } from "@/context/Lang/LangContext";
+import ButtonCustom from "@/components/Button/Button";
+import TitleH3 from "@/components/Title/TitleH3";
+import Lang from "@/lang/typeLang";
+import { useGetCVAdmin } from "@/utils/hooks";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import TextAdmin from "../../components/Text/TextAdmin";
+
 const CVView = (): React.ReactElement => {
-  return (  
-    <p className="text-primary">Page CVView</p>
-  )
-}
+  const { translations }: { translations: Lang } = useLang();
+
+  const { cvUrl, loading, error } = useGetCVAdmin();
+
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
+
+  const handleOpenCV: () => void = (): void => {
+    if (loading) {
+      showAlert("error", translations.messageCVLoading);
+      return;
+    }
+
+    if (error) {
+      showAlert("error", translations.messageCVNotFetch);
+      return;
+    }
+
+    if (cvUrl) {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
+      window.open(`${baseUrl}${cvUrl}`, "_blank");
+    } else {
+      showAlert("error", translations.messageCVNotFound);
+    }
+  };
+
+  return (
+    <div className="flex flex-col">
+      <TextAdmin type="p" className="text-primary text-lg font-semibold">{translations["sideBarAdmin-cv/view"]}</TextAdmin>
+      <div className="bg-body p-6 shadow-lg mt-[1%] text-center sm:max-w-[90%] md:max-w-[75%] lg:max-w-[60%] xl:max-w-[50%]">
+        <div className="mt-4">
+          <ButtonCustom text={translations.buttonCV} onClick={handleOpenCV} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default CVView;

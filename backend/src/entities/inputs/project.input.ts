@@ -22,6 +22,12 @@ export class CreateProjectInput {
 
   @Field(() => [Number])
   skillIds: number[];
+
+  @Field({ nullable: true })
+  image?: string;
+
+  @Field({ nullable: true })
+  video?: string;
 }
 
 @InputType()
@@ -49,4 +55,10 @@ export class UpdateProjectInput {
 
   @Field(() => [Int], { nullable: true })
   skillIds?: number[];
+
+  @Field({ nullable: true })
+  image?: string;
+
+  @Field({ nullable: true })
+  video?: string;
 }

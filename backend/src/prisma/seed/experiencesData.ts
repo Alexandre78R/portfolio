@@ -9,7 +9,7 @@ export const experiencesData = [
     startDateEN: "October 2019",
     startDateFR: "Octobre 2019",
     endDateEN: "December 2019",
-    endDateFR: "Décember 2019",
+    endDateFR: "Décembre 2019",
     month: 3,
     typeEN: "Experience",
     typeFR: "Expérience",

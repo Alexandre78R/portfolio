@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from "type-graphql";
+import { InputType, Field, Int, ArgsType } from "type-graphql";
 
 @InputType()
 export class CreateEducationInput {

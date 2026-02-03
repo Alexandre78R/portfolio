@@ -9,3 +9,12 @@ mutation Mutation($data: LoginInput!) {
   }
 }
 `;
+
+export const LOGOUT = gql`
+mutation Logout {
+  logout {
+    message
+    code
+  }
+}
+`;

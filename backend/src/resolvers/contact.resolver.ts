@@ -24,11 +24,10 @@ export class ContactResolver {
         if (!checkRegex(emailRegex, data.email))
             throw new Error("Invaid format email.");
         
-        const messageFinalMETEXT = await structureMessageMeTEXT(data);
-        const messageFinalMEHTML = await structureMessageMeHTML(data);
-        const resultSendEmailME = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML, true);
+        const messageFinalMETEXT : string = await structureMessageMeTEXT(data);
+        const messageFinalMEHTML : string = await structureMessageMeHTML(data);
+        const resultSendEmailME : MessageType = await sendEmail(data?.email, data?.object, messageFinalMETEXT, messageFinalMEHTML, true);
 
-        console.log("resutsSendEmail", resultSendEmailME)
         return resultSendEmailME;
     }
 }

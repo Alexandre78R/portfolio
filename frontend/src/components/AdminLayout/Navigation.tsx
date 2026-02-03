@@ -1,3 +1,4 @@
+import { ReactNode, ComponentType } from 'react'
 import {
   LayoutDashboard,
   User,
@@ -7,18 +8,24 @@ import {
   DatabaseBackup,
   PanelsTopLeft,
   FileUser,
+  Mail,
+  Text,
+  Signature,
+  Languages
 } from 'lucide-react'
 
-export type NavItem = {
+export type Role = 'admin' | 'editor' | 'view'
+
+export interface NavItem {
   name: string
   key: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: ComponentType<{ className?: string }>
   children?: NavItem[]
-  roles?: ('admin' | 'editor' | 'view')[]
-  access?: boolean
+  roles?: Role[]
   parentKey?: string
   disabled?: boolean
 }
+
 
 const navigation: NavItem[] = [
   {
@@ -78,6 +85,16 @@ const navigation: NavItem[] = [
     ],
   },
   {
+    name: 'Catégories de Skills',
+    key: 'skills/categories',
+    icon: PanelsTopLeft,
+    roles: ['admin', 'editor'],
+    children: [
+      { name: 'Voir les catégories', key: 'skills/categories/list', icon: Eye, roles: ['admin', 'editor'], parentKey: 'skills/categories' },
+      { name: 'Créer une catégorie', key: 'skills/categories/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'skills/categories' },
+    ],
+  },
+  {
     name: 'Thème',
     key: 'theme-colors',
     icon: Settings,
@@ -88,21 +105,15 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    name: 'Sauvegarde',
-    key: 'backup/list',
-    icon: DatabaseBackup,
-    roles: ['admin', 'editor', 'view'],
+    name: 'Socials',
+    key: 'socials',
+    icon: PanelsTopLeft,
+    roles: ['admin', 'editor'],
+    children: [
+      { name: 'Voir les socials', key: 'socials/list', icon: Eye, roles: ['admin'], parentKey: 'socials' },
+      { name: 'Créer un social', key: 'socials/create', icon: FolderPlus, roles: ['admin'], parentKey: 'socials' },
+    ],
   },
-  // {
-  //   name: 'Sauvegarde',
-  //   key: 'backup',
-  //   icon: DatabaseBackup,
-  //   roles: ['admin', 'editor', 'view'],
-  //   children: [
-  //     { name: 'Voir les backup', key: 'backup/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'backup' },
-  //     { name: 'Nouvelle backup', key: 'backup/create', icon: FolderPlus, roles: ['admin'], parentKey: 'backup' },
-  //   ],
-  // },
   {
     name: 'CV',
     key: 'cv',
@@ -113,15 +124,47 @@ const navigation: NavItem[] = [
       { name: 'Modifier le CV', key: 'cv/update', icon: FolderPlus, roles: ['admin'], parentKey: 'cv' },
     ],
   },
-  // {
-    //   name: 'Paramètres',
-    //   key: 'settings',
-    //   icon: Settings,
-  //   roles: ['admin'],
-  //   children: [
-  //     { name: 'Changer mot de passe', key: 'settings/change-password', icon: Lock, roles: ['admin'], parentKey: 'settings' },
-  //   ],
-  // },
+  {
+    name: 'Messages',
+    key: 'messages',
+    icon: Mail,
+    roles: ['admin'],
+    children: [
+      { name: 'Envoyer un message', key: 'messages/create', icon: FolderPlus, roles: ['admin'], parentKey: 'messages' },
+    ],
+  },
+  {
+    name: "Signatures",
+    key: 'signatures',
+    icon: Signature,
+    roles: ['admin'],
+    children: [
+      { name: 'Voir les signatures', key: 'signatures/list', icon: Eye, roles: ['admin'], parentKey: 'signatures' },
+      { name: 'Créer une signature', key: 'signatures/create', icon: FolderPlus, roles: ['admin'], parentKey: 'signatures' },
+    ],
+  },
+  {
+    name: 'About Me',
+    key: 'aboutme',
+    icon: Text,
+    roles: ['admin', 'editor', 'view'],
+    children: [
+      { name: 'Voir les About Me', key: 'aboutme/list', icon: Eye, roles: ['admin', 'editor', 'view'], parentKey: 'aboutme' },
+      { name: 'Créer un About Me', key: 'aboutme/create', icon: FolderPlus, roles: ['admin', 'editor'], parentKey: 'aboutme' },
+    ],
+  },
+  {
+    name: 'Traductions',
+    key: 'translations/list',
+    icon: Languages,
+    roles: ['admin', 'editor'],
+  },
+  {
+    name: 'Sauvegarde',
+    key: 'backup/list',
+    icon: DatabaseBackup,
+    roles: ['admin', 'editor', 'view'],
+  },
 ]
 
 export default navigation;

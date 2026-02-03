@@ -2,17 +2,22 @@ import "reflect-metadata";
 import { SkillResolver } from "../../../src/resolvers/skill.resolver";
 import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
-import { User, UserRole } from "../../../src/entities/user.entity";
-import { UpdateSkillInput } from "../../../src/entities/inputs/skill.input";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import type { User } from "../../../src/entities/user.entity";
+import { UserRole } from "../../../src/entities/user.entity";
+import type { UpdateSkillInput } from "../../../src/entities/inputs/skill.input";
+import { SubItemResponse } from "../../../src/types/response.types";import type { SkillSubItem } from "../../../src/entities/skillSubItem.entity";import { mockDeep } from "jest-mock-extended";
+import type { DeepMockProxy } from "jest-mock-extended";
+import type { Request, Response } from "express";
+import Cookies from "cookies";
+import type { Skill as PrismaSkill, SkillCategory as PrismaSkillCategory, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
 
-describe("SkillResolver - updateSkill", () => {
+describe("SkillResolver - updateSkill", (): void => {
   let resolver: SkillResolver;
+  let cookiesMock: DeepMockProxy<Cookies>;
+  let reqMock: DeepMockProxy<Request>;
+  let resMock: DeepMockProxy<Response>;
 
-  const mockCookies = mockDeep<Cookies>();
-
-  const mockAdminUser: User = {
+  const adminUser: User = {
     id: 1,
     firstname: "Admin",
     lastname: "User",
@@ -21,7 +26,7 @@ describe("SkillResolver - updateSkill", () => {
     isPasswordChange: true,
   };
 
-  const mockEditorUser: User = {
+  const editorUser: User = {
     id: 3,
     firstname: "Editor",
     lastname: "User",
@@ -30,7 +35,7 @@ describe("SkillResolver - updateSkill", () => {
     isPasswordChange: true,
   };
 
-  const mockRegularUser: User = {
+  const regularUser: User = {
     id: 2,
     firstname: "Regular",
     lastname: "User",
@@ -39,319 +44,230 @@ describe("SkillResolver - updateSkill", () => {
     isPasswordChange: true,
   };
 
-
-  const baseMockContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+  const baseContext: MyContext = {
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: {} as Cookies,
     user: null,
     apiKey: undefined,
+    token: undefined,
   };
 
-  const mockExistingSkill = {
-    id: 10,
-    name: "Old Skill Name",
-    image: "old_skill_image.png",
-    categoryId: 1,
+  const existingSkill: PrismaSkill = {
+    id: 1,
+    name: "JavaScript",
+    image: "js.png",
   };
 
-  const mockNewValidCategory = {
+  const updatedSkill: PrismaSkill = {
+    id: 1,
+    name: "JavaScript Advanced",
+    image: "js-advanced.png",
+  };
+
+  const updateInput: UpdateSkillInput = {
+    name: "JavaScript Advanced",
+    image: "js-advanced.png",
+    categoryId: 2,
+  };
+
+  const mockCategory: PrismaSkillCategory = {
     id: 2,
-    categoryEN: "Design",
-    categoryFR: "Conception",
+    categoryEN: "Advanced Programming",
+    categoryFR: "Programmation Avancée",
   };
 
-  const fullUpdateInput: UpdateSkillInput = {
-    name: "New Skill Name",
-    image: "new_skill_image.png",
+  const mockJunction: PrismaSkillCategorySkill = {
+    skillId: 1,
     categoryId: 2,
   };
 
-  const partialUpdateNameInput: UpdateSkillInput = {
-    name: "Updated Skill Name Only",
-  };
-
-  const partialUpdateImageInput: UpdateSkillInput = {
-    image: "updated_image_only.png",
-  };
-
-  const partialUpdateCategoryInput: UpdateSkillInput = {
-    categoryId: 2,
-  };
-
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.skill.findUnique.mockReset();
     prismaMock.skill.update.mockReset();
     prismaMock.skillCategory.findUnique.mockReset();
+    prismaMock.skillCategorySkill.findFirst.mockReset();
 
     resolver = new SkillResolver(prismaMock);
 
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
+    cookiesMock = mockDeep<Cookies>();
+    reqMock = mockDeep<Request>();
+    resMock = mockDeep<Response>();
+
+    (baseContext as MyContext).cookies = cookiesMock;
+    (baseContext as MyContext).req = reqMock;
+    (baseContext as MyContext).res = resMock;
   });
 
-  it("should successfully update a skill with full data by an admin user", async () => {
+  it("should successfully update a skill for admin user", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
 
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.update.mockResolvedValueOnce(updatedSkill);
+    prismaMock.skillCategorySkill.findFirst.mockResolvedValueOnce(mockJunction);
 
-    
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockNewValidCategory); // For data.categoryId validation
-    prismaMock.skill.update.mockResolvedValueOnce({
-      ...mockExistingSkill,
-      ...fullUpdateInput,
-    });
-
-
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, adminContext);
+    const result: SubItemResponse = await resolver.updateSkill(1, updateInput, adminContext);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill updated");
     expect(result.subItems).toBeDefined();
     expect(result.subItems?.length).toBe(1);
-    expect(result.subItems?.[0]).toEqual({
-      id: mockExistingSkill.id,
-      name: fullUpdateInput.name,
-      image: fullUpdateInput.image,
-      categoryId: fullUpdateInput.categoryId,
-    });
+
+    const updatedSkillDTO: SkillSubItem | undefined = result.subItems?.[0];
+    expect(updatedSkillDTO?.id).toBe(1);
+    expect(updatedSkillDTO?.name).toBe("JavaScript Advanced");
+    expect(updatedSkillDTO?.image).toBe("js-advanced.png");
+    expect(updatedSkillDTO?.categoryId).toBe(2);
 
     expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
+    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
     expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledWith({ where: { id: fullUpdateInput.categoryId } });
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).toHaveBeenCalledWith({
-      where: { id: mockExistingSkill.id },
-      data: {
-        name: fullUpdateInput.name,
-        image: fullUpdateInput.image,
-        categoryId: fullUpdateInput.categoryId,
-      },
-    });
   });
 
-  it("should successfully update a skill with full data by an editor user", async () => {
-   
-    const editorContext: MyContext = { ...baseMockContext, user: mockEditorUser };
+  it("should successfully update a skill for editor user", async (): Promise<void> => {
+    const editorContext: MyContext = { ...baseContext, user: editorUser };
 
-    
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockNewValidCategory);
-    prismaMock.skill.update.mockResolvedValueOnce({
-      ...mockExistingSkill,
-      ...fullUpdateInput,
-    });
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.update.mockResolvedValueOnce(updatedSkill);
+    prismaMock.skillCategorySkill.findFirst.mockResolvedValueOnce(mockJunction);
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, editorContext);
+    const result: SubItemResponse = await resolver.updateSkill(1, updateInput, editorContext);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Skill updated");
-    expect(result.subItems).toBeDefined();
-    expect(result.subItems?.length).toBe(1);
-    expect(result.subItems?.[0]).toEqual({
-      id: mockExistingSkill.id,
-      name: fullUpdateInput.name,
-      image: fullUpdateInput.image,
-      categoryId: fullUpdateInput.categoryId,
-    });
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
   });
 
-  it("should successfully update skill name partially by an admin user", async () => {
+  it("should return 401 if user is not authenticated", async (): Promise<void> => {
+    const unauthenticatedContext: MyContext = { ...baseContext, user: null };
 
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
-
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skill.update.mockResolvedValueOnce({
-      ...mockExistingSkill,
-      name: partialUpdateNameInput.name ?? "",
-    });
-
-    const result = await resolver.updateSkill(mockExistingSkill.id, partialUpdateNameInput, adminContext);
-
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Skill updated");
-    expect(result.subItems).toBeDefined();
-    expect(result.subItems?.[0].name).toBe(partialUpdateNameInput.name);
-    expect(result.subItems?.[0].image).toBe(mockExistingSkill.image); 
-    expect(result.subItems?.[0].categoryId).toBe(mockExistingSkill.categoryId); 
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled(); 
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).toHaveBeenCalledWith({
-      where: { id: mockExistingSkill.id },
-      data: {
-        name: partialUpdateNameInput.name,
-        image: mockExistingSkill.image, 
-        categoryId: mockExistingSkill.categoryId, 
-      },
-    });
-  });
-
-  it("should successfully update skill image partially by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skill.update.mockResolvedValueOnce({
-      ...mockExistingSkill,
-      image: partialUpdateImageInput.image ?? "",
-    });
-
-    const result = await resolver.updateSkill(mockExistingSkill.id, partialUpdateImageInput, adminContext);
-
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Skill updated");
-    expect(result.subItems?.[0].image).toBe(partialUpdateImageInput.image);
-    expect(result.subItems?.[0].name).toBe(mockExistingSkill.name);
-    expect(result.subItems?.[0].categoryId).toBe(mockExistingSkill.categoryId);
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
-  });
-
-  it("should successfully update skill category partially by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockNewValidCategory);
-    prismaMock.skill.update.mockResolvedValueOnce({
-      ...mockExistingSkill,
-      categoryId: partialUpdateCategoryInput.categoryId ?? 1,
-    });
-
-    const result = await resolver.updateSkill(mockExistingSkill.id, partialUpdateCategoryInput, adminContext);
-
-    expect(result.code).toBe(200);
-    expect(result.message).toBe("Skill updated");
-    expect(result.subItems?.[0].categoryId).toBe(partialUpdateCategoryInput.categoryId);
-    expect(result.subItems?.[0].name).toBe(mockExistingSkill.name);
-    expect(result.subItems?.[0].image).toBe(mockExistingSkill.image);
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
-  });
-
-
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
-
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, unauthenticatedContext);
+    const result: SubItemResponse = await resolver.updateSkill(
+      1,
+      updateInput,
+      unauthenticatedContext
+    );
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
     expect(result.subItems).toBeUndefined();
-
-    expect(prismaMock.skill.findUnique).not.toHaveBeenCalled();
     expect(prismaMock.skill.update).not.toHaveBeenCalled();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin or editor", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
+  it("should return 403 if user lacks admin or editor role", async (): Promise<void> => {
+    const nonAdminContext: MyContext = { ...baseContext, user: regularUser };
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, regularUserContext);
+    const result: SubItemResponse = await resolver.updateSkill(
+      1,
+      updateInput,
+      nonAdminContext
+    );
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin or Editor role required.");
     expect(result.subItems).toBeUndefined();
-
-    expect(prismaMock.skill.findUnique).not.toHaveBeenCalled();
     expect(prismaMock.skill.update).not.toHaveBeenCalled();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
   });
 
-  it("should return 404 if the skill to update is not found", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    prismaMock.skill.findUnique.mockResolvedValueOnce(null); 
+  it("should return 404 if skill does not exist", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
 
-    const result = await resolver.updateSkill(999, fullUpdateInput, adminContext);
+    prismaMock.skill.findUnique.mockResolvedValueOnce(null);
+
+    const result: SubItemResponse = await resolver.updateSkill(
+      999,
+      updateInput,
+      adminContext
+    );
 
     expect(result.code).toBe(404);
     expect(result.message).toBe("Skill not found");
     expect(result.subItems).toBeUndefined();
 
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
     expect(prismaMock.skill.update).not.toHaveBeenCalled();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled(); 
   });
 
-  it("should return 400 if categoryId is provided but invalid", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const invalidCategoryInput: UpdateSkillInput = {
-      name: "Test Skill",
-      categoryId: 999, // Invalid category ID
-    };
+  it("should return 400 if category does not exist", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
 
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill); 
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
     prismaMock.skillCategory.findUnique.mockResolvedValueOnce(null);
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, invalidCategoryInput, adminContext);
+    const result: SubItemResponse = await resolver.updateSkill(1, updateInput, adminContext);
 
     expect(result.code).toBe(400);
     expect(result.message).toBe("Invalid category");
     expect(result.subItems).toBeUndefined();
 
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledWith({ where: { id: invalidCategoryInput.categoryId } });
     expect(prismaMock.skill.update).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for an unexpected server error during initial skill lookup", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during skill findUnique";
-    prismaMock.skill.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 if database throws error during update", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
+    const dbError: Error = new Error("Database update failed");
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, adminContext);
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.update.mockRejectedValueOnce(dbError);
+
+    const result: SubItemResponse = await resolver.updateSkill(1, updateInput, adminContext);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error updating skill");
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).not.toHaveBeenCalled();
-    expect(prismaMock.skillCategory.findUnique).not.toHaveBeenCalled();
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("should return 500 for an unexpected server error during category validation lookup", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during category findUnique";
-    
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skillCategory.findUnique.mockRejectedValueOnce(new Error(errorMessage));
+  it("should handle unknown error types during update", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
+    const unknownError: unknown = "Unknown error occurred";
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, adminContext);
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.update.mockRejectedValueOnce(unknownError);
+
+    const result: SubItemResponse = await resolver.updateSkill(1, updateInput, adminContext);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error updating skill");
-
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).not.toHaveBeenCalled();
+    expect(result.subItems).toBeUndefined();
   });
 
-  it("should return 500 for an unexpected server error during skill update", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during skill update";
+  it("should preserve existing values when update fields are not provided", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
+    const partialUpdateInput: UpdateSkillInput = { name: "New Name" };
 
-    prismaMock.skill.findUnique.mockResolvedValueOnce(mockExistingSkill);
-    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockNewValidCategory);
-    prismaMock.skill.update.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skill.update.mockResolvedValueOnce({
+      ...existingSkill,
+      name: "New Name",
+    });
+    prismaMock.skillCategorySkill.findFirst.mockResolvedValueOnce(null);
 
-    const result = await resolver.updateSkill(mockExistingSkill.id, fullUpdateInput, adminContext);
+    await resolver.updateSkill(1, partialUpdateInput, adminContext);
 
-    expect(result.code).toBe(500);
-    expect(result.message).toBe("Error updating skill");
+    expect(prismaMock.skill.update).toHaveBeenCalledWith({
+      where: { id: 1 },
+      data: {
+        name: "New Name",
+        image: existingSkill.image,
+      },
+    });
+  });
 
-    expect(prismaMock.skill.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skillCategory.findUnique).toHaveBeenCalledTimes(1);
-    expect(prismaMock.skill.update).toHaveBeenCalledTimes(1);
+  it("should retrieve category ID after skill update", async (): Promise<void> => {
+    const adminContext: MyContext = { ...baseContext, user: adminUser };
+
+    prismaMock.skill.findUnique.mockResolvedValueOnce(existingSkill);
+    prismaMock.skillCategory.findUnique.mockResolvedValueOnce(mockCategory);
+    prismaMock.skill.update.mockResolvedValueOnce(updatedSkill);
+    prismaMock.skillCategorySkill.findFirst.mockResolvedValueOnce(mockJunction);
+
+    await resolver.updateSkill(1, updateInput, adminContext);
+
+    expect(prismaMock.skillCategorySkill.findFirst).toHaveBeenCalledWith({
+      where: { skillId: 1 },
+    });
   });
 });

@@ -2,6 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Quill Editor Styles */
+.ql-container {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.ql-editor {
+  min-height: 300px;
+  padding: 12px;
+  background-color: var(--footer-color);
+  color: var(--primary-color);
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--placeholder-color);
+}
+
+.ql-toolbar {
+  background-color: var(--admin-color);
+  border-color: var(--grey-color);
+}
+
+.ql-toolbar button:hover,
+.ql-toolbar button:focus,
+.ql-toolbar button.ql-active,
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button:focus,
+.ql-toolbar.ql-snow button.ql-active {
+  color: var(--info-color);
+}
+
+.ql-snow.ql-toolbar button:hover::before,
+.ql-snow.ql-toolbar button:focus::before,
+.ql-snow.ql-toolbar button.ql-active::before {
+  color: var(--info-color);
+}
+
+.ql-stroke {
+  stroke: var(--grey-color);
+}
+
+.ql-stroke.ql-active,
+.ql-stroke.ql-hover {
+  stroke: var(--info-color);
+}
+
+.ql-fill {
+  fill: var(--grey-color);
+}
+
+.ql-fill.ql-active,
+.ql-fill.ql-hover {
+  fill: var(--info-color);
+}
+
+.ql-picker {
+  color: var(--textButton-color);
+}
+
 :root {
     --primary-color: #B45852;
     --secondary-color: #DFBB5F;
@@ -10,7 +69,7 @@
     --body-color: #01031B;
     --grey-color: #7F7F7F;
     --placeholder-color: #A0AEC0;
-    --text-color: #ffffff;
+    --text-color: #F8F8FD;
     --text100-color: #030303;
     --text200-color: #B2BDCC;
     --text300-color: #64748b;

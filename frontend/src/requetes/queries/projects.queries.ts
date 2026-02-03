@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_PROJECTS_LIST = gql`
   query GetProjectsList {
-    projectList {
+    listProjects {
       message
       code
       projects {
@@ -11,6 +11,8 @@ export const GET_PROJECTS_LIST = gql`
         descriptionFR
         github
         id
+        image
+        video
         skills {
           categoryId
           id

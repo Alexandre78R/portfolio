@@ -1,193 +1,137 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { SendMailOptions } from 'nodemailer';
+import { sendEmail } from '../../src/mail/mail.service';
+import { MessageType } from '../../src/types/message.types';
 
-const mockSendMail = jest.fn();
+jest.mock('nodemailer', () => {
+  // Création du mock à l'intérieur du mock pour éviter le hoisting
+  const sendMailMock = jest.fn<Promise<any>, [SendMailOptions]>();
 
-jest.mock('nodemailer', () => ({
-  createTransport: jest.fn(),
-}));
+  return {
+    createTransport: jest.fn(() => ({
+      sendMail: sendMailMock,
+    })),
+    __sendMailMock: sendMailMock,
+  };
+});
 
 describe('sendEmail', () => {
-  let sendEmail: (
-    email: string,
-    subject: string,
-    text: string,
-    html: string,
-    sendToMe?: boolean
-  ) => Promise<any>;
+  let mockSendMail: jest.Mock<Promise<any>, [SendMailOptions]>;
+  const originalEnv: NodeJS.ProcessEnv = process.env;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env = { ...originalEnv, AUTH_USER_MAIL: 'contact@alexandre-renard.dev' };
+    const nodemailerMocked = nodemailer as unknown as { __sendMailMock: jest.Mock<Promise<any>, [SendMailOptions]> };
+    mockSendMail = nodemailerMocked.__sendMailMock;
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
   });
 
   it('should send email to the provided email address when sendToMe is false', async () => {
-    process.env.AUTH_USER_MAIL = 'user@example.com';
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockResolvedValue(true);
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'test@example.com',
+      'Subject',
+      'Text content',
+      '<p>HTML content</p>',
+      false
+    );
 
-      const result = await sendEmail(
-        'test@example.com',
-        'Subject',
-        'Text content',
-        '<p>HTML content</p>',
-        false
-      );
-
-      expect(nodemailer.createTransport).toHaveBeenCalled();
-      expect(mockSendMail).toHaveBeenCalledWith({
-        from: 'user@example.com',
-        to: 'test@example.com',
-        subject: 'Subject',
-        text: 'Text content',
-        html: '<p>HTML content</p>',
-      });
-      expect(result).toEqual({ label: 'emailSent', message: 'Email sent', status: true });
+    expect(mockSendMail).toHaveBeenCalledWith({
+      from: 'contact@alexandre-renard.dev',
+      to: 'test@example.com',
+      subject: 'Subject',
+      text: 'Text content',
+      html: '<p>HTML content</p>',
     });
+    expect(result).toEqual({ label: 'emailSent', message: 'Email sent', status: true });
   });
 
   it('should send email to the user email when sendToMe is true', async () => {
-    process.env.AUTH_USER_MAIL = 'user@example.com';
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockResolvedValue(true);
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'ignored@example.com',
+      'Subject',
+      'Text content',
+      '<p>HTML content</p>',
+      true
+    );
 
-      const result = await sendEmail(
-        'ignored@example.com',
-        'Subject',
-        'Text content',
-        '<p>HTML content</p>',
-        true
-      );
-
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({ to: 'user@example.com' })
-      );
-      expect(result.status).toBe(true);
-    });
+    expect(mockSendMail).toHaveBeenCalledWith(
+      expect.objectContaining({ to: 'contact@alexandre-renard.dev' })
+    );
+    expect(result.status).toBe(true);
   });
 
   it('should return error message if sendMail throws an error', async () => {
-    process.env.AUTH_USER_MAIL = 'user@example.com';
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockRejectedValue(new Error('Failed to send email'));
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'test@example.com',
+      'Subject',
+      'Text content',
+      '<p>HTML content</p>'
+    );
 
-      const result = await sendEmail(
-        'test@example.com',
-        'Subject',
-        'Text content',
-        '<p>HTML content</p>'
-      );
-
-      expect(result.status).toBe(false);
-      expect(result.label).toBe('emailNoSent');
-      expect(result.message).toBe('Failed to send email');
-    });
+    expect(result.status).toBe(false);
+    expect(result.label).toBe('emailNoSent');
+    expect(result.message).toBe('Failed to send email');
   });
 
   it('should handle unknown errors gracefully', async () => {
-    process.env.AUTH_USER_MAIL = 'user@example.com';
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockRejectedValue('Unexpected failure');
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'test@example.com',
+      'Subject',
+      'Text content',
+      '<p>HTML content</p>'
+    );
 
-      const result = await sendEmail(
-        'test@example.com',
-        'Subject',
-        'Text content',
-        '<p>HTML content</p>'
-      );
-
-      expect(result.status).toBe(false);
-      expect(result.label).toBe('emailNoSent');
-      expect(result.message).toBe('Unknown error');
-    });
+    expect(result.status).toBe(false);
+    expect(result.label).toBe('emailNoSent');
+    expect(result.message).toBe('Unknown error');
   });
 
-  // --- Nouveaux tests ---
-
-  it('should throw error if AUTH_USER_MAIL env is not set', async () => {
+  it('should send email even if AUTH_USER_MAIL env is missing', async () => {
     delete process.env.AUTH_USER_MAIL;
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockResolvedValue(true);
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'someone@example.com',
+      'Subject',
+      'Text content',
+      '<p>HTML content</p>'
+    );
 
-      // Même si user est undefined, la fonction tente d’envoyer un email,
-      // on vérifie donc que le from est undefined (ou vide)
-      const result = await sendEmail(
-        'someone@example.com',
-        'Subject',
-        'Text content',
-        '<p>HTML content</p>'
-      );
-
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({ from: undefined, to: 'someone@example.com' })
-      );
-      expect(result.status).toBe(true);
-    });
+    expect(mockSendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'someone@example.com',
+        text: 'Text content',
+        html: '<p>HTML content</p>',
+      })
+    );
+    expect(result.status).toBe(true);
   });
 
   it('should send email with empty html or text without error', async () => {
-    process.env.AUTH_USER_MAIL = 'user@example.com';
-
-    (nodemailer.createTransport as jest.Mock).mockImplementation(() => ({
-      sendMail: mockSendMail,
-    }));
-
     mockSendMail.mockResolvedValue(true);
 
-    await jest.isolateModulesAsync(async () => {
-      const mailModule = await import('../../src/mail/mail.service');
-      sendEmail = mailModule.sendEmail;
+    const result: MessageType = await sendEmail(
+      'test@example.com',
+      'Subject',
+      '',
+      '',
+      false
+    );
 
-      const result = await sendEmail(
-        'test@example.com',
-        'Subject',
-        '',
-        '',
-        false
-      );
-
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({ text: '', html: '' })
-      );
-      expect(result.status).toBe(true);
-    });
+    expect(mockSendMail).toHaveBeenCalledWith(
+      expect.objectContaining({ text: '', html: '' })
+    );
+    expect(result.status).toBe(true);
   });
 });

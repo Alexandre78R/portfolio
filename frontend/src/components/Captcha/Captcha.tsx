@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { ReactElement, useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -6,11 +6,14 @@ import {
   CardActionArea,
   CardMedia,
   IconButton,
+  SxProps,
+  Theme,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   useGenerateCaptchaQuery,
+  GenerateCaptchaQuery,
   CaptchaImage,
   useValidateCaptchaMutation,
   useClearCaptchaMutation,
@@ -19,9 +22,10 @@ import { useLang } from "@/context/Lang/LangContext";
 import CustomToast from "../ToastCustom/CustomToast";
 import ButtonCustom from "../Button/Button";
 import LoadingCustom from "../Loading/LoadingCustom";
+import Lang from "@/lang/typeLang";
 
-const modalStyle = {
-  position: "absolute" as "absolute",
+const modalStyle: SxProps<Theme> = {
+  position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -31,7 +35,7 @@ const modalStyle = {
   borderRadius: "16px",
 };
 
-type Props = {
+export type ContactProps = {
   open: boolean;
   onClose: () => void;
   onValidate: (isValid: boolean) => void;
@@ -39,28 +43,29 @@ type Props = {
   setAuthorizeGenerateCaptcha: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const CaptchaModal: React.FC<Props> = ({
+const CaptchaModal: React.FC<ContactProps> = ({
   open,
   onClose,
   onValidate,
   authorizeGenerateCaptcha,
   setAuthorizeGenerateCaptcha,
-}) => {
+}): ReactElement => {
   const { showAlert } = CustomToast();
-  const { translations } = useLang();
+  const { translations }: { translations: Lang } = useLang();
 
-  const [images, setImages] = useState<CaptchaImage[]>([]);
-  const [selectedImages, setSelectedImages] = useState<number[]>([]);
-  const [challengeType, setChallengeType] = useState<string>("");
-  const [idCaptcha, setIdCaptcha] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [checkrefresh, setCheckRefresh] = useState<boolean>(false);
-  const generateCaptcha = useGenerateCaptchaQuery();
+  const [images, setImages]: [CaptchaImage[], React.Dispatch<React.SetStateAction<CaptchaImage[]>>] = useState<CaptchaImage[]>([]);
+  const [selectedImages, setSelectedImages]: [number[], React.Dispatch<React.SetStateAction<number[]>>] = useState<number[]>([]);
+  const [challengeType, setChallengeType]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+  const [idCaptcha, setIdCaptcha]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(true);
+  const [refreshing, setRefreshing]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+  const [checkrefresh, setCheckRefresh]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+
+  const generateCaptcha = useGenerateCaptchaQuery<GenerateCaptchaQuery>();
   const [validateCaptcha] = useValidateCaptchaMutation();
   const [clearCaptcha] = useClearCaptchaMutation();
 
-  const getErrorMessage = (error: Error): string => {
+  const getErrorMessage: (error: Error) => string = (error: Error): string => {
     switch (error.message) {
       case "Expired captcha!":
         return translations.messageErrorCaptchaExpired;
@@ -73,18 +78,18 @@ const CaptchaModal: React.FC<Props> = ({
     }
   };
 
-  const preloadImages = (imageUrls: string[]): Promise<void[]> => {
-    return Promise.all(
-      imageUrls.map((url) => {
-        return new Promise<void>((resolve) => {
-          const img = new Image();
-          img.src = url;
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-        });
-      })
+  const preloadImages: (imageUrls: string[]) => Promise<void[]> = (imageUrls: string[]): Promise<void[]> =>
+    Promise.all(
+      imageUrls.map(
+        (url) =>
+          new Promise<void>((resolve) => {
+            const img = new Image();
+            img.src = url;
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          })
+      )
     );
-  };
 
   useEffect(() => {
     if (open && authorizeGenerateCaptcha && !checkrefresh) {
@@ -93,64 +98,59 @@ const CaptchaModal: React.FC<Props> = ({
       generateCaptcha
         .refetch()
         .then((response) => {
-          if (response.data) {
-            const imageUrls = response.data.generateCaptcha.images.map(
-              (img) => img.url
-            );
-            console.log("imageUrls", imageUrls)
+          const captcha = response.data?.generateCaptcha;
+          if (captcha) {
+            const imageUrls: string[] = captcha.images.map((img) => img.url);
             preloadImages(imageUrls).then(() => {
-              setImages(response.data.generateCaptcha.images);
-              setChallengeType(response.data.generateCaptcha.challengeType);
-              setIdCaptcha(response.data.generateCaptcha.id);
+              setImages(captcha.images);
+              setChallengeType(captcha.challengeType);
+              setIdCaptcha(captcha.id);
               setSelectedImages([]);
               setLoading(false);
               setAuthorizeGenerateCaptcha(false);
             });
           }
         })
-        .catch((error) => {
-          console.log("error", error);
+        .catch((error: Error) => {
           showAlert("error", getErrorMessage(error));
           setLoading(false);
           setCheckRefresh(false);
         });
     }
-  }, [open, authorizeGenerateCaptcha, checkrefresh]);
+  }, [open, authorizeGenerateCaptcha, checkrefresh, generateCaptcha, showAlert, setAuthorizeGenerateCaptcha]);
 
-  const regenerateCaptcha = () => {
+  const regenerateCaptcha: () => void = (): void => {
     if (refreshing) return;
     setCheckRefresh(true);
     setRefreshing(true);
     setLoading(true);
     setAuthorizeGenerateCaptcha(true);
+
     clearCaptcha({
       variables: { idCaptcha },
       onCompleted: () => {
-        generateCaptcha
-          .refetch()
+        generateCaptcha.refetch()
           .then((response) => {
-            console.log(response)
-            if (response.data) {
-              const imageUrls = response.data.generateCaptcha.images.map(
-                (img) => img.url
-              );
+            const captcha = response.data?.generateCaptcha;
+            if (captcha) {
+              const imageUrls: string[] = captcha.images.map((img) => img.url);
               preloadImages(imageUrls).then(() => {
-                setImages(response.data.generateCaptcha.images);
-                setChallengeType(response.data.generateCaptcha.challengeType);
-                setIdCaptcha(response.data.generateCaptcha.id);
+                setImages(captcha.images);
+                setChallengeType(captcha.challengeType);
+                setIdCaptcha(captcha.id);
                 setSelectedImages([]);
                 setLoading(false);
                 setRefreshing(false);
               });
             }
           })
-          .catch((error) => {
+          .catch((error: Error) => {
             showAlert("error", getErrorMessage(error));
             setLoading(false);
             setRefreshing(false);
           });
       },
-      onError: (error) => {
+      onError: (error: Error) => {
         showAlert("error", getErrorMessage(error));
         setLoading(false);
         setRefreshing(false);
@@ -158,20 +158,16 @@ const CaptchaModal: React.FC<Props> = ({
     });
   };
 
-  const handleImageClick = (index: number) => {
+  const handleImageClick: (index: number) => void = (index: number): void => {
     setSelectedImages((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit: () => Promise<void> = async (): Promise<void> => {
     validateCaptcha({
-      variables: {
-        selectedIndices: selectedImages,
-        challengeType,
-        idCaptcha,
-      },
-      onCompleted(data) {
+      variables: { selectedIndices: selectedImages, challengeType, idCaptcha },
+      onCompleted: (data: { validateCaptcha: { isValid: boolean } }) => {
         if (data?.validateCaptcha.isValid) {
           showAlert("success", translations.messageSuccessCaptcha);
           setImages([]);
@@ -185,14 +181,14 @@ const CaptchaModal: React.FC<Props> = ({
           showAlert("error", translations.messageErrorCaptchaIncorrect);
         }
       },
-      onError(error) {
+      onError: (error: Error) => {
         showAlert("error", getErrorMessage(error));
         onValidate(false);
       },
     });
   };
 
-  const generateCategoryName = (): string => {
+  const generateCategoryName: () => string = (): string => {
     switch (challengeType) {
       case "cat":
         return translations.messageInfoCategoryCatCaptcha;
@@ -215,8 +211,8 @@ const CaptchaModal: React.FC<Props> = ({
             <div className="flex justify-center">
               <div className="bg-body p-6 rounded-lg shadow-lg max-w-md w-full text-center">
                 <p className="text-text">
-                  {translations.messageInfoFirstCaptcha}{" "}
-                  {generateCategoryName()} {translations.messageInfoLastCaptcha}
+                  {translations.messageInfoFirstCaptcha} {generateCategoryName()}{" "}
+                  {translations.messageInfoLastCaptcha}
                 </p>
               </div>
             </div>
@@ -225,7 +221,7 @@ const CaptchaModal: React.FC<Props> = ({
                 <div key={index} className="relative">
                   <Card
                     onClick={() => handleImageClick(index)}
-                    className={`m-2 cursor-pointer`}
+                    className="m-2 cursor-pointer"
                     sx={{
                       border: selectedImages.includes(index)
                         ? "4px solid var(--success-color)"
@@ -260,15 +256,13 @@ const CaptchaModal: React.FC<Props> = ({
                         height: 24,
                         color: "green",
                         backgroundColor: "white",
-                        position: "absolute",
                         top: 8,
                         right: 8,
                         boxShadow: 2,
                         zIndex: 2,
                         p: 0,
-                        "&:hover": {
-                          backgroundColor: "white",
-                        },
+                        "&:hover": { backgroundColor: "white" },
+                        position: "absolute",
                       }}
                     >
                       <CheckCircleIcon sx={{ width: 24, height: 24 }} />
@@ -278,32 +272,27 @@ const CaptchaModal: React.FC<Props> = ({
               ))}
             </div>
             <div className="flex justify-center m-2">
-              <ButtonCustom onClick={handleSubmit} text="vérification" />
+              <ButtonCustom
+                onClick={handleSubmit}
+                text="vérification"
+                data-testid="Contact-validate-button"
+              />
               <IconButton
                 onClick={regenerateCaptcha}
                 disabled={refreshing}
+                aria-label="refresh captcha"
+                data-testid="Contact-refresh-button"
                 sx={{
-                  color: 'var(--primary-color)',
-                  cursor: refreshing ? 'not-allowed' : 'pointer',
+                  color: "var(--primary-color)",
+                  cursor: refreshing ? "not-allowed" : "pointer",
                   m: 2,
                   opacity: refreshing ? 0.5 : 1,
-                  '&:hover': {
-                    color: 'var(--secondary-color)',
-                  },
-                  pointerEvents: refreshing ? 'none' : 'auto',
+                  "&:hover": { color: "var(--secondary-color)" },
+                  pointerEvents: refreshing ? "none" : "auto",
                 }}
               >
                 <RefreshIcon />
               </IconButton>
-              {/* <IconButton
-                onClick={regenerateCaptcha}
-                className={`text-text cursor-pointer m-2 hover:text-secondary ${
-                  refreshing ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                sx={{ pointerEvents: refreshing ? "none" : "auto" }}
-              >
-                <RefreshIcon />
-              </IconButton> */}
             </div>
           </>
         )}

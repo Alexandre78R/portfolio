@@ -2,9 +2,11 @@ import { commands } from "../../Terminal";
 import { generateTabs } from "../../util";
 import { useLang } from "@/context/Lang/LangContext";
 import { Message } from "../Message";
+import Lang from "@/lang/typeLang";
 
-const Help: React.FC = (): React.ReactElement => {
-  const { translations } = useLang();
+const Help = (): JSX.Element => {
+  const { translations }: { translations : Lang } = useLang();
+
   return (
     <Message data-testid="help">
       {commands.map(({ cmd, descEN, descFR, tab }) => (

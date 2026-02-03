@@ -18,6 +18,7 @@ import {
   CaptchaResponse,
   ValidationResponse,
   ChallengeTypeTranslation,
+  CaptchaImage
 } from '../types/captcha.types';
 
 @Resolver()
@@ -26,40 +27,40 @@ export class CaptchaResolver {
   @Query(() => CaptchaResponse)
   async generateCaptcha(@Ctx() context: MyContext): Promise<CaptchaResponse> {
     
-    const id = uuidv4();
+    const id: string = uuidv4();
 
-    const imagesDir = path.join(__dirname, '..', 'images/captcha');
+    const imagesDir: string = path.join(__dirname, '..', 'images/captcha');
 
-    const files = fs.readdirSync(imagesDir);
+    const files: string[] = fs.readdirSync(imagesDir);
 
-    const images = files.map(file => {
-      const fileName = path.basename(file, path.extname(file));
-      const [typeEN, typeFR, _] = fileName.split('-');
+    const images: { src: string; typeEN: string; typeFR: string }[] = files.map((file: string) => {
+      const fileName: string = path.basename(file, path.extname(file));
+      const [typeEN, typeFR, _]: string[] = fileName.split('-');
       return { src: file, typeEN, typeFR };
     });
     
-    const categories = [...new Set(images.map(image => image.typeEN))];
+    const categories: string[] = [...new Set(images.map((image) => image.typeEN))];
 
-    const selectedImages = categories
-    .map(category => {
-      return images
-        .filter(image => image.typeEN === category)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 2);
-    })
-    .reduce((acc, val) => acc.concat(val), [])
-    .sort(() => Math.random() - 0.5);
+    const selectedImages: { src: string; typeEN: string; typeFR: string }[] = categories
+      .map((category: string) => {
+        return images
+          .filter((image) => image.typeEN === category)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 2);
+      })
+      .reduce((acc: { src: string; typeEN: string; typeFR: string }[], val) => acc.concat(val), [])
+      .sort(() => Math.random() - 0.5);
 
-    const challenges = categories;
-    const challengeType = challenges[Math.floor(Math.random() * challenges.length)];
+    const challenges: string[] = categories;
+    const challengeType: string = challenges[Math.floor(Math.random() * challenges.length)];
 
-    const challengeTypeFR = images.find(image => image.typeEN === challengeType)?.typeFR || '';
+    const challengeTypeFR: string = images.find((image) => image.typeEN === challengeType)?.typeFR || '';
 
-    const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
+    const BASE_URL: string = process.env.BASE_URL || 'http://localhost:4000';
 
-    const captchaImages = selectedImages.map(image => {
-      const imageId = uuidv4();
-      const imageUrl = `${BASE_URL}/api/dynamic-images/${imageId}`;
+    const captchaImages: CaptchaImage[] = selectedImages.map((image) => {
+      const imageId: string = uuidv4();
+      const imageUrl: string = `${BASE_URL}/api/dynamic-images/${imageId}`;
       
       captchaImageMap[imageId] = image.src;
 
@@ -67,28 +68,28 @@ export class CaptchaResolver {
         id: imageId,
         url: imageUrl,
         typeEN: image.typeEN,
-        typeFR : image.typeFR,
+        typeFR: image.typeFR,
       };
     });
 
-    const expirationTime = Date.now() + 15 * 60 * 1000;
+    const expirationTime: number = Date.now() + 15 * 60 * 1000;
 
     const challengeTypeTranslation: ChallengeTypeTranslation = {
       typeEN: challengeType,
       typeFR: challengeTypeFR,
     };
 
-    const resultCaptcha = {
+    const resultCaptcha: CaptchaResponse = {
       id,
       images: captchaImages,
       challengeType,
       challengeTypeTranslation,
       expirationTime
-    }
+    };
 
     captchaMap[id] = resultCaptcha;
 
-    console.log("captchaImageMap",captchaImageMap)
+    console.log("captchaImageMap", captchaImageMap);
     console.log("captchaMap[id]", captchaMap[id]);
     console.log("captchaMap", captchaMap); 
 
@@ -105,41 +106,39 @@ export class CaptchaResolver {
 
     checkExpiredCaptcha(idCaptcha);
 
-    if (!captchaMap[idCaptcha])
-      throw new Error("Expired captcha!")
+    if (!captchaMap[idCaptcha]) throw new Error("Expired captcha!");
 
-    let images : any[] = [];
+    let images: CaptchaImage[] = [];
     for (const _ in captchaMap) {
       images = captchaMap[idCaptcha].images;
     }
 
-    if (!images)
-      throw new Error("Expired captcha!")
+    if (!images) throw new Error("Expired captcha!");
 
-    const correctIndices = images
-    .map((img, idx) => img.typeEN === challengeType ? idx : -1)
-    .filter(idx => idx !== -1);
+    const correctIndices: number[] = images
+      .map((img: CaptchaImage, idx: number) => img.typeEN === challengeType ? idx : -1)
+      .filter((idx: number) => idx !== -1);
     
-    const isValid = correctIndices.length === selectedIndices.length &&
-      selectedIndices.every(index => correctIndices.includes(index));
+    const isValid: boolean = correctIndices.length === selectedIndices.length &&
+      selectedIndices.every((index: number) => correctIndices.includes(index));
 
-      if (isValid) {
-        captchaMap[idCaptcha].images.forEach((element: any) => {
-          delete captchaImageMap[element.id];
-        });
-    
-        delete captchaMap[idCaptcha];
-      }
+    if (isValid) {
+      captchaMap[idCaptcha].images.forEach((element: CaptchaImage) => {
+        delete captchaImageMap[element.id];
+      });
+      delete captchaMap[idCaptcha];
+    }
 
     return { isValid };
   }
 
   @Mutation(() => Boolean)
-  async clearCaptcha(@Arg('idCaptcha') idCaptcha: string, @Ctx() context: MyContext): Promise<boolean> {
-    
-    if (!captchaMap[idCaptcha]) {
-      return true;
-    }
+  async clearCaptcha(
+    @Arg('idCaptcha') idCaptcha: string,
+    @Ctx() context: MyContext
+  ): Promise<boolean> {
+
+    if (!captchaMap[idCaptcha]) return true;
 
     delete captchaMap[idCaptcha];
     return true;

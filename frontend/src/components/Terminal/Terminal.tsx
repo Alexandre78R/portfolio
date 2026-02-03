@@ -71,7 +71,7 @@ export const commands: Command = [
   },
 ];
 
-type Term = {
+export type Term = {
   arg: string[];
   history: string[];
   rerender: boolean;
@@ -99,7 +99,7 @@ export const argTab = (
 };
 
 const Terminal: React.FC = (): React.ReactElement => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
   const [inputVal, setInputVal]: [
     string,
@@ -240,7 +240,7 @@ const Terminal: React.FC = (): React.ReactElement => {
           value={inputVal}
           onKeyDown={handleKeyDown}
           onChange={handleChange}
-          ref={inputRef}
+          // ref={inputRef}
         />
       </Form>
       {cmdHistory.map((cmdH, index) => {

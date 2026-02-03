@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ButtonCustom from "@/components/Button/Button";
 import { SkillTab } from "@/components/Skills/typeSkills";
+import Lang from "@/lang/typeLang";
 
 const WhoamiSkills: React.FC = () => {
   const dataSkills = useSelector((state: RootState) => state.skills.dataSkills);

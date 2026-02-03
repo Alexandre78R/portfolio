@@ -1,36 +1,91 @@
-import { Resolver, Query, Int, Arg, Mutation, Authorized, Ctx } from "type-graphql";
+import {
+  Resolver,
+  Query,
+  Int,
+  Arg,
+  Mutation,
+  Authorized,
+  Ctx,
+  Args,
+} from "type-graphql";
 import { Education } from "../entities/education.entity";
-import { PrismaClient } from "@prisma/client";
-import { EducationResponse, EducationsResponse } from "../types/response.types";
-import { CreateEducationInput, UpdateEducationInput } from "../entities/inputs/education.input";
+import { PrismaClient, Education as PrismaEducation } from "@prisma/client";
+import {
+  EducationResponse,
+  EducationsResponse,
+  PaginationArgs,
+} from "../types/response.types";
+import {
+  CreateEducationInput,
+  UpdateEducationInput,
+} from "../entities/inputs/education.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
 
 @Resolver(() => Education)
 export class EducationResolver {
-
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => EducationsResponse)
-  async educationList(): Promise<EducationsResponse> {
+  async listEducations(): Promise<EducationsResponse> {
     try {
-      const list = await this.db.education.findMany();
+      const list: PrismaEducation[] = await this.db.education.findMany();
       return { code: 200, message: "Educations fetched", educations: list };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error fetching educations" };
     }
   }
 
+  @Query(() => EducationsResponse)
+  async educationListPagination(
+    @Args() { page, limit, searchTerm }: PaginationArgs
+  ): Promise<EducationsResponse> {
+    try {
+      const skip = (page - 1) * limit;
+
+      const whereClause = searchTerm
+        ? {
+            OR: [
+              { titleFR: { contains: searchTerm, mode: "insensitive" } },
+              { school: { contains: searchTerm, mode: "insensitive" } },
+            ],
+          }
+        : {};
+
+      const educations: PrismaEducation[] = await this.db.education.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { year: "desc" },
+      });
+
+      const total: number = await this.db.education.count({ where: whereClause });
+
+      return {
+        code: 200,
+        message: "Educations fetched",
+        educations,
+        total,
+      };
+    } catch (error: unknown) {
+      console.error(error);
+      return { code: 500, message: "Error fetching educations", educations: [], total: 0 };
+    }
+  }
+
   @Query(() => EducationResponse)
-  async educationById(
+  async getEducationById(
     @Arg("id", () => Int) id: number
   ): Promise<EducationResponse> {
     try {
-      const edu = await this.db.education.findUnique({ where: { id } });
+      const edu: PrismaEducation | null = await this.db.education.findUnique({
+        where: { id },
+      });
+
       if (!edu) return { code: 404, message: "Education not found" };
       return { code: 200, message: "Education fetched", education: edu };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error fetching education" };
     }
@@ -43,18 +98,13 @@ export class EducationResolver {
     @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (ctx.user.role !== UserRole.admin)
         return { code: 403, message: "Access denied. Admin role required." };
-      }
 
-      const edu = await this.db.education.create({ data });
+      const edu: PrismaEducation = await this.db.education.create({ data });
       return { code: 200, message: "Education created", education: edu };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error creating education" };
     }
@@ -67,20 +117,21 @@ export class EducationResolver {
     @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
       const authorizedRoles = [UserRole.admin, UserRole.editor];
+      if (!authorizedRoles.includes(ctx.user.role))
+        return {
+          code: 403,
+          message: "Access denied. Admin or Editor role required.",
+        };
 
-      if (!authorizedRoles.includes(ctx.user.role)) {
-        return { code: 403, message: "Access denied. Admin or Editor role required." };
-      }
+      const existing: PrismaEducation | null = await this.db.education.findUnique({
+        where: { id: data.id },
+      });
 
-      const existing = await this.db.education.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Education not found" };
-      const up = await this.db.education.update({
+
+      const up: PrismaEducation = await this.db.education.update({
         where: { id: data.id },
         data: {
           titleFR: data.titleFR ?? existing.titleFR,
@@ -99,8 +150,9 @@ export class EducationResolver {
           typeFR: data.typeFR ?? existing.typeFR,
         },
       });
+
       return { code: 200, message: "Education updated", education: up };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error updating education" };
     }
@@ -113,20 +165,19 @@ export class EducationResolver {
     @Ctx() ctx: MyContext
   ): Promise<EducationResponse> {
     try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (ctx.user.role !== UserRole.admin)
         return { code: 403, message: "Access denied. Admin role required." };
-      }
 
-      const existing = await this.db.education.findUnique({ where: { id } });
+      const existing: PrismaEducation | null = await this.db.education.findUnique({
+        where: { id },
+      });
+
       if (!existing) return { code: 404, message: "Education not found" };
       await this.db.education.delete({ where: { id } });
+
       return { code: 200, message: "Education deleted" };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error deleting education" };
     }

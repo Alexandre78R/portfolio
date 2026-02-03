@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_EXPERIENCES_LIST = gql`
   query GetExperiencesList {
-    experienceList {
+    listExperiences {
       message
       code
       experiences {
@@ -19,6 +19,30 @@ export const GET_EXPERIENCES_LIST = gql`
         startDateFR
         typeEN
         typeFR
+      }
+    }
+  }
+`;
+
+export const GET_EXPERIENCE_BY_ID = gql`
+  query GetExperienceById($id: Int!) {
+    getExperienceById(id: $id) {
+      code
+      message
+      experience {
+        id
+        jobFR
+        jobEN
+        business
+        typeFR
+        typeEN
+        employmentContractFR
+        employmentContractEN
+        startDateFR
+        startDateEN
+        endDateFR
+        endDateEN
+        month
       }
     }
   }

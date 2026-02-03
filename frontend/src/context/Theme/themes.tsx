@@ -1,28 +1,9 @@
-export interface Theme {
-  id: string;
-  name: string;
-  colors: {
-    body: string;
-    scrollHandle: string;
-    scrollHandleHover: string;
-    primary: string;
-    secondary: string;
-    success: string;
-    error: string;
-    warn: string;
-    info: string;
-    grey: string;
-    placeholder: string;
-    footer: string;
-    admin: string;
-    text: {
-      default: string;
-      100: string;
-      200: string;
-      300: string;
-      button: string;
-    };
-  };
+export interface ThemeColorsText {
+  default: string;
+  100: string;
+  200: string;
+  300: string;
+  button: string;
 }
 
 export interface ThemeColors {
@@ -38,20 +19,24 @@ export interface ThemeColors {
   warn: string;
   info: string;
   admin: string;
+  footer: string;
 }
 
-export interface ThemeColorsText {
-  default: string;
-  100: string;
-  200: string;
-  300: string;
-  button: string;
+export interface Theme {
+  id: string;
+  name: string;
+  nameEN?: string;
+  nameFR?: string;
+  colors: ThemeColors & { text: ThemeColorsText };
+  visible?: boolean;
 }
 
-const themes: { [key: string]: Theme } = {
+const themes = {
   dark: {
     id: "1",
     name: "dark",
+    nameEN: "Dark",
+    nameFR: "Sombre",
     colors: {
       body: "#01031B",
       scrollHandle: "#19252E",
@@ -67,10 +52,10 @@ const themes: { [key: string]: Theme } = {
       footer: "#050F1A",
       admin: "#080b2a",
       text: {
-        default: "#F8F8FD",
-        100: "#cbd5e1",
-        200: "#B2BDCC",
-        300: "#64748b",
+        default: "#000000",
+        100: "#000000",
+        200: "#000000",
+        300: "#000000",
         button: "white",
       },
     },
@@ -78,6 +63,8 @@ const themes: { [key: string]: Theme } = {
   light: {
     id: "2",
     name: "light",
+    nameEN: "Light",
+    nameFR: "Claire",
     colors: {
       body: "#E8E8E8",
       scrollHandle: "#C1C1C1",
@@ -104,6 +91,8 @@ const themes: { [key: string]: Theme } = {
   ubuntu: {
     id: "3",
     name: "ubuntu",
+    nameEN: "Ubuntu",
+    nameFR: "Ubuntu",
     colors: {
       body: "#2D0922",
       scrollHandle: "#F47845",
@@ -119,30 +108,29 @@ const themes: { [key: string]: Theme } = {
       footer: "#180512",
       admin: "#180512",
       text: {
-        default: "#F8F8FD",
-        100: "#FFFFFF",
-        200: "#E1E9CC",
-        300: "#CDCDCD",
+        default: "#000000",
+        100: "#000000",
+        200: "#000000",
+        300: "#000000",
         button: "white",
       },
     },
   },
 };
 
-export const tabThemes = (): Theme[] => {
-  const tab: Theme[] = [];
-  for (const key in themes) {
-    tab.push(themes[key]);
-  }
-  return tab;
+// 🔥 Types dérivés automatiquement
+export type ThemeKey = keyof typeof themes;
+export type ThemeType = typeof themes[ThemeKey];
+export type ThemeName = ThemeType["name"];
+
+// 🔥 Fonctions typées
+export const tabThemes = (): ThemeType[] => {
+  return (Object.keys(themes) as ThemeKey[]).map((key) => themes[key]);
 };
 
-export const tabThemesName = (): string[] => {
-  const tab: any[] = [];
-  for (const key in themes) {
-    tab.push(themes[key].name);
-  }
-  return tab;
+export const tabThemesName = (): ThemeName[] => {
+  return (Object.keys(themes) as ThemeKey[]).map((key) => themes[key].name);
 };
 
 export default themes;
+

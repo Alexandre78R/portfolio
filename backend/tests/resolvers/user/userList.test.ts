@@ -1,52 +1,42 @@
 import "reflect-metadata";
 import { UserResolver } from "../../../src/resolvers/user.resolver";
 import { prismaMock } from "../../singleton";
-import { User, UserRole } from "../../../src/entities/user.entity"; // Assure-toi que User et UserRole sont bien importés
+import { User, UserRole } from "../../../src/entities/user.entity";
 import { MyContext } from "../../../src";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { mockDeep, DeepMockProxy } from "jest-mock-extended";
+import { UsersResponse } from "../../../src/types/response.types";
 
-describe("UserResolver - userList", () => {
+describe("UserResolver - listUsers", () => {
   let resolver: UserResolver;
+  let mockCookies: DeepMockProxy<Cookies>;
+  let baseContext: Readonly<MyContext>;
 
-  const mockCookies = mockDeep<Cookies>();
-
-  
-  const mockAdminUserInContext: User = { 
+  const adminUser: Readonly<User> = {
     id: 1,
     firstname: "Admin",
     lastname: "User",
     email: "admin@example.com",
     role: UserRole.admin,
-    isPasswordChange: true, 
+    isPasswordChange: true,
   };
 
-  const mockRegularUserInContext: User = { 
+  const regularUser: Readonly<User> = {
     id: 2,
     firstname: "Regular",
     lastname: "User",
     email: "user@example.com",
-    role: UserRole.view, 
+    role: UserRole.view,
     isPasswordChange: true,
   };
 
-  // Contexte mock de base. Nous modifierons la propriété 'user' pour chaque cas de test.
-  const baseMockContext: MyContext = {
-    req: {} as any, 
-    res: {} as any, 
-    cookies: mockCookies,
-    user: null, 
-    apiKey: undefined, 
-  };
-
-  // Les utilisateurs mockés retournés par Prisma's findMany.
-  const mockUsersFromDb = [
+  const usersFromDb: (User & { password: string })[] = [
     {
       id: 1,
       firstname: "Admin",
       lastname: "User",
       email: "admin@example.com",
-      password: "hashed_password_admin", 
+      password: "hashed_password_admin",
       role: UserRole.admin,
       isPasswordChange: true,
     },
@@ -63,45 +53,41 @@ describe("UserResolver - userList", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    prismaMock.user.findMany.mockReset(); 
-    
-    resolver = new UserResolver(prismaMock);
+    prismaMock.user.findMany.mockReset();
 
-    mockCookies.set.mockClear(); 
-    mockCookies.get.mockClear();
+    resolver = new UserResolver(prismaMock);
+    mockCookies = mockDeep<Cookies>();
+
+    baseContext = {
+      req: {} as MyContext["req"],
+      res: {} as MyContext["res"],
+      cookies: mockCookies,
+      user: null,
+      apiKey: undefined,
+      token: undefined,
+    };
   });
 
-  // --- Scénarios de Test ---
-
   it("should return a list of users for an authenticated admin user", async () => {
-    // Définis le contexte pour un utilisateur admin en utilisant le mockAdminUserInContext
-    const adminContext: MyContext = {
-      ...baseMockContext,
-      user: mockAdminUserInContext, // Utilise le mock sans 'password'
-    };
+    const context: MyContext = { ...baseContext, user: adminUser };
 
-    // Mock le findMany de Prisma pour retourner une liste d'utilisateurs
-    prismaMock.user.findMany.mockResolvedValueOnce(mockUsersFromDb as any); // Caste si nécessaire pour s'assurer que Prisma le consomme bien
+    prismaMock.user.findMany.mockResolvedValueOnce(usersFromDb);
 
-    const result = await resolver.userList(adminContext);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Users fetched");
-    expect(result.users).toBeDefined();
-    expect(result.users?.length).toBe(2);
+    expect(result.users).toHaveLength(2);
     expect(result.users?.[0].email).toBe("admin@example.com");
     expect(result.users?.[1].email).toBe("user@example.com");
 
     expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1);
   });
 
-  it("should return 401 if no user is authenticated (ctx.user is null)", async () => {
-    const unauthenticatedContext: MyContext = {
-      ...baseMockContext,
-      user: null, // Correctement défini à null
-    };
+  it("should return 401 if no user is authenticated", async () => {
+    const context: MyContext = { ...baseContext, user: null };
 
-    const result = await resolver.userList(unauthenticatedContext);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
@@ -111,13 +97,9 @@ describe("UserResolver - userList", () => {
   });
 
   it("should return 403 if authenticated user is not an admin", async () => {
-    // Définis le contexte pour un utilisateur standard en utilisant le mockRegularUserInContext
-    const regularUserContext: MyContext = {
-      ...baseMockContext,
-      user: mockRegularUserInContext, // Utilise le mock sans 'password'
-    };
+    const context: MyContext = { ...baseContext, user: regularUser };
 
-    const result = await resolver.userList(regularUserContext);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
@@ -126,17 +108,12 @@ describe("UserResolver - userList", () => {
     expect(prismaMock.user.findMany).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for an unexpected server error during user fetching", async () => {
-    // Définis le contexte pour un utilisateur admin
-    const adminContext: MyContext = {
-      ...baseMockContext,
-      user: mockAdminUserInContext, // Utilise le mock sans 'password'
-    };
+  it("should return 500 for unexpected server errors during user fetching", async () => {
+    const context: MyContext = { ...baseContext, user: adminUser };
 
-    const errorMessage = "Database connection error during findMany";
-    prismaMock.user.findMany.mockRejectedValueOnce(new Error(errorMessage));
+    prismaMock.user.findMany.mockRejectedValueOnce(new Error("Database connection error"));
 
-    const result = await resolver.userList(adminContext);
+    const result: UsersResponse = await resolver.listUsers(context);
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching users");

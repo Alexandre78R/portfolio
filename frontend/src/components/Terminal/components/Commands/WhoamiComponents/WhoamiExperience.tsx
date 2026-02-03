@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import ButtonCustom from "@/components/Button/Button";
 import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
 
 const WhoamiExperience: React.FC = (): React.ReactElement => {
   const dataExperiences = useSelector(
@@ -12,7 +13,7 @@ const WhoamiExperience: React.FC = (): React.ReactElement => {
 
   const newOrderDataExperience = dataExperiences?.slice().reverse();
 
-  const { translations } = useLang();
+  const { translations }: { translations: Lang } = useLang();
 
   const [currentPage, setCurrentPage]: [
     number,

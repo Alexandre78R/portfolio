@@ -1,13 +1,13 @@
-import { Dispatch, ReactElement, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, ReactElement } from 'react'
 import clsx from 'clsx'
 import { Menu } from 'lucide-react'
 
-type ToggleButtonProps = {
+export interface ToggleButtonProps {
   sidebarOpen: boolean
   setSidebarOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const ToggleButton = ({ sidebarOpen, setSidebarOpen }: ToggleButtonProps) : React.ReactElement => {
+const ToggleButton: React.FC<ToggleButtonProps> = ({ sidebarOpen, setSidebarOpen }: ToggleButtonProps): ReactElement => {
   return (
     <button
       className={clsx(
@@ -22,4 +22,4 @@ const ToggleButton = ({ sidebarOpen, setSidebarOpen }: ToggleButtonProps) : Reac
   )
 }
 
-export default ToggleButton;
+export default ToggleButton

@@ -14,3 +14,15 @@ export type SkillTab = {
   category: string;
   skills: skill;
 };
+
+
+export type Skill = {
+  name: string;
+  image: string;
+};
+
+export type SkillsCategory = {
+  id?: number;
+  category: string;
+  skills: Skill[];
+};

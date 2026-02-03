@@ -3,13 +3,15 @@ FROM node:lts-alpine
 RUN mkdir /app
 WORKDIR /app
 COPY package.json .
-RUN npm i
+COPY package-lock.json .
+RUN npm ci --legacy-peer-deps
 
 COPY src src
 COPY public public
-# COPY codegen.ts .
 COPY next.config.mjs .
 COPY tsconfig.json .
+COPY jest.config.ts .
+COPY __test__ __test__
 
 ARG NEXT_PUBLIC_API_TOKEN
 ENV NEXT_PUBLIC_API_TOKEN=${NEXT_PUBLIC_API_TOKEN}
@@ -23,10 +25,11 @@ ENV NEXT_PUBLIC_JWT_SECRET=${NEXT_PUBLIC_JWT_SECRET}
 ARG JWT_SECRET
 ENV JWT_SECRET=${JWT_SECRET}
 
-CMD npm run dev
+# Enable Turbopack and hot reload
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV TURBOPACK_RESULT_STREAMING=true
 
-# RUN npm run build
-# CMD npm run start
+EXPOSE 3000
 
-# RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
-# CMD if [ "$NODE_ENV" = "production" ]; then npm run start; else npm run dev; fi
+# Switch between dev and prod without editing the Dockerfile
+CMD ["/bin/sh", "-c", "if [ \"$NODE_ENV\" = \"production\" ]; then npm run build && npm run start; else npm run dev; fi"]

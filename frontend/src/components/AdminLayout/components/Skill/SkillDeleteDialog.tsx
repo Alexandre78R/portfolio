@@ -1,0 +1,74 @@
+import React, { ReactElement, useState } from "react";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { useLang } from "@/context/Lang/LangContext";
+import Lang from "@/lang/typeLang";
+import {
+  GetSkillsListQuery,
+  DeleteSkillMutation,
+} from "@/types/graphql";
+import { useDeleteSkillAdmin } from "@/utils/hooks";
+import CustomToast from "@/components/ToastCustom/CustomToast";
+import { FetchResult } from "@apollo/client";
+
+interface SkillDeleteDialogProps {
+  skillId: number | null;
+  onClose: () => void;
+  onRefresh: () => Promise<
+    void | import("@apollo/client").ApolloQueryResult<GetSkillsListQuery>
+  >;
+}
+
+const SkillDeleteDialog: React.FC<SkillDeleteDialogProps> = ({
+  skillId,
+  onClose,
+  onRefresh,
+}: SkillDeleteDialogProps): ReactElement | null => {
+  const { translations }: { translations: Lang } = useLang();
+  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
+
+  const [deleteSkillMutation] = useDeleteSkillAdmin();
+  const { showAlert }: { showAlert: (type: "success" | "error", message: string) => void } =
+    CustomToast();
+
+  const handleConfirm = async (): Promise<void> => {
+    if (!skillId) return;
+
+    setLoading(true);
+
+    try {
+      const result = await deleteSkillMutation({
+        id: skillId,
+      });
+      const { data } = result;
+
+      if (data?.deleteSkill?.code === 200) {
+        showAlert("success", translations.messageAdminSkillDeleteSuccess || "Skill deleted successfully!");
+        await onRefresh();
+      } else {
+        showAlert("error", translations.messageAdminSkillDeleteError || "Error deleting skill");
+      }
+    } catch {
+      showAlert("error", translations.messageAdminSkillDeleteError || "Error deleting skill");
+    } finally {
+      setLoading(false);
+      onClose();
+    }
+  };
+
+  if (!skillId) return null;
+
+  return (
+    <ConfirmDialog
+      open={true}
+      title={translations.messageAdminSkillDeleteTitle || "Delete Skill"}
+      description={translations.messageAdminSkillDeleteDescription || "Are you sure you want to delete this skill?"}
+      confirmLabel={translations.messageAdminSkillDeleteConfirm || "Delete"}
+      cancelLabel={translations.messageAdminSkillDeleteCancel || "Cancel"}
+      onConfirm={handleConfirm}
+      onCancel={onClose}
+      confirmDisabled={loading}
+    />
+  );
+};
+
+export default SkillDeleteDialog;

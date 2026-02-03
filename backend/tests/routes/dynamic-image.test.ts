@@ -1,39 +1,35 @@
-import request from 'supertest';
-import express from 'express';
-import * as path from 'path';
-import { captchaImageMap } from '../../src/CaptchaMap';
+import request from "supertest";
+import express, { Express, Request, Response } from "express";
+import path from "path";
+import { captchaImageMap } from "../../src/CaptchaMap";
+import captchaRoutes from "../../src/routes/captcha.routes";
 
-// ✅ Mock partiel de 'path' : on garde les vraies fonctions sauf 'join'
-jest.mock('path', () => {
-  const actualPath = jest.requireActual('path');
+jest.mock("path", () => {
+  const actualPath = jest.requireActual("path");
   return {
     ...actualPath,
-    join: jest.fn(), // Mock seulement join
+    join: jest.fn(),
   };
 });
 
-// ✅ Mock de captchaImageMap pour test contrôlé
-jest.mock('../../src/CaptchaMap', () => ({
-  captchaImageMap: {}, 
-}));
-
-const app = express();
-
-app.get('/dynamic-images/:id', (req, res) => {
-  const imageId = req.params.id;
-  const filename = captchaImageMap[imageId];
-  if (filename) {
-    const imagePath = path.join(__dirname, 'images', filename);
-    res.status(200).send(`Mock image content for ${filename}`);
-  } else {
-    res.status(404).send('Image not found');
-  }
-});
-
-describe('GET /dynamic-images/:id', () => {
+describe("Captcha Routes - GET /:id", () => {
+  let app: Express;
   let mockPathJoin: jest.Mock;
 
   beforeEach(() => {
+    app = express();
+
+    // On mock res.sendFile pour ne jamais toucher le FS
+    app.use((req: Request, res: Response, next) => {
+      const originalSendFile = res.sendFile.bind(res);
+      res.sendFile = jest.fn((filePath: string) => {
+        return res.status(200).send(`Mock sendFile called with ${filePath}`);
+      }) as any;
+      next();
+    });
+
+    app.use("/captcha", captchaRoutes);
+
     mockPathJoin = path.join as jest.Mock;
     mockPathJoin.mockClear();
 
@@ -42,27 +38,26 @@ describe('GET /dynamic-images/:id', () => {
     }
   });
 
-  it('should return 200 and image content if imageId is found', async () => {
-    const testImageId = 'valid-img-id';
-    const testFilename = 'test-image.png';
+  it("should return 200 and call sendFile if captcha exists", async () => {
+    const testImageId : string = "mock-id";
+    const testFilename:  string = "mock-image.png";
+
     captchaImageMap[testImageId] = testFilename;
 
     mockPathJoin.mockReturnValueOnce(`/mock/path/to/images/${testFilename}`);
 
-    const response = await request(app).get(`/dynamic-images/${testImageId}`);
+    const response = await request(app).get(`/captcha/${testImageId}`);
 
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe(`Mock image content for ${testFilename}`);
-    expect(mockPathJoin).toHaveBeenCalledWith(expect.any(String), 'images', testFilename);
+    expect(response.text).toBe(`Mock sendFile called with /mock/path/to/images/${testFilename}`);
+    expect(mockPathJoin).toHaveBeenCalledWith(expect.any(String), "../images/captcha", testFilename);
   });
 
-  it('should return 404 if imageId is not found', async () => {
-    const testImageId = 'non-existent-img-id';
-
-    const response = await request(app).get(`/dynamic-images/${testImageId}`);
+  it("should return 404 if captcha does not exist", async () => {
+    const response = await request(app).get("/captcha/non-existent-id");
 
     expect(response.statusCode).toBe(404);
-    expect(response.text).toBe('Image not found');
+    expect(response.text).toBe("Image not found");
     expect(mockPathJoin).not.toHaveBeenCalled();
   });
 });

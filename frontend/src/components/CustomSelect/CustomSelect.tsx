@@ -1,7 +1,7 @@
 import React from "react";
 import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 
-interface CustomSelectProps {
+export interface CustomSelectProps {
   id: string;
   label: string;
   name: string;

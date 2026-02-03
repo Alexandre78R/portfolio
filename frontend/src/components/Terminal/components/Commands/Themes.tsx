@@ -1,49 +1,52 @@
-import { useContext, useEffect, useState } from "react";
-import _ from "lodash";
-import { checkThemeSwitch, getCurrentCmdArry, isArgInvalid } from "../../util";
-import { termContext } from "../../Terminal";
+import React, { useContext, useEffect, useState } from "react";
+import { termContext, Term } from "../../Terminal";
 import Usage from "../Usage";
 import { Message } from "../Message";
 import { useTheme } from "@/context/Theme/ThemeContext";
-import { tabThemes, tabThemesName } from "@/context/Theme/themes";
+import { checkThemeSwitch, getCurrentCmdArry, isArgInvalid } from "../../util";
 
-const Themes: React.FC = (): React.ReactNode => {
-  const { arg, history, rerender } = useContext(termContext);
-  const { toggleTheme } = useTheme();
-  const [currentTheme, setCurrentTheme]: [
-    string,
-    React.Dispatch<React.SetStateAction<string>>
-  ] = useState<string>("");
+const Themes: React.FC = () => {
+  const { arg, history, rerender }: Term = useContext<Term>(termContext);
+  const { toggleTheme, themes }: { toggleTheme: (theme: string) => void; themes: Record<string, any> } = useTheme();
 
-  const currentCommand: any[] = getCurrentCmdArry(history);
+  const themeNames: string[] = Object.keys(themes);
+  const [currentTheme, setCurrentTheme]: [string, React.Dispatch<React.SetStateAction<string>>] = useState<string>("");
+
+  const currentCommand: string[] = getCurrentCmdArry(history) || [];
+  const newTheme: string = currentCommand[2];
 
   useEffect(() => {
     if (
-      checkThemeSwitch(rerender, currentCommand, tabThemesName()) &&
-      currentCommand[2] !== currentTheme
+      newTheme &&
+      themeNames.includes(newTheme) &&
+      checkThemeSwitch(rerender, currentCommand, themeNames) &&
+      newTheme !== currentTheme
     ) {
-      toggleTheme(currentCommand[2]);
-      setCurrentTheme(currentCommand[2]);
+      toggleTheme(newTheme);
+      setCurrentTheme(newTheme);
     }
-  }, [rerender, currentCommand, toggleTheme, currentTheme]);
+  }, [rerender, currentCommand, toggleTheme, currentTheme, newTheme, themeNames]);
 
-  const checkArg = () =>
-    isArgInvalid(arg, "set", tabThemesName()) ? <Usage cmd="themes" /> : null;
+  const checkArg: () => React.ReactElement | null = () =>
+    isArgInvalid(arg, "set", themeNames) ? <Usage cmd="themes" /> : null;
 
-  return arg.length > 2
-    ? checkArg()
-    : checkArg() && (
-        <Message data-testid="themes">
-          <div className="flex flex-wrap">
-            {tabThemes().map((theme) => (
-              <span className="mr-3.5 mb-1 whitespace-nowrap" key={theme.id}>
-                {theme.name}
-              </span>
-            ))}
-          </div>
-          <Usage cmd="themes" />
-        </Message>
-      );
+  return arg.length > 2 ? (
+    checkArg()
+  ) : (
+    <Message data-testid="themes">
+      <div className="flex flex-wrap">
+        {themeNames.map((themeName) => (
+          <span
+            key={themeName}
+            className="mr-3.5 mb-1 whitespace-nowrap"
+          >
+            {themeName}
+          </span>
+        ))}
+      </div>
+      <Usage cmd="themes" />
+    </Message>
+  );
 };
 
 export default Themes;

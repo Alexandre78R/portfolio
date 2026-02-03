@@ -1,11 +1,12 @@
+import Lang from "@/lang/typeLang";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SkillsProject = {
+export type SkillsProject = {
   name: string;
   image: string;
 };
 
-type Project = {
+export type Project = {
   id: number;
   title: string;
   descriptionFR: string;
@@ -13,10 +14,12 @@ type Project = {
   typeDisplay: string;
   github: string | null;
   contentDisplay: string;
+  image: string | null;
+  video: string | null;
   skills: SkillsProject[];
 };
 
-type ProjectsState = {
+export type ProjectsState = {
   dataProjects: Project[];
 };
 
@@ -31,8 +34,8 @@ const projectsSlice = createSlice({
     setProjects(state, action: PayloadAction<Project[]>) {
       state.dataProjects = action.payload;
     },
-    updateProjectDescriptions(state, action: PayloadAction<string>) {
-      const lang = action.payload;
+    updateProjectDescriptions(state, action: PayloadAction<Lang["file"]>) {
+      const lang: Lang["file"] = action.payload;
       state.dataProjects = state.dataProjects.map((project) => ({
         ...project,
         description:

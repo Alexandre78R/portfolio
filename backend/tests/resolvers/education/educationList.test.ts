@@ -4,7 +4,7 @@ import { prismaMock } from "../../singleton";
 import { EducationsResponse } from "../../../src/types/response.types";
 import { Education as PrismaEducation } from "@prisma/client";
 
-describe("EducationResolver - educationList", () => {
+describe("EducationResolver - listEducations", () => {
   let resolver: EducationResolver;
 
   const mockEducations: PrismaEducation[] = [
@@ -44,16 +44,17 @@ describe("EducationResolver - educationList", () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
     prismaMock.education.findMany.mockReset();
     resolver = new EducationResolver(prismaMock);
   });
 
-  it("should return a list of educations successfully", async () => {
+  it("should return a list of educations successfully", async (): Promise<void> => {
+
     prismaMock.education.findMany.mockResolvedValueOnce(mockEducations);
 
-    const result: EducationsResponse = await resolver.educationList();
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Educations fetched");
@@ -63,10 +64,12 @@ describe("EducationResolver - educationList", () => {
     expect(prismaMock.education.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return an empty list if no educations are found", async () => {
+  it("should return an empty list if no educations are found", async (): Promise<void> => {
+
     prismaMock.education.findMany.mockResolvedValueOnce([]);
 
-    const result: EducationsResponse = await resolver.educationList();
+
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Educations fetched");
@@ -76,11 +79,13 @@ describe("EducationResolver - educationList", () => {
     expect(prismaMock.education.findMany).toHaveBeenCalledWith();
   });
 
-  it("should return 500 if there is a database error", async () => {
-    const errorMessage = "Database connection error";
-    prismaMock.education.findMany.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 if there is a database error", async (): Promise<void> => {
 
-    const result: EducationsResponse = await resolver.educationList();
+    prismaMock.education.findMany.mockRejectedValueOnce(
+      new Error("Database connection error")
+    );
+
+    const result: EducationsResponse = await resolver.listEducations();
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error fetching educations");

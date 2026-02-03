@@ -1,14 +1,14 @@
 import "reflect-metadata";
 import { UserResolver } from "../../../src/resolvers/user.resolver";
 import { CreateUserInput } from "../../../src/entities/inputs/user.input";
-import { UserRole } from "../../../src/entities/user.entity";
-import { prismaMock } from "../../singleton"; 
+import { User, UserRole } from "../../../src/entities/user.entity";
+import { prismaMock } from "../../singleton";
 import * as mailService from "../../../src/mail/mail.service";
 import * as passwordUtils from "../../../src/lib/generateSecurePassword";
-import { emailRegex, checkRegex } from "../../../src/regex"; 
-import * as argon2 from 'argon2'; 
+import { emailRegex, checkRegex } from "../../../src/regex";
+import * as argon2 from "argon2";
+import { UserResponse } from "../../../src/types/response.types";
 
-// Mocks les dépendances externes
 jest.mock("../../../src/mail/mail.service");
 jest.mock("../../../src/lib/generateSecurePassword");
 jest.mock("../../../src/regex", () => ({
@@ -22,99 +22,137 @@ describe("UserResolver - registerUser", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+    prismaMock.user.findUnique.mockReset();
+    prismaMock.user.create.mockReset();
 
-    prismaMock.user.findUnique.mockReset(); 
-    prismaMock.user.create.mockReset(); 
-  
-    resolver = new UserResolver(prismaMock); 
+    resolver = new UserResolver(prismaMock);
 
-    // Définit les mocks par défaut pour les autres fonctions utilisées dans les tests
     (passwordUtils.generateSecurePassword as jest.Mock).mockReturnValue("Secure123!");
     (argon2.hash as jest.Mock).mockResolvedValue("hashed-password");
     (mailService.sendEmail as jest.Mock).mockResolvedValue(undefined);
     (checkRegex as jest.Mock).mockReturnValue(true);
   });
 
-  it("should return error if email already exists", async () => {
+  it("should return 409 if email already exists", async () => {
     const input: CreateUserInput = {
       firstname: "Alex",
       lastname: "Renard",
       email: "alex@example.com",
       role: UserRole.admin,
+      lang: "fr",
     };
 
-    // Pour ce test, nous voulons que findUnique retourne un utilisateur existant
-    prismaMock.user.findUnique.mockResolvedValueOnce({
-      id: 1, 
+    const existingUser: Readonly<User & { password: string; pseudo: string | null; ban: boolean }> = {
+      id: 1,
       firstname: "Alex",
       lastname: "Renard",
       email: "alex@example.com",
       role: UserRole.admin,
       isPasswordChange: false,
       password: "some-hashed-password",
-      pseudo: null, 
-      ban: false 
-    } as any); 
+      pseudo: null,
+      ban: false,
+    };
 
-    const result = await resolver.registerUser(input);
+    prismaMock.user.findUnique.mockResolvedValueOnce(existingUser);
+
+    const result: UserResponse = await resolver.registerUser(input);
 
     expect(result.code).toBe(409);
     expect(result.message).toBe("Email already exists");
+    expect(result.user).toBeUndefined();
   });
 
   it("should create a new user and send email", async () => {
-    const input2: CreateUserInput = {
+    const input: CreateUserInput = {
       firstname: "Jean",
       lastname: "Dupont",
       email: "jean.dupont@example.com",
       role: UserRole.admin,
+      lang: "fr",
     };
 
-    console.log("🧪 MOCKING findUnique → null");
-    
-    prismaMock.user.findUnique.mockResolvedValueOnce(null); 
+    prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-    // Mock pour la création d'utilisateur
-    prismaMock.user.create.mockResolvedValueOnce({
+    const createdUser: Readonly<User & { password: string; pseudo: string | null; ban: boolean }> = {
       id: 1,
-      firstname: input2.firstname,
-      lastname: input2.lastname,
-      email: input2.email,
-      role: input2.role,
+      firstname: input.firstname,
+      lastname: input.lastname,
+      email: input.email,
+      role: input.role,
       isPasswordChange: false,
       password: "hashed-password",
       pseudo: null,
       ban: false,
-    } as any); 
+    };
 
-    const result = await resolver.registerUser(input2);
-    console.log("🧪 RESULT =", result.message);
-    console.log("🧪 RESULT =", result);
+    prismaMock.user.create.mockResolvedValueOnce(createdUser);
+
+    const result: UserResponse = await resolver.registerUser(input);
 
     expect(result.code).toBe(201);
     expect(result.message).toBe("User registered and email sent");
-    expect(result.user?.email).toBe(input2.email);
+    expect(result.user).toBeDefined();
+    expect(result.user?.email).toBe(input.email);
+
     expect(mailService.sendEmail).toHaveBeenCalledTimes(1);
     expect(mailService.sendEmail).toHaveBeenCalledWith(
-      input2.email,
+      input.email,
       "Votre compte a été créé",
-      expect.any(String), 
-      expect.any(String)  
+      expect.any(String),
+      expect.any(String)
     );
+
     expect(passwordUtils.generateSecurePassword).toHaveBeenCalledTimes(1);
     expect(argon2.hash).toHaveBeenCalledWith("Secure123!");
 
     expect(prismaMock.user.create).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.create).toHaveBeenCalledWith({
       data: {
-        firstname: input2.firstname,
-        lastname: input2.lastname,
-        email: input2.email,
-        password: "hashed-password", 
-        role: input2.role,
+        firstname: input.firstname,
+        lastname: input.lastname,
+        email: input.email,
+        password: "hashed-password",
+        role: input.role,
         isPasswordChange: false,
       },
     });
+  });
+
+  it("should return 400 if email format is invalid", async () => {
+    const input: CreateUserInput = {
+      firstname: "Jean",
+      lastname: "Dupont",
+      email: "invalid-email",
+      role: UserRole.admin,
+      lang: "fr",
+    };
+
+    (checkRegex as jest.Mock).mockReturnValueOnce(false);
+
+    const result: UserResponse = await resolver.registerUser(input);
+
+    expect(result.code).toBe(400);
+    expect(result.message).toBe("You have entered an invalid email address.");
+    expect(result.user).toBeUndefined();
+  });
+
+  it("should return 500 if user creation fails", async () => {
+    const input: CreateUserInput = {
+      firstname: "Jean",
+      lastname: "Dupont",
+      email: "jean.dupont@example.com",
+      role: UserRole.admin,
+      lang: "fr",
+    };
+
+    prismaMock.user.findUnique.mockResolvedValueOnce(null);
+    prismaMock.user.create.mockRejectedValueOnce(new Error("DB error"));
+
+    const result: UserResponse = await resolver.registerUser(input);
+
+    expect(result.code).toBe(500);
+    expect(result.message).toBe("DB error");
+    expect(result.user).toBeUndefined();
   });
 });

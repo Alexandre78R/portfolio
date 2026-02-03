@@ -1,32 +1,32 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
-type ButtonLinkNavBarProps = {
-  children: React.ReactNode;
+export interface ButtonLinkNavBarProps {
+  children: ReactNode;
   sectionRef: React.RefObject<HTMLDivElement>;
   handleScrollToSection: (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLButtonElement>,
     sectionRef: React.RefObject<HTMLDivElement>
   ) => void;
   className?: string;
-};
+}
 
 const ButtonLinkNavBar: React.FC<ButtonLinkNavBarProps> = ({
   children,
   sectionRef,
   handleScrollToSection,
   className = "",
-}) => {
-  const pathname = usePathname();
+}): JSX.Element | null => {
+  const pathname: string | null = usePathname() ?? null;
 
   if (pathname !== "/") return null;
 
+  const handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    handleScrollToSection(event, sectionRef);
+  };
+
   return (
-    <button
-      onClick={e => handleScrollToSection(e, sectionRef)}
-      className={className}
-      type="button"
-    >
+    <button onClick={handleClick} className={className} type="button">
       {children}
     </button>
   );

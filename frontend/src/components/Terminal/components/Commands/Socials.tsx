@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { Message } from "../Message";
-import { termContext } from "../../Terminal";
+import { termContext, Term } from "../../Terminal";
 import {
   getCurrentCmdArry,
   checkRedirect,
@@ -8,44 +8,32 @@ import {
   generateTabs,
 } from "../../util";
 import Usage from "../Usage";
+import { useAppSelector } from "../../../../store/hook";
 
-type Socials = {
+export type Socials = {
   id: number;
   title: string;
   url: string;
   tab: number;
 };
 
-const socials: Socials[] = [
-  {
-    id: 1,
-    title: "GitHub",
-    url: "https://github.com/Alexandre78R",
-    tab: 3,
-  },
-  {
-    id: 2,
-    title: "linkedin",
-    url: "https://www.linkedin.com/in/alexandrerenard/",
-    tab: 3,
-  },
-];
-
 const Socials: React.FC = (): React.ReactNode => {
-  const { arg, history, rerender } = useContext(termContext);
+  const socials: Socials[] = useAppSelector((state) => state.socials.dataSocials);
+  const { arg, history, rerender }: Term = useContext<Term>(termContext);
   const currentCommand: any[] = getCurrentCmdArry(history);
 
   useEffect(() => {
     if (checkRedirect(rerender, currentCommand, "socials")) {
       socials.forEach(({ id, url }) => {
         id === parseInt(arg[1]) && window.open(url, "_blank");
-        // id === parseInt(arg[1]) && console.log("ttoto");
       });
     }
   }, [arg, rerender, currentCommand]);
 
-  const checkArg = () =>
-    isArgInvalid(arg, "go", ["1", "2"]) ? <Usage cmd="socials" /> : null;
+  const checkArg: () => React.ReactElement | null = (): React.ReactElement | null => {
+    const validIds: string[] = socials.map((social) => social.id.toString());
+    return isArgInvalid(arg, "go", validIds) ? <Usage cmd="socials" /> : null;
+  };
 
   return arg.length > 0 || arg.length > 2 ? (
     checkArg()

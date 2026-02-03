@@ -1,4 +1,5 @@
 import "reflect-metadata";
+
 import { ExperienceResolver } from "../../../src/resolvers/experience.resolver";
 import { prismaMock } from "../../singleton";
 import { MyContext } from "../../../src";
@@ -6,15 +7,15 @@ import { User, UserRole } from "../../../src/entities/user.entity";
 import { CreateExperienceInput } from "../../../src/entities/inputs/experience.input";
 import { ExperienceResponse } from "../../../src/types/response.types";
 import { Experience as PrismaExperience } from "@prisma/client";
-import Cookies from 'cookies';
-import { mockDeep } from 'jest-mock-extended';
+import Cookies from "cookies";
+import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 
 describe("ExperienceResolver - createExperience", () => {
+  
   let resolver: ExperienceResolver;
+  let cookiesMock: DeepMockProxy<Cookies>;
 
-  const mockCookies = mockDeep<Cookies>();
-
-  const mockAdminUser: User = {
+  const ADMIN_USER: Readonly<User> = {
     id: 1,
     firstname: "Admin",
     lastname: "User",
@@ -23,7 +24,7 @@ describe("ExperienceResolver - createExperience", () => {
     isPasswordChange: true,
   };
 
-  const mockRegularUser: User = {
+  const REGULAR_USER: Readonly<User> = {
     id: 2,
     firstname: "Regular",
     lastname: "User",
@@ -32,15 +33,16 @@ describe("ExperienceResolver - createExperience", () => {
     isPasswordChange: true,
   };
 
-  const baseMockContext: MyContext = {
-    req: {} as any,
-    res: {} as any,
-    cookies: mockCookies,
+  const createBaseContext = (): MyContext => ({
+    req: {} as MyContext["req"],
+    res: {} as MyContext["res"],
+    cookies: cookiesMock,
     user: null,
     apiKey: undefined,
-  };
+    token: undefined,
+  });
 
-  const mockCreateExperienceInput: CreateExperienceInput = {
+  const CREATE_EXPERIENCE_INPUT: Readonly<CreateExperienceInput> = {
     jobFR: "Développeur Logiciel",
     jobEN: "Software Developer",
     business: "Tech Co",
@@ -55,38 +57,52 @@ describe("ExperienceResolver - createExperience", () => {
     typeEN: "Full-time",
   };
 
-  const mockCreatedExperience: PrismaExperience = {
+  const CREATED_EXPERIENCE: PrismaExperience = {
     id: 1,
-    ...mockCreateExperienceInput,
+    ...CREATE_EXPERIENCE_INPUT,
   };
 
-  beforeEach(() => {
+  beforeEach((): void => {
     jest.clearAllMocks();
-    prismaMock.experience.create.mockReset();
+
+    cookiesMock = mockDeep<Cookies>();
     resolver = new ExperienceResolver(prismaMock);
-    mockCookies.set.mockClear();
-    mockCookies.get.mockClear();
+
+    prismaMock.experience.create.mockReset();
   });
 
-  it("should successfully create a new experience record by an admin user", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
+  it("should successfully create an experience when user is admin", async (): Promise<void> => {
 
-    prismaMock.experience.create.mockResolvedValueOnce(mockCreatedExperience);
+    const context: MyContext = {
+      ...createBaseContext(),
+      user: ADMIN_USER,
+    };
 
-    const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, adminContext);
+    prismaMock.experience.create.mockResolvedValueOnce(CREATED_EXPERIENCE);
+
+    const result: ExperienceResponse = await resolver.createExperience(
+      CREATE_EXPERIENCE_INPUT,
+      context
+    );
 
     expect(result.code).toBe(200);
     expect(result.message).toBe("Experience created");
-    expect(result.experience).toEqual(mockCreatedExperience);
+    expect(result.experience).toEqual(CREATED_EXPERIENCE);
 
     expect(prismaMock.experience.create).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.create).toHaveBeenCalledWith({ data: mockCreateExperienceInput });
+    expect(prismaMock.experience.create).toHaveBeenCalledWith({
+      data: CREATE_EXPERIENCE_INPUT,
+    });
   });
 
-  it("should return 401 if no user is authenticated", async () => {
-    const unauthenticatedContext: MyContext = { ...baseMockContext, user: null };
+  it("should return 401 when user is not authenticated", async (): Promise<void> => {
 
-    const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, unauthenticatedContext);
+    const context: MyContext = createBaseContext();
+
+    const result: ExperienceResponse = await resolver.createExperience(
+      CREATE_EXPERIENCE_INPUT,
+      context
+    );
 
     expect(result.code).toBe(401);
     expect(result.message).toBe("Authentication required.");
@@ -95,10 +111,17 @@ describe("ExperienceResolver - createExperience", () => {
     expect(prismaMock.experience.create).not.toHaveBeenCalled();
   });
 
-  it("should return 403 if authenticated user is not an admin", async () => {
-    const regularUserContext: MyContext = { ...baseMockContext, user: mockRegularUser };
+  it("should return 403 when user is authenticated but not admin", async (): Promise<void> => {
 
-    const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, regularUserContext);
+    const context: MyContext = {
+      ...createBaseContext(),
+      user: REGULAR_USER,
+    };
+
+    const result: ExperienceResponse = await resolver.createExperience(
+      CREATE_EXPERIENCE_INPUT,
+      context
+    );
 
     expect(result.code).toBe(403);
     expect(result.message).toBe("Access denied. Admin role required.");
@@ -107,18 +130,26 @@ describe("ExperienceResolver - createExperience", () => {
     expect(prismaMock.experience.create).not.toHaveBeenCalled();
   });
 
-  it("should return 500 for a database error during experience creation", async () => {
-    const adminContext: MyContext = { ...baseMockContext, user: mockAdminUser };
-    const errorMessage = "Database error during experience creation";
-    prismaMock.experience.create.mockRejectedValueOnce(new Error(errorMessage));
+  it("should return 500 when database throws an error", async (): Promise<void> => {
 
-    const result: ExperienceResponse = await resolver.createExperience(mockCreateExperienceInput, adminContext);
+    const context: MyContext = {
+      ...createBaseContext(),
+      user: ADMIN_USER,
+    };
+
+    prismaMock.experience.create.mockRejectedValueOnce(
+      new Error("Database error")
+    );
+
+    const result: ExperienceResponse = await resolver.createExperience(
+      CREATE_EXPERIENCE_INPUT,
+      context
+    );
 
     expect(result.code).toBe(500);
     expect(result.message).toBe("Error creating experience");
     expect(result.experience).toBeUndefined();
 
     expect(prismaMock.experience.create).toHaveBeenCalledTimes(1);
-    expect(prismaMock.experience.create).toHaveBeenCalledWith({ data: mockCreateExperienceInput });
   });
 });

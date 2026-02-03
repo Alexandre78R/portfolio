@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const GET_EDUCATIONS_LIST = gql`
   query GetEducationsList {
-    educationList {
+    listEducations {
       message
       code
       educations {
@@ -22,6 +22,31 @@ export const GET_EDUCATIONS_LIST = gql`
         typeFR
         year
       }
+    }
+  }
+`;
+
+export const GET_EDUCATION_BY_ID = gql`
+  query GetEducationById($id: Int!) {
+    getEducationById(id: $id) {
+      education {
+        id
+        school
+        location
+        diplomaLevelFR
+        diplomaLevelEN
+        titleFR
+        titleEN
+        typeFR
+        typeEN
+        startDateFR
+        startDateEN
+        endDateFR
+        endDateEN
+        month
+        year
+      }
+      code
     }
   }
 `;

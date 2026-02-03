@@ -7,7 +7,7 @@ import React, {
   ReactNode,
 } from "react";
 
-interface ChoiceVieContextType {
+export interface ChoiceVieContextType {
   selectedView: string;
   setSelectedView: (view: string) => void;
 }

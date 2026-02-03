@@ -1,141 +1,76 @@
 import { Resolver, Query, Mutation, Arg, Int, Authorized, Ctx } from "type-graphql";
-import { Skill } from "../entities/skill.entity";
-import { CreateCategoryInput, CreateSkillInput, UpdateCategoryInput, UpdateSkillInput } from "../entities/inputs/skill.input";
 import { SkillSubItem } from "../entities/skillSubItem.entity";
-import { CategoryResponse, SubItemResponse } from "../types/response.types";
+import { CreateSkillInput, UpdateSkillInput } from "../entities/inputs/skill.input";
+import { SubItemResponse } from "../types/response.types";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Skill as PrismaSkill, SkillCategory, SkillCategorySkill as PrismaSkillCategorySkill } from "@prisma/client";
 
 @Resolver()
 export class SkillResolver {
-  constructor(private readonly db: PrismaClient = new PrismaClient()) {}
-  
-  @Query(() => CategoryResponse)
-  async skillList(): Promise<CategoryResponse> {
-    try {
-      const categories = await this.db.skillCategory.findMany({
-        include: { skills: true },
-        orderBy: { id: "asc" },
-      });
-      const dto = categories.map(cat => ({
-        id: cat.id,
-        categoryEN: cat.categoryEN,
-        categoryFR: cat.categoryFR,
-        skills: cat.skills.map(s => ({
-          id: s.id,
-          name: s.name,
-          image: s.image,
-          categoryId: s.categoryId,
-        })),
-      } as Skill));
-      return { code: 200, message: "Categories fetched successfully", categories: dto };
-    } catch (e) {
-      console.error(e);
-      return { code: 500, message: "Failed to fetch categories" };
-    }
+  private readonly db: PrismaClient;
+
+  constructor(prismaClient?: PrismaClient) {
+    this.db = prismaClient ?? new PrismaClient();
   }
 
-  @Authorized([UserRole.admin])
-  @Mutation(() => CategoryResponse)
-  async createCategory(
-    @Arg("data") data: CreateCategoryInput,
-    @Ctx() ctx: MyContext
-  ): Promise<CategoryResponse> {
+  @Query(() => SubItemResponse)
+  async getSkillById(@Arg("id", () => Int) id: number): Promise<SubItemResponse> {
     try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
+      const skill: PrismaSkill | null = await this.db.skill.findUnique({ where: { id } });
+      if (!skill) {
+        return { code: 404, message: "Skill not found", subItems: [] };
       }
 
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-      const category = await this.db.skillCategory.create({
-        data: { categoryEN: data.categoryEN, categoryFR: data.categoryFR },
+      const skillCategories: PrismaSkillCategorySkill[] = await this.db.skillCategorySkill.findMany({
+        where: { skillId: id },
+        include: { category: true },
       });
-      const dto: Skill = {
-        id: category.id,
-        categoryEN: category.categoryEN,
-        categoryFR: category.categoryFR,
-        skills: [],
-      };
-      return { code: 200, message: "Category created successfully", categories: [dto] };
-    } catch (e) {
-      console.error(e);
-      return { code: 500, message: "Failed to create category" };
+      const categoryId: number = skillCategories.length > 0 ? skillCategories[0].categoryId : 0;
+
+      const dto: SkillSubItem = { id: skill.id, name: skill.name, image: skill.image, categoryId };
+      return { code: 200, message: "Skill fetched successfully", subItems: [dto] };
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error fetching skill:", errorMessage);
+      return { code: 500, message: "Failed to fetch skill", subItems: [] };
     }
   }
 
   @Authorized([UserRole.admin])
   @Mutation(() => SubItemResponse)
-  async createSkill(
-    @Arg("data") data: CreateSkillInput,
-    @Ctx() ctx: MyContext
-  ): Promise<SubItemResponse> {
+  async createSkill(@Arg("data") data: CreateSkillInput, @Ctx() ctx: MyContext): Promise<SubItemResponse> {
     try {
+      if (!ctx.user) return { code: 401, message: "Authentication required.", subItems: undefined };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", subItems: undefined };
 
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-
-      const category = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
-      if (!category) {
-        return { code: 400, message: "Category not found" };
-      }
-      const subItem = await this.db.skill.create({
-        data: { name: data.name, image: data.image, categoryId: data.categoryId },
+      const skill: PrismaSkill = await this.db.skill.create({
+        data: { name: data.name, image: data.image },
       });
+
+      if (data.categoryId) {
+        const category: SkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        if (!category) {
+          await this.db.skill.delete({ where: { id: skill.id } });
+          return { code: 400, message: "Category not found", subItems: undefined };
+        }
+
+        await this.db.skillCategorySkill.create({
+          data: { categoryId: data.categoryId, skillId: skill.id },
+        });
+      }
+
       const dto: SkillSubItem = {
-        id: subItem.id,
-        name: subItem.name,
-        image: subItem.image,
-        categoryId: subItem.categoryId,
+        id: skill.id,
+        name: skill.name,
+        image: skill.image,
+        categoryId: data.categoryId || 0,
       };
       return { code: 200, message: "Skill created successfully", subItems: [dto] };
-    } catch (e) {
-      console.error(e);
-      return { code: 500, message: "Failed to create skill" };
-    }
-  }
-
-  @Authorized([UserRole.admin, UserRole.editor])
-  @Mutation(() => CategoryResponse)
-  async updateCategory(
-    @Arg("id", () => Int) id: number,
-    @Arg("data") data: UpdateCategoryInput,
-    @Ctx() ctx: MyContext
-  ): Promise<CategoryResponse> {
-    try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      const authorizedRoles = [UserRole.admin, UserRole.editor];
-
-      if (!authorizedRoles.includes(ctx.user.role)) {
-        return { code: 403, message: "Access denied. Admin or Editor role required." };
-      }
-
-      const existing = await this.db.skillCategory.findUnique({ where: { id } });
-      if (!existing) return { code: 404, message: "Category not found" };
-      const cat = await this.db.skillCategory.update({
-        where: { id },
-        data: {
-          categoryEN: data.categoryEN ?? existing.categoryEN,
-          categoryFR: data.categoryFR ?? existing.categoryFR,
-        },
-      });
-      const dto: Skill = { id: cat.id, categoryEN: cat.categoryEN, categoryFR: cat.categoryFR, skills: [] };
-      return { code: 200, message: "Category updated", categories: [dto] };
-    } catch (error) {
-      console.error(error);
-      return { code: 500, message: "Error updating category" };
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error creating skill:", errorMessage);
+      return { code: 500, message: "Failed to create skill", subItems: undefined };
     }
   }
 
@@ -144,105 +79,75 @@ export class SkillResolver {
   async updateSkill(
     @Arg("id", () => Int) id: number,
     @Arg("data") data: UpdateSkillInput,
-     @Ctx() ctx: MyContext
+    @Ctx() ctx: MyContext
   ): Promise<SubItemResponse> {
     try {
+      if (!ctx.user) return { code: 401, message: "Authentication required.", subItems: undefined };
+      if (![UserRole.admin, UserRole.editor].includes(ctx.user.role))
+        return { code: 403, message: "Access denied. Admin or Editor role required.", subItems: undefined };
 
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
+      const existing: PrismaSkill | null = await this.db.skill.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
 
-      const authorizedRoles = [UserRole.admin, UserRole.editor];
-
-      if (!authorizedRoles.includes(ctx.user.role)) {
-        return { code: 403, message: "Access denied. Admin or Editor role required." };
-      }
-
-      const existing = await this.db.skill.findUnique({ where: { id } });
-      if (!existing) return { code: 404, message: "Skill not found" };
       if (data.categoryId) {
-        const validCat = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
-        if (!validCat) return { code: 400, message: "Invalid category" };
+        const validCat: SkillCategory | null = await this.db.skillCategory.findUnique({ where: { id: data.categoryId } });
+        if (!validCat) return { code: 400, message: "Invalid category", subItems: undefined };
       }
-      const subItem = await this.db.skill.update({
+
+      const subItem: PrismaSkill = await this.db.skill.update({
         where: { id },
         data: {
           name: data.name ?? existing.name,
           image: data.image ?? existing.image,
-          categoryId: data.categoryId ?? existing.categoryId,
         },
       });
-      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId: subItem.categoryId };
+
+      const skillCategory: PrismaSkillCategorySkill | null = await this.db.skillCategorySkill.findFirst({ where: { skillId: id } });
+      const categoryId: number = skillCategory?.categoryId || 0;
+
+      const dto: SkillSubItem = { id: subItem.id, name: subItem.name, image: subItem.image, categoryId };
       return { code: 200, message: "Skill updated", subItems: [dto] };
-    } catch (error) {
-      console.error(error);
-      return { code: 500, message: "Error updating skill" };
-    }
-  }
-
-  @Authorized([UserRole.admin])
-  @Mutation(() => CategoryResponse)
-  async deleteCategory(
-    @Arg("id", () => Int) id: number,
-    @Ctx() ctx: MyContext
-  ): Promise<CategoryResponse> {
-    try {
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-
-      const existing = await this.db.skillCategory.findUnique({ where: { id } });
-      if (!existing) return { code: 404, message: "Category not found" };
-
-      const skills = await this.db.skill.findMany({ where: { categoryId: id }, select: { id: true } });
-      const skillIds = skills.map(s => s.id);
-
-      if (skillIds.length) {
-        await this.db.projectSkill.deleteMany({ where: { skillId: { in: skillIds } } });
-      }
-
-      await this.db.skill.deleteMany({ where: { categoryId: id } });
-
-      await this.db.skillCategory.delete({ where: { id } });
-
-      return { code: 200, message: "Category and related skills deleted" };
-    } catch (error) {
-      console.error(error);
-      return { code: 500, message: "Error deleting category" };
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error updating skill:", errorMessage);
+      return { code: 500, message: "Error updating skill", subItems: undefined };
     }
   }
 
   @Authorized([UserRole.admin])
   @Mutation(() => SubItemResponse)
-  async deleteSkill(
-    @Arg("id", () => Int) id: number,
-    @Ctx() ctx: MyContext
-  ): Promise<SubItemResponse> {
+  async deleteSkill(@Arg("id", () => Int) id: number, @Ctx() ctx: MyContext): Promise<SubItemResponse> {
     try {
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
+      if (!ctx.user) return { code: 401, message: "Authentication required.", subItems: undefined };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required.", subItems: undefined };
+
+      const existing: PrismaSkill | null = await this.db.skill.findUnique({ where: { id } });
+      if (!existing) return { code: 404, message: "Skill not found", subItems: undefined };
+
+      try {
+        const deletedProjectSkillsResult: { count: number } = await this.db.projectSkill.deleteMany({
+          where: { skillId: id },
+        });
+        const deletedJunctionsResult: { count: number } = await this.db.skillCategorySkill.deleteMany({
+          where: { skillId: id },
+        });
+        await this.db.skill.delete({ where: { id } });
+
+        const successMessage: string = `Skill deleted along with ${deletedProjectSkillsResult.count} project associations and ${deletedJunctionsResult.count} category associations`;
+        return {
+          code: 200,
+          message: successMessage,
+          subItems: [],
+        };
+      } catch (deleteError: Error | unknown) {
+        const deleteErrorMessage: string = deleteError instanceof Error ? deleteError.message : "Unknown error occurred";
+        console.error("Error during skill deletion:", deleteErrorMessage);
+        return { code: 500, message: "Error deleting skill", subItems: undefined };
       }
-
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-
-      const existing = await this.db.skill.findUnique({ where: { id } });
-      if (!existing) return { code: 404, message: "Skill not found" };
-
-      await this.db.projectSkill.deleteMany({ where: { skillId: id } });
-
-      await this.db.skill.delete({ where: { id } });
-
-      return { code: 200, message: "Skill and related sub-items deleted" };
-    } catch (error) {
-      console.error(error);
-      return { code: 500, message: "Error deleting skill" };
+    } catch (error: Error | unknown) {
+      const errorMessage: string = error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Error in deleteSkill:", errorMessage);
+      return { code: 500, message: "Error deleting skill", subItems: undefined };
     }
   }
-  
 }

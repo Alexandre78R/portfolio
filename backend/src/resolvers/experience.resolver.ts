@@ -4,32 +4,32 @@ import { ExperienceResponse, ExperiencesResponse } from "../types/response.types
 import { CreateExperienceInput, UpdateExperienceInput } from "../entities/inputs/experience.input";
 import { UserRole } from "../entities/user.entity";
 import { MyContext } from "..";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Experience as PrismaExperience } from "@prisma/client";
 
 @Resolver(() => Experience)
 export class ExperienceResolver {
   constructor(private readonly db: PrismaClient = new PrismaClient()) {}
 
   @Query(() => ExperiencesResponse)
-  async experienceList(): Promise<ExperiencesResponse> {
+  async listExperiences(): Promise<ExperiencesResponse> {
     try {
-      const list = await this.db.experience.findMany();
+      const list: PrismaExperience[] = await this.db.experience.findMany();
       return { code: 200, message: "Experiences fetched", experiences: list };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error fetching experiences" };
     }
   }
 
   @Query(() => ExperienceResponse)
-  async experienceById(
+  async getExperienceById(
     @Arg("id", () => Int) id: number
   ): Promise<ExperienceResponse> {
     try {
-      const exp = await this.db.experience.findUnique({ where: { id } });
+      const exp: PrismaExperience | null = await this.db.experience.findUnique({ where: { id } });
       if (!exp) return { code: 404, message: "Experience not found" };
       return { code: 200, message: "Experience fetched", experience: exp };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error fetching experience" };
     }
@@ -42,18 +42,12 @@ export class ExperienceResolver {
     @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required." };
 
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-
-      const addExperience = await this.db.experience.create({ data });
+      const addExperience: PrismaExperience = await this.db.experience.create({ data });
       return { code: 200, message: "Experience created", experience: addExperience };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error creating experience" };
     }
@@ -66,20 +60,14 @@ export class ExperienceResolver {
     @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
-
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      const authorizedRoles = [UserRole.admin, UserRole.editor];
-
-      if (!authorizedRoles.includes(ctx.user.role)) {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (![UserRole.admin, UserRole.editor].includes(ctx.user.role))
         return { code: 403, message: "Access denied. Admin or Editor role required." };
-      }
 
-      const existing = await this.db.experience.findUnique({ where: { id: data.id } });
+      const existing: PrismaExperience | null = await this.db.experience.findUnique({ where: { id: data.id } });
       if (!existing) return { code: 404, message: "Experience not found" };
-      const up = await this.db.experience.update({
+
+      const up: PrismaExperience = await this.db.experience.update({
         where: { id: data.id },
         data: {
           jobEN: data.jobEN ?? existing.jobEN,
@@ -96,8 +84,9 @@ export class ExperienceResolver {
           typeFR: data.typeFR ?? existing.typeFR,
         },
       });
+
       return { code: 200, message: "Experience updated", experience: up };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error updating experience" };
     }
@@ -110,20 +99,15 @@ export class ExperienceResolver {
     @Ctx() ctx: MyContext
   ): Promise<ExperienceResponse> {
     try {
+      if (!ctx.user) return { code: 401, message: "Authentication required." };
+      if (ctx.user.role !== UserRole.admin) return { code: 403, message: "Access denied. Admin role required." };
 
-      if (!ctx.user) {
-        return { code: 401, message: "Authentication required." };
-      }
-
-      if (ctx.user.role !== UserRole.admin) {
-        return { code: 403, message: "Access denied. Admin role required." };
-      }
-
-      const existing = await this.db.experience.findUnique({ where: { id } });
+      const existing: PrismaExperience | null = await this.db.experience.findUnique({ where: { id } });
       if (!existing) return { code: 404, message: "Experience not found" };
+
       await this.db.experience.delete({ where: { id } });
       return { code: 200, message: "Experience deleted" };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
       return { code: 500, message: "Error deleting experience" };
     }

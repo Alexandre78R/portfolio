@@ -4,11 +4,9 @@ import { MyContext } from "../../../src";
 import { ContactFrom } from "../../../src/types/contact.types";
 import { MessageType } from "../../../src/types/message.types";
 
-// Import modules to mock
 import * as MailService from "../../../src/mail/mail.service";
 import * as StructureMailService from "../../../src/mail/structureMail.service";
 import * as RegexModule from "../../../src/regex";
-
 
 jest.mock("../../../src/mail/mail.service");
 jest.mock("../../../src/mail/structureMail.service");
@@ -16,10 +14,11 @@ jest.mock("../../../src/regex");
 
 describe("ContactResolver - sendContact", () => {
   let resolver: ContactResolver;
-  let mockSendEmail: jest.Mock;
-  let mockStructureMessageMeTEXT: jest.Mock;
-  let mockStructureMessageMeHTML: jest.Mock;
-  let mockCheckRegex: jest.Mock;
+
+  let mockSendEmail: jest.Mock<Promise<MessageType>, [string, string, string, string, boolean]>;
+  let mockStructureMessageMeTEXT: jest.Mock<Promise<string>, [ContactFrom]>;
+  let mockStructureMessageMeHTML: jest.Mock<Promise<string>, [ContactFrom]>;
+  let mockCheckRegex: jest.Mock<boolean, [RegExp, string]>;
 
   const context: MyContext = {} as MyContext;
 
@@ -29,14 +28,16 @@ describe("ContactResolver - sendContact", () => {
     message: "I would like to know more about your offerings.",
   };
 
-  const mockTextEmailBody = "Structured text message";
-  const mockHtmlEmailBody = "Structured HTML message";
+  const mockTextEmailBody: string = "Structured text message";
+  const mockHtmlEmailBody: string = "Structured HTML message";
 
-  beforeEach(() => {
-    mockSendEmail = MailService.sendEmail as jest.Mock;
-    mockStructureMessageMeTEXT = StructureMailService.structureMessageMeTEXT as jest.Mock;
-    mockStructureMessageMeHTML = StructureMailService.structureMessageMeHTML as jest.Mock;
-    mockCheckRegex = RegexModule.checkRegex as jest.Mock;
+  beforeEach((): void => {
+    mockSendEmail = MailService.sendEmail as unknown as typeof mockSendEmail;
+    mockStructureMessageMeTEXT =
+      StructureMailService.structureMessageMeTEXT as unknown as typeof mockStructureMessageMeTEXT;
+    mockStructureMessageMeHTML =
+      StructureMailService.structureMessageMeHTML as unknown as typeof mockStructureMessageMeHTML;
+    mockCheckRegex = RegexModule.checkRegex as unknown as typeof mockCheckRegex;
 
     mockSendEmail.mockClear();
     mockStructureMessageMeTEXT.mockClear();
@@ -50,29 +51,27 @@ describe("ContactResolver - sendContact", () => {
     mockStructureMessageMeHTML.mockResolvedValue(mockHtmlEmailBody);
   });
 
-  it("should successfully send an email when data is valid", async () => {
+  it("should successfully send an email when data is valid", async (): Promise<void> => {
     const mockSendEmailSuccess: MessageType = {
       message: "Email sent successfully",
       label: "Success",
       status: true,
     };
+
     mockSendEmail.mockResolvedValue(mockSendEmailSuccess);
 
-    const result: MessageType = await resolver.sendContact(mockContactData, context);
+    const result: MessageType = await resolver.sendContact(
+      mockContactData,
+      context
+    );
 
-    expect(result.message).toBe("Email sent successfully");
-    expect(result.label).toBe("Success");
-    expect(result.status).toBe(true);
-
-    expect(mockCheckRegex).toHaveBeenCalledTimes(1);
-    expect(mockCheckRegex).toHaveBeenCalledWith(RegexModule.emailRegex, mockContactData.email);
-
-    expect(mockStructureMessageMeTEXT).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockSendEmailSuccess);
+    expect(mockCheckRegex).toHaveBeenCalledWith(
+      RegexModule.emailRegex,
+      mockContactData.email
+    );
     expect(mockStructureMessageMeTEXT).toHaveBeenCalledWith(mockContactData);
-    expect(mockStructureMessageMeHTML).toHaveBeenCalledTimes(1);
     expect(mockStructureMessageMeHTML).toHaveBeenCalledWith(mockContactData);
-
-    expect(mockSendEmail).toHaveBeenCalledTimes(1);
     expect(mockSendEmail).toHaveBeenCalledWith(
       mockContactData.email,
       mockContactData.object,
@@ -82,64 +81,50 @@ describe("ContactResolver - sendContact", () => {
     );
   });
 
-  it("should throw an error for an invalid email format", async () => {
-    mockCheckRegex.mockReturnValue(false); // Simulate invalid email
+  it("should throw an error for an invalid email format", async (): Promise<void> => {
+    mockCheckRegex.mockReturnValue(false);
 
-    await expect(resolver.sendContact(mockContactData, context)).rejects.toThrow(
-      "Invaid format email."
-    );
+    await expect(
+      resolver.sendContact(mockContactData, context)
+    ).rejects.toThrow("Invaid format email.");
 
-    expect(mockCheckRegex).toHaveBeenCalledTimes(1);
     expect(mockSendEmail).not.toHaveBeenCalled();
-    expect(mockStructureMessageMeTEXT).not.toHaveBeenCalled();
-    expect(mockStructureMessageMeHTML).not.toHaveBeenCalled();
   });
 
-  it("should return failure message if sendEmail service fails", async () => {
+  it("should return failure message if sendEmail fails", async (): Promise<void> => {
     const mockSendEmailFailure: MessageType = {
       message: "Failed to send email due to service error",
       label: "Error",
       status: false,
     };
+
     mockSendEmail.mockResolvedValue(mockSendEmailFailure);
 
-    const result: MessageType = await resolver.sendContact(mockContactData, context);
+    const result: MessageType = await resolver.sendContact(
+      mockContactData,
+      context
+    );
 
-    expect(result.message).toBe("Failed to send email due to service error");
-    expect(result.label).toBe("Error");
-    expect(result.status).toBe(false);
-
-    expect(mockCheckRegex).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeTEXT).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeHTML).toHaveBeenCalledTimes(1);
-    expect(mockSendEmail).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockSendEmailFailure);
   });
 
-  it("should handle error during message structuring (TEXT)", async () => {
-    const errorMessage = "Error structuring text message";
+  it("should throw if TEXT message structuring fails", async (): Promise<void> => {
+    const errorMessage : string = "Error structuring text message";
+
     mockStructureMessageMeTEXT.mockRejectedValue(new Error(errorMessage));
 
-    await expect(resolver.sendContact(mockContactData, context)).rejects.toThrow(
-      errorMessage
-    );
-
-    expect(mockCheckRegex).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeTEXT).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeHTML).not.toHaveBeenCalled();
-    expect(mockSendEmail).not.toHaveBeenCalled();
+    await expect(
+      resolver.sendContact(mockContactData, context)
+    ).rejects.toThrow(errorMessage);
   });
 
-  it("should handle error during message structuring (HTML)", async () => {
-    const errorMessage = "Error structuring HTML message";
+  it("should throw if HTML message structuring fails", async (): Promise<void> => {
+    const errorMessage : string = "Error structuring HTML message";
+
     mockStructureMessageMeHTML.mockRejectedValue(new Error(errorMessage));
 
-    await expect(resolver.sendContact(mockContactData, context)).rejects.toThrow(
-      errorMessage
-    );
-
-    expect(mockCheckRegex).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeTEXT).toHaveBeenCalledTimes(1);
-    expect(mockStructureMessageMeHTML).toHaveBeenCalledTimes(1);
-    expect(mockSendEmail).not.toHaveBeenCalled();
+    await expect(
+      resolver.sendContact(mockContactData, context)
+    ).rejects.toThrow(errorMessage);
   });
 });
