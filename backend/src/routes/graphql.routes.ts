@@ -186,6 +186,7 @@ import cors from "cors";
 import Cookies from "cookies";
 import { jwtVerify, JWTPayload } from "jose";
 import { PrismaClient, User as PrismaUser } from "@prisma/client";
+import { GraphQLError } from "graphql";
 import express, { Request, Response } from "express";
 
 import { customAuthChecker } from "../lib/authChecker";
@@ -319,12 +320,23 @@ export async function mountGraphQL(app: Express) {
           }
         }
 
-        const apiKeyHeader: string | string[] | undefined = req.headers["x-api-key"];
-        const apiKey: string | undefined = Array.isArray(apiKeyHeader)
-          ? apiKeyHeader[0]
-          : apiKeyHeader;
-        if (!apiKey) throw new Error("Unauthorized: x-api-key header is missing.");
-        await checkApiKey(apiKey);
+        let apiKey: string | undefined;
+        try {
+          const apiKeyHeader: string | string[] | undefined = req.headers["x-api-key"];
+          apiKey = Array.isArray(apiKeyHeader)
+            ? apiKeyHeader[0]
+            : apiKeyHeader;
+          if (!apiKey) {
+            throw new Error("Unauthorized: x-api-key header is missing.");
+          }
+          await checkApiKey(apiKey);
+        } catch (error: unknown) {
+          res.status(401);
+          throw new GraphQLError("Unauthorized API key", {
+            extensions: { code: "UNAUTHENTICATED" },
+            originalError: error instanceof Error ? error : undefined,
+          });
+        }
 
         return { req, res, cookies, token, user, apiKey };
       },
